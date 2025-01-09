@@ -1,0 +1,7 @@
+RewriteEngine On
+RewriteBase /
+
+# Reescribir las rutas a la aplicación
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^routes/([a-zA-Z0-9_/]+)$ index.php?route=$1 [L,QSA]
