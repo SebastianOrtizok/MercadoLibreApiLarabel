@@ -111,54 +111,73 @@ class ConsultaMercadoLibreService
 }
 
 
-    public function getOwnPublications($userId, $limit = 50, $offset = 0)
+public function getOwnPublications($userId, $limit = 50, $offset = 0)
 {
     try {
+        // Obtener los datos del usuario actual (por ejemplo, su userId)
         $userData = $this->getUserId();
         $userId = $userData['userId'];
-        $mlAccountId = $userData['mlAccountId'];
-        $response = $this->client->get("users/{$mlAccountId}/items/search", [
-            'headers' => [
-               'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
-            ],
-            'query' => [
-                'include_attributes' => 'all',
-                'limit' => $limit,
-                'offset' => $offset
-            ]
-        ]);
 
-        $data = json_decode($response->getBody(), true);
+        // Obtener todos los tokens asociados al usuario
+        $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
 
-        if (!isset($data['results']) || empty($data['results'])) {
-            return [
-                'items' => [],
-                'total' => $data['paging']['total'] ?? 0
-            ];
+        $allItems = [];  // Array para almacenar todas las publicaciones
+        $total = 0;  // Total de publicaciones
+
+        // Iterar sobre los tokens (que corresponden a las cuentas de MercadoLibre)
+        foreach ($tokens as $token) {
+            $mlAccountId = $token->ml_account_id;
+
+            // Obtener las publicaciones de la cuenta actual
+            $response = $this->client->get("users/{$mlAccountId}/items/search", [
+                'headers' => [
+                    'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
+                ],
+                'query' => [
+                    'include_attributes' => 'all',
+                    'limit' => $limit,
+                    'offset' => $offset
+                ]
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            if (!isset($data['results']) || empty($data['results'])) {
+                continue;  // Si no hay publicaciones para esta cuenta, pasamos a la siguiente
+            }
+
+            $itemIds = $data['results'];
+
+            // Obtener los detalles de las publicaciones
+            $detailsResponse = $this->client->get("items", [
+                'headers' => [
+                    'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
+                ],
+                'query' => [
+                    'ids' => implode(',', $itemIds)
+                ]
+            ]);
+
+            $details = json_decode($detailsResponse->getBody(), true);
+            $allItems = array_merge($allItems, $details);
+            $total += $data['paging']['total'] ?? count($details);
+
+            // Esperar un tiempo antes de hacer la siguiente petición
+            sleep(1); // Espera de 1 segundo entre peticiones para evitar sobrecargar la API
         }
 
-        $itemIds = $data['results'];
-
-        $detailsResponse = $this->client->get("items", [
-            'headers' => [
-                'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
-            ],
-            'query' => [
-                'ids' => implode(',', $itemIds)
-            ]
-        ]);
-
-        $details = json_decode($detailsResponse->getBody(), true);
-
         return [
-            'items' => $details,
-            'total' => $data['paging']['total'] ?? count($details)
+            'items' => $allItems,
+            'total' => $total
         ];
+
     } catch (RequestException $e) {
         \Log::error("Error al obtener publicaciones propias: " . $e->getMessage());
         throw $e;
     }
 }
+
+
 
 public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
 {
@@ -238,7 +257,7 @@ public function getProductVisits($itemId)
 
         $response = Http::get("https://api.mercadolibre.com/items/$itemId/visits");
       // Log de la respuesta para análisis
-dd($response);
+//dd($response);
 
         if ($response->successful()) {
             // Retorna la respuesta JSON si la solicitud es exitosa

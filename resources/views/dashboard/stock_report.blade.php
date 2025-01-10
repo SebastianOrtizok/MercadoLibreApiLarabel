@@ -9,7 +9,7 @@
         <thead class="thead-dark">
             <tr>
                 <th>Imagen</th>
-                <th>Título y Descripción</th>
+                <th>Título</th>
                 <th>Ventas en los últimos 30 días</th>
                 <th>Stock Actual</th>
                 <th>Stock Estimado</th>
@@ -23,7 +23,10 @@
                 <td><img src="{{ $item['imagen'] }}" alt="Imagen del producto" class="img-fluid" style="width: 100px;"></td>
                 <td>
                     <strong>{{ $item['titulo'] }}</strong><br>
-                    {{ $item['descripcion'] }}
+                    <!-- Mostrar el ID en un color diferente y el link a MercadoLibre -->
+                    <span style="color: #007bff; font-weight: bold;">ID: {{ $item['id'] }}</span><br>
+                    <a href="{{ $item['permalink'] }}" target="_blank" style="color: #007bff;">Ver en MercadoLibre</a>
+
                 </td>
                 <td>{{ $item['ventasDiarias'] }}</td>
                 <td>{{ $item['stockActual'] }}</td>

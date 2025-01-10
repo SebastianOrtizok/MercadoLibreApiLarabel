@@ -56,7 +56,7 @@ class AccountController extends Controller
 
             // Obteniendo publicaciones
             $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset);
-            dd($publications); // Usa `dd($publications)` para revisar qué datos estás recibiendo.
+            //dd($publications); // Usa `dd($publications)` para revisar qué datos estás recibiendo.
 
             return view('dashboard.publications', compact('publications'));
 
