@@ -3,18 +3,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\ConsultaMercadoLibreService;
-use App\Services\ReporteStockService;
+use App\Services\ReporteVentasService;
 use App\Services\MercadoLibreService;
 
 class AccountController extends Controller
 {
     private $consultaService;
     private $mercadoLibreService;
+    private $reporteVentasService;
     protected $client;
-    public function __construct(ConsultaMercadoLibreService $consultaService, MercadoLibreService $mercadoLibreService)
+    public function __construct(ConsultaMercadoLibreService $consultaService, MercadoLibreService $mercadoLibreService, ReporteVentasService $reporteVentasService)
     {
         $this->consultaService = $consultaService;
         $this->mercadoLibreService = $mercadoLibreService;
+        $this->reporteVentasService = $reporteVentasService;
 
     }
 
@@ -56,9 +58,9 @@ class AccountController extends Controller
 
             // Obteniendo publicaciones
             $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset);
-            //dd($publications); // Usa `dd($publications)` para revisar qué datos estás recibiendo.
-
-            return view('dashboard.publications', compact('publications'));
+           //echo gettype($publications);
+           //dd($publications);
+             return view('dashboard.publications', compact('publications'));
 
         } catch (\Exception $e) {
             return response()->json([
@@ -87,45 +89,67 @@ class AccountController extends Controller
     }
 }
 
-public function analyzeLowConversion(Request $request)
-{
-    try {
-        $userId = env('MERCADOLIBRE_USER_ID');
-        $limit = $request->input('limit', 50);
-        $offset = $request->input('offset', 0);
-
-        // Obtener las publicaciones propias
-        $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset);
-        // Obtener vistas de cada producto
-        foreach ($publications['items'] as &$publication) {
-            $itemId = $publication['body']['id']; // Asegúrate de que 'id' esté en el array
-            $publication['visits'] = $this->consultaService->getProductVisits($itemId);
-
-        }
-
-
-
-        return view('dashboard.low_conversion', compact('publications'));
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => $e->getMessage()
-        ], 500);
-    }
-}
-
 public function generarReporte(Request $request)
 {
     try {
-        $userId = env('MERCADOLIBRE_USER_ID');
-        $reporteStockService = app(ReporteStockService::class);
-        $reporte = $reporteStockService->generarReporteStock($userId);
-//dd($reporte);
+        // Obtener las cuentas del usuario (suponiendo que las tienes almacenadas)
+        $cuentas = $this->getUserAccounts(); // Obtén los tokens de las cuentas
+        $limit = $request->input('limit', 50);
+        $offset = $request->input('offset', 0);
+        $reporte = [];
+
+        foreach ($cuentas as $cuenta) {
+            $accessToken = $cuenta['access_token'] ?? null;
+            $aliasCuenta = $cuenta['alias'] ?? 'Cuenta desconocida';
+
+            if (empty($accessToken)) {
+                \Log::warning("La cuenta {$aliasCuenta} no tiene un token válido.");
+                continue;
+            }
+
+            // Obtener ventas de la cuenta actual
+            $ventas = $this->getSales($accessToken, $limit, $offset);
+
+            if (!isset($ventas['results']) || empty($ventas['results'])) {
+                \Log::info("No se encontraron ventas para la cuenta: {$aliasCuenta}");
+                continue;
+            }
+
+            // Procesar ventas
+            foreach ($ventas['results'] as $venta) {
+                $reporte[] = [
+                    'id' => $venta['id'] ?? 'Desconocido',
+                    'producto' => $venta['title'] ?? 'Sin título',
+                    'cantidad' => $venta['quantity'] ?? 0,
+                    'precio' => $venta['price'] ?? 0.0,
+                    'fecha' => $venta['date_created'] ?? 'Sin fecha',
+                    'estado' => $venta['status'] ?? 'Desconocido',
+                    'cuenta' => $aliasCuenta,
+                ];
+            }
+        }
+
+        // Retornar la vista con el reporte
         return view('dashboard.stock_report', ['reporte' => $reporte]);
+
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
 
+public function ShowSales(Request $request)
+    {
+        try {
+            $limit = $request->input('limit', 50);
+            $offset = $request->input('offset', 0);
 
+            // Llamar al servicio para obtener las ventas
+            $ventas = $this->reporteVentasService->generarReporteVentas($limit, $offset);
+
+            // Mostrar los datos en pantalla temporalmente
+            dd($ventas);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

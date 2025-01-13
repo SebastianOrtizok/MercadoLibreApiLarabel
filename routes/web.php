@@ -13,7 +13,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/dashboard/inventory', [AccountController::class, 'showInventory'])->name('dashboard.inventory');
 Route::get('/dashboard/account', [AccountController::class, 'showAccountInfo'])->name('dashboard.account');
-Route::get('/dashboard/stock_report', [AccountController::class, 'generarReporte'])->name('dashboard.stock');
+Route::get('/dashboard/order_report', [AccountController::class, 'ShowSales'])->name('dashboard.ventas');
 Route::get('/dashboard/publications', [AccountController::class, 'showOwnPublications'])->name('dashboard.publications');
 Route::get('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
 Route::get('/dashboard/analyze-low-conversion', [AccountController::class, 'analyzeLowConversion'])->name('dashboard.analyze.low_conversion');

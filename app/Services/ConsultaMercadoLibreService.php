@@ -114,11 +114,9 @@ class ConsultaMercadoLibreService
 public function getOwnPublications($userId, $limit = 50, $offset = 0)
 {
     try {
-        // Obtener los datos del usuario actual (por ejemplo, su userId)
+        // Obtener todos los tokens asociados al usuario
         $userData = $this->getUserId();
         $userId = $userData['userId'];
-
-        // Obtener todos los tokens asociados al usuario
         $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
 
         $allItems = [];  // Array para almacenar todas las publicaciones
@@ -148,26 +146,49 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0)
 
             $itemIds = $data['results'];
 
-            // Obtener los detalles de las publicaciones
-            $detailsResponse = $this->client->get("items", [
-                'headers' => [
-                    'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
-                ],
-                'query' => [
-                    'ids' => implode(',', $itemIds)
-                ]
-            ]);
+            // Dividir los IDs en bloques de 20
+            $chunks = array_chunk($itemIds, 20);
 
-            $details = json_decode($detailsResponse->getBody(), true);
-            $allItems = array_merge($allItems, $details);
-            $total += $data['paging']['total'] ?? count($details);
+            foreach ($chunks as $chunk) {
+                // Obtener los detalles de cada bloque de 20 elementos
+                $detailsResponse = $this->client->get("items", [
+                    'headers' => [
+                        'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
+                    ],
+                    'query' => [
+                        'ids' => implode(',', $chunk)
+                    ]
+                ]);
+
+                $details = json_decode($detailsResponse->getBody(), true);
+                $allItems = array_merge($allItems, $details);
+            }
+
+            $total += $data['paging']['total'] ?? count($allItems);
 
             // Esperar un tiempo antes de hacer la siguiente petición
             sleep(1); // Espera de 1 segundo entre peticiones para evitar sobrecargar la API
         }
 
+        // Procesar los datos de stock y última venta
+        $processedItems = [];
+        foreach ($allItems as $item) {
+            $body = $item['body'] ?? []; // Asegúrate de acceder al 'body'
+            $processedItems[] = [
+                'id' => $body['id'] ?? null,
+                'titulo' => $body['title'] ?? 'Sin título',
+                'imagen' => $body['pictures'][0]['url'] ?? null,
+                'stockActual' => $body['available_quantity'] ?? 0,
+                'precio' => $body['price'] ?? null,
+                'estado' => $body['status'] ?? 'Desconocido',
+                'permalink' => $body['permalink'] ?? '#',
+                'condicion' => $body['condition'] ?? 'Desconocido',
+                'ultimaVenta' => $this->getLastSale($body['id'] ?? null), // Asegúrate de implementar este método
+            ];
+        }
+
         return [
-            'items' => $allItems,
+            'items' => $processedItems,
             'total' => $total
         ];
 
@@ -176,6 +197,58 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0)
         throw $e;
     }
 }
+
+public function getLastSale($itemId)
+{
+    try {
+        // Verificar que $itemId no sea nulo
+        if (!$itemId) {
+            return "ID de artículo no válido";
+        }
+
+        // Obtener el token del usuario (puedes ajustar esto según cómo gestionas los tokens)
+        $userData = $this->getUserId();
+        $userId = $userData['userId'];
+        $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->first();
+
+        if (!$tokens) {
+            return "No se encontró token asociado";
+        }
+
+        $mlAccountId = $tokens->ml_account_id;
+
+        // Obtener las órdenes relacionadas al artículo
+        $response = $this->client->get("orders/search", [
+            'headers' => [
+                'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
+            ],
+            'query' => [
+                'item_id' => $itemId,
+                'sort' => 'date_desc', // Ordenar por fecha descendente para obtener la última venta
+                'limit' => 1,         // Solo necesitamos la última venta
+            ]
+        ]);
+
+        $data = json_decode($response->getBody(), true);
+
+        // Verificar si hay resultados
+        if (!isset($data['results']) || empty($data['results'])) {
+            return "Sin ventas registradas";
+        }
+
+        // Extraer la fecha de la última venta
+        $lastSale = $data['results'][0];
+        $dateCreated = $lastSale['date_created'] ?? "Fecha no disponible";
+
+        return $dateCreated; // Retorna la fecha de la última venta
+
+    } catch (RequestException $e) {
+        \Log::error("Error al obtener la última venta del artículo $itemId: " . $e->getMessage());
+        return "Error al obtener la última venta";
+    }
+}
+
+
 
 
 

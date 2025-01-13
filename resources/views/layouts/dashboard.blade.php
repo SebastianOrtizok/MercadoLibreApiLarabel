@@ -132,9 +132,9 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.stock') }}">
+                    <a class="nav-link" href="{{ route('dashboard.ventas') }}">
                     <span class="icon"><i class="fas fa-clipboard-list"></i></span>
-                        <span class="text">Stock</span>
+                        <span class="text">Ventas</span>
                     </a>
                 </li>
                 <li class="nav-item">
