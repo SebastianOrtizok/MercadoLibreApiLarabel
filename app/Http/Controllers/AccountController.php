@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\ConsultaMercadoLibreService;
 use App\Services\ReporteVentasService;
 use App\Services\MercadoLibreService;
+use Carbon\Carbon;
 
 class AccountController extends Controller
 {
@@ -12,12 +14,12 @@ class AccountController extends Controller
     private $mercadoLibreService;
     private $reporteVentasService;
     protected $client;
+
     public function __construct(ConsultaMercadoLibreService $consultaService, MercadoLibreService $mercadoLibreService, ReporteVentasService $reporteVentasService)
     {
         $this->consultaService = $consultaService;
         $this->mercadoLibreService = $mercadoLibreService;
         $this->reporteVentasService = $reporteVentasService;
-
     }
 
 
@@ -47,28 +49,39 @@ class AccountController extends Controller
     }
 
     public function showOwnPublications(Request $request)
-    {
-        try {
-            // Supongamos que tienes el userId almacenado en algún lado (por ejemplo, en un .env o base de datos)
-            $userId = env('MERCADOLIBRE_USER_ID');
+{
+    try {
+        // Supongamos que tienes el userId almacenado en algún lado (por ejemplo, en un .env o base de datos)
+        $userId = env('MERCADOLIBRE_USER_ID');
 
-            // Opcional: Puedes obtener limit y offset desde el request
-            $limit = $request->input('limit', 50);
-            $offset = $request->input('offset', 0);
+        // Parámetros de paginación desde el request
+        $limit = (int) $request->input('limit', 50);
+        $page = (int) $request->input('page', 1); // Página actual (por defecto 1)
+        $offset = ($page - 1) * $limit;
 
-            // Obteniendo publicaciones
-            $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset);
-           //echo gettype($publications);
-           //dd($publications);
-             return view('dashboard.publications', compact('publications'));
+        // Obteniendo publicaciones del servicio
+        $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset);
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 500);
-        }
+        // Cálculo de total de páginas (opcional, si el servicio devuelve un total)
+        $totalPublications = $publications['total'] ?? 0; // Asegúrate de que el servicio devuelva este dato
+        $totalPages = ceil($totalPublications / $limit);
+
+        // Datos para la vista
+        return view('dashboard.publications', [
+            'publications' => $publications['items'],
+            'totalPages' => $totalPages,
+            'currentPage' => $page,
+            'limit' => $limit,
+            'totalPublications' => $totalPublications,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ], 500);
     }
+}
+
 
     public function showItemsByCategory(Request $request, $categoryId)
 {
@@ -138,18 +151,29 @@ public function generarReporte(Request $request)
 }
 
 public function ShowSales(Request $request)
-    {
-        try {
-            $limit = $request->input('limit', 50);
-            $offset = $request->input('offset', 0);
+{
+    try {
+        $limit = $request->input('limit', 50);
+        $offset = $request->input('offset', 0);
+        $dias = $request->input('dias', 30); // Predeterminado: 30 días
 
-            // Llamar al servicio para obtener las ventas
-            $ventas = $this->reporteVentasService->generarReporteVentas($limit, $offset);
+        // Obtener la fecha actual
+        $fechaActual = Carbon::now();
 
-            // Mostrar los datos en pantalla temporalmente
-            dd($ventas);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        // Calcular la fecha de inicio según los días seleccionados
+
+        $fechaInicio = $fechaActual->copy()->subDays($dias)->startOfDay();
+        $fechaFin = $fechaActual->copy()->endOfDay();  // Hacer una copia para que no modifique $fechaActual
+        $diasDeRango = round($fechaInicio->diffInDays($fechaFin));
+
+  // Llamar al servicio para generar el reporte de ventas
+  $ventas = $this->reporteVentasService->generarReporteVentas($limit, $offset, $fechaInicio, $fechaFin);
+
+        // Renderizar la vista con los datos
+        return view('dashboard.order_report', compact('ventas', 'fechaInicio', 'fechaFin', 'dias', 'diasDeRango'));
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
     }
+}
+
 }

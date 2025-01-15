@@ -144,6 +144,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.itemVenta') }}">
+                        <span class="icon"><i class="fas fa-boxes"></i></span>
+                        <span class="text">Item Venta</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.analyze.low_conversion') }}">
                         <span class="icon"><i class="fas fa-chart-line"></i></span>
                         <span class="text">Bajas Ventas</span>

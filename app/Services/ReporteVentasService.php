@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\Http;
 
 class ReporteVentasService
 {
-    public function generarReporteVentas($limit = 50, $offset = 0)
+    public function generarReporteVentas($limit = 50, $offset = 0, $fechaInicio, $fechaFin)
     {
         // Obtener el ID del usuario autenticado
         $userId = auth()->id();
-        \Log::info("Generando reporte de ventas para el usuario ID: {$userId}");
+        \Log::info("Generando reporte de ventas para el usuario ID: {$userId}, desde {$fechaInicio} hasta {$fechaFin}.");
 
         // Obtener los tokens asociados al usuario
         $tokens = MercadoLibreToken::where('user_id', $userId)->get();
@@ -24,7 +24,6 @@ class ReporteVentasService
 
         // Inicializar el array para almacenar las ventas consolidadas
         $ventasConsolidadas = [];
-        $totalVentas = 0;
 
         // Iterar sobre los tokens de MercadoLibre
         foreach ($tokens as $token) {
@@ -46,8 +45,9 @@ class ReporteVentasService
                 continue;
             }
 
-            // Obtener las ventas de la cuenta actual
-            $ventas = $this->obtenerVentas($accessToken, $limit, $offset, $sellerId);
+            // Obtener las ventas de la cuenta actual dentro del rango de fechas
+            $ventas = $this->obtenerVentas($accessToken, $limit, $offset, $sellerId, $fechaInicio, $fechaFin);
+
             \Log::info("Respuesta de ventas para la cuenta {$mlAccountId}: " . json_encode($ventas));
 
             // Verificar si se encontraron ventas
@@ -60,23 +60,20 @@ class ReporteVentasService
             foreach ($ventas['results'] as $venta) {
                 foreach ($venta['order_items'] as $item) {
                     $producto = [
-                        'id_producto' => $item['item']['id'] ?? null,
-                        'thumbnail' => $item['item']['thumbnail'] ?? null,
                         'titulo' => $item['item']['title'] ?? null,
-                        'stock_actual' => $item['item']['available_quantity'] ?? null,
-                        'estado_publicacion' => $item['item']['status'] ?? null,
+                        'ventas_diarias' => count($venta['order_items']),
                         'fecha_ultima_venta' => $venta['date_closed'] ?? null,
                     ];
 
-                    // Agregar el producto al array de ventas consolidadas si tiene un ID válido
-                    if ($producto['id_producto']) {
+                    // Agregar el producto al array de ventas consolidadas si tiene un título válido
+                    if ($producto['titulo']) {
                         $ventasConsolidadas[] = $producto;
                     }
                 }
             }
         }
-dd($ventasConsolidadas);
-        \Log::info("Reporte generado con un total de ventas: {$totalVentas}");
+
+        \Log::info("Reporte generado con un total de ventas: " . count($ventasConsolidadas));
 
         // Retornar las ventas consolidadas
         return [
@@ -84,6 +81,7 @@ dd($ventasConsolidadas);
             'ventas' => $ventasConsolidadas,
         ];
     }
+
 
     private function verificarSellerId($accessToken)
     {
@@ -100,30 +98,30 @@ dd($ventasConsolidadas);
         }
     }
 
-    private function obtenerVentas($accessToken, $limit, $offset, $sellerId)
-    {
-        // Usar el sellerId verificado en la consulta de ventas
-        $url = "https://api.mercadolibre.com/orders/search?seller={$sellerId}&offset={$offset}&limit={$limit}";
-        \Log::info("Consultando ventas en la URL: {$url}");
+    private function obtenerVentas($accessToken, $limit, $offset, $sellerId, $fechaInicio, $fechaFin)
+{
+    // Usar el sellerId verificado en la consulta de ventas
+    $url = "https://api.mercadolibre.com/orders/search?seller={$sellerId}&offset={$offset}&limit={$limit}&date_from={$fechaInicio->toDateString()}&date_to={$fechaFin->toDateString()}&order.status=paid";
+    \Log::info("Consultando ventas en la URL: {$url}");
 
-        try {
-            \Log::info("Usando token (parcial): " . substr($accessToken, 0, 40) . " para la URL: {$url}");
-            // Realizar la solicitud HTTP a la API de MercadoLibre
-            $response = Http::withToken($accessToken)->get($url);
+    try {
+        \Log::info("Usando token (parcial): " . substr($accessToken, 0, 40) . " para la URL: {$url}");
+        // Realizar la solicitud HTTP a la API de MercadoLibre
+        $response = Http::withToken($accessToken)->get($url);
 
-            // Verificar si la respuesta fue exitosa
-            if ($response->successful()) {
-                \Log::info("Respuesta exitosa de la API para el token.");
-                return $response->json();
-            } else {
-                // Si la respuesta no es exitosa, registrar el error
-                \Log::error("Error al obtener ventas: " . $response->body());
-                return [];
-            }
-        } catch (\Exception $e) {
-            // Manejar excepciones
-            \Log::error("Excepción al consultar ventas: " . $e->getMessage());
+        // Verificar si la respuesta fue exitosa
+        if ($response->successful()) {
+            \Log::info("Respuesta exitosa de la API para el token.");
+            return $response->json();
+        } else {
+            // Si la respuesta no es exitosa, registrar el error
+            \Log::error("Error al obtener ventas: " . $response->body());
             return [];
         }
+    } catch (\Exception $e) {
+        // Manejar excepciones
+        \Log::error("Excepción al consultar ventas: " . $e->getMessage());
+        return [];
     }
+}
 }

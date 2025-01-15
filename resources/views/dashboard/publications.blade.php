@@ -14,13 +14,13 @@
                 <th>Condición</th> <!-- Nueva columna para la condición -->
                 <th>Stock Actual</th>
                 <th>Estado</th>
-                <th>Última Venta</th>
-                <th>Acciones</th> <!-- Opcional: columna para acciones futuras -->
+                <th>SKU</th> <!-- Columna para el SKU -->
+                <th>Tipo de Publicación</th> <!-- Columna para el tipo de publicación -->
+                <th>En Catálogo</th> <!-- Columna para saber si está en catálogo -->
             </tr>
         </thead>
         <tbody>
-        <!-- Eliminar el dd($publications) para continuar con la vista -->
-        @foreach($publications['items'] as $item) <!-- Cambiar para recorrer $publications['items'] -->
+         @forelse($publications as $item)
             <tr>
                 <td>
                     @if(isset($item['imagen']) && $item['imagen'])
@@ -38,15 +38,35 @@
                 <td>{{ ucfirst($item['condicion']) }}</td>
                 <td>{{ $item['stockActual'] }}</td>
                 <td>{{ ucfirst($item['estado']) }}</td>
-                <td>{{ $item['ultimaVenta'] ?? 'No registrada' }}</td>
-                <td>
-                    <!-- Opcional: agregar acciones como editar o eliminar -->
-                    <a href="#" class="btn btn-sm btn-primary">Editar</a>
-                    <a href="#" class="btn btn-sm btn-danger">Eliminar</a>
-                </td>
+                <td>{{ $item['sku'] ?? 'No disponible' }}</td> <!-- SKU -->
+                <td>{{ $item['tipoPublicacion'] ?? 'Desconocido' }}</td> <!-- Tipo de publicación -->
+                <td>{{ $item['enCatalogo'] ?? 'No disponible' }}</td> <!-- En catálogo -->
             </tr>
-        @endforeach
+         @empty
+            <tr>
+                <td colspan="9" class="text-center">No se encontraron publicaciones.</td>
+            </tr>
+         @endforelse
         </tbody>
     </table>
+
+    <!-- Controles de paginación -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item {{ $currentPage == 1 ? 'disabled' : '' }}">
+                <a class="page-link" href="?page={{ $currentPage - 1 }}&limit={{ $limit }}" aria-label="Anterior">&laquo;</a>
+            </li>
+
+            @for ($i = 1; $i <= $totalPages; $i++)
+                <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
+                    <a class="page-link" href="?page={{ $i }}&limit={{ $limit }}">{{ $i }}</a>
+                </li>
+            @endfor
+
+            <li class="page-item {{ $currentPage == $totalPages ? 'disabled' : '' }}">
+                <a class="page-link" href="?page={{ $currentPage + 1 }}&limit={{ $limit }}" aria-label="Siguiente">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
 </div>
 @endsection
