@@ -10,8 +10,8 @@
         <div class="col-md-3">
             <label for="dias">Seleccionar rango de días</label>
             <select name="dias" id="dias" class="form-control">
-                @for($i = 1; $i <= 60; $i++)
-                    <option value="{{ $i }}" {{ request('dias', 30) == $i ? 'selected' : '' }}>
+                @for($i = 1; $i <= 360; $i++)
+                    <option value="{{ $i }}" {{ request('dias', 360) == $i ? 'selected' : '' }}>
                         {{ $i }} {{ $i > 1 ? 'días' : 'día' }}
                     </option>
                 @endfor
@@ -33,21 +33,29 @@
             <tr>
                 <th>Título del Artículo</th>
                 <th>Ventas Diarias</th>
+                <th>Publicacion</th>
                 <th>Fecha de Última Venta</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($ventas['ventas'] as $venta)
-                <tr>
-                    <td>{{ $venta['titulo'] }}</td>
-                    <td>{{ $venta['ventas_diarias'] }}</td>
-                    <td>{{ \Carbon\Carbon::parse($venta['fecha_ultima_venta'])->format('d/m/Y H:i') }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="3" class="text-center">No se encontraron ventas para el rango seleccionado.</td>
-                </tr>
-            @endforelse
+    @forelse($ventas['ventas'] as $venta)
+        <tr>
+            <!-- Mostrar título del producto -->
+            <td>{{ $venta['titulo'] }}</td>
+
+            <!-- Mostrar ventas diarias -->
+            <td>{{ $venta['ventas_diarias'] }}</td>
+            <!-- Mostrar el tipo de publicación (gold, classic, etc.) -->
+            <td>{{ $venta['tipo_publicacion'] }}</td>
+            <!-- Mostrar fecha de la última venta con el formato adecuado -->
+            <td>{{ \Carbon\Carbon::parse($venta['fecha_ultima_venta'])->format('d/m/Y H:i') }}</td>
+
+        </tr>
+    @empty
+        <tr>
+            <td colspan="4">No hay ventas para este rango de fechas.</td>
+        </tr>
+    @endforelse
         </tbody>
     </table>
 </div>

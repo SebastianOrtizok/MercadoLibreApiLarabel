@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\MercadoLibreToken;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 
 class ReporteVentasService
 {
@@ -47,8 +48,7 @@ class ReporteVentasService
 
             // Obtener las ventas de la cuenta actual dentro del rango de fechas
             $ventas = $this->obtenerVentas($accessToken, $limit, $offset, $sellerId, $fechaInicio, $fechaFin);
-
-            \Log::info("Respuesta de ventas para la cuenta {$mlAccountId}: " . json_encode($ventas));
+            \Log::info("Respuesta de ventas para la cuenta {$mlAccountId}: " );
 
             // Verificar si se encontraron ventas
             if (!isset($ventas['results']) || empty($ventas['results'])) {
@@ -56,31 +56,39 @@ class ReporteVentasService
                 continue;
             }
 
-            // Procesar las ventas y extraer la información necesaria
-            foreach ($ventas['results'] as $venta) {
-                foreach ($venta['order_items'] as $item) {
-                    $producto = [
-                        'titulo' => $item['item']['title'] ?? null,
-                        'ventas_diarias' => count($venta['order_items']),
-                        'fecha_ultima_venta' => $venta['date_closed'] ?? null,
-                    ];
+         // Procesar las ventas y extraer la información necesaria
+         foreach ($ventas['results'] as $venta) {
+            // Obtener la fecha de la última venta desde el campo 'date_closed' de la orden
+            $fechaUltimaVenta = isset($venta['date_closed']) ? $venta['date_closed'] : null;
 
-                    // Agregar el producto al array de ventas consolidadas si tiene un título válido
-                    if ($producto['titulo']) {
-                        $ventasConsolidadas[] = $producto;
-                    }
-                }
+            // Recorrer los items de la orden
+            foreach ($venta['order_items'] as $item) {
+            // Preparar la información del producto
+                $producto = [
+                    'titulo' => $item['item']['title'] ?? null,  // Título del producto
+                    'ventas_diarias' => $item['quantity'] ?? 0,  // Cantidad vendida
+                    'fecha_ultima_venta' => $fechaUltimaVenta,  // Usamos 'date_closed' como fecha de última venta
+                    'tipo_publicacion' => $item['listing_type_id'] ?? null,  // Tipo de publicación del producto
+                ];
+
+                // Agregar el producto al array de ventas consolidadas si tiene un título válido
+                if ($producto['titulo']) {
+                    // Agregar el producto al array de ventas consolidadas si tiene título y tipo de publicación válidos
+                    $ventasConsolidadas[] = $producto;
             }
         }
 
-        \Log::info("Reporte generado con un total de ventas: " . count($ventasConsolidadas));
 
+        }
+        \Log::info("Tipo de Publicación:", [$producto['tipo_publicacion']]);
+        \Log::info("Reporte generado con un total de ventas: " . count($ventasConsolidadas));
         // Retornar las ventas consolidadas
         return [
             'total_ventas' => count($ventasConsolidadas),
             'ventas' => $ventasConsolidadas,
         ];
     }
+}
 
 
     private function verificarSellerId($accessToken)
@@ -100,9 +108,27 @@ class ReporteVentasService
 
     private function obtenerVentas($accessToken, $limit, $offset, $sellerId, $fechaInicio, $fechaFin)
 {
-    // Usar el sellerId verificado en la consulta de ventas
-    $url = "https://api.mercadolibre.com/orders/search?seller={$sellerId}&offset={$offset}&limit={$limit}&date_from={$fechaInicio->toDateString()}&date_to={$fechaFin->toDateString()}&order.status=paid";
-    \Log::info("Consultando ventas en la URL: {$url}");
+    // Zona horaria para Carbon
+    Carbon::setLocale('es');
+    date_default_timezone_set('America/Argentina/Buenos_Aires');
+
+// Convertimos las fechas de inicio y fin a formato adecuado
+$fechaInicio = Carbon::parse($fechaInicio)->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
+$fechaFin = Carbon::parse($fechaFin)->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
+
+// Parámetros para la consulta con el filtro de fecha de cierre
+$params = [
+    'seller' => $sellerId,  // ID del vendedor
+    'offset' => $offset,  // Página de resultados
+    'limit' => $limit,  // Límite de resultados
+    'order.status' => 'paid',  // Solo ventas pagadas
+    'order.date_created.from' => $fechaInicio, // Fecha de cierre desde
+    'order.date_created.to' => $fechaFin,     // Fecha de cierre hasta
+];
+
+// Generamos la URL con los parámetros codificados
+$url = "https://api.mercadolibre.com/orders/search?" . http_build_query($params);
+\Log::info("Consultando ventas en la URL: {$url}");
 
     try {
         \Log::info("Usando token (parcial): " . substr($accessToken, 0, 40) . " para la URL: {$url}");
@@ -111,7 +137,6 @@ class ReporteVentasService
 
         // Verificar si la respuesta fue exitosa
         if ($response->successful()) {
-            \Log::info("Respuesta exitosa de la API para el token.");
             return $response->json();
         } else {
             // Si la respuesta no es exitosa, registrar el error
