@@ -176,4 +176,57 @@ public function ShowSales(Request $request)
     }
 }
 
+public function index()
+{
+    return view('sincronizacion.index'); // Vista para mostrar el estado de la sincronización
+}
+
+
+public function primeraSincronizacionDB(Request $request)
+{
+    try {
+        $userId = env('MERCADOLIBRE_USER_ID');
+        // Parámetros de paginación desde el request
+        $limit = (int) $request->input('limit', 50);
+        $page = (int) $request->input('page', 1); // Página actual (por defecto 1)
+        $offset = ($page - 1) * $limit;
+
+        // Obteniendo publicaciones del servicio
+        $publications = $this->consultaService->DescargarArticulosDB($userId, $limit, $page);
+
+        // Almacenar artículos en la base de datos sin mostrar nada en la interfaz
+        foreach ($publications['items'] as $item) {
+            \App\Models\Articulo::create([
+                'user_id' => $item['token_id'],
+                'ml_product_id' => $item['ml_product_id'],
+                'titulo' => $item['titulo'] ?? 'Sin título',
+                'imagen' => $item['imagen'] ?? null,
+                'stock_actual' => $item['stock_actual'] ?? 0,
+                'precio' => $item['precio'] ?? 0.0,
+                'estado' => $item['estado'] ?? 'Desconocido',
+                'permalink' => $item['permalink'] ?? '#',
+                'condicion' => $item['condicion'] ?? 'Desconocido',
+                'sku' => $item['sku'] ?? null,
+                'tipo_publicacion' => $item['tipo_publicacion'] ?? 'Desconocido',
+                'en_catalogo' => $item['en_catalogo'] ?? false,
+            ]);
+        }
+
+
+        // Respuesta de éxito sin mostrar los artículos
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Artículos sincronizados y guardados correctamente.',
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+
+
+
 }

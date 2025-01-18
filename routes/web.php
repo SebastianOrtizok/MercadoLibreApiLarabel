@@ -19,6 +19,10 @@ Route::get('/dashboard/publications', [AccountController::class, 'showOwnPublica
 Route::get('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
 Route::get('/dashboard/analyze-low-conversion', [AccountController::class, 'analyzeLowConversion'])->name('dashboard.analyze.low_conversion');
 Route::get('/dashboard/item_venta', [ItemVenta::class, 'generarReporteVentas'])->name('dashboard.itemVenta');
+
+Route::get('/sincronizacion', [AccountController::class, 'index'])->name('sincronizacion.index');
+Route::get('/sincronizacion/primera', [AccountController::class, 'primeraSincronizacionDB'])->name('sincronizacion.primera');
+Route::get('/sincronizacion/actualizar', [AccountController::class, 'actualizarArticulosDB'])->name('sincronizacion.actualizar');
 });
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

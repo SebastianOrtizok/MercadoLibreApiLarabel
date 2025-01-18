@@ -272,6 +272,105 @@ public function getLastSale($itemIds)
 }
 
 
+// DESCARGAR A LA BASE DE DATOS
+
+public function DescargarArticulosDB($userId, $limit = 50, $offset = 0)
+{
+    try {
+        // Obtener todos los tokens asociados al usuario
+        $userData = $this->getUserId();
+        $userId = $userData['userId'];
+        $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
+
+        $allItems = [];
+        $total = 0;
+
+        foreach ($tokens as $token) {
+            $mlAccountId = $token->ml_account_id;
+            $offset = 0; // *******  PRUEBA PARA VER SI PASA A OTRA CUENTA
+            do {
+                // Obtener las publicaciones de la cuenta actual con paginación
+                $response = $this->client->get("users/{$mlAccountId}/items/search", [
+                    'headers' => [
+                        'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
+                    ],
+                    'query' => [
+                        'include_attributes' => 'all',
+                        'limit' => $limit,
+                        'offset' => $offset
+                    ]
+                ]);
+
+                $data = json_decode($response->getBody(), true);
+
+                if (!isset($data['results']) || empty($data['results'])) {
+                    break; // Si no hay más resultados, terminamos el bucle
+                }
+
+                $itemIds = $data['results'];
+                $chunks = array_chunk($itemIds, 20);
+
+                foreach ($chunks as $chunk) {
+                    $detailsResponse = $this->client->get("items", [
+                        'headers' => [
+                            'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
+                        ],
+                        'query' => [
+                            'ids' => implode(',', $chunk)
+                        ]
+                    ]);
+
+                    $details = json_decode($detailsResponse->getBody(), true);
+                    $allItems = array_merge($allItems, $details);
+                }
+
+                $total = $data['paging']['total'] ?? $total;
+                $offset += $limit; // Incrementar el offset para obtener la siguiente página
+
+                // Esperar antes de realizar la siguiente solicitud
+                sleep(1);
+
+            } while ($offset < $total); // Continuar hasta que hayamos obtenido todos los resultados
+        }
+
+        $processedItems = [];
+
+        foreach ($allItems as $item) {
+            $body = $item['body'] ?? [];
+            $sellerId = $body['seller_id'] ?? null;
+
+            $processedItems[] = [
+                'ml_product_id' => $body['id'] ?? null,
+                'titulo' => $body['title'] ?? 'Sin título',
+                'imagen' => $body['pictures'][0]['url'] ?? null,
+                'stockActual' => $body['available_quantity'] ?? 0,
+                'precio' => $body['price'] ?? null,
+                'estado' => $body['status'] ?? 'Desconocido',
+                'permalink' => $body['permalink'] ?? '#',
+                'condicion' => $body['condition'] ?? 'Desconocido',
+                'sku' => $body['user_product_id'] ?? null,
+                'tipoPublicacion' => $body['listing_type_id'] ?? null,
+                'enCatalogo' => $body['catalog_listing'] ?? null,
+                'token_id' => $sellerId,
+            ];
+        }
+
+        \Log::debug("Productos procesados:", $processedItems);
+
+        return [
+            'items' => $processedItems,
+            'total' => $total
+        ];
+
+    } catch (RequestException $e) {
+        \Log::error("Error al obtener publicaciones propias: " . $e->getMessage());
+        throw $e;
+    }
+}
+
+
+
+
 
 
 

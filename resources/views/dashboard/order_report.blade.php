@@ -10,8 +10,8 @@
         <div class="col-md-3">
             <label for="dias">Seleccionar rango de días</label>
             <select name="dias" id="dias" class="form-control">
-                @for($i = 1; $i <= 360; $i++)
-                    <option value="{{ $i }}" {{ request('dias', 360) == $i ? 'selected' : '' }}>
+                @for($i = 1; $i <= 30; $i++)
+                    <option value="{{ $i }}" {{ request('dias', 1) == $i ? 'selected' : '' }}>
                         {{ $i }} {{ $i > 1 ? 'días' : 'día' }}
                     </option>
                 @endfor
