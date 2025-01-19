@@ -190,7 +190,6 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0)
                 'estado' => $body['status'] ?? 'Desconocido',
                 'permalink' => $body['permalink'] ?? '#',
                 'condicion' => $body['condition'] ?? 'Desconocido',
-              //  'ultimaVenta' => $lastSaleDates[$body['id']] ?? null, // Usamos la fecha de la última venta
                 'sku' => $body['user_product_id'] ?? null, // SKU del producto
                 'tipoPublicacion' => $body['listing_type_id'] ?? null, // Tipo de publicación
                 'enCatalogo' => $body['catalog_listing'] ?? null, // Si está en catálogo
@@ -205,68 +204,6 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0)
 
     } catch (RequestException $e) {
         \Log::error("Error al obtener publicaciones propias: " . $e->getMessage());
-        throw $e;
-    }
-}
-
-
-public function getLastSale($itemIds)
-{
-    try {
-        // Asegurarnos de que los itemIds sean un array
-        if (!is_array($itemIds)) {
-            $itemIds = [$itemIds]; // Si solo se pasa un ID, lo convertimos en un array
-        }
-
-        // Crear la cadena de item_ids separados por coma
-        $itemIdsParam = implode(',', $itemIds);
-
-        // Obtener todos los tokens asociados al usuario
-        $userData = $this->getUserId();
-        $userId = $userData['userId'];
-        $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
-
-        $lastSaleDates = [];
-
-        // Iterar sobre los tokens (que corresponden a las cuentas de MercadoLibre)
-        foreach ($tokens as $token) {
-            $mlAccountId = $token->ml_account_id;
-
-            // Consultar el endpoint de orders/search para obtener las órdenes que contienen los productos solicitados
-            $response = $this->client->get("orders/search", [
-                'headers' => [
-                    'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
-                ],
-                'query' => [
-                    'item' => $itemIdsParam, // Pasamos todos los IDs en un solo parámetro
-                    'order.status' => 'paid', // Filtramos solo las órdenes pagadas
-                    'sort' => 'date_desc', // Ordenamos por fecha descendente para obtener la más reciente
-                    'limit' => 1 // Solo necesitamos la más reciente
-                ]
-            ]);
-
-            $data = json_decode($response->getBody(), true);
-
-            // Si la respuesta contiene resultados
-            if (isset($data['results']) && !empty($data['results'])) {
-                // Recorrer las órdenes para obtener la fecha de la última venta por cada item_id
-                foreach ($data['results'] as $order) {
-                    $orderItemId = $order['order_items'][0]['item']['id']; // Obtener el ID del item de la orden
-                    $lastSaleDates[$orderItemId] = $order['date_created']; // Guardar la fecha de la última venta
-                }
-            }
-        }
-
-        // Si no se encuentra venta, devolver null o alguna otra acción
-        foreach ($itemIds as $itemId) {
-            if (!isset($lastSaleDates[$itemId])) {
-                $lastSaleDates[$itemId] = null; // Si no se encuentra la venta, asignamos null
-            }
-        }
-
-        return $lastSaleDates; // Devolvemos un array con las fechas de las últimas ventas
-    } catch (\Exception $e) {
-        \Log::error("Error al obtener la última venta: " . $e->getMessage());
         throw $e;
     }
 }

@@ -155,7 +155,7 @@ public function ShowSales(Request $request)
     try {
         $limit = $request->input('limit', 50);
         $offset = $request->input('offset', 0);
-        $dias = $request->input('dias', 30); // Predeterminado: 30 días
+        $dias = $request->input('dias', 1); // Predeterminado: 10 días
 
         // Obtener la fecha actual
         $fechaActual = Carbon::now();
@@ -171,7 +171,7 @@ public function ShowSales(Request $request)
 
         // Renderizar la vista con los datos
         return view('dashboard.order_report', compact('ventas', 'fechaInicio', 'fechaFin', 'dias', 'diasDeRango'));
-    } catch (\Exception $e) {
+      } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
@@ -201,7 +201,8 @@ public function primeraSincronizacionDB(Request $request)
                 'ml_product_id' => $item['ml_product_id'],
                 'titulo' => $item['titulo'] ?? 'Sin título',
                 'imagen' => $item['imagen'] ?? null,
-                'stock_actual' => $item['stock_actual'] ?? 0,
+                'stock_actual' => $item['stockActual'] ?? 0,
+                'dias_stock' => $item['dias_stock'] ?? 0,
                 'precio' => $item['precio'] ?? 0.0,
                 'estado' => $item['estado'] ?? 'Desconocido',
                 'permalink' => $item['permalink'] ?? '#',
