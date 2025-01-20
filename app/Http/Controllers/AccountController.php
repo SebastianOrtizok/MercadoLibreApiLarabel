@@ -181,7 +181,9 @@ public function index()
     return view('sincronizacion.index'); // Vista para mostrar el estado de la sincronización
 }
 
-
+     /**
+     * Descarga todos los artículos de la datos de MercadoLibre.
+     */
 public function primeraSincronizacionDB(Request $request)
 {
     try {
@@ -213,7 +215,6 @@ public function primeraSincronizacionDB(Request $request)
             ]);
         }
 
-
         // Respuesta de éxito sin mostrar los artículos
         return response()->json([
             'status' => 'success',
@@ -227,7 +228,25 @@ public function primeraSincronizacionDB(Request $request)
     }
 }
 
+     /**
+     * Sincroniza los artículos de la datos de MercadoLibre.
+     */
+    public function actualizarArticulosDB(Request $request)
+    {
+        try {
+            $userId = env('MERCADOLIBRE_USER_ID');
+            // Parámetros de paginación desde el request
+            $limit = (int) $request->input('limit', 50);
+            $page = (int) $request->input('page', 1); // Página actual (por defecto 1)
+            $offset = ($page - 1) * $limit;
 
+            $syncService = $this->consultaService->sincronizarBaseDeDatos($userId, $limit, $page);
+
+            return response()->json(['message' => 'Sincronización completada con éxito.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
 
 }

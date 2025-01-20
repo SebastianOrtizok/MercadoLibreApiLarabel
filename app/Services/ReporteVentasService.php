@@ -65,16 +65,18 @@ class ReporteVentasService
 
                         if ($mlProductId) {
                             $articulo = \DB::table('articulos')
-                                ->select('imagen', 'stock_actual', 'sku')
+                                ->select('imagen', 'stock_actual', 'sku', 'estado')
                                 ->where('ml_product_id', $mlProductId)
                                 ->first();
 
                             $imagen = $articulo->imagen ?? null;
                             $stock = $articulo->stock_actual ?? 0;
                             $sku = $articulo->sku ?? 0;
+                            $estado = $articulo->estado ?? null;
 
                             if (!isset($ventasConsolidadas[$mlProductId])) {
                                 $ventasConsolidadas[$mlProductId] = [
+                                    'producto' => $mlProductId,
                                     'titulo' => $titulo,
                                     'ventas_diarias' => 0,
                                     'fecha_ultima_venta' => $fechaUltimaVenta,
@@ -82,6 +84,7 @@ class ReporteVentasService
                                     'imagen' => $imagen,
                                     'stock' => $stock,
                                     'sku' => $sku,
+                                    'estado' => $estado,
                                     'dias_stock' => 0, // Nueva columna para los días de stock
                                 ];
                             }
@@ -109,8 +112,6 @@ class ReporteVentasService
                 usleep(500000); // Pausa de 500 milisegundos (0.5 segundos)
             } while ($paginaActual <= $totalPages && $paginaActual <= $maxPaginas);
         }
-
-        \Log::info("Reporte consolidado generado para el usuario ID: {$userId}.");
 
         return [
             'total_ventas' => count($ventasConsolidadas),

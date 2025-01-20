@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-
+use App\Models\Articulo;
+use App\Models\SyncTimestamp;
+use Carbon\Carbon;
 
 class ConsultaMercadoLibreService
 {
@@ -224,7 +226,7 @@ public function DescargarArticulosDB($userId, $limit = 50, $offset = 0)
 
         foreach ($tokens as $token) {
             $mlAccountId = $token->ml_account_id;
-            $offset = 0; // *******  PRUEBA PARA VER SI PASA A OTRA CUENTA
+            $offset = 0; //
             do {
                 // Obtener las publicaciones de la cuenta actual con paginación
                 $response = $this->client->get("users/{$mlAccountId}/items/search", [
@@ -305,6 +307,136 @@ public function DescargarArticulosDB($userId, $limit = 50, $offset = 0)
     }
 }
 
+/**
+ * SINCRONIZA LA BASE DE DATOS
+ */
+public function sincronizarBaseDeDatos(string $userId, int $limit, int $page)
+{
+    try {
+        // Obtener el último timestamp de sincronización
+        $lastSync = \App\Models\SyncTimestamp::latest()->first()->timestamp ?? now();
+
+        // Obtener todos los tokens asociados al usuario
+        $userData = $this->getUserId();
+        $userId = $userData['userId'];
+        $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
+
+        $offset = ($page - 1) * $limit;
+        $allUpdatedItems = [];
+
+        foreach ($tokens as $token) {
+            $mlAccountId = $token->ml_account_id;
+
+            // Obtener los IDs de los artículos ordenados por `last_updated` de manera descendente
+            do {
+                $response = Http::withToken($this->mercadoLibreService->getAccessToken($userId, $mlAccountId))
+                    ->get("https://api.mercadolibre.com/users/{$mlAccountId}/items/search", [
+                        'limit' => 10,
+                        'offset' => $offset,
+                        'sort' => 'last_updated_desc',  // Ordenar por last_updated descendente
+                    ]);
+
+                if ($response->failed()) {
+                    throw new \Exception("Error al obtener datos para la cuenta {$mlAccountId}.");
+                }
+
+                $data = $response->json();
+                $itemIds = $data['results'] ?? [];
+                if (empty($itemIds)) {
+                    break; // No hay más resultados
+                }
+
+                // Dividir los IDs en grupos de 20 para obtener detalles masivos
+                $chunks = array_chunk($itemIds, 20);
+
+                foreach ($chunks as $chunk) {
+                    $detailsResponse = Http::withToken($this->mercadoLibreService->getAccessToken($userId, $mlAccountId))
+                        ->get("https://api.mercadolibre.com/items", [
+                            'ids' => implode(',', $chunk),
+                        ]);
+
+                    if ($detailsResponse->failed()) {
+                        throw new \Exception("Error al obtener detalles de artículos.");
+                    }
+
+                    $details = $detailsResponse->json();
+
+                    // Indicador para saber si al menos un artículo fue actualizado
+                    $anyUpdated = false;
+
+                    foreach ($details as $item) {
+                        $body = $item['body'] ?? [];
+
+                        // Obtener la fecha de la última actualización del artículo
+                        $itemLastUpdated = new \Carbon\Carbon($body['date_last_updated'] ?? 'now');
+
+                        // Comparar la fecha de la última actualización con el timestamp de sincronización
+                        if ($itemLastUpdated->lessThanOrEqualTo($lastSync)) {
+                            // Si ninguno de los artículos se ha actualizado, salir del bucle de la cuenta
+                            continue;
+                        }
+
+                        // Intentar actualizar o crear artículo en la base de datos
+                        Articulo::updateOrCreate(
+                            ['ml_product_id' => $body['id']],
+                            [
+                                'titulo' => $body['title'] ?? 'Sin título',
+                                'imagen' => $body['pictures'][0]['url'] ?? null,
+                                'stock_actual' => $body['available_quantity'] ?? 0,
+                                'precio' => $body['price'] ?? 0.0,
+                                'estado' => $body['status'] ?? 'Desconocido',
+                                'permalink' => $body['permalink'] ?? '#',
+                                'condicion' => $body['condition'] ?? 'Desconocido',
+                                'tipo_publicacion' => $body['listing_type_id'] ?? 'Desconocido',
+                                'en_catalogo' => $body['catalog_listing'] ?? false,
+                                'token_id' => $mlAccountId,
+                                'updated_at' => now(),
+                            ]
+                        );
+
+                        // Log de artículo actualizado
+                        \Log::info("Artículo actualizado: ", [
+                            'ml_product_id' => $body['id'],
+                            'titulo' => $body['title'],
+                            'stock_actual' => $body['available_quantity'],
+                            'precio' => $body['price'],
+                            'estado' => $body['status'],
+                            'updated_at' => now(),
+                            'fecha de mercadolibre' => $itemLastUpdated,
+                        ]);
+
+                        // Indicamos que al menos un artículo fue actualizado
+                        $anyUpdated = true;
+                    }
+
+                    // Si no se actualizó ningún artículo, rompemos el bucle para pasar a la siguiente cuenta
+                    if (!$anyUpdated) {
+                        break;
+                    }
+                }
+
+                $offset += $limit;
+
+                // Esperar antes de realizar la siguiente solicitud
+                sleep(1);
+            } while ($offset < ($data['paging']['total'] ?? 0));
+
+            // Solo actualizamos el SyncTimestamp si fue modificada la base de datos
+            $syncTimestamp = \App\Models\SyncTimestamp::latest()->first();
+            if ($syncTimestamp) {
+                $syncTimestamp->update(['timestamp' => now()]);
+            } else {
+                \App\Models\SyncTimestamp::create(['timestamp' => now()]);
+            }
+        }
+
+        \Log::debug("Artículos actualizados:", $allUpdatedItems);
+
+    } catch (\Exception $e) {
+        \Log::error("Error al sincronizar la base de datos: " . $e->getMessage());
+        throw $e;
+    }
+}
 
 
 
@@ -348,6 +480,11 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
         throw $e;
     }
 }
+
+
+
+
+
 public function getPublicationStats(array $itemIds)
 {
     try {

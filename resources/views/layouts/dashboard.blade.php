@@ -150,11 +150,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.analyze.low_conversion') }}">
-                        <span class="icon"><i class="fas fa-chart-line"></i></span>
-                        <span class="text">Bajas Ventas</span>
+                    <a class="nav-link" href="{{ route('sincronizacion.index') }}">
+                        <span class="icon"><i class="fas fa-database"></i></span>
+                        <span class="text">Sincronización</span>
                     </a>
                 </li>
+
             </ul>
             <div class="toggle-btn"></div>
         </div>

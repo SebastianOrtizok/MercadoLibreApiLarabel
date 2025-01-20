@@ -13,6 +13,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home'); // Asegúrate de tener una vista llamada 'home.blade.php' en resources/views
+        return view('dashboard.index'); // Asegúrate de tener una vista llamada 'home.blade.php' en resources/views
     }
 }

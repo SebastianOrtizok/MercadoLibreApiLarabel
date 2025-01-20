@@ -31,12 +31,14 @@
         <thead class="thead-dark">
             <tr>
                 <th>Imagen</th>
+                <th>Producto</th>
                 <th>SKU</th>
                 <th>Título del Artículo</th>
                 <th>Ventas Diarias</th>
                 <th>Publicacion</th>
                 <th>Stock</th>
                 <th>Dias_Stock</th>
+                <th>Estado</th>
                 <th>Fecha de Última Venta</th>
             </tr>
         </thead>
@@ -47,6 +49,8 @@
                 <td>
                     <img src="{{ $venta['imagen'] }}" alt="Imagen de {{ $venta['titulo'] }}" style="width: 50px; height: auto;">
                 </td>
+                <!-- Producto -->
+                <td>{{ $venta['producto'] }}</td>
                 <!-- Mostrar SKU -->
                 <td>{{ $venta['sku'] }}</td>
                 <!-- Mostrar título del producto -->
@@ -59,6 +63,8 @@
                 <td>{{ $venta['stock'] }}</td>
                 <!-- Mostrar dias_stock -->
                 <td>{{ $venta['dias_stock'] }}</td>
+                <!-- Estado-->
+                <td>{{ $venta['estado'] }}</td>
                 <!-- Mostrar fecha de la última venta -->
                 <td>{{ \Carbon\Carbon::parse($venta['fecha_ultima_venta'])->format('d/m/Y H:i') }}</td>
             </tr>
