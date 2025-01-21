@@ -183,6 +183,7 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0)
 
         foreach ($allItems as $item) {
             $body = $item['body'] ?? []; // Asegúrate de acceder al 'body'
+            //dd($body);
             $processedItems[] = [
                 'id' => $body['id'] ?? null,
                 'titulo' => $body['title'] ?? 'Sin título',
@@ -195,6 +196,7 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0)
                 'sku' => $body['user_product_id'] ?? null, // SKU del producto
                 'tipoPublicacion' => $body['listing_type_id'] ?? null, // Tipo de publicación
                 'enCatalogo' => $body['catalog_listing'] ?? null, // Si está en catálogo
+                'categoryid' => $body['category_id']
             ];
 
         }
@@ -313,8 +315,8 @@ public function DescargarArticulosDB($userId, $limit = 50, $offset = 0)
 public function sincronizarBaseDeDatos(string $userId, int $limit, int $page)
 {
     try {
-        // Obtener el último timestamp de sincronización
-        $lastSync = \App\Models\SyncTimestamp::latest()->first()->timestamp ?? now();
+        // Obtener el último timestamp de sincronización y convertirlo en Carbon
+        $lastSync = new \Carbon\Carbon(\App\Models\SyncTimestamp::latest()->first()->timestamp ?? now());
 
         // Obtener todos los tokens asociados al usuario
         $userData = $this->getUserId();
@@ -326,6 +328,8 @@ public function sincronizarBaseDeDatos(string $userId, int $limit, int $page)
 
         foreach ($tokens as $token) {
             $mlAccountId = $token->ml_account_id;
+            $offset = 0; // Reiniciar el offset al comenzar con cada cuenta
+
 
             // Obtener los IDs de los artículos ordenados por `last_updated` de manera descendente
             do {
@@ -367,46 +371,60 @@ public function sincronizarBaseDeDatos(string $userId, int $limit, int $page)
                     foreach ($details as $item) {
                         $body = $item['body'] ?? [];
 
-                        // Obtener la fecha de la última actualización del artículo
-                        $itemLastUpdated = new \Carbon\Carbon($body['date_last_updated'] ?? 'now');
+                        // Usar 'last_updated' para obtener la fecha de última actualización
+                        $itemLastUpdated = isset($body['last_updated'])
+                            ? new \Carbon\Carbon($body['last_updated'])
+                            : null;
 
-                        // Comparar la fecha de la última actualización con el timestamp de sincronización
-                        if ($itemLastUpdated->lessThanOrEqualTo($lastSync)) {
-                            // Si ninguno de los artículos se ha actualizado, salir del bucle de la cuenta
+                        // Si no existe 'last_updated', continuamos con el siguiente artículo
+                        if ($itemLastUpdated === null) {
                             continue;
                         }
 
-                        // Intentar actualizar o crear artículo en la base de datos
-                        Articulo::updateOrCreate(
-                            ['ml_product_id' => $body['id']],
-                            [
-                                'titulo' => $body['title'] ?? 'Sin título',
-                                'imagen' => $body['pictures'][0]['url'] ?? null,
-                                'stock_actual' => $body['available_quantity'] ?? 0,
-                                'precio' => $body['price'] ?? 0.0,
-                                'estado' => $body['status'] ?? 'Desconocido',
-                                'permalink' => $body['permalink'] ?? '#',
-                                'condicion' => $body['condition'] ?? 'Desconocido',
-                                'tipo_publicacion' => $body['listing_type_id'] ?? 'Desconocido',
-                                'en_catalogo' => $body['catalog_listing'] ?? false,
-                                'token_id' => $mlAccountId,
+                        // Comparar la fecha de la última actualización con el timestamp de sincronización
+                        if ($itemLastUpdated->lessThan($lastSync)) {
+                            \Log::info("Artículo no actualizado después de la última sincronización", [
+                                'itemLastUpdated' => $itemLastUpdated->toDateTimeString(),
+                                'lastSync' => $lastSync->toDateTimeString(),
+                            ]);
+                            // Si el artículo no ha sido actualizado después de la última sincronización, pasar al siguiente
+                            continue;
+                        }
+
+                        // Si el artículo tiene una fecha de actualización más reciente que la sincronización
+                        // Solo actualizar o crear el artículo en la base de datos en este caso
+                        else {
+                            Articulo::updateOrCreate(
+                                ['ml_product_id' => $body['id']],
+                                [
+                                    'titulo' => $body['title'] ?? 'Sin título',
+                                    'imagen' => $body['pictures'][0]['url'] ?? null,
+                                    'stock_actual' => $body['available_quantity'] ?? 0,
+                                    'precio' => $body['price'] ?? 0.0,
+                                    'estado' => $body['status'] ?? 'Desconocido',
+                                    'permalink' => $body['permalink'] ?? '#',
+                                    'condicion' => $body['condition'] ?? 'Desconocido',
+                                    'tipo_publicacion' => $body['listing_type_id'] ?? 'Desconocido',
+                                    'en_catalogo' => $body['catalog_listing'] ?? false,
+                                    'token_id' => $mlAccountId,
+                                    'updated_at' => now(),
+                                ]
+                            );
+
+                            // Log de artículo actualizado
+                            \Log::info("Producto actualizado: ", [
+                                'ml_product_id' => $body['id'],
+                                'titulo' => $body['title'],
+                                'stock_actual' => $body['available_quantity'],
+                                'precio' => $body['price'],
+                                'estado' => $body['status'],
                                 'updated_at' => now(),
-                            ]
-                        );
+                                'fecha de mercadolibre' => $itemLastUpdated,
+                            ]);
 
-                        // Log de artículo actualizado
-                        \Log::info("Artículo actualizado: ", [
-                            'ml_product_id' => $body['id'],
-                            'titulo' => $body['title'],
-                            'stock_actual' => $body['available_quantity'],
-                            'precio' => $body['price'],
-                            'estado' => $body['status'],
-                            'updated_at' => now(),
-                            'fecha de mercadolibre' => $itemLastUpdated,
-                        ]);
-
-                        // Indicamos que al menos un artículo fue actualizado
-                        $anyUpdated = true;
+                            // Indicamos que al menos un artículo fue actualizado
+                            $anyUpdated = true;
+                        }
                     }
 
                     // Si no se actualizó ningún artículo, rompemos el bucle para pasar a la siguiente cuenta
@@ -516,6 +534,7 @@ public function getPublicationStats(array $itemIds)
         throw $e;
     }
 }
+
 
 public function getProductVisits($itemId)
 {

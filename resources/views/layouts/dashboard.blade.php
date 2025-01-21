@@ -11,18 +11,18 @@
         /* Layout */
         .container-fluid {
             --bs-gutter-x: 0;
-    --bs-gutter-y: 0;
+          --bs-gutter-y: 0;
             display: flex;
         }
 
         /* Sidebar */
         .sidebar {
-    width: auto;
-    height: 100vh;
-    background-color: #dee2e69c;
-    transition: width 0.3s;
-    position: relative;
-}
+            width: auto;
+            height: 100vh;
+            background-color: #dee2e69c;
+            transition: width 0.3s;
+            position: relative;
+        }
 
         .sidebar.collapsed {
             width: 50px;
@@ -76,7 +76,7 @@
         .sidebar ul li {
             display: flex;
             align-items: center;
-            padding: 0px 10px 0px 10px;
+            padding: 0px 10px 10px 10px;
         }
 
 
@@ -109,6 +109,19 @@
         .main-content {
             flex: 1;
             padding: 20px;
+        }
+        .logout-button {
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .logout-button i {
+            font-size: 20px;
+            margin-right: 8px;
+            color: red;
         }
     </style>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
@@ -154,6 +167,17 @@
                         <span class="icon"><i class="fas fa-database"></i></span>
                         <span class="text">Sincronización</span>
                     </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    class="logout-button">
+                        <i class="fas fa-sign-out-alt"></i> <!-- Ícono -->
+                        <span>Logout</span>
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
                 </li>
 
             </ul>

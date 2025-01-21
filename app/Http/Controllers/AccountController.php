@@ -65,7 +65,6 @@ class AccountController extends Controller
         // Cálculo de total de páginas (opcional, si el servicio devuelve un total)
         $totalPublications = $publications['total'] ?? 0; // Asegúrate de que el servicio devuelva este dato
         $totalPages = ceil($totalPublications / $limit);
-
         // Datos para la vista
         return view('dashboard.publications', [
             'publications' => $publications['items'],
@@ -91,7 +90,6 @@ class AccountController extends Controller
 
         // Llama al servicio para obtener los items por categoría
         $items = $this->consultaService->getItemsByCategory($categoryId, $limit, $offset);
-        dd($items);
         // Retorna una vista con los datos
         return view('dashboard.category_items', compact('items', 'categoryId'));
     } catch (\Exception $e) {

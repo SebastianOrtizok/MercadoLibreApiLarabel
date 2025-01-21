@@ -3,10 +3,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\HomeController;
 use App\Services\MercadoLibreService;
 use App\Services\ItemVenta;
+use Illuminate\Http\Request;
+
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -16,18 +17,18 @@ Route::get('/dashboard/inventory', [AccountController::class, 'showInventory'])-
 Route::get('/dashboard/account', [AccountController::class, 'showAccountInfo'])->name('dashboard.account');
 Route::get('/dashboard/order_report', [AccountController::class, 'ShowSales'])->name('dashboard.ventas');
 Route::get('/dashboard/publications', [AccountController::class, 'showOwnPublications'])->name('dashboard.publications');
-Route::get('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
+Route::post('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
 // Route::get('/dashboard/analyze-low-conversion', [AccountController::class, 'analyzeLowConversion'])->name('dashboard.analyze.low_conversion');
 Route::get('/dashboard/item_venta', [ItemVenta::class, 'generarReporteVentas'])->name('dashboard.itemVenta');
-
 Route::get('/sincronizacion', [AccountController::class, 'index'])->name('sincronizacion.index');
 Route::get('/sincronizacion/primera', [AccountController::class, 'primeraSincronizacionDB'])->name('sincronizacion.primera');
 Route::get('/sincronizacion/actualizar', [AccountController::class, 'actualizarArticulosDB'])->name('sincronizacion.actualizar');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 
 Route::get('/add-initial-token', function () {
     return view('add-token');

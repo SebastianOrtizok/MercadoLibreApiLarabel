@@ -16,7 +16,10 @@
                 <th>Estado</th>
                 <th>SKU</th> <!-- Columna para el SKU -->
                 <th>Tipo de Publicación</th> <!-- Columna para el tipo de publicación -->
-                <th>En Catálogo</th> <!-- Columna para saber si está en catálogo -->
+                <th>Catálogo</th>
+                <th>Categoría</th>
+                <td>
+            </td>
             </tr>
         </thead>
         <tbody>
@@ -40,7 +43,20 @@
                 <td>{{ ucfirst($item['estado']) }}</td>
                 <td>{{ $item['sku'] ?? 'No disponible' }}</td> <!-- SKU -->
                 <td>{{ $item['tipoPublicacion'] ?? 'Desconocido' }}</td> <!-- Tipo de publicación -->
-                <td>{{ $item['enCatalogo'] ?? 'No disponible' }}</td> <!-- En catálogo -->
+                <td>
+                    @if($item['enCatalogo'] === true)
+                        <span style="color: green; font-weight: bold;">En catálogo</span>
+                    @else
+                        <span style="color: red;">No</span>
+                    @endif
+                </td><!-- En catálogo -->
+                <td>
+                <form method="POST" action="{{ route('dashboard.category.items', ['categoryId' => $item['categoryid']]) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-primary btn-sm">Ver Categoría</button>
+                </form>
+                </td>
+
             </tr>
          @empty
             <tr>

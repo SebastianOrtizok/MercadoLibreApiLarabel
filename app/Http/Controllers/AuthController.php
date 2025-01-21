@@ -34,9 +34,11 @@ class AuthController extends Controller
     }
 
     // Maneja el cierre de sesión
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
-        return redirect('/');
+        $request->session()->invalidate(); // Invalidar la sesión actual.
+        $request->session()->regenerateToken(); // Generar un nuevo token CSRF.
+        return redirect('/login');
     }
 }
