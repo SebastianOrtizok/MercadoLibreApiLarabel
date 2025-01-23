@@ -43,8 +43,6 @@ class ConsultaMercadoLibreService
 
             // Devuelve el ml_account_id
             $mlAccountId = $mercadoLibreToken->ml_account_id;
-
-            // Muestra el ml_account_id (esto es para depuración, puedes eliminarlo luego)
             //dd("User ID: " . $userId . " | ML Account ID: " . $mlAccountId);
 
             return [
@@ -168,7 +166,6 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0)
 
             $total += $data['paging']['total'] ?? count($allItems);
 
-            // Esperar un tiempo antes de hacer la siguiente petición
             sleep(1); // Espera de 1 segundo entre peticiones para evitar sobrecargar la API
         }
 
@@ -187,7 +184,8 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0)
             $processedItems[] = [
                 'id' => $body['id'] ?? null,
                 'titulo' => $body['title'] ?? 'Sin título',
-                'imagen' => $body['pictures'][0]['url'] ?? null,
+                'imagen' => $body['thumbnail'] ?? null,
+            //  'imagen' => $body['pictures'][0]['url'] ?? null,
                 'stockActual' => $body['available_quantity'] ?? 0,
                 'precio' => $body['price'] ?? null,
                 'estado' => $body['status'] ?? 'Desconocido',
@@ -283,7 +281,8 @@ public function DescargarArticulosDB($userId, $limit = 50, $offset = 0)
             $processedItems[] = [
                 'ml_product_id' => $body['id'] ?? null,
                 'titulo' => $body['title'] ?? 'Sin título',
-                'imagen' => $body['pictures'][0]['url'] ?? null,
+                'imagen' => $body['thumbnail'] ?? null,
+            //  'imagen' => $body['pictures'][0]['url'] ?? null,
                 'stockActual' => $body['available_quantity'] ?? 0,
                 'precio' => $body['price'] ?? null,
                 'estado' => $body['status'] ?? 'Desconocido',
@@ -398,7 +397,8 @@ public function sincronizarBaseDeDatos(string $userId, int $limit, int $page)
                                 ['ml_product_id' => $body['id']],
                                 [
                                     'titulo' => $body['title'] ?? 'Sin título',
-                                    'imagen' => $body['pictures'][0]['url'] ?? null,
+                                    'imagen' => $body['thumbnail'] ?? null,
+                                //  'imagen' => $body['pictures'][0]['url'] ?? null,
                                     'stock_actual' => $body['available_quantity'] ?? 0,
                                     'precio' => $body['price'] ?? 0.0,
                                     'estado' => $body['status'] ?? 'Desconocido',
@@ -412,15 +412,15 @@ public function sincronizarBaseDeDatos(string $userId, int $limit, int $page)
                             );
 
                             // Log de artículo actualizado
-                            \Log::info("Producto actualizado: ", [
-                                'ml_product_id' => $body['id'],
-                                'titulo' => $body['title'],
-                                'stock_actual' => $body['available_quantity'],
-                                'precio' => $body['price'],
-                                'estado' => $body['status'],
-                                'updated_at' => now(),
-                                'fecha de mercadolibre' => $itemLastUpdated,
-                            ]);
+                            // \Log::info("Producto actualizado: ", [
+                            //     'ml_product_id' => $body['id'],
+                            //     'titulo' => $body['title'],
+                            //     'stock_actual' => $body['available_quantity'],
+                            //     'precio' => $body['price'],
+                            //     'estado' => $body['status'],
+                            //     'updated_at' => now(),
+                            //     'fecha de mercadolibre' => $itemLastUpdated,
+                            // ]);
 
                             // Indicamos que al menos un artículo fue actualizado
                             $anyUpdated = true;
@@ -455,6 +455,7 @@ public function sincronizarBaseDeDatos(string $userId, int $limit, int $page)
         throw $e;
     }
 }
+
 
 
 
@@ -503,63 +504,63 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
 
 
 
-public function getPublicationStats(array $itemIds)
-{
-    try {
-        $userData = $this->getUserId();
-        $userId = $userData['userId'];
-        $mlAccountId = $userData['mlAccountId'];
-        $response = $this->client->get("items", [
-            'headers' => [
-                'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
-            ],
-            'query' => [
-                'ids' => implode(',', $itemIds),
-                'attributes' => 'id,visits,sold_quantity'
-            ]
-        ]);
+// public function getPublicationStats(array $itemIds)
+// {
+//     try {
+//         $userData = $this->getUserId();
+//         $userId = $userData['userId'];
+//         $mlAccountId = $userData['mlAccountId'];
+//         $response = $this->client->get("items", [
+//             'headers' => [
+//                 'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
+//             ],
+//             'query' => [
+//                 'ids' => implode(',', $itemIds),
+//                 'attributes' => 'id,visits,sold_quantity'
+//             ]
+//         ]);
 
-        $data = json_decode($response->getBody(), true);
+//         $data = json_decode($response->getBody(), true);
 
-        return collect($data)->map(function ($item) {
-            return [
-                'id' => $item['id'],
-                'visits' => $item['visits'] ?? 0,
-                'sold_quantity' => $item['sold_quantity'] ?? 0,
-                'conversion_rate' => $item['visits'] > 0 ? ($item['sold_quantity'] / $item['visits']) * 100 : 0,
-            ];
-        })->toArray();
-    } catch (RequestException $e) {
-        \Log::error("Error al obtener estadísticas de publicaciones: " . $e->getMessage());
-        throw $e;
-    }
-}
-
-
-public function getProductVisits($itemId)
-{
-    try {
-        $userData = $this->getUserId();
-        $userId = $userData['userId'];
-        $mlAccountId = $userData['mlAccountId'];
-        \Log::info("Consultando visitas para Item ID: $itemId");
-
-        $response = Http::get("https://api.mercadolibre.com/items/$itemId/visits");
-      // Log de la respuesta para análisis
-//dd($response);
-
-        if ($response->successful()) {
-            // Retorna la respuesta JSON si la solicitud es exitosa
-            return $response->json();
-        } else {
-            // Log de error en caso de fallo en la respuesta
-          return null; // Retorna null si la respuesta no es exitosa
-        }
-    } catch (\Exception $e) {
-        \Log::error("Error al realizar la solicitud para el Item ID $itemId: " . $e->getMessage());
-        return 0; // Retorna 0 en caso de error en la solicitud
-    }
-}
+//         return collect($data)->map(function ($item) {
+//             return [
+//                 'id' => $item['id'],
+//                 'visits' => $item['visits'] ?? 0,
+//                 'sold_quantity' => $item['sold_quantity'] ?? 0,
+//                 'conversion_rate' => $item['visits'] > 0 ? ($item['sold_quantity'] / $item['visits']) * 100 : 0,
+//             ];
+//         })->toArray();
+//     } catch (RequestException $e) {
+//         \Log::error("Error al obtener estadísticas de publicaciones: " . $e->getMessage());
+//         throw $e;
+//     }
+// }
 
 
-}
+// public function getProductVisits($itemId)
+// {
+//     try {
+//         $userData = $this->getUserId();
+//         $userId = $userData['userId'];
+//         $mlAccountId = $userData['mlAccountId'];
+//         \Log::info("Consultando visitas para Item ID: $itemId");
+
+//         $response = Http::get("https://api.mercadolibre.com/items/$itemId/visits");
+//       // Log de la respuesta para análisis
+// //dd($response);
+
+//         if ($response->successful()) {
+//             // Retorna la respuesta JSON si la solicitud es exitosa
+//             return $response->json();
+//         } else {
+//             // Log de error en caso de fallo en la respuesta
+//           return null; // Retorna null si la respuesta no es exitosa
+//         }
+//     } catch (\Exception $e) {
+//         \Log::error("Error al realizar la solicitud para el Item ID $itemId: " . $e->getMessage());
+//         return 0; // Retorna 0 en caso de error en la solicitud
+//     }
+// }
+
+
+ }

@@ -6,65 +6,64 @@
 
     <!-- Tabla con clases de Bootstrap para un mejor diseño -->
     <table class="table table-striped table-bordered table-hover">
-        <thead class="thead-dark">
-            <tr>
-                <th>Imagen</th>
-                <th>Título</th>
-                <th>Precio</th> <!-- Nueva columna para el precio -->
-                <th>Condición</th> <!-- Nueva columna para la condición -->
-                <th>Stock Actual</th>
-                <th>Estado</th>
-                <th>SKU</th> <!-- Columna para el SKU -->
-                <th>Tipo de Publicación</th> <!-- Columna para el tipo de publicación -->
-                <th>Catálogo</th>
-                <th>Categoría</th>
-                <td>
-            </td>
-            </tr>
-        </thead>
-        <tbody>
-         @forelse($publications as $item)
+    <thead class="thead-dark">
+        <tr>
+            <th data-sortable="false">Imagen</th>
+            <th data-sortable="true" data-column="titulo">Título</th>
+            <th data-sortable="true" data-column="precio">Precio</th>
+            <th data-sortable="true" data-column="condicion">Condición</th>
+            <th data-sortable="true" data-column="stockActual">Stock Actual</th>
+            <th data-sortable="true" data-column="estado">Estado</th>
+            <th data-sortable="true" data-column="sku">SKU</th>
+            <th data-sortable="true" data-column="tipoPublicacion">Tipo de Publicación</th>
+            <th data-sortable="false">Catálogo</th>
+            <th data-sortable="false">Categoría</th>
+        </tr>
+    </thead>
+    <tbody id="table-body">
+        @forelse($publications as $item)
             <tr>
                 <td>
-                    @if(isset($item['imagen']) && $item['imagen'])
-                        <img src="{{ $item['imagen'] }}" alt="Imagen del producto" class="img-fluid" style="width: 100px;">
-                    @else
-                        <span>No disponible</span>
-                    @endif
+                    <div class="img-container">
+                        @if(isset($item['imagen']) && $item['imagen'])
+                            <img src="{{ $item['imagen'] }}" alt="Imagen del producto" class="img-fluid">
+                        @else
+                            <span>No disponible</span>
+                        @endif
+                    </div>
                 </td>
-                <td>
-                    <strong>{{ $item['titulo'] }}</strong><br>
-                    <span style="color: #007bff; font-weight: bold;">ID: {{ $item['id'] }}</span><br>
-                    <a href="{{ $item['permalink'] }}" target="_blank" style="color: #007bff;">Ver en MercadoLibre</a>
+                <td data-column="titulo">{{ $item['titulo'] }}<br>
+                <span class="spanid">{{ $item['id'] }}</span><br>
+                <a href="{{ $item['permalink'] }}" target="_blank" class="spanid">Ver publicación</a>
                 </td>
-                <td>${{ number_format($item['precio'], 2, ',', '.') }}</td> <!-- Formato precio -->
-                <td>{{ ucfirst($item['condicion']) }}</td>
-                <td>{{ $item['stockActual'] }}</td>
-                <td>{{ ucfirst($item['estado']) }}</td>
-                <td>{{ $item['sku'] ?? 'No disponible' }}</td> <!-- SKU -->
-                <td>{{ $item['tipoPublicacion'] ?? 'Desconocido' }}</td> <!-- Tipo de publicación -->
+                <td data-column="precio">${{ number_format($item['precio'], 2, ',', '.') }}</td>
+                <td data-column="condicion">{{ ucfirst($item['condicion']) }}</td>
+                <td data-column="stockActual">{{ $item['stockActual'] }}</td>
+                <td data-column="estado">{{ ucfirst($item['estado']) }}</td>
+                <td data-column="sku">{{ $item['sku'] ?? 'No disponible' }}</td>
+                <td data-column="tipoPublicacion">{{ $item['tipoPublicacion'] ?? 'Desconocido' }}</td>
                 <td>
                     @if($item['enCatalogo'] === true)
                         <span style="color: green; font-weight: bold;">En catálogo</span>
                     @else
                         <span style="color: red;">No</span>
                     @endif
-                </td><!-- En catálogo -->
-                <td>
-                <form method="POST" action="{{ route('dashboard.category.items', ['categoryId' => $item['categoryid']]) }}">
-                    @csrf
-                    <button type="submit" class="btn btn-primary btn-sm">Ver Categoría</button>
-                </form>
                 </td>
-
+                <td>
+                    <form method="POST" action="{{ route('dashboard.category.items', ['categoryId' => $item['categoryid']]) }}">
+                        @csrf
+                        <button type="submit" class="btn btn-primary btn-sm">Ver Categoría</button>
+                    </form>
+                </td>
             </tr>
-         @empty
+        @empty
             <tr>
-                <td colspan="9" class="text-center">No se encontraron publicaciones.</td>
+                <td colspan="10" class="text-center">No se encontraron publicaciones.</td>
             </tr>
-         @endforelse
-        </tbody>
-    </table>
+        @endforelse
+    </tbody>
+</table>
+
 
     <!-- Controles de paginación -->
     <nav aria-label="Page navigation">
@@ -86,3 +85,40 @@
     </nav>
 </div>
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const headers = document.querySelectorAll('th[data-sortable="true"]');
+    const tableBody = document.getElementById('table-body');
+
+    headers.forEach(header => {
+        header.addEventListener('click', () => {
+            const column = header.getAttribute('data-column');
+            const rows = Array.from(tableBody.querySelectorAll('tr'));
+            const isAscending = header.classList.contains('ascending');
+
+            // Ordenar las filas
+            rows.sort((rowA, rowB) => {
+            const cellA = rowA.querySelector(`[data-column="${column}"]`).textContent.trim() || '';
+            const cellB = rowB.querySelector(`[data-column="${column}"]`).textContent.trim() || '';
+
+            if (!isNaN(cellA) && !isNaN(cellB)) {
+                return isAscending ? cellA - cellB : cellB - cellA;
+            }
+
+            return isAscending
+                ? cellA.localeCompare(cellB)
+                : cellB.localeCompare(cellA);
+        });
+
+
+            // Actualizar clases para orden ascendente/descendente
+            headers.forEach(h => h.classList.remove('ascending', 'descending'));
+            header.classList.add(isAscending ? 'descending' : 'ascending');
+
+            // Renderizar las filas ordenadas
+            rows.forEach(row => tableBody.appendChild(row));
+        });
+    });
+});
+</script>

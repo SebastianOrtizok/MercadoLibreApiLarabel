@@ -15,10 +15,14 @@
             color: red;
             font-weight: bold;
         }
+        .content {
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
 
+    <div class="content">
     <h1>Sincronización de Artículos</h1>
 
     @if(session('success'))
@@ -26,14 +30,14 @@
     @elseif(session('error'))
         <p class="error">{{ session('error') }}</p>
     @endif
-
     <p>Seleccione una opción para sincronizar los artículos:</p>
 
     <a href="{{ route('sincronizacion.primera') }}">
-        <button>Primera Sincronización</button>
+        <button class="btn btn-danger">Primera Sincronización</button>
     </a>
     <br><br>
     <a href="{{ route('sincronizacion.actualizar') }}">
-        <button>Actualizar Artículos</button>
+        <button class="btn btn-warning">Actualizar Artículos</button>
     </a>
+</div>
 @endsection

@@ -9,9 +9,9 @@ use App\Services\ItemVenta;
 use Illuminate\Http\Request;
 
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth'])->group(function () {
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/dashboard/inventory', [AccountController::class, 'showInventory'])->name('dashboard.inventory');
 Route::get('/dashboard/account', [AccountController::class, 'showAccountInfo'])->name('dashboard.account');
@@ -19,8 +19,8 @@ Route::get('/dashboard/order_report', [AccountController::class, 'ShowSales'])->
 Route::get('/dashboard/publications', [AccountController::class, 'showOwnPublications'])->name('dashboard.publications');
 Route::post('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
 // Route::get('/dashboard/analyze-low-conversion', [AccountController::class, 'analyzeLowConversion'])->name('dashboard.analyze.low_conversion');
-Route::get('/dashboard/item_venta', [ItemVenta::class, 'generarReporteVentas'])->name('dashboard.itemVenta');
-Route::get('/sincronizacion', [AccountController::class, 'index'])->name('sincronizacion.index');
+Route::get('/dashboard/item_venta', [ItemVenta::class, 'item_venta'])->name('dashboard.itemVenta');
+Route::get('/sincronizacion', [AccountController::class, 'sincronizacion'])->name('sincronizacion.index');
 Route::get('/sincronizacion/primera', [AccountController::class, 'primeraSincronizacionDB'])->name('sincronizacion.primera');
 Route::get('/sincronizacion/actualizar', [AccountController::class, 'actualizarArticulosDB'])->name('sincronizacion.actualizar');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

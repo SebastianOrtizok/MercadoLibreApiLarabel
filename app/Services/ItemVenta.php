@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class ItemVenta
 {
     // Genera un reporte de ventas para el usuario autenticado
-    public function generarReporteVentas($limit = 50, $offset = 0)
+    public function item_venta($limit = 50, $offset = 0)
     {
         $userId = Auth::id();
         Log::info("Generando reporte de ventas para el usuario ID: {$userId}");
@@ -76,7 +76,7 @@ class ItemVenta
                 }
             }
         }
-dd($ventasConsolidadas);
+//dd($ventasConsolidadas);
         return [
             'total_ventas' => count($ventasConsolidadas),
             'ventas' => $ventasConsolidadas,

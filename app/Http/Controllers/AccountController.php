@@ -28,7 +28,6 @@ class AccountController extends Controller
         try {
             // Obtener la información de todas las cuentas
             $accountsInfo = $this->consultaService->getAccountInfo();
-            //dd($accountsInfo);
             return view('dashboard.account', ['accounts' => $accountsInfo]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -100,60 +99,13 @@ class AccountController extends Controller
     }
 }
 
-public function generarReporte(Request $request)
-{
-    try {
-        // Obtener las cuentas del usuario (suponiendo que las tienes almacenadas)
-        $cuentas = $this->getUserAccounts(); // Obtén los tokens de las cuentas
-        $limit = $request->input('limit', 50);
-        $offset = $request->input('offset', 0);
-        $reporte = [];
-
-        foreach ($cuentas as $cuenta) {
-            $accessToken = $cuenta['access_token'] ?? null;
-            $aliasCuenta = $cuenta['alias'] ?? 'Cuenta desconocida';
-
-            if (empty($accessToken)) {
-                \Log::warning("La cuenta {$aliasCuenta} no tiene un token válido.");
-                continue;
-            }
-
-            // Obtener ventas de la cuenta actual
-            $ventas = $this->getSales($accessToken, $limit, $offset);
-
-            if (!isset($ventas['results']) || empty($ventas['results'])) {
-                \Log::info("No se encontraron ventas para la cuenta: {$aliasCuenta}");
-                continue;
-            }
-
-            // Procesar ventas
-            foreach ($ventas['results'] as $venta) {
-                $reporte[] = [
-                    'id' => $venta['id'] ?? 'Desconocido',
-                    'producto' => $venta['title'] ?? 'Sin título',
-                    'cantidad' => $venta['quantity'] ?? 0,
-                    'precio' => $venta['price'] ?? 0.0,
-                    'fecha' => $venta['date_created'] ?? 'Sin fecha',
-                    'estado' => $venta['status'] ?? 'Desconocido',
-                    'cuenta' => $aliasCuenta,
-                ];
-            }
-        }
-
-        // Retornar la vista con el reporte
-        return view('dashboard.stock_report', ['reporte' => $reporte]);
-
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
-    }
-}
 
 public function ShowSales(Request $request)
 {
     try {
         $limit = $request->input('limit', 50);
         $offset = $request->input('offset', 0);
-        $dias = $request->input('dias', 1); // Predeterminado: 10 días
+        $dias = $request->input('dias', 0); // Predeterminado: 10 días
 
         // Obtener la fecha actual
         $fechaActual = Carbon::now();
@@ -164,8 +116,8 @@ public function ShowSales(Request $request)
         $fechaFin = $fechaActual->copy()->endOfDay();  // Hacer una copia para que no modifique $fechaActual
         $diasDeRango = round($fechaInicio->diffInDays($fechaFin));
 
-  // Llamar al servicio para generar el reporte de ventas
-  $ventas = $this->reporteVentasService->generarReporteVentas($limit, $offset, $fechaInicio, $fechaFin);
+        // Llamar al servicio para generar el reporte de ventas
+        $ventas = $this->reporteVentasService->generarReporteVentas($limit, $offset, $fechaInicio, $fechaFin,$dias);
 
         // Renderizar la vista con los datos
         return view('dashboard.order_report', compact('ventas', 'fechaInicio', 'fechaFin', 'dias', 'diasDeRango'));
@@ -174,14 +126,15 @@ public function ShowSales(Request $request)
     }
 }
 
-public function index()
+public function sincronizacion()
 {
     return view('sincronizacion.index'); // Vista para mostrar el estado de la sincronización
 }
 
-     /**
-     * Descarga todos los artículos de la datos de MercadoLibre.
-     */
+
+/**
+* Descarga todos los artículos de la datos de MercadoLibre.
+*/
 public function primeraSincronizacionDB(Request $request)
 {
     try {
@@ -194,37 +147,36 @@ public function primeraSincronizacionDB(Request $request)
         // Obteniendo publicaciones del servicio
         $publications = $this->consultaService->DescargarArticulosDB($userId, $limit, $page);
 
-        // Almacenar artículos en la base de datos sin mostrar nada en la interfaz
+        // Almacenar o actualizar artículos en la base de datos
         foreach ($publications['items'] as $item) {
-            \App\Models\Articulo::create([
-                'user_id' => $item['token_id'],
-                'ml_product_id' => $item['ml_product_id'],
-                'titulo' => $item['titulo'] ?? 'Sin título',
-                'imagen' => $item['imagen'] ?? null,
-                'stock_actual' => $item['stockActual'] ?? 0,
-                'dias_stock' => $item['dias_stock'] ?? 0,
-                'precio' => $item['precio'] ?? 0.0,
-                'estado' => $item['estado'] ?? 'Desconocido',
-                'permalink' => $item['permalink'] ?? '#',
-                'condicion' => $item['condicion'] ?? 'Desconocido',
-                'sku' => $item['sku'] ?? null,
-                'tipo_publicacion' => $item['tipo_publicacion'] ?? 'Desconocido',
-                'en_catalogo' => $item['en_catalogo'] ?? false,
-            ]);
+            \App\Models\Articulo::updateOrInsert(
+                // Condición para identificar un registro existente
+                ['ml_product_id' => $item['ml_product_id']],
+                // Datos que se actualizarán o insertarán
+                [
+                    'user_id' => $item['token_id'],
+                    'titulo' => $item['titulo'] ?? 'Sin título',
+                    'imagen' => $item['imagen'] ?? null,
+                    'stock_actual' => $item['stockActual'] ?? 0,
+              //    'dias_stock' => $item['dias_stock'] ?? 0,
+                    'precio' => $item['precio'] ?? 0.0,
+                    'estado' => $item['estado'] ?? 'Desconocido',
+                    'permalink' => $item['permalink'] ?? '#',
+                    'condicion' => $item['condicion'] ?? 'Desconocido',
+                    'sku' => $item['sku'] ?? null,
+                    'tipo_publicacion' => $item['tipo_publicacion'] ?? 'Desconocido',
+                    'en_catalogo' => $item['en_catalogo'] ?? false,
+                ]
+            );
         }
 
-        // Respuesta de éxito sin mostrar los artículos
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Artículos sincronizados y guardados correctamente.',
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => $e->getMessage(),
-        ], 500);
-    }
-}
+        return redirect()->back()->with('success', 'Sincronización completada con éxito.');
+            } catch (\Exception $e) {
+                // Redirige con un mensaje de error
+                return redirect()->back()->with('error', 'Error al sincronizar los artículos: ' . $e->getMessage());
+            }
+        }
+
 
      /**
      * Sincroniza los artículos de la datos de MercadoLibre.
@@ -240,11 +192,13 @@ public function primeraSincronizacionDB(Request $request)
 
             $syncService = $this->consultaService->sincronizarBaseDeDatos($userId, $limit, $page);
 
-            return response()->json(['message' => 'Sincronización completada con éxito.']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+           // Mensaje de éxito
+           return redirect()->back()->with('success', 'Sincronización completada con éxito.');
+            } catch (\Exception $e) {
+                // Mensaje de error
+                return redirect()->back()->with('error', 'Error al sincronizar los artículos: ' . $e->getMessage());
+            }
         }
-    }
 
 
 }

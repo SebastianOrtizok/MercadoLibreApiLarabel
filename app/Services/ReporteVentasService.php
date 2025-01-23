@@ -8,8 +8,15 @@ use Carbon\Carbon;
 
 class ReporteVentasService
 {
-    public function generarReporteVentas($limit = 50, $offset = 0, $fechaInicio, $fechaFin)
+    public function generarReporteVentas($limit = 50, $offset = 0, $fechaInicio, $fechaFin, $dias)
     {
+        if ($dias == 0) {
+            return [
+                'total_ventas' => 0,
+                'ventas' => [],
+            ];
+        }
+
         $userId = auth()->id();
         \Log::info("Generando reporte de ventas para el usuario ID: {$userId}, desde {$fechaInicio} hasta {$fechaFin}.");
 
@@ -40,7 +47,7 @@ class ReporteVentasService
             }
 
             $paginaActual = 1;
-            $maxPaginas = 7; // Limitar el procesamiento a 4 páginas por cuenta
+            $maxPaginas = 3; // Limitar el procesamiento a 3 páginas por cuenta
 
             do {
                 $ventas = $this->obtenerVentas($accessToken, $limit, $offset, $sellerId, $fechaInicio, $fechaFin);
