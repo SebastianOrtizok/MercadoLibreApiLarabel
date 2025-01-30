@@ -392,6 +392,7 @@ public function sincronizarBaseDeDatos(string $userId, int $limit, int $page)
                             Articulo::updateOrCreate(
                                 ['ml_product_id' => $body['id']],
                                 [
+                                    'user_id' => $userId,
                                     'titulo' => $body['title'] ?? 'Sin título',
                                     'imagen' => $body['thumbnail'] ?? null,
                                 //  'imagen' => $body['pictures'][0]['url'] ?? null,
