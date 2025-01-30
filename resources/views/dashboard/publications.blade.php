@@ -3,6 +3,20 @@
 @section('content')
 <div class="container mt-5">
     <h2 class="mb-4">Listado de Publicaciones</h2>
+    <div class="filtros-container mb-4 p-3 bg-light rounded shadow-sm">
+    <!-- Campo de búsqueda -->
+    <form method="POST" action="{{ route('dashboard.publications') }}" class="mb-0 w-50">
+             @csrf
+            <div class="input-group">
+                <input type="text" name="search" class="me-3 form-control" placeholder="Buscar por título..." value="{{ request('search') }}">
+                <div class="col-md-2 mb-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> <!-- Lupa de color azul -->
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
 
     <!-- Tabla con clases de Bootstrap para un mejor diseño -->
     <table class="table table-striped table-bordered table-hover">
@@ -33,8 +47,10 @@
                     </div>
                 </td>
                 <td data-column="titulo">{{ $item['titulo'] }}<br>
-                <span class="spanid">{{ $item['id'] }}</span><br>
-                <a href="{{ $item['permalink'] }}" target="_blank" class="spanid">Ver publicación</a>
+                <span class="spanid">{{ $item['id'] }}</span>
+                <a href="{{ $item['permalink'] }}" target="_blank" class="spanid">
+                <i class="fas fa-external-link-alt" style="font-size: 14px; color:rgb(62, 137, 58);"></i>
+                </a>
                 </td>
                 <td data-column="precio">${{ number_format($item['precio'], 2, ',', '.') }}</td>
                 <td data-column="condicion">{{ ucfirst($item['condicion']) }}</td>

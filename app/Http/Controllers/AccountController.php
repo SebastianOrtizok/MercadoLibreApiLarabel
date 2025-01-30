@@ -57,9 +57,10 @@ class AccountController extends Controller
         $limit = (int) $request->input('limit', 50);
         $page = (int) $request->input('page', 1); // Página actual (por defecto 1)
         $offset = ($page - 1) * $limit;
-
+        $search = $request->input('search'); // Término de búsqueda
         // Obteniendo publicaciones del servicio
-        $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset);
+        $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset, $search);
+       // $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset);
 
         // Cálculo de total de páginas (opcional, si el servicio devuelve un total)
         $totalPublications = $publications['total'] ?? 0; // Asegúrate de que el servicio devuelva este dato
@@ -111,17 +112,16 @@ public function ShowSales(Request $request)
         $fechaActual = Carbon::now();
 
         // Calcular la fecha de inicio según los días seleccionados
-
         $fechaInicio = $fechaActual->copy()->subDays($dias)->startOfDay();
         $fechaFin = $fechaActual->copy()->endOfDay();  // Hacer una copia para que no modifique $fechaActual
         $diasDeRango = round($fechaInicio->diffInDays($fechaFin));
 
         // Llamar al servicio para generar el reporte de ventas
-        $ventas = $this->reporteVentasService->generarReporteVentas($limit, $offset, $fechaInicio, $fechaFin,$dias);
+        $ventas = $this->reporteVentasService->generarReporteVentas($limit, $offset, $fechaInicio, $fechaFin, $dias);
 
         // Renderizar la vista con los datos
         return view('dashboard.order_report', compact('ventas', 'fechaInicio', 'fechaFin', 'dias', 'diasDeRango'));
-      } catch (\Exception $e) {
+    } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }

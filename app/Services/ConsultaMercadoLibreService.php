@@ -111,7 +111,7 @@ class ConsultaMercadoLibreService
 }
 
 
-public function getOwnPublications($userId, $limit = 50, $offset = 0)
+public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = null)
 {
     try {
         // Obtener todos los tokens asociados al usuario
@@ -122,26 +122,33 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0)
         $allItems = [];  // Array para almacenar todas las publicaciones
         $total = 0;  // Total de publicaciones
 
-        // Iterar sobre los tokens (que corresponden a las cuentas de MercadoLibre)
         foreach ($tokens as $token) {
             $mlAccountId = $token->ml_account_id;
 
-            // Obtener las publicaciones de la cuenta actual
+            // Parámetros de la consulta a la API
+            $queryParams = [
+                'include_attributes' => 'all',
+                'limit' => $limit,
+                'offset' => $offset
+            ];
+
+            // Si hay una búsqueda, agregar el parámetro `q`
+            if ($search) {
+                $queryParams['q'] = $search;
+            }
+
+            // Obtener las publicaciones de la cuenta actual con el filtro de búsqueda
             $response = $this->client->get("users/{$mlAccountId}/items/search", [
                 'headers' => [
                     'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
                 ],
-                'query' => [
-                    'include_attributes' => 'all',
-                    'limit' => $limit,
-                    'offset' => $offset
-                ]
+                'query' => $queryParams
             ]);
 
             $data = json_decode($response->getBody(), true);
 
             if (!isset($data['results']) || empty($data['results'])) {
-                continue;  // Si no hay publicaciones para esta cuenta, pasamos a la siguiente
+                continue;  // Si no hay publicaciones, pasar a la siguiente cuenta
             }
 
             $itemIds = $data['results'];
@@ -150,7 +157,6 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0)
             $chunks = array_chunk($itemIds, 20);
 
             foreach ($chunks as $chunk) {
-                // Obtener los detalles de cada bloque de 20 elementos
                 $detailsResponse = $this->client->get("items", [
                     'headers' => [
                         'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
@@ -166,39 +172,29 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0)
 
             $total += $data['paging']['total'] ?? count($allItems);
 
-            sleep(1); // Espera de 1 segundo entre peticiones para evitar sobrecargar la API
+            sleep(1); // Espera de 1 segundo entre peticiones
         }
 
         // Procesar los datos de stock y última venta
         $processedItems = [];
-        $allItemIds = array_map(function($item) {
-            return $item['body']['id'] ?? null;
-        }, $allItems);
-
-        // Obtener las últimas ventas de todos los items
-       // $lastSaleDates = $this->getLastSale($allItemIds);
-
         foreach ($allItems as $item) {
-            $body = $item['body'] ?? []; // Asegúrate de acceder al 'body'
-            //dd($body);
+            $body = $item['body'] ?? [];
             $processedItems[] = [
                 'id' => $body['id'] ?? null,
                 'titulo' => $body['title'] ?? 'Sin título',
                 'imagen' => $body['thumbnail'] ?? null,
-            //  'imagen' => $body['pictures'][0]['url'] ?? null,
                 'stockActual' => $body['available_quantity'] ?? 0,
                 'precio' => $body['price'] ?? null,
                 'estado' => $body['status'] ?? 'Desconocido',
                 'permalink' => $body['permalink'] ?? '#',
                 'condicion' => $body['condition'] ?? 'Desconocido',
-                'sku' => $body['user_product_id'] ?? null, // SKU del producto
-                'tipoPublicacion' => $body['listing_type_id'] ?? null, // Tipo de publicación
-                'enCatalogo' => $body['catalog_listing'] ?? null, // Si está en catálogo
+                'sku' => $body['user_product_id'] ?? null,
+                'tipoPublicacion' => $body['listing_type_id'] ?? null,
+                'enCatalogo' => $body['catalog_listing'] ?? null,
                 'categoryid' => $body['category_id']
             ];
-
         }
-//dd($processedItems);
+
         return [
             'items' => $processedItems,
             'total' => $total
