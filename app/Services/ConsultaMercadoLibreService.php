@@ -314,10 +314,10 @@ public function sincronizarBaseDeDatos(string $userId, int $limit, int $page)
         $lastSync = new \Carbon\Carbon(\App\Models\SyncTimestamp::latest()->first()->timestamp ?? now());
 
         // Obtener todos los tokens asociados al usuario
-        $userData = $this->getUserId();
-        $userId = $userData['userId'];
+        //$userData = $this->getUserId();
+        //$userId = $userData['userId'];
+        $userId = auth()->user()->id;
         $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
-
         $offset = ($page - 1) * $limit;
         $allUpdatedItems = [];
 

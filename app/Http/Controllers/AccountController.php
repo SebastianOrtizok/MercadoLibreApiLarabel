@@ -106,21 +106,23 @@ public function ShowSales(Request $request)
     try {
         $limit = $request->input('limit', 50);
         $offset = $request->input('offset', 0);
-        $dias = $request->input('dias', 0); // Predeterminado: 10 días
-
-        // Obtener la fecha actual
+       // $dias = $request->input('dias', 0); // Predeterminado: 10 días
         $fechaActual = Carbon::now();
+        // Obtener fechas del request y convertirlas en instancias de Carbon
+        $fechaInicio = $request->input('fecha_inicio', Carbon::now()->format('Y-m-d'));
+        $fechaFin = $request->input('fecha_fin', Carbon::now()->format('Y-m-d'));
 
-        // Calcular la fecha de inicio según los días seleccionados
-        $fechaInicio = $fechaActual->copy()->subDays($dias)->startOfDay();
-        $fechaFin = $fechaActual->copy()->endOfDay();  // Hacer una copia para que no modifique $fechaActual
-        $diasDeRango = round($fechaInicio->diffInDays($fechaFin));
+        // Convertir las fechas a objetos Carbon
+        $fechaInicio = Carbon::parse($fechaInicio);
+        $fechaFin = Carbon::parse($fechaFin);
+        // Calcular la diferencia en días
+        $diasDeRango = $fechaInicio->diffInDays($fechaFin);
 
         // Llamar al servicio para generar el reporte de ventas
-        $ventas = $this->reporteVentasService->generarReporteVentas($limit, $offset, $fechaInicio, $fechaFin, $dias);
+        $ventas = $this->reporteVentasService->generarReporteVentas($limit, $offset, $fechaInicio, $fechaFin, $diasDeRango);
 
         // Renderizar la vista con los datos
-        return view('dashboard.order_report', compact('ventas', 'fechaInicio', 'fechaFin', 'dias', 'diasDeRango'));
+        return view('dashboard.order_report', compact('ventas', 'fechaInicio', 'fechaFin', 'diasDeRango'));
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
     }

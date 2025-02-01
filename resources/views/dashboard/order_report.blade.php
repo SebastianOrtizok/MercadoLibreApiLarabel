@@ -6,23 +6,21 @@
 
     <!-- Formulario para seleccionar el rango de días -->
     <form method="GET" action="{{ route('dashboard.ventas') }}" class="mb-4">
-        <div class="form-row d-flex align-items-center">
-            <!-- Columna para el campo de días -->
+        <div class="form-row d-flex align-items-center gap-3">
+            <!-- Columna para el campo de fecha de inicio -->
             <div class="col-md-3 mb-2">
-                <select name="dias" id="dias" class="form-control custom-select">
-                    <option value="" disabled selected>Cantidad de días</option>
-                    @for($i = 1; $i <= 30; $i++)
-                        <option value="{{ $i }}" {{ request('dias') == $i ? 'selected' : '' }}>
-                            {{ $i }} {{ $i > 1 ? 'días' : 'día' }}
-                        </option>
-                    @endfor
-                </select>
+            <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" value="{{ request('fecha_inicio', now()->format('Y-m-d')) }}">
             </div>
 
-            <!-- Columna para el botón con el ícono de lupa alineado a la derecha -->
+            <!-- Columna para el campo de fecha de fin -->
+            <div class="col-md-3 mb-2">
+                <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" value="{{ request('fecha_fin', now()->format('Y-m-d')) }}">
+            </div>
+
+            <!-- Columna para el botón de búsqueda -->
             <div class="col-md-2 mb-2">
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search"></i> <!-- Lupa de color azul -->
+                    <i class="fas fa-search"></i> <!-- Ícono de búsqueda -->
                 </button>
             </div>
         </div>
@@ -59,7 +57,13 @@
     </div>
 
     <!-- Mostrar las fechas seleccionadas -->
-    <p class="mb-3"><strong>Rango de fechas:</strong> {{ \Carbon\Carbon::parse($fechaInicio)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($fechaFin)->format('d/m/Y') }} - {{ $diasDeRango - 1 }} días</p>
+
+    <p class="mb-3">
+    <strong>Rango de fechas:</strong>
+    {{ \Carbon\Carbon::parse($fechaInicio)->format('d/m/Y') }} -
+    {{ \Carbon\Carbon::parse($fechaFin)->format('d/m/Y') }} -
+    {{ $diasDeRango }} días
+</p>
 
     <!-- Tabla de resultados -->
     <div class="table-responsive">

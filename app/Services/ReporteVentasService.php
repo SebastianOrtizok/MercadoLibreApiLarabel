@@ -8,9 +8,8 @@ use Carbon\Carbon;
 
 class ReporteVentasService
 {
-    public function generarReporteVentas($limit = 50, $offset = 0, $fechaInicio, $fechaFin, $dias)
-    {
-        if ($dias == 0) {
+    public function generarReporteVentas($limit = 50, $offset = 0, $fechaInicio, $fechaFin,  $diasDeRango)    {
+        if ( $diasDeRango == 0) {
             return [
                 'total_ventas' => 0,
                 'ventas' => [],
@@ -53,7 +52,7 @@ class ReporteVentasService
                 if (!isset($ventas['results']) || empty($ventas['results'])) {
                     break;
                 }
-                
+
                 foreach ($ventas['results'] as $venta) {
                     foreach ($venta['order_items'] as $item) {
                         $mlProductId = $item['item']['id'] ?? null;
