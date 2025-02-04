@@ -50,9 +50,7 @@ class AccountController extends Controller
     public function showOwnPublications(Request $request)
 {
     try {
-        // Supongamos que tienes el userId almacenado en algún lado (por ejemplo, en un .env o base de datos)
-        $userId = env('MERCADOLIBRE_USER_ID');
-
+         $userId = "";
         // Parámetros de paginación desde el request
         $limit = (int) $request->input('limit', 50);
         $page = (int) $request->input('page', 1); // Página actual (por defecto 1)
@@ -86,12 +84,25 @@ class AccountController extends Controller
 {
     try {
         $limit = $request->input('limit', 50);
-        $offset = $request->input('offset', 0);
+        $page = (int) $request->input('page', 1);
+        $offset = ($page - 1) * $limit;
 
         // Llama al servicio para obtener los items por categoría
-        $items = $this->consultaService->getItemsByCategory($categoryId, $limit, $offset);
-        // Retorna una vista con los datos
-        return view('dashboard.category_items', compact('items', 'categoryId'));
+        $response  = $this->consultaService->getItemsByCategory($categoryId, $limit, $offset);
+
+            // Cálculo del total de páginas (opcional, si el servicio devuelve un total)
+            $items = $response['items'];
+            $totalItems = $response['total'] ?? 0; // Asegúrate de que el servicio devuelva este dato
+            $totalPages = ceil($totalItems / $limit); // Cálculo de páginas totales
+
+            return view('dashboard.category_items', [
+                'items' => $items, // Usamos $data['items'] en lugar de $response['items']
+                'totalPages' => $totalPages,
+                'currentPage' => $page,
+                'limit' => $limit,
+                'totalItems' => $totalItems,
+                'categoryId' => $categoryId,
+            ]);
     } catch (\Exception $e) {
         return response()->json([
             'status' => 'error',

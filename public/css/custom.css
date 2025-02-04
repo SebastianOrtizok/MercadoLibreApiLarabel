@@ -13,75 +13,71 @@
     --color-lupa-active: #0056b3; /* Color de la lupa en active */
 }
 
-
 /* Dashboard panel derecho*/
 
 .dashboard-container {
-	display: flex;
-	justify-content: center;
-	gap: 20px;
-	margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
 }
 
-
 .icon-container {
-	display: flex;
+    display: flex;
     margin-top: 40px;
-	gap: 20px;
-	flex-wrap: wrap;
-	justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .icon-link {
-	width: 120px;
-	height: 120px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	text-decoration: none;
-	color: #ffffff;
-	border-radius: 12px;
-	background-color: #6c757d;
-	transition: transform 0.3s, box-shadow 0.3s;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-	padding: 10px;
-	font-size: 14px;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #ffffff;
+    border-radius: 12px;
+    background-color: #6c757d;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    font-size: 14px;
 }
 
 .icon-link[data-color="blue"] {
-	background-color: #007bff;
+    background-color: #007bff;
 }
 .icon-link[data-color="green"] {
-	background-color: #28a745;
+    background-color: #28a745;
 }
 .icon-link[data-color="yellow"] {
-	background-color: #ffc107;
+    background-color: #ffc107;
 }
 .icon-link[data-color="purple"] {
-	background-color: #6f42c1;
+    background-color: #6f42c1;
 }
 
 .icon-link i {
-	font-size: 24px;
-	margin-bottom: 5px;
+    font-size: 24px;
+    margin-bottom: 5px;
 }
 
 .icon-link:hover {
-	transform: translateY(-4px);
-	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .icon-link p {
     text-align: center;
     font-size: 16px;
-	font-weight: 500;
-	margin: 0;
+    font-weight: 500;
+    margin: 0;
 }
 
 /** Fin dashboard panel derecho**/
-
-
 
 /* Layout */
 .container-fluid {
@@ -91,6 +87,15 @@
 }
 
 /* Sidebar */
+#sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    height: 100vh;
+    background-color: var(--color-secondary);
+    transition: width 0.3s;
+    position: relative;
+}
+
 .sidebar {
     width: auto;
     height: 100vh;
@@ -112,7 +117,6 @@
     transition: opacity 0.3s;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
-
 
 .sidebar.collapsed h3 {
     opacity: 0;
@@ -184,10 +188,11 @@
 .main-content {
     background: #f8f9fa;
     flex: 1;
-   /* padding: 20px;*/
+    /* padding: 20px;*/
 }
 
-.h1, h1 {
+.h1,
+h1 {
     text-align: center;
     font-size: 2rem;
     margin-bottom: 20px;
@@ -316,30 +321,30 @@
     transform: scale(1.2); /* Zoom suave en la imagen */
 }
 
-.spanid{
-  color: #007bff;
-  font-weight: bold;
-  font-size: 12px;
+.spanid {
+    color: #007bff;
+    font-weight: bold;
+    font-size: 12px;
 }
 
-.table>thead {
+.table > thead {
     vertical-align: middle;
     text-align: center;
     background: #ced4da;
 }
 
 th.ascending::after {
-    content: '▲';
+    content: "▲";
     font-size: 12px;
     margin-left: 5px;
 }
 
 th.descending::after {
-    content: '▼';
+    line-height: 20px !important;
+    content: "▼";
     font-size: 12px;
     margin-left: 5px;
 }
-
 
 th[data-sortable="true"] {
     cursor: pointer;
@@ -350,8 +355,8 @@ th[data-sortable="true"]:hover {
     color: #007bff; /* Cambia a un color de enlace, como azul */
 }
 
-   /* Estilos personalizados */
-   .filtros-container {
+/* Estilos personalizados */
+.filtros-container {
     background-color: #f8f9fa;
     border: 1px solid #dee2e6;
 }
@@ -366,13 +371,30 @@ th[data-sortable="true"]:hover {
 }
 
 .img-container img {
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 100px;
+    max-height: 100px;
     object-fit: cover;
+}
+
+#publicationsTable td {
+    font-size: 1rem; /* Tamaño base */
+    overflow: hidden; /* Oculta cualquier desborde */
+    min-width: 50px;
+}
+
+#publicationsTable td.shrink-text {
+    font-size: calc(
+        0.7rem + 0.2vw
+    ); /* Ajusta dinámicamente el tamaño de la fuente */
+}
+
+.table-responsive {
+    overflow-x: visible;
 }
 
 .table th {
     background-color: #343a40;
+    font-size: calc(0.7rem + 0.1vw);
     color: white;
 }
 
@@ -382,4 +404,28 @@ th[data-sortable="true"]:hover {
 
 .table-hover tbody tr:hover {
     background-color: rgba(0, 0, 0, 0.075);
+}
+
+/* Ajustar el ancho de la columna que se está arrastrando */
+.dt-reorder-float {
+    max-width: 200px !important; /* Ajusta este valor según sea necesario */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Ajustar el z-index para que la columna flotante no interfiera con otros elementos */
+.dt-column-reordering .dt-reorder-float {
+    z-index: 1000;
+}
+
+table.dataTable thead th,table.dataTable thead td {
+    padding: 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+table.dataTable th.dt-center, table.dataTable td.dt-center, table.dataTable td.dataTables_empty {
+    text-align: center;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 150px;
 }

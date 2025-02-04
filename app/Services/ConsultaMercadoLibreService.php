@@ -53,29 +53,59 @@ class ConsultaMercadoLibreService
 
 
 
-    public function getInventory($sellerId, $limit = 10)
-    {
-        try {
-            $userData = $this->getUserId();
-            $userId = $userData['userId'];
-            $mlAccountId = $userData['mlAccountId'];
-            $region = 'MLA'; // Región para Argentina
-            $response = $this->client->get("sites/{$region}/search", [
+        public function getInventory($sellerId, $itemId = 'MLA1112692115')
+{
+    try {
+        // Obtener los datos del usuario
+        $userData = $this->getUserId();
+        $userId = $userData['userId'];
+        $mlAccountId = $userData['mlAccountId'];
+        $itemId = 'MLA1112692115';
+
+        // Obtener el token de acceso
+        $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
+
+        // Llamada al endpoint para obtener los detalles del producto
+        $response = $this->client->get("items/{$itemId}", [
+            'headers' => [
+                'Authorization' => "Bearer {$accessToken}"
+            ]
+        ]);
+
+        // Decodificar la respuesta JSON para obtener los detalles del producto
+        $productDetails = json_decode($response->getBody(), true);
+        dd($productDetails);
+        // Verificar que se obtuvo el user_product_id
+        if (isset($productDetails['user_product_id'])) {
+            $userProductId = $productDetails['user_product_id'];
+
+            // Llamada al endpoint para obtener el stock utilizando el user_product_id
+            $stockResponse = $this->client->get("user-products/{$userProductId}/stock", [
                 'headers' => [
-                    'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
-                ],
-                'query' => [
-                    'category' => 'MLA1234',
-                    'limit' => $limit
+                    'Authorization' => "Bearer {$accessToken}"
                 ]
             ]);
 
-            return json_decode($response->getBody(), true);
-        } catch (RequestException $e) {
-            \Log::error("Error al obtener el inventario: " . $e->getMessage());
-            throw $e;
+            // Obtener los detalles del inventario
+            $inventoryDetails = json_decode($stockResponse->getBody(), true);
+
+            // Mostrar los resultados para depuración
+            dd($inventoryDetails);
+
+            return $inventoryDetails;
+        } else {
+            // Manejar el caso si no se encuentra el user_product_id
+            \Log::error("No se encontró el user_product_id para el producto {$itemId}");
+            return null;
         }
+    } catch (RequestException $e) {
+        // Manejo de errores
+        \Log::error("Error al obtener el inventario: " . $e->getMessage());
+        throw $e;
     }
+}
+
+
 
     public function getAccountInfo()
 {
@@ -174,7 +204,6 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
 
             sleep(1); // Espera de 1 segundo entre peticiones
         }
-
         // Procesar los datos de stock y última venta
         $processedItems = [];
         foreach ($allItems as $item) {
@@ -191,7 +220,8 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
                 'sku' => $body['user_product_id'] ?? null,
                 'tipoPublicacion' => $body['listing_type_id'] ?? null,
                 'enCatalogo' => $body['catalog_listing'] ?? null,
-                'categoryid' => $body['category_id']
+                'categoryid' => $body['category_id'],
+                'ml_account_id' => $body['seller_id']  // Se agrega el ID de la cuenta
             ];
         }
 
@@ -474,7 +504,8 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
             'query' => [
                 'category' => $categoryId,
                 'limit' => $limit,
-                'offset' => $offset
+                'offset' => $offset,
+                'sort' => 'sold_quantity_desc'
             ]
         ]);
 

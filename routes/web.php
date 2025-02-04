@@ -19,6 +19,7 @@ Route::get('/dashboard/order_report', [AccountController::class, 'ShowSales'])->
 Route::get('/dashboard/publications', [AccountController::class, 'showOwnPublications'])->name('dashboard.publications');
 Route::post('dashboard/publications', [AccountController::class, 'showOwnPublications'])->name('dashboard.publications');
 Route::post('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
+Route::get('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
 // Route::get('/dashboard/analyze-low-conversion', [AccountController::class, 'analyzeLowConversion'])->name('dashboard.analyze.low_conversion');
 Route::get('/dashboard/item_venta', [ItemVenta::class, 'item_venta'])->name('dashboard.itemVenta');
 Route::get('/sincronizacion', [AccountController::class, 'sincronizacion'])->name('sincronizacion.index');
