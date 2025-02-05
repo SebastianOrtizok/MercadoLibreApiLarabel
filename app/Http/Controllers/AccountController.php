@@ -8,6 +8,7 @@ use App\Services\ReporteVentasService;
 use App\Services\MercadoLibreService;
 use Carbon\Carbon;
 
+
 class AccountController extends Controller
 {
     private $consultaService;
@@ -116,7 +117,8 @@ public function ShowSales(Request $request)
 {
     try {
         $limit = $request->input('limit', 50);
-        $offset = $request->input('offset', 0);
+        $page = (int) $request->input('page', 1); // Página actual
+        $offset = ($page - 1) * $limit; // Cálculo del desplazamiento
        // $dias = $request->input('dias', 0); // Predeterminado: 10 días
         $fechaActual = Carbon::now();
         // Obtener fechas del request y convertirlas en instancias de Carbon
@@ -131,9 +133,22 @@ public function ShowSales(Request $request)
 
         // Llamar al servicio para generar el reporte de ventas
         $ventas = $this->reporteVentasService->generarReporteVentas($limit, $offset, $fechaInicio, $fechaFin, $diasDeRango);
-
+      //  $ventas = $response['ventas']; // Asegúrate de que el servicio devuelva 'ventas'
+        $totalVentas = $ventas['total_ventas'] ?? 0;
+        $totalPages = ceil($totalVentas / $limit); // Cálculo del total de páginas
+        //dd($totalPages);
         // Renderizar la vista con los datos
-        return view('dashboard.order_report', compact('ventas', 'fechaInicio', 'fechaFin', 'diasDeRango'));
+        // Renderizar la vista con los datos de ventas y la paginación
+        return view('dashboard.order_report', [
+            'ventas' => $ventas,
+            'fechaInicio' => $fechaInicio,
+            'fechaFin' => $fechaFin,
+            'diasDeRango' => $diasDeRango,
+            'totalPages' => $totalPages,
+            'currentPage' => $page,
+            'limit' => $limit,
+            'totalVentas' => $totalVentas,
+        ]);
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
     }

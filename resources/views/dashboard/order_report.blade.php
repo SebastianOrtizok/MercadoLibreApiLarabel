@@ -64,34 +64,42 @@
     {{ \Carbon\Carbon::parse($fechaFin)->format('d/m/Y') }} -
     {{ $diasDeRango }} días
 </p>
+<div class="filtros-container mb-4 p-3 bg-light rounded shadow-sm">
+<div id="restore-columns-order" class="mb-3 d-flex flex-wrap gap-2"></div>
+
 
     <!-- Tabla de resultados -->
     <div class="table-responsive">
-        <table class="table table-striped table-bordered table-hover">
-            <thead class="thead-dark">
+        <table id="orderTable" class="table table-striped table-bordered table-hover">
+            <thead class="thead-dark sticky-top">
                 <tr>
-                    <th>Imagen</th>
-                    <th data-sortable="true" data-column="producto">Producto</th>
-                    <th data-sortable="true" data-column="sku">SKU</th>
-                    <th data-sortable="true" data-column="titulo">Título</th>
-                    <th data-sortable="true" data-column="ventas_diarias">Ventas Diarias</th>
-                    <th>Publicación</th>
-                    <th data-sortable="true" data-column="stock">Stock</th>
-                    <th data-sortable="true" data-column="dias_stock">Días de Stock</th>
-                    <th>Estado de la Orden</th>
-                    <th>Estado de la Publicación</th>
-                    <th>Fecha de Última Venta</th>
+                    <th class="text-center" data-column-name="Cuenta"><i class="fas fa-eye" ></i><br>Cuenta</th>
+                    <th class="text-center" data-column-name="Imagen"><i class="fas fa-eye" ></i><br>Imagen</th>
+                    <th class="text-center" data-column-name="Producto" data-sortable="true" data-column="producto"><i class="fas fa-eye" ></i><br>Producto</th>
+                    <th class="text-center" data-column-name="SKU" data-sortable="true" data-column="sku"><i class="fas fa-eye" ></i><br>SKU</th>
+                    <th class="text-center" data-column-name="Título" data-sortable="true" data-column="titulo"><i class="fas fa-eye" ></i><br>Título</th>
+                    <th class="text-center" data-column-name="Ventas" data-sortable="true" data-column="ventas_diarias"><i class="fas fa-eye" ></i><br>Ventas</th>
+                    <th class="text-center" data-column-name="Publicación"><i class="fas fa-eye" ></i><br>Publicación</th>
+                    <th class="text-center" data-column-name="Stock" data-sortable="true" data-column="stock"><i class="fas fa-eye" ></i><br>Stock</th>
+                    <th class="text-center" data-column-name="ImDías de Stock" data-sortable="true" data-column="dias_stock"><i class="fas fa-eye" ></i><br>Días de Stock</th>
+                    <th class="text-center" data-column-name="Estado de la Orden"><i class="fas fa-eye" ></i><br>Estado de la Orden</th>
+                    <th class="text-center" data-column-name="Estado de la Publicación"><i class="fas fa-eye" ></i><br>Estado de la Publicación</th>
+                    <th class="text-center" data-column-name="Fecha de Última Venta"><i class="fas fa-eye" ></i><br>Fecha de Última Venta</th>
                 </tr>
             </thead>
             <tbody id="table-body">
             @forelse($ventas['ventas'] as $venta)
                 <tr>
-                    <!-- Mostrar imagen del producto -->
                     <td>
-                        <div class="img-container">
-                            <img src="{{ $venta['imagen'] }}" alt="Imagen de {{ $venta['titulo'] }}" class="img-fluid" style="max-width: 50px;">
+                        <div data-column="Cuenta">
+                        {{ $venta['seller_nickname'] }}
                         </div>
                     </td>
+                    <!-- Mostrar imagen del producto -->
+                    <td>
+                       <img src="{{ $venta['imagen'] }}" alt="Imagen de {{ $venta['titulo'] }}" class="img-fluid" style="max-width: 50px;">
+                    </td>
+
                     <!-- Producto -->
                     <td data-column="producto">
                         {{ $venta['producto'] }}
@@ -129,48 +137,93 @@
         </table>
     </div>
 </div>
+</div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const searchInput = document.getElementById('searchInput');
-        const estadoFilter = document.getElementById('estadoFilter');
-        const estadoPublicacionFilter = document.getElementById('estadoPublicacionFilter');
-        const tableBody = document.getElementById('table-body');
-        const rows = Array.from(tableBody.querySelectorAll('tr'));
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        // Función para filtrar la tabla
-        const filterTable = () => {
-            const searchText = searchInput.value.toLowerCase();
-            const estado = estadoFilter.value;
-            const estadoPublicacion = estadoPublicacionFilter.value;
+<!-- Controles de paginación -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item {{ $currentPage == 1 ? 'disabled' : '' }}">
+            <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $currentPage - 1]) }}" aria-label="Anterior">&laquo;</a>
+        </li>
 
-            rows.forEach(row => {
-                const titulo = row.querySelector('[data-column="titulo"]').textContent.toLowerCase();
-                const sku = row.querySelector('[data-column="sku"]').textContent.toLowerCase();
-                const estadoRow = row.querySelector('td:nth-child(9)').textContent.toLowerCase();
-                const estadoPublicacionRow = row.querySelector('td:nth-child(10)').textContent.toLowerCase();
+        @for ($i = 1; $i <= $totalPages; $i++)
+            <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
+                <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $i]) }}">{{ $i }}</a>
+            </li>
+        @endfor
 
-                const matchesSearch = titulo.includes(searchText) || sku.includes(searchText);
-                const matchesEstado = estado === '' || estadoRow === estado;
-                const matchesEstadoPublicacion = estadoPublicacion === '' || estadoPublicacionRow === estadoPublicacion;
-
-                if (matchesSearch && matchesEstado && matchesEstadoPublicacion) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        };
-
-        // Event listeners para los filtros
-        searchInput.addEventListener('input', filterTable);
-        estadoFilter.addEventListener('change', filterTable);
-        estadoPublicacionFilter.addEventListener('change', filterTable);
-    });
-</script>
+        <li class="page-item {{ $currentPage == $totalPages ? 'disabled' : '' }}">
+            <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $currentPage + 1]) }}" aria-label="Siguiente">&raquo;</a>
+        </li>
+    </ul>
+</nav>
 
 @endsection
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- script para ordenar las columnas y ocultar -->
+<script>
+jQuery(document).ready(function () {
+    if ($.fn.DataTable.isDataTable('#orderTable')) {
+    $('#orderTable').DataTable().clear().destroy();
+}
+    var table = $('#orderTable').DataTable({
+        paging: false,
+   // transform: scale(0.95);
+    searching: false,
+    info: true,
+    colReorder: true,
+    autoWidth: false,
+    responsive: true,
+    scrollX: false,
+    stateSave: false,
+    processing: true,
+    width: '95%',   // Forzar que la tabla ocupe el 100% del ancho
+    columnDefs: [
+        { targets: '_all', className: 'shrink-text dt-center' }  // Aplica 'shrink-text' a todas las columnas
+    ]
+    });
+
+    var restoreContainer = $('#restore-columns-order');
+
+    // Ocultar columna al hacer clic en el ícono del ojo
+    $('th i.fas.fa-eye').click(function () {
+        var th = $(this).closest('th');
+        var columnName = th.data('column-name');
+
+        // Obtener la columna usando el nodo th directamente
+        var column = table.column(th);
+
+        console.log(`Ocultando columna: ${columnName}`);
+
+        // Ocultar la columna
+        column.visible(false);
+        table.columns.adjust().draw(false);
+
+        // Agregar botón para restaurar la columna
+        addRestoreButton(th, columnName);
+    });
+
+    // Función para agregar el botón de restauración
+    function addRestoreButton(th, columnName) {
+        var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
+        button.on('click', function () {
+            console.log(`Restaurando columna: ${columnName}`);
+
+            // Restaurar la columna usando el mismo th
+            table.column(th).visible(true);
+            table.columns.adjust().draw(false);
+
+            // Remover el botón de restauración
+            $(this).remove();
+        });
+        restoreContainer.append(button);
+    }
+});
+
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -203,6 +256,56 @@
 
                 // Renderizar las filas ordenadas
                 rows.forEach(row => tableBody.appendChild(row));
+            });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('searchInput');
+        const estadoFilter = document.getElementById('estadoFilter');
+        const estadoPublicacionFilter = document.getElementById('estadoPublicacionFilter');
+        const tableBody = document.getElementById('table-body');
+        const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+        // Filtro de búsqueda por SKU o título
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            rows.forEach(row => {
+                const productTitle = row.querySelector('[data-column="titulo"]').textContent.toLowerCase();
+                const sku = row.querySelector('[data-column="sku"]').textContent.toLowerCase();
+                if (productTitle.includes(searchTerm) || sku.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Filtro de estado de la orden
+        estadoFilter.addEventListener('change', () => {
+            const selectedStatus = estadoFilter.value;
+            rows.forEach(row => {
+                const orderStatus = row.querySelector('td:nth-child(10)').textContent.trim().toLowerCase();
+                if (!selectedStatus || orderStatus === selectedStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Filtro de estado de la publicación
+        estadoPublicacionFilter.addEventListener('change', () => {
+            const selectedPublicationStatus = estadoPublicacionFilter.value;
+            rows.forEach(row => {
+                const publicationStatus = row.querySelector('td:nth-child(11)').textContent.trim().toLowerCase();
+                if (!selectedPublicationStatus || publicationStatus === selectedPublicationStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
             });
         });
     });
