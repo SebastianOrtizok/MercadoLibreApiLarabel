@@ -6,25 +6,27 @@
 
     <!-- Formulario para seleccionar el rango de días -->
     <form method="GET" action="{{ route('dashboard.ventas') }}" class="mb-4">
-        <div class="form-row d-flex align-items-center gap-3">
-            <!-- Columna para el campo de fecha de inicio -->
-            <div class="col-md-3 mb-2">
+    <div class="form-row d-flex align-items-center gap-3">
+        <!-- Columna para el campo de fecha de inicio -->
+        <div class="col-md-3 mb-2">
             <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" value="{{ request('fecha_inicio', now()->format('Y-m-d')) }}">
-            </div>
-
-            <!-- Columna para el campo de fecha de fin -->
-            <div class="col-md-3 mb-2">
-                <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" value="{{ request('fecha_fin', now()->format('Y-m-d')) }}">
-            </div>
-
-            <!-- Columna para el botón de búsqueda -->
-            <div class="col-md-2 mb-2">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search"></i> <!-- Ícono de búsqueda -->
-                </button>
-            </div>
         </div>
+
+        <!-- Columna para el campo de fecha de fin -->
+        <div class="col-md-3 mb-2">
+            <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" value="{{ request('fecha_fin', now()->format('Y-m-d')) }}">
+        </div>
+
+        <!-- Columna para el botón de búsqueda -->
+        <div class="col-md-2 mb-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-search"></i> <!-- Ícono de búsqueda -->
+            </button>
+        </div>
+    </div>
+
     </form>
+
 
     <!-- Filtros y buscador en el frontend -->
     <div class="filtros-container mb-4 p-3 bg-light rounded shadow-sm">
@@ -102,9 +104,12 @@
 
                     <!-- Producto -->
                     <td data-column="producto">
+                    <a href="{{ route('dashboard.ventaid', ['item_id' => $venta['producto'], 'fecha_inicio' => request('fecha_inicio', now()->format('Y-m-d')), 'fecha_fin' => request('fecha_fin', now()->format('Y-m-d'))]) }}">
                         {{ $venta['producto'] }}
+                    </a>
+                    <br><br>
                         <a href="{{ $venta['url'] }}" target="_blank" class="spanid">
-                             <i class="fas fa-external-link-alt" style="font-size: 14px; rgb(62, 137, 58);"></i> <!-- Ícono de FontAwesome -->
+                             <i class="fas fa-external-link-alt" style="font-size: 14px; color:rgb(62, 137, 58);"></i>
                         </a>
                     </td>
                     <!-- Mostrar SKU -->
@@ -114,7 +119,7 @@
                         {{ $venta['titulo'] }}
                     </td>
                     <!-- Mostrar ventas diarias -->
-                    <td data-column="ventas_diarias">{{ $venta['ventas_diarias'] }}</td>
+                    <td data-column="ventas_diarias">{{ $venta['cantidad_vendida'] }}</td>
                     <!-- Mostrar el tipo de publicación -->
                     <td>{{ $venta['tipo_publicacion'] }}</td>
                     <!-- Mostrar stock -->
@@ -129,9 +134,7 @@
                     <td>{{ \Carbon\Carbon::parse($venta['fecha_ultima_venta'])->format('d/m/Y H:i') }}</td>
                 </tr>
             @empty
-                <tr>
-                    <td colspan="12" class="text-danger text-center">No hay ventas para este rango de fechas.</td>
-                </tr>
+
             @endforelse
             </tbody>
         </table>
@@ -166,6 +169,7 @@
 <!-- script para ordenar las columnas y ocultar -->
 <script>
 jQuery(document).ready(function () {
+
     if ($.fn.DataTable.isDataTable('#orderTable')) {
     $('#orderTable').DataTable().clear().destroy();
 }
@@ -182,7 +186,8 @@ jQuery(document).ready(function () {
     processing: true,
     width: '95%',   // Forzar que la tabla ocupe el 100% del ancho
     columnDefs: [
-        { targets: '_all', className: 'shrink-text dt-center' }  // Aplica 'shrink-text' a todas las columnas
+        { targets: '_all', className: 'shrink-text dt-center' },  // Aplica 'shrink-text' a todas las columnas
+        { targets: [4], width: '20%' }  // Aumenta el ancho de la columna 5 (índice 4) a un 20%plica la clase 'titulo-columna' solo a la primera columna
     ]
     });
 

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\ConsultaMercadoLibreService;
 use App\Services\ReporteVentasService;
+use App\Services\ReporteVentasConsolidadas;
 use App\Services\MercadoLibreService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 
 class AccountController extends Controller
@@ -14,13 +16,15 @@ class AccountController extends Controller
     private $consultaService;
     private $mercadoLibreService;
     private $reporteVentasService;
+    private $ReporteVentasConsolidadas;
     protected $client;
 
-    public function __construct(ConsultaMercadoLibreService $consultaService, MercadoLibreService $mercadoLibreService, ReporteVentasService $reporteVentasService)
+    public function __construct(ConsultaMercadoLibreService $consultaService, MercadoLibreService $mercadoLibreService, ReporteVentasService $reporteVentasService,ReporteVentasConsolidadas $ReporteVentasConsolidadas)
     {
         $this->consultaService = $consultaService;
         $this->mercadoLibreService = $mercadoLibreService;
         $this->reporteVentasService = $reporteVentasService;
+        $this->ReporteVentasConsolidadas = $ReporteVentasConsolidadas;
     }
 
 
@@ -113,7 +117,7 @@ class AccountController extends Controller
 }
 
 
-public function ShowSales(Request $request)
+public function ShowSales(Request $request, $item_id = null, $fecha_inicio = null, $fecha_fin = null)
 {
     try {
         $limit = $request->input('limit', 50);
@@ -122,22 +126,23 @@ public function ShowSales(Request $request)
        // $dias = $request->input('dias', 0); // Predeterminado: 10 días
         $fechaActual = Carbon::now();
         // Obtener fechas del request y convertirlas en instancias de Carbon
-        $fechaInicio = $request->input('fecha_inicio', Carbon::now()->format('Y-m-d'));
-        $fechaFin = $request->input('fecha_fin', Carbon::now()->format('Y-m-d'));
-
-        // Convertir las fechas a objetos Carbon
+        // Obtener fechas desde la URL si están presentes, sino desde el formulario
+        $fechaInicio = $fecha_inicio ?? $request->input('fecha_inicio', Carbon::now()->format('Y-m-d'));
+        $fechaFin = $fecha_fin ?? $request->input('fecha_fin', Carbon::now()->format('Y-m-d'));
+                // Convertir las fechas a objetos Carbon
         $fechaInicio = Carbon::parse($fechaInicio);
         $fechaFin = Carbon::parse($fechaFin);
         // Calcular la diferencia en días
         $diasDeRango = $fechaInicio->diffInDays($fechaFin);
-
+        $totalPages = 0;
         // Llamar al servicio para generar el reporte de ventas
-        $ventas = $this->reporteVentasService->generarReporteVentas($limit, $offset, $fechaInicio, $fechaFin, $diasDeRango);
+        $ventas = $this->reporteVentasService->generarReporteVentas($limit, $offset, $fechaInicio, $fechaFin, $diasDeRango, $item_id);
       //  $ventas = $response['ventas']; // Asegúrate de que el servicio devuelva 'ventas'
-        $totalVentas = $ventas['total_ventas'] ?? 0;
-        $totalPages = ceil($totalVentas / $limit); // Cálculo del total de páginas
-        //dd($totalPages);
-        // Renderizar la vista con los datos
+      $totalVentas = $ventas['total_ventas'] ?? 0;
+      $totalPages = $ventas['total_paginas'] ?? 1; // Ahora tomamos el valor del servicio
+
+      Log::info("Total de ventas: $totalVentas, Total de páginas: $totalPages, Page seleccionada: $page");
+
         // Renderizar la vista con los datos de ventas y la paginación
         return view('dashboard.order_report', [
             'ventas' => $ventas,
@@ -153,6 +158,51 @@ public function ShowSales(Request $request)
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
+
+
+public function ventas_consolidadas(Request $request, $item_id = null, $fecha_inicio = null, $fecha_fin = null)
+{
+    try {
+        $limit = $request->input('limit', 50);
+        $page = (int) $request->input('page', 1); // Página actual
+        $offset = ($page - 1) * $limit; // Cálculo del desplazamiento
+       // $dias = $request->input('dias', 0); // Predeterminado: 10 días
+        $fechaActual = Carbon::now();
+        // Obtener fechas del request y convertirlas en instancias de Carbon
+        // Obtener fechas desde la URL si están presentes, sino desde el formulario
+        $fechaInicio = $fecha_inicio ?? $request->input('fecha_inicio', Carbon::now()->format('Y-m-d'));
+        $fechaFin = $fecha_fin ?? $request->input('fecha_fin', Carbon::now()->format('Y-m-d'));
+                // Convertir las fechas a objetos Carbon
+        $fechaInicio = Carbon::parse($fechaInicio);
+        $fechaFin = Carbon::parse($fechaFin);
+        // Calcular la diferencia en días
+        $diasDeRango = $fechaInicio->diffInDays($fechaFin);
+        $totalPages = 0;
+        // Llamar al servicio para generar el reporte de ventas
+        $ventas = $this->ReporteVentasConsolidadas->generarReporteVentasConsolidadas($limit, $offset, $fechaInicio, $fechaFin, $diasDeRango, $item_id);
+      //  $ventas = $response['ventas']; // Asegúrate de que el servicio devuelva 'ventas'
+      $totalVentas = $ventas['total_ventas'] ?? 0;
+      $totalPages = $ventas['total_paginas'] ?? 1; // Ahora tomamos el valor del servicio
+
+      Log::info("Total de ventas: $totalVentas, Total de páginas: $totalPages, Page seleccionada: $page");
+
+        // Renderizar la vista con los datos de ventas y la paginación
+        return view('dashboard.order_report', [
+            'ventas' => $ventas,
+            'fechaInicio' => $fechaInicio,
+            'fechaFin' => $fechaFin,
+            'diasDeRango' => $diasDeRango,
+            'totalPages' => $totalPages,
+            'currentPage' => $page,
+            'limit' => $limit,
+            'totalVentas' => $totalVentas,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+
+
 
 public function sincronizacion()
 {
