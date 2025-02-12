@@ -41,16 +41,25 @@ class AccountController extends Controller
 
 
 
-    public function showInventory($sellerId, $limit = 10)
-    {
-        try {
-            $inventory = $this->consultaService->getInventory($sellerId, $limit);
-            dd($inventory);
-            return response()->json($inventory);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+    public function showInventory(Request $request)
+{
+    try {
+        $userProductId = $request->query('user_product_id');
+        $sellerId = $request->query('ml_account_id');
+
+        // Verifica si los valores llegan correctamente
+        if (!$userProductId || !$sellerId) {
+            return response()->json(['error' => 'Faltan parámetros en la URL'], 400);
         }
+
+        $inventory = $this->consultaService->getInventory($sellerId, $userProductId);
+        return response()->json($inventory);
+    } catch (\Exception $e) {
+        \Log::error("Error en showInventory: " . $e->getMessage());
+        return response()->json(['error' => $e->getMessage()], 500);
     }
+}
+
 
     public function showOwnPublications(Request $request)
 {
@@ -60,21 +69,29 @@ class AccountController extends Controller
         $limit = (int) $request->input('limit', 50);
         $page = (int) $request->input('page', 1); // Página actual (por defecto 1)
         $offset = ($page - 1) * $limit;
-        $search = $request->input('search'); // Término de búsqueda
+        $search = $request->input('search');
+        $status = $request->input('status', 'active');
+                // Si el valor de status es 'all', lo cambiamos a null o lo que tu API espera
+                if ($status === 'all') {
+                    $status = null;
+                }
         // Obteniendo publicaciones del servicio
-        $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset, $search);
-       // $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset);
+        $publicationsData = $this->consultaService->getOwnPublications($userId, $limit, $offset, $search, $status);
 
-        // Cálculo de total de páginas (opcional, si el servicio devuelve un total)
-        $totalPublications = $publications['total'] ?? 0; // Asegúrate de que el servicio devuelva este dato
-        $totalPages = ceil($totalPublications / $limit);
+      // Procesamos las publicaciones y calculamos las páginas de cada cuenta
+      $totalItems = 0;
+      $totalPages = 0;
+      foreach ($publicationsData['accounts'] as $account) {
+          $totalItems += $account['total'];  // Total de publicaciones de la cuenta
+          $totalPages += ceil($account['total'] / $limit);  // Calcula las páginas por cuenta
+      }
         // Datos para la vista
         return view('dashboard.publications', [
-            'publications' => $publications['items'],
+            'publications' => $publicationsData['items'],
             'totalPages' => $totalPages,
             'currentPage' => $page,
             'limit' => $limit,
-            'totalPublications' => $totalPublications,
+            'totalPublications' => $totalItems,
         ]);
     } catch (\Exception $e) {
         return response()->json([

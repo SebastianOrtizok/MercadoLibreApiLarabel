@@ -53,57 +53,39 @@ class ConsultaMercadoLibreService
 
 
 
-        public function getInventory($sellerId, $itemId = 'MLA1112692115')
-{
-    try {
-        // Obtener los datos del usuario
-        $userData = $this->getUserId();
-        $userId = $userData['userId'];
-        $mlAccountId = $userData['mlAccountId'];
-        $itemId = 'MLA1112692115';
+        public function getInventory($sellerId, $userProductId)
+        {
+            try {
+                // Obtener los datos del usuario
+                $userData = $this->getUserId();
+                $userId = $userData['userId'];
 
-        // Obtener el token de acceso
-        $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
+                // Obtener el token de acceso
+                $accessToken = $this->mercadoLibreService->getAccessToken($userId, $sellerId);
 
-        // Llamada al endpoint para obtener los detalles del producto
-        $response = $this->client->get("items/{$itemId}", [
-            'headers' => [
-                'Authorization' => "Bearer {$accessToken}"
-            ]
-        ]);
+                // Llamada al endpoint para obtener los detalles del producto
+                $response = $this->client->get("https://api.mercadolibre.com/user-products/{$userProductId}/stock", [
+                    'headers' => [
+                        'Authorization' => "Bearer {$accessToken}"
+                    ]
+                ]);
 
-        // Decodificar la respuesta JSON para obtener los detalles del producto
-        $productDetails = json_decode($response->getBody(), true);
-        dd($productDetails);
-        // Verificar que se obtuvo el user_product_id
-        if (isset($productDetails['user_product_id'])) {
-            $userProductId = $productDetails['user_product_id'];
+                // Decodificar la respuesta JSON para obtener los detalles del producto
+                $productDetails = json_decode($response->getBody(), true);
 
-            // Llamada al endpoint para obtener el stock utilizando el user_product_id
-            $stockResponse = $this->client->get("user-products/{$userProductId}/stock", [
-                'headers' => [
-                    'Authorization' => "Bearer {$accessToken}"
-                ]
-            ]);
+                // Verificar si la respuesta está vacía o contiene error
+                if (!$productDetails || isset($productDetails['error'])) {
+                    \Log::error("Datos del producto vacíos o con error: " . json_encode($productDetails));
+                    throw new \Exception('Error al obtener los datos del producto');
+                }
 
-            // Obtener los detalles del inventario
-            $inventoryDetails = json_decode($stockResponse->getBody(), true);
-
-            // Mostrar los resultados para depuración
-            dd($inventoryDetails);
-
-            return $inventoryDetails;
-        } else {
-            // Manejar el caso si no se encuentra el user_product_id
-            \Log::error("No se encontró el user_product_id para el producto {$itemId}");
-            return null;
+                return $productDetails;
+            } catch (\Exception $e) {
+                throw $e;
+            }
         }
-    } catch (RequestException $e) {
-        // Manejo de errores
-        \Log::error("Error al obtener el inventario: " . $e->getMessage());
-        throw $e;
-    }
-}
+
+
 
 
 
@@ -141,33 +123,32 @@ class ConsultaMercadoLibreService
 }
 
 
-public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = null)
+public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = null, $status )
 {
     try {
-        // Obtener todos los tokens asociados al usuario
+        // Obtener los tokens de las cuentas vinculadas
         $userData = $this->getUserId();
         $userId = $userData['userId'];
         $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
 
-        $allItems = [];  // Array para almacenar todas las publicaciones
-        $total = 0;  // Total de publicaciones
+        $processedItems = [];
+        $totalItems = 0;
+        $accountsData = [];
 
         foreach ($tokens as $token) {
             $mlAccountId = $token->ml_account_id;
 
-            // Parámetros de la consulta a la API
             $queryParams = [
                 'include_attributes' => 'all',
                 'limit' => $limit,
-                'offset' => $offset
+                'offset' => $offset,
+                'status' => $status ?? 'active'
             ];
 
-            // Si hay una búsqueda, agregar el parámetro `q`
             if ($search) {
                 $queryParams['q'] = $search;
             }
 
-            // Obtener las publicaciones de la cuenta actual con el filtro de búsqueda
             $response = $this->client->get("users/{$mlAccountId}/items/search", [
                 'headers' => [
                     'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
@@ -176,58 +157,58 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
             ]);
 
             $data = json_decode($response->getBody(), true);
+            if (empty($data['results'])) continue;
 
-            if (!isset($data['results']) || empty($data['results'])) {
-                continue;  // Si no hay publicaciones, pasar a la siguiente cuenta
-            }
 
-            $itemIds = $data['results'];
-
-            // Dividir los IDs en bloques de 20
-            $chunks = array_chunk($itemIds, 20);
-
-            foreach ($chunks as $chunk) {
+            // Obtener los detalles de los items en bloques de 20 y procesarlos en la misma iteración
+            foreach (array_chunk($data['results'], 20) as $chunk) {
                 $detailsResponse = $this->client->get("items", [
                     'headers' => [
                         'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
                     ],
-                    'query' => [
-                        'ids' => implode(',', $chunk)
-                    ]
+                    'query' => ['ids' => implode(',', $chunk)]
                 ]);
 
                 $details = json_decode($detailsResponse->getBody(), true);
-                $allItems = array_merge($allItems, $details);
+                // Transformar los datos en la estructura deseada
+                foreach ($details as $item) {
+                    $body = $item['body'] ?? [];
+
+                    $processedItems[] = [
+                        'id' => $body['id'] ?? null,
+                        'titulo' => $body['title'] ?? 'Sin título',
+                        'imagen' => $body['thumbnail'] ?? null,
+                        'stockActual' => $body['available_quantity'] ?? 0,
+                        'precio' => $body['price'] ?? null,
+                        'estado' => $body['status'] ?? 'Desconocido',
+                        'permalink' => $body['permalink'] ?? '#',
+                        'condicion' => $body['condition'] ?? 'Desconocido',
+                        'sku' => $body['user_product_id'] ?? null,
+                        'tipoPublicacion' => $body['listing_type_id'] ?? null,
+                        'enCatalogo' => $body['catalog_listing'] ?? null,
+                        'categoryid' => $body['category_id'] ?? null,
+                        'ml_account_id' => $body['seller_id'] ?? null,
+                        'logistic_type' => $body['shipping']['logistic_type'] ?? '',
+                         'inventory_id'=> $body['inventory_id']?? '',
+                         'user_product_id' => $body['user_product_id']?? '',
+                    ];
+                }
+
             }
-
-            $total += $data['paging']['total'] ?? count($allItems);
-
-            sleep(1); // Espera de 1 segundo entre peticiones
-        }
-        // Procesar los datos de stock y última venta
-        $processedItems = [];
-        foreach ($allItems as $item) {
-            $body = $item['body'] ?? [];
-            $processedItems[] = [
-                'id' => $body['id'] ?? null,
-                'titulo' => $body['title'] ?? 'Sin título',
-                'imagen' => $body['thumbnail'] ?? null,
-                'stockActual' => $body['available_quantity'] ?? 0,
-                'precio' => $body['price'] ?? null,
-                'estado' => $body['status'] ?? 'Desconocido',
-                'permalink' => $body['permalink'] ?? '#',
-                'condicion' => $body['condition'] ?? 'Desconocido',
-                'sku' => $body['user_product_id'] ?? null,
-                'tipoPublicacion' => $body['listing_type_id'] ?? null,
-                'enCatalogo' => $body['catalog_listing'] ?? null,
-                'categoryid' => $body['category_id'],
-                'ml_account_id' => $body['seller_id']  // Se agrega el ID de la cuenta
+            $accountsData[] = [
+                'ml_account_id' => $mlAccountId,
+                'total' => $data['paging']['total'] ?? 0
             ];
+
+            $totalItems += $data['paging']['total'] ?? 0;
+
+            sleep(1); // Evita el rate limit de la API
         }
 
         return [
             'items' => $processedItems,
-            'total' => $total
+            'accounts' => $accountsData,
+            'total' => $totalItems
         ];
 
     } catch (RequestException $e) {
@@ -235,6 +216,8 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
         throw $e;
     }
 }
+
+
 
 
 // DESCARGAR A LA BASE DE DATOS

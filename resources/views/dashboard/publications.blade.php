@@ -4,16 +4,28 @@
 <div class="container mt-5">
     <h2 class="mb-4">Listado de Publicaciones</h2>
     <div class="filtros-container mb-4 p-3 bg-light rounded shadow-sm">
-    <!-- Campo de búsqueda -->
-    <form method="POST" action="{{ route('dashboard.publications') }}" class="mb-0 w-50">
-             @csrf
-            <div class="input-group">
-                <input type="text" name="search" class="me-3 form-control" placeholder="Buscar por título..." value="{{ request('search') }}">
-                <div class="col-md-2 mb-2">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-search"></i> <!-- Lupa de color azul -->
-                    </button>
-                </div>
+        <!-- Campo de búsqueda y filtro por estado -->
+        <form method="GET" action="{{ route('dashboard.publications') }}" class="mb-0 w-100 d-flex align-items-center gap-3">
+            @csrf
+            <div class="input-group w-50">
+                <input type="text" name="search" class="form-control" placeholder="Buscar por título..." value="{{ request('search') }}">
+            </div>
+
+            <!-- Select para el estado de las publicaciones -->
+            <div class="w-25">
+                <select name="status" class="form-select">
+                    <option value="active" {{ request('status', 'active') == 'active' ? 'selected' : '' }}>Activas</option>
+                    <option value="paused" {{ request('status') == 'paused' ? 'selected' : '' }}>Pausadas</option>
+                    <option value="under_review" {{ request('status') == 'under_review' ? 'selected' : '' }}>En Revisión</option>
+                    <option value="closed" {{ request('status') == 'closed' ? 'selected' : '' }}>Cerradas</option>
+                    <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Todas</option>
+                </select>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
             </div>
         </form>
     </div>
@@ -59,7 +71,58 @@
                         </td>
                         <td>${{ number_format($item['precio'], 2, ',', '.') }}</td>
                         <td class="text-center">{{ ucfirst($item['condicion']) }}</td>
-                        <td  class="text-center">{{ $item['stockActual'] }}</td>
+                        <td  class="text-center">{{ $item['stockActual'] }}
+                        <br>
+                        <span style="color: green; font-weight: bold;">
+                            {{ $item['logistic_type'] ?? 'No disponible' }}
+                        </span>
+                        <br>
+                        @if(!empty($item['user_product_id']))
+                            <a href="#" class="spanid"
+                            data-user_product_id="{{ $item['user_product_id'] }}"
+                            data-ml_account_id="{{ $item['ml_account_id'] }}"
+                            onclick="loadInventoryData(this)">
+                                <span>{{ $item['user_product_id'] }}</span>
+                            </a>
+                        @else
+                            <span style="color: red; font-weight: bold;">Sin inventario</span>
+                        @endif
+
+             <!-- Modal de Inventario -->
+                    <div class="modal fade" id="inventoryModal" tabindex="-1" aria-labelledby="inventoryModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="inventoryModalLabel">Detalles del Producto</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Tipo</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Disponibilidad</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="inventoryData">
+                                                <tr>
+                                                    <td colspan="3" class="text-center">Cargando datos...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   <!-- Fin Modal -->
+
+                        </td>
                         <td class="text-center">{{ ucfirst($item['estado']) }}</td>
                         <td>{{ $item['sku'] ?? 'No disponible' }}</td>
                         <td class="text-center">{{ $item['tipoPublicacion'] ?? 'Desconocido' }}</td>
@@ -89,27 +152,73 @@
 
 
 
-    <!-- Controles de paginación -->
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            <li class="page-item {{ $currentPage == 1 ? 'disabled' : '' }}">
-                <a class="page-link" href="?page={{ $currentPage - 1 }}&limit={{ $limit }}" aria-label="Anterior">&laquo;</a>
-            </li>
+   <!-- Controles de paginación -->
+   @include('layouts.pagination', [
+    'currentPage' => $currentPage,
+    'totalPages' => $totalPages,
+    'limit' => $limit
+])
 
-            @for ($i = 1; $i <= $totalPages; $i++)
-                <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
-                    <a class="page-link" href="?page={{ $i }}&limit={{ $limit }}">{{ $i }}</a>
-                </li>
-            @endfor
 
-            <li class="page-item {{ $currentPage == $totalPages ? 'disabled' : '' }}">
-                <a class="page-link" href="?page={{ $currentPage + 1 }}&limit={{ $limit }}" aria-label="Siguiente">&raquo;</a>
-            </li>
-        </ul>
-    </nav>
-</div>
+
 @endsection
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- script para obtener datos del modal -->
+
+<script>
+   function loadInventoryData(element) {
+    let userProductId = element?.getAttribute("data-user_product_id");
+    let mlAccountId = element?.getAttribute("data-ml_account_id");
+
+    if (!userProductId || !mlAccountId) {
+        console.error("Faltan atributos en el elemento.");
+        return;
+    }
+
+    console.log("loadInventoryData ha sido llamada con:", { userProductId, mlAccountId });
+
+    fetch(`/dashboard/inventory?user_product_id=${userProductId}&ml_account_id=${mlAccountId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Datos recibidos:", data);
+
+            let inventoryTable = document.getElementById("inventoryData");
+
+            if (!data.id || !data.locations) {
+                inventoryTable.innerHTML = `<tr><td colspan="3" class="text-center text-danger">Datos no disponibles</td></tr>`;
+                return;
+            }
+
+            let tableRows = data.locations.map(loc => `
+                <tr>
+                    <td>${loc.type || 'N/A'}</td>
+                    <td class="text-center">${loc.quantity || '0'}</td>
+                    <td>${loc.availability_type ? loc.availability_type.replace('_', ' ') : 'Desconocido'}</td>
+                </tr>
+            `).join('');
+
+            inventoryTable.innerHTML = tableRows;
+
+            let modalElement = document.getElementById('inventoryModal');
+            if (modalElement) {
+                let modal = new bootstrap.Modal(modalElement);
+                modal.show();
+                console.log("Modal abierto correctamente.");
+            } else {
+                console.error("No se encontró el modal en el DOM.");
+            }
+        })
+        .catch(error => {
+            console.error("Error al obtener los datos:", error);
+            document.getElementById("inventoryData").innerHTML = `<tr><td colspan="3" class="text-center text-danger">Error al cargar los datos.</td></tr>`;
+        });
+}
+
+</script>
+
+
 <!-- script para ordenar las columnas y ocultar -->
 <script>
 jQuery(document).ready(function () {
