@@ -430,3 +430,6 @@ table.dataTable th.dt-center, table.dataTable td.dt-center, table.dataTable td.d
     max-width: 150px;
 }
 
+.pagination {
+    justify-content: center;
+}

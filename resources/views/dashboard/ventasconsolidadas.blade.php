@@ -5,7 +5,7 @@
     <h2 class="mb-4">Listado de Ventas</h2>
 
     <!-- Formulario para seleccionar el rango de días -->
-    <form method="GET" action="{{ route('dashboard.ventas') }}" class="mb-4">
+    <form method="GET" action="{{ route('dashboard.ventasconsolidadas') }}" class="mb-4">
     <div class="form-row d-flex align-items-center gap-3">
         <!-- Columna para el campo de fecha de inicio -->
         <div class="col-md-3 mb-2">
@@ -87,7 +87,7 @@
                 </tr>
             </thead>
             <tbody id="table-body">
-            @forelse($ventas['ventas'] as $venta)
+             @forelse ($ventas as $venta)
                 <tr>
                     <td>
                         <div data-column="Cuenta">
@@ -143,12 +143,26 @@
 
 
 <!-- Controles de paginación -->
-   <!-- Controles de paginación -->
-   @include('layouts.pagination', [
-    'currentPage' => $currentPage,
-    'totalPages' => $totalPages,
-    'limit' => $limit
-])
+<!-- Paginación -->
+@if ($totalPages > 1)
+    <nav>
+        <ul class="pagination">
+            @for ($i = 1; $i <= $totalPages; $i++)
+                <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
+                    <a class="page-link"
+                        href="{{ route('dashboard.ventasconsolidadas', [
+                            'fecha_inicio' => request('fecha_inicio'),
+                            'fecha_fin' => request('fecha_fin'),
+                            'page' => $i
+                        ]) }}">
+                        {{ $i }}
+                    </a>
+                </li>
+            @endfor
+        </ul>
+    </nav>
+@endif
+
 
 
 

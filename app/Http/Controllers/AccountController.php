@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use App\Services\ConsultaMercadoLibreService;
 use App\Services\ReporteVentasService;
 use App\Services\ReporteVentasConsolidadas;
+use App\Services\ReporteVentaConsolidada;
 use App\Services\MercadoLibreService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 
 class AccountController extends Controller
@@ -17,14 +19,16 @@ class AccountController extends Controller
     private $mercadoLibreService;
     private $reporteVentasService;
     private $ReporteVentasConsolidadas;
+    private $ReporteVentaConsolidada;
     protected $client;
 
-    public function __construct(ConsultaMercadoLibreService $consultaService, MercadoLibreService $mercadoLibreService, ReporteVentasService $reporteVentasService,ReporteVentasConsolidadas $ReporteVentasConsolidadas)
+    public function __construct(ConsultaMercadoLibreService $consultaService, MercadoLibreService $mercadoLibreService, ReporteVentasService $reporteVentasService,ReporteVentasConsolidadas $ReporteVentasConsolidadas,ReporteVentaConsolidada $ReporteVentaConsolidada)
     {
         $this->consultaService = $consultaService;
         $this->mercadoLibreService = $mercadoLibreService;
         $this->reporteVentasService = $reporteVentasService;
         $this->ReporteVentasConsolidadas = $ReporteVentasConsolidadas;
+        $this->ReporteVentaConsolidada = $ReporteVentaConsolidada;
     }
 
 
@@ -61,37 +65,32 @@ class AccountController extends Controller
 }
 
 
-    public function showOwnPublications(Request $request)
+public function showOwnPublications(Request $request)
 {
     try {
-         $userId = "";
-        // Parámetros de paginación desde el request
+        $userId = "";
         $limit = (int) $request->input('limit', 50);
-        $page = (int) $request->input('page', 1); // Página actual (por defecto 1)
+        $page = (int) $request->input('page', 1);
         $offset = ($page - 1) * $limit;
         $search = $request->input('search');
         $status = $request->input('status', 'active');
-                // Si el valor de status es 'all', lo cambiamos a null o lo que tu API espera
-                if ($status === 'all') {
-                    $status = null;
-                }
-        // Obteniendo publicaciones del servicio
-        $publicationsData = $this->consultaService->getOwnPublications($userId, $limit, $offset, $search, $status);
 
-      // Procesamos las publicaciones y calculamos las páginas de cada cuenta
-      $totalItems = 0;
-      $totalPages = 0;
-      foreach ($publicationsData['accounts'] as $account) {
-          $totalItems += $account['total'];  // Total de publicaciones de la cuenta
-          $totalPages += ceil($account['total'] / $limit);  // Calcula las páginas por cuenta
-      }
-        // Datos para la vista
+        if ($status === 'all') {
+            $status = null;
+        }
+
+        // Obteniendo publicaciones del servicio
+        $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset, $search, $status);
+
+        $totalPublications = $publications['total'] ?? 0;
+        $totalPages = ceil($totalPublications / $limit);
+
         return view('dashboard.publications', [
-            'publications' => $publicationsData['items'],
+            'publications' => $publications['items'],
             'totalPages' => $totalPages,
             'currentPage' => $page,
             'limit' => $limit,
-            'totalPublications' => $totalItems,
+            'totalPublications' => $totalPublications,
         ]);
     } catch (\Exception $e) {
         return response()->json([
@@ -102,37 +101,6 @@ class AccountController extends Controller
 }
 
 
-    public function showItemsByCategory(Request $request, $categoryId)
-{
-    try {
-        $limit = $request->input('limit', 50);
-        $page = (int) $request->input('page', 1);
-        $offset = ($page - 1) * $limit;
-
-        // Llama al servicio para obtener los items por categoría
-        $response  = $this->consultaService->getItemsByCategory($categoryId, $limit, $offset);
-
-            // Cálculo del total de páginas (opcional, si el servicio devuelve un total)
-            $items = $response['items'];
-            $totalItems = $response['total'] ?? 0; // Asegúrate de que el servicio devuelva este dato
-            $totalPages = ceil($totalItems / $limit); // Cálculo de páginas totales
-
-            return view('dashboard.category_items', [
-                'items' => $items, // Usamos $data['items'] en lugar de $response['items']
-                'totalPages' => $totalPages,
-                'currentPage' => $page,
-                'limit' => $limit,
-                'totalItems' => $totalItems,
-                'categoryId' => $categoryId,
-            ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => $e->getMessage()
-        ], 500);
-    }
-}
-
 
 public function ShowSales(Request $request, $item_id = null, $fecha_inicio = null, $fecha_fin = null)
 {
@@ -140,10 +108,8 @@ public function ShowSales(Request $request, $item_id = null, $fecha_inicio = nul
         $limit = $request->input('limit', 50);
         $page = (int) $request->input('page', 1); // Página actual
         $offset = ($page - 1) * $limit; // Cálculo del desplazamiento
-       // $dias = $request->input('dias', 0); // Predeterminado: 10 días
         $fechaActual = Carbon::now();
-        // Obtener fechas del request y convertirlas en instancias de Carbon
-        // Obtener fechas desde la URL si están presentes, sino desde el formulario
+
         $fechaInicio = $fecha_inicio ?? $request->input('fecha_inicio', Carbon::now()->format('Y-m-d'));
         $fechaFin = $fecha_fin ?? $request->input('fecha_fin', Carbon::now()->format('Y-m-d'));
                 // Convertir las fechas a objetos Carbon
@@ -177,7 +143,58 @@ public function ShowSales(Request $request, $item_id = null, $fecha_inicio = nul
 }
 
 
-public function ventas_consolidadas(Request $request, $item_id = null, $fecha_inicio = null, $fecha_fin = null)
+public function ventas_consolidadas(Request $request, $fecha_inicio = null, $fecha_fin = null)
+{
+    try {
+        // Parámetros de paginación
+        $limit = $request->input('limit', 50);
+        $page = (int) $request->input('page', 1);
+
+        // Fechas
+        $fechaInicio = Carbon::parse($fecha_inicio ?? $request->input('fecha_inicio', Carbon::now()->format('Y-m-d')));
+        $fechaFin = Carbon::parse($fecha_fin ?? $request->input('fecha_fin', Carbon::now()->format('Y-m-d')));
+        $diasDeRango = $fechaInicio->diffInDays($fechaFin);
+
+        // Generar una clave única para la caché basada en las fechas
+        $cacheKey = "ventas_consolidadas_{$fechaInicio->format('Ymd')}_{$fechaFin->format('Ymd')}";
+
+        // Intentar obtener las ventas desde la caché
+        $ventas = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($fechaInicio, $fechaFin, $diasDeRango) {
+            return $this->ReporteVentasConsolidadas->generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango);
+        });
+
+        // Convertir los resultados en una colección
+        $ventasCollection = collect($ventas['ventas'] ?? []);
+
+        // Calcular el total de ventas y total de páginas
+        $totalVentas = $ventasCollection->count();
+        $totalPages = ceil($totalVentas / $limit);
+
+        // Paginación manual usando la colección (sin hacer una nueva llamada a la API)
+        $ventasPaginadas = $ventasCollection->forPage($page, $limit)->values();
+
+        // Retornar la vista con los datos paginados
+        return view('dashboard.ventasconsolidadas', [
+            'ventas' => $ventasPaginadas,
+            'fechaInicio' => $fechaInicio,
+            'fechaFin' => $fechaFin,
+            'diasDeRango' => $diasDeRango,
+            'totalPages' => $totalPages,
+            'currentPage' => $page,
+            'limit' => $limit,
+            'totalVentas' => $totalVentas,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+
+
+
+
+
+
+public function venta_consolidada(Request $request, $item_id = null, $fecha_inicio = null, $fecha_fin = null)
 {
     try {
         $limit = $request->input('limit', 50);
@@ -196,7 +213,7 @@ public function ventas_consolidadas(Request $request, $item_id = null, $fecha_in
         $diasDeRango = $fechaInicio->diffInDays($fechaFin);
         $totalPages = 0;
         // Llamar al servicio para generar el reporte de ventas
-        $ventas = $this->ReporteVentasConsolidadas->generarReporteVentasConsolidadas($limit, $offset, $fechaInicio, $fechaFin, $diasDeRango, $item_id);
+        $ventas = $this->ReporteVentaConsolidada->generarReporteVentaConsolidada($limit, $offset, $fechaInicio, $fechaFin, $diasDeRango, $item_id);
       //  $ventas = $response['ventas']; // Asegúrate de que el servicio devuelva 'ventas'
       $totalVentas = $ventas['total_ventas'] ?? 0;
       $totalPages = $ventas['total_paginas'] ?? 1; // Ahora tomamos el valor del servicio
@@ -218,6 +235,7 @@ public function ventas_consolidadas(Request $request, $item_id = null, $fecha_in
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
+
 
 
 

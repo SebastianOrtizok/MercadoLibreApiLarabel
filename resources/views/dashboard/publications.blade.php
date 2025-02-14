@@ -141,9 +141,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr>
-                        <td colspan="11" class="text-center">No se encontraron publicaciones.</td>
-                    </tr>
+
                 @endforelse
             </tbody>
         </table>

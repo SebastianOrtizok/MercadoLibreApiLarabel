@@ -123,7 +123,7 @@ class ConsultaMercadoLibreService
 }
 
 
-public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = null, $status )
+public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = null, $status)
 {
     try {
         // Obtener los tokens de las cuentas vinculadas
@@ -131,17 +131,25 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
         $userId = $userData['userId'];
         $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
 
+        $totalCuentas = $tokens->count();
+        if ($totalCuentas === 0) {
+            return ['items' => [], 'total' => 0];
+        }
+
         $processedItems = [];
-        $totalItems = 0;
-        $accountsData = [];
+        $total = 0;
+
+        // Repartir el `limit` entre las cuentas vinculadas
+        $limitPorCuenta = (int) ceil($limit / $totalCuentas);
+        $offsetPorCuenta = (int) ceil($offset / $totalCuentas);
 
         foreach ($tokens as $token) {
             $mlAccountId = $token->ml_account_id;
 
             $queryParams = [
                 'include_attributes' => 'all',
-                'limit' => $limit,
-                'offset' => $offset,
+                'limit' => $limitPorCuenta,
+                'offset' => $offsetPorCuenta,
                 'status' => $status ?? 'active'
             ];
 
@@ -159,8 +167,7 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
             $data = json_decode($response->getBody(), true);
             if (empty($data['results'])) continue;
 
-
-            // Obtener los detalles de los items en bloques de 20 y procesarlos en la misma iteración
+            // Obtener detalles de los items en bloques de 20
             foreach (array_chunk($data['results'], 20) as $chunk) {
                 $detailsResponse = $this->client->get("items", [
                     'headers' => [
@@ -170,7 +177,7 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
                 ]);
 
                 $details = json_decode($detailsResponse->getBody(), true);
-                // Transformar los datos en la estructura deseada
+
                 foreach ($details as $item) {
                     $body = $item['body'] ?? [];
 
@@ -189,26 +196,22 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
                         'categoryid' => $body['category_id'] ?? null,
                         'ml_account_id' => $body['seller_id'] ?? null,
                         'logistic_type' => $body['shipping']['logistic_type'] ?? '',
-                         'inventory_id'=> $body['inventory_id']?? '',
-                         'user_product_id' => $body['user_product_id']?? '',
+                        'inventory_id' => $body['inventory_id'] ?? '',
+                        'user_product_id' => $body['user_product_id'] ?? '',
                     ];
                 }
-
             }
-            $accountsData[] = [
-                'ml_account_id' => $mlAccountId,
-                'total' => $data['paging']['total'] ?? 0
-            ];
+            $total += $data['paging']['total'] ?? 0;
 
-            $totalItems += $data['paging']['total'] ?? 0;
-
-            sleep(1); // Evita el rate limit de la API
+            sleep(1); // Evitar rate limit de la API
         }
+
+        // Ordenar los elementos para evitar duplicados
+        $processedItems = array_slice($processedItems, 0, $limit);
 
         return [
             'items' => $processedItems,
-            'accounts' => $accountsData,
-            'total' => $totalItems
+            'total' => $total
         ];
 
     } catch (RequestException $e) {
@@ -216,6 +219,7 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
         throw $e;
     }
 }
+
 
 
 

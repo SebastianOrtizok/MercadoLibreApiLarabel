@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class ReporteVentasService
+class ReporteVentaConsolidada
 {
-    public function generarReporteVentas($limit = 50, $offset = 0, $fechaInicio, $fechaFin, $diasDeRango, $item_id) {
+    public function generarReporteVentaConsolidada($limit = 50, $offset = 0, $fechaInicio, $fechaFin, $diasDeRango, $item_id) {
         if ($diasDeRango == 0) {
             return [
                 'total_ventas' => 0,
@@ -24,74 +24,67 @@ class ReporteVentasService
             throw new \Exception('No se encontraron cuentas asociadas al usuario.');
         }
 
-        $ventasGlobales = [];
-        $mlProductIds = [];
+        $ventasConsolidadas = [];
         $totalItems = 0;
-        $totalPages = 0;
-        $ventasPorCuenta = [];
 
-        // Obtener total de ventas de cada cuenta
+        // Recorrer todas las cuentas de MercadoLibre
         foreach ($tokens as $token) {
             $accessToken = $token->access_token;
             $sellerId = $token->ml_account_id;
             if (empty($accessToken) || empty($sellerId)) continue;
 
+            // Obtener la cantidad total de órdenes para esta cuenta
             $ventasIniciales = $this->obtenerVentas($accessToken, 1, 0, $sellerId, $fechaInicio, $fechaFin, $item_id);
             $totalVentasCuenta = $ventasIniciales['paging']['total'] ?? 0;
-            $ventasPorCuenta[$sellerId] = ['total' => $totalVentasCuenta, 'offset' => 0];
-            $totalItems += $totalVentasCuenta;
-        }
 
-        // Calcular páginas totales
-        $totalPages = ceil($totalItems / $limit);
+            // Calcular cuántas páginas hay que recorrer
+            $pagina = 0;
+            while ($pagina * 50 < $totalVentasCuenta) {
+                $ventas = $this->obtenerVentas($accessToken, 50, $pagina * 50, $sellerId, $fechaInicio, $fechaFin, $item_id);
 
-        // Determinar desde qué cuenta pedir según la página seleccionada
-        $acumuladorOffset = 0;
-        foreach ($ventasPorCuenta as $sellerId => &$cuenta) {
-            if ($offset < ($acumuladorOffset + $cuenta['total'])) {
-                $cuenta['offset'] = $offset - $acumuladorOffset;
-                break;
-            }
-            $acumuladorOffset += $cuenta['total'];
-        }
+                if (!isset($ventas['results']) || empty($ventas['results'])) break;
 
-        // Obtener ventas paginadas correctamente
-        foreach ($ventasPorCuenta as $sellerId => $cuenta) {
-            if ($cuenta['total'] == 0) continue;
+                // Procesar cada venta y consolidar los productos
+                foreach ($ventas['results'] as $venta) {
+                    foreach ($venta['order_items'] as $item) {
+                        $mlProductId = $item['item']['id'] ?? null;
+                        if (!$mlProductId) continue;
 
-            $accessToken = $tokens->where('ml_account_id', $sellerId)->first()->access_token;
-            $ventas = $this->obtenerVentas($accessToken, $limit, $cuenta['offset'], $sellerId, $fechaInicio, $fechaFin, $item_id);
+                        if (!isset($ventasConsolidadas[$mlProductId])) {
+                            $ventasConsolidadas[$mlProductId] = [
+                                'producto' => $mlProductId,
+                                'titulo' => $item['item']['title'] ?? null,
+                                'cantidad_vendida' => 0,
+                                'tipo_publicacion' => $item['listing_type_id'] ?? null,
+                                'fecha_venta' => $venta['date_closed'] ?? null,
+                                'order_status' => $venta['status'] ?? 'unknown',
+                                'seller_nickname' => $venta['seller']['nickname'] ?? 'unknown',
+                                'fecha_ultima_venta' => $venta['date_closed'] ?? null,
+                            ];
+                        }
 
-            if (!isset($ventas['results']) || empty($ventas['results'])) continue;
+                        // Sumar la cantidad vendida
+                        $ventasConsolidadas[$mlProductId]['cantidad_vendida'] += $item['quantity'] ?? 0;
 
-            foreach ($ventas['results'] as $venta) {
-                foreach ($venta['order_items'] as $item) {
-                    $mlProductId = $item['item']['id'] ?? null;
-                    if ($mlProductId) {
-                        $mlProductIds[] = $mlProductId;
-                        $ventasGlobales[] = [
-                            'producto' => $mlProductId,
-                            'titulo' => $item['item']['title'] ?? null,
-                            'cantidad_vendida' => $item['quantity'] ?? 0,
-                            'tipo_publicacion' => $item['listing_type_id'] ?? null,
-                            'fecha_venta' => $venta['date_closed'] ?? null,
-                            'order_status' => $venta['status'] ?? 'unknown',
-                            'seller_nickname' => $venta['seller']['nickname'] ?? 'unknown',
-                            'fecha_ultima_venta' => $venta['date_closed'] ?? null,
-                        ];
+                        // Actualizar la fecha de última venta si es más reciente
+                        if (strtotime($venta['date_closed']) > strtotime($ventasConsolidadas[$mlProductId]['fecha_ultima_venta'])) {
+                            $ventasConsolidadas[$mlProductId]['fecha_ultima_venta'] = $venta['date_closed'];
+                        }
                     }
                 }
+
+                $pagina++;
             }
         }
 
-        // Obtener datos adicionales de artículos
+        // Obtener información adicional de los productos
         $articulos = \DB::table('articulos')
             ->select('ml_product_id', 'imagen', 'stock_actual', 'sku', 'estado', 'permalink')
-            ->whereIn('ml_product_id', $mlProductIds)
+            ->whereIn('ml_product_id', array_keys($ventasConsolidadas))
             ->get()
             ->keyBy('ml_product_id');
 
-        foreach ($ventasGlobales as &$venta) {
+        foreach ($ventasConsolidadas as &$venta) {
             $mlProductId = $venta['producto'];
             if (isset($articulos[$mlProductId])) {
                 $articulo = $articulos[$mlProductId];
@@ -105,12 +98,20 @@ class ReporteVentasService
             }
         }
 
+        // Recalcular el total de ítems consolidados
+        $totalItems = count($ventasConsolidadas);
+        $totalPaginas = ceil($totalItems / $limit);
+
+        // Aplicar paginación después de consolidar
+        $ventasPaginadas = array_slice(array_values($ventasConsolidadas), $offset, $limit);
+
         return [
             'total_ventas' => $totalItems,
-            'ventas' => $ventasGlobales,
-            'total_paginas' => $totalPages,
+            'ventas' => $ventasPaginadas,
+            'total_paginas' => $totalPaginas,
         ];
     }
+
 
 
 

@@ -38,12 +38,12 @@
                         <span class="text">Ventas</span>
                     </a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.inventory') }}">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.ventasconsolidadas') }}">
                         <span class="icon"><i class="fas fa-boxes"></i></span>
-                        <span class="text">Inventario</span>
+                        <span class="text">Ventas Consolidadas</span>
                     </a>
-                </li> -->
+                </li>
                 <!-- <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.itemVenta') }}">
                         <span class="icon"><i class="fas fa-boxes"></i></span>

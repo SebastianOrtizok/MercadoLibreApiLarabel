@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class ReporteVentasConsolidadas
 {
-    public function generarReporteVentasConsolidadas($limit = 50, $offset = 0, $fechaInicio, $fechaFin, $diasDeRango, $item_id) {
+    public function generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango) {
         if ($diasDeRango == 0) {
             return [
                 'total_ventas' => 0,
@@ -34,13 +34,13 @@ class ReporteVentasConsolidadas
             if (empty($accessToken) || empty($sellerId)) continue;
 
             // Obtener la cantidad total de órdenes para esta cuenta
-            $ventasIniciales = $this->obtenerVentas($accessToken, 1, 0, $sellerId, $fechaInicio, $fechaFin, $item_id);
+            $ventasIniciales = $this->obtenerVentas($accessToken, 1, 0, $sellerId, $fechaInicio, $fechaFin);
             $totalVentasCuenta = $ventasIniciales['paging']['total'] ?? 0;
 
             // Calcular cuántas páginas hay que recorrer
             $pagina = 0;
             while ($pagina * 50 < $totalVentasCuenta) {
-                $ventas = $this->obtenerVentas($accessToken, 50, $pagina * 50, $sellerId, $fechaInicio, $fechaFin, $item_id);
+                $ventas = $this->obtenerVentas($accessToken, 50, $pagina * 50, $sellerId, $fechaInicio, $fechaFin);
 
                 if (!isset($ventas['results']) || empty($ventas['results'])) break;
 
@@ -99,23 +99,20 @@ class ReporteVentasConsolidadas
         }
 
         // Recalcular el total de ítems consolidados
-        $totalItems = count($ventasConsolidadas);
-        $totalPaginas = ceil($totalItems / $limit);
+   //     $totalItems = count($ventasConsolidadas);
+   //     $totalPaginas = ceil($totalItems / $limit);
 
         // Aplicar paginación después de consolidar
-        $ventasPaginadas = array_slice(array_values($ventasConsolidadas), $offset, $limit);
 
         return [
             'total_ventas' => $totalItems,
-            'ventas' => $ventasPaginadas,
-            'total_paginas' => $totalPaginas,
+            'ventas' => $ventasConsolidadas,
         ];
     }
 
 
 
-
-    private function obtenerVentas($accessToken, $limit, $offset, $sellerId, $fechaInicio, $fechaFin, $item_id, $estado = '', $search = '')
+    private function obtenerVentas($accessToken, $limit, $offset, $sellerId, $fechaInicio, $fechaFin, $estado = '', $search = '')
 {
     // Zona horaria para Carbon
     Carbon::setLocale('es');
@@ -131,16 +128,10 @@ $params = [
     'seller' => $sellerId,  // ID del vendedor
     'offset' => $offset,  // Página de resultados
     'limit' => $limit,  // Límite de resultados
-    //'order.status' => 'paid' Solo ventas pagadas
+    'order.status' => 'paid', // Solo ventas pagadas
     'order.date_created.from' => $fechaInicio, // Fecha de creación desde
     'order.date_created.to' => $fechaFin,     // Fecha de creación hasta
 ];
-
-
-// Si 'itemId' tiene un valor, agregarlo a los parámetros de búsqueda
-if (!empty($item_id)) {
-    $params['q'] = $item_id;  // Filtrar por ID del producto
-}
 
 
 
