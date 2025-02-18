@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-5">
-    <h2 class="mb-4">Listado de Ventas</h2>
+    <h2 class="mb-4">Listado de Ventas Consolidadas</h2>
 
     <!-- Formulario para seleccionar el rango de días -->
     <form method="GET" action="{{ route('dashboard.ventasconsolidadas') }}" class="mb-4">
@@ -66,75 +66,81 @@
 <div class="filtros-container mb-4 p-3 bg-light rounded shadow-sm">
 <div id="restore-columns-order" class="mb-3 d-flex flex-wrap gap-2"></div>
 
+<a href="{{ route('exportar.ventas') }}" class="btn btn-success mb-3">
+    <i class="fas fa-file-excel"></i> Exportar a Excel
+</a>
 
     <!-- Tabla de resultados -->
     <div class="table-responsive">
-        <table id="orderTable" class="table table-striped table-bordered table-hover">
-            <thead class="thead-dark sticky-top">
-                <tr>
-                    <th class="text-center" data-column-name="Cuenta"><i class="fas fa-eye" ></i><br>Cuenta</th>
-                    <th class="text-center" data-column-name="Imagen"><i class="fas fa-eye" ></i><br>Imagen</th>
-                    <th class="text-center" data-column-name="Producto" data-sortable="true" data-column="producto"><i class="fas fa-eye" ></i><br>Producto</th>
-                    <th class="text-center" data-column-name="SKU" data-sortable="true" data-column="sku"><i class="fas fa-eye" ></i><br>SKU</th>
-                    <th class="text-center" data-column-name="Título" data-sortable="true" data-column="titulo"><i class="fas fa-eye" ></i><br>Título</th>
-                    <th class="text-center" data-column-name="Ventas" data-sortable="true" data-column="ventas_diarias"><i class="fas fa-eye" ></i><br>Ventas</th>
-                    <th class="text-center" data-column-name="Publicación"><i class="fas fa-eye" ></i><br>Publicación</th>
-                    <th class="text-center" data-column-name="Stock" data-sortable="true" data-column="stock"><i class="fas fa-eye" ></i><br>Stock</th>
-                    <th class="text-center" data-column-name="ImDías de Stock" data-sortable="true" data-column="dias_stock"><i class="fas fa-eye" ></i><br>Días de Stock</th>
-                    <th class="text-center" data-column-name="Estado de la Orden"><i class="fas fa-eye" ></i><br>Estado de la Orden</th>
-                    <th class="text-center" data-column-name="Estado de la Publicación"><i class="fas fa-eye" ></i><br>Estado de la Publicación</th>
-                    <th class="text-center" data-column-name="Fecha de Última Venta"><i class="fas fa-eye" ></i><br>Fecha de Última Venta</th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-             @forelse ($ventas as $venta)
-                <tr>
-                    <td>
-                        <div data-column="Cuenta">
+    <table id="orderTable" class="table table-striped table-bordered table-hover">
+    <thead class="thead-dark sticky-top">
+        <tr>
+            <th class="text-center" data-column-name="Cuenta"><i class="fas fa-eye" ></i><br>Cuenta</th>
+            <th class="text-center" data-column-name="Imagen"><i class="fas fa-eye" ></i><br>Imagen</th>
+            <th class="text-center" data-column-name="Producto" data-sortable="true" data-column="producto"><i class="fas fa-eye" ></i><br>Producto</th>
+            <th class="text-center" data-column-name="SKU" data-sortable="true" data-column="sku"><i class="fas fa-eye" ></i><br>SKU</th>
+            <th class="text-center" data-column-name="Título" data-sortable="true" data-column="titulo"><i class="fas fa-eye" ></i><br>Título</th>
+            <th class="text-center" data-column-name="Ventas" data-sortable="true" data-column="ventas_diarias"><i class="fas fa-eye" ></i><br>Ventas</th>
+            <th class="text-center" data-column-name="Publicación"><i class="fas fa-eye" ></i><br>Publicación</th>
+            <th class="text-center" data-column-name="Stock" data-sortable="true" data-column="stock"><i class="fas fa-eye" ></i><br>Stock</th>
+            <th class="text-center" data-column-name="ImDías de Stock" data-sortable="true" data-column="dias_stock"><i class="fas fa-eye" ></i><br>Días de Stock</th>
+            <th class="text-center" data-column-name="Estado de la Orden"><i class="fas fa-eye" ></i><br>Estado de la Orden</th>
+            <th class="text-center" data-column-name="Estado de la Publicación"><i class="fas fa-eye" ></i><br>Estado de la Publicación</th>
+            <th class="text-center" data-column-name="Fecha de Última Venta"><i class="fas fa-eye" ></i><br>Fecha de Última Venta</th>
+        </tr>
+    </thead>
+    <tbody id="table-body">
+        @forelse ($ventas as $venta)
+            <tr style="background-color: {{ $venta['seller_nickname'] === 'TRTEK/TROTA' ? '#d3f9d8' : 'transparent' }};">
+                <td>
+                    <div data-column="Cuenta">
                         {{ $venta['seller_nickname'] }}
-                        </div>
-                    </td>
-                    <!-- Mostrar imagen del producto -->
-                    <td>
-                       <img src="{{ $venta['imagen'] }}" alt="Imagen de {{ $venta['titulo'] }}" class="img-fluid" style="max-width: 50px;">
-                    </td>
+                    </div>
+                </td>
+                <!-- Mostrar imagen del producto -->
+                <td>
+                    <img src="{{ $venta['imagen'] ?? asset('images/default.png') }}"
+                        alt="Imagen de {{ $venta['titulo'] ?? 'Sin título' }}"
+                        class="img-fluid" style="max-width: 50px;">
+                </td>
 
-                    <!-- Producto -->
-                    <td data-column="producto">
+                <!-- Producto -->
+                <td data-column="producto">
                     <a href="{{ route('dashboard.ventaid', ['item_id' => $venta['producto'], 'fecha_inicio' => request('fecha_inicio', now()->format('Y-m-d')), 'fecha_fin' => request('fecha_fin', now()->format('Y-m-d'))]) }}">
                         {{ $venta['producto'] }}
                     </a>
                     <br><br>
-                        <a href="{{ $venta['url'] }}" target="_blank" class="spanid">
-                             <i class="fas fa-external-link-alt" style="font-size: 14px; color:rgb(62, 137, 58);"></i>
-                        </a>
-                    </td>
-                    <!-- Mostrar SKU -->
-                    <td data-column="sku">{{ $venta['sku'] }}</td>
-                    <!-- Mostrar título del producto con enlace a MercadoLibre -->
-                    <td data-column="titulo">
-                        {{ $venta['titulo'] }}
-                    </td>
-                    <!-- Mostrar ventas diarias -->
-                    <td data-column="ventas_diarias">{{ $venta['cantidad_vendida'] }}</td>
-                    <!-- Mostrar el tipo de publicación -->
-                    <td>{{ $venta['tipo_publicacion'] }}</td>
-                    <!-- Mostrar stock -->
-                    <td data-column="stock">{{ $venta['stock'] }}</td>
-                    <!-- Mostrar días de stock -->
-                    <td data-column="dias_stock">{{ $venta['dias_stock'] }}</td>
-                    <!-- Estado de la orden -->
-                    <td>{{ $venta['order_status'] }}</td>
-                    <!-- Estado de la publicación -->
-                    <td>{{ $venta['estado'] }}</td>
-                    <!-- Mostrar fecha de la última venta -->
-                    <td>{{ \Carbon\Carbon::parse($venta['fecha_ultima_venta'])->format('d/m/Y H:i') }}</td>
-                </tr>
-            @empty
+                    <a href="{{ $venta['url'] }}" target="_blank" class="spanid">
+                        <i class="fas fa-external-link-alt" style="font-size: 14px; color:rgb(62, 137, 58);"></i>
+                    </a>
+                </td>
+                <!-- Mostrar SKU -->
+                <td data-column="sku">{{ $venta['sku'] ?? 'N/A' }}</td>
+                <!-- Mostrar título del producto con enlace a MercadoLibre -->
+                <td data-column="titulo">
+                    {{ $venta['titulo'] }}
+                </td>
+                <!-- Mostrar ventas diarias -->
+                <td data-column="ventas_diarias">{{ $venta['cantidad_vendida'] }}</td>
+                <!-- Mostrar el tipo de publicación -->
+                <td>{{ $venta['tipo_publicacion'] }}</td>
+                <!-- Mostrar stock -->
+                <td data-column="stock">{{ $venta['stock'] ?? 'Sin stock' }}</td>
+                <!-- Mostrar días de stock -->
+                <td data-column="dias_stock">{{ $venta['dias_stock'] }}</td>
+                <!-- Estado de la orden -->
+                <td>{{ $venta['order_status'] }}</td>
+                <!-- Estado de la publicación -->
+                <td>{{ $venta['estado'] ?? 'Desconocido' }}</td>
+                <!-- Mostrar fecha de la última venta -->
+                <td>{{ \Carbon\Carbon::parse($venta['fecha_ultima_venta'])->format('d/m/Y H:i') }}</td>
+            </tr>
+        @empty
 
-            @endforelse
-            </tbody>
-        </table>
+        @endforelse
+    </tbody>
+</table>
+
     </div>
 </div>
 </div>
@@ -186,6 +192,7 @@ jQuery(document).ready(function () {
     responsive: true,
     scrollX: false,
     stateSave: false,
+    ordering: false,
     processing: true,
     width: '95%',   // Forzar que la tabla ocupe el 100% del ancho
     columnDefs: [
@@ -233,41 +240,7 @@ jQuery(document).ready(function () {
 
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const headers = document.querySelectorAll('th[data-sortable="true"]');
-        const tableBody = document.getElementById('table-body');
 
-        headers.forEach(header => {
-            header.addEventListener('click', () => {
-                const column = header.getAttribute('data-column');
-                const rows = Array.from(tableBody.querySelectorAll('tr'));
-                const isAscending = header.classList.contains('ascending');
-
-                // Ordenar las filas
-                rows.sort((rowA, rowB) => {
-                    const cellA = rowA.querySelector(`[data-column="${column}"]`).textContent.trim().toLowerCase();
-                    const cellB = rowB.querySelector(`[data-column="${column}"]`).textContent.trim().toLowerCase();
-
-                    if (!isNaN(parseFloat(cellA)) && !isNaN(parseFloat(cellB))) {
-                        return isAscending ? parseFloat(cellA) - parseFloat(cellB) : parseFloat(cellB) - parseFloat(cellA);
-                    }
-
-                    return isAscending
-                        ? cellA.localeCompare(cellB)
-                        : cellB.localeCompare(cellA);
-                });
-
-                // Actualizar las clases de orden en los encabezados
-                headers.forEach(h => h.classList.remove('ascending', 'descending'));
-                header.classList.add(isAscending ? 'descending' : 'ascending');
-
-                // Renderizar las filas ordenadas
-                rows.forEach(row => tableBody.appendChild(row));
-            });
-        });
-    });
-</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {

@@ -123,9 +123,6 @@ public function ShowSales(Request $request, $item_id = null, $fecha_inicio = nul
       //  $ventas = $response['ventas']; // Asegúrate de que el servicio devuelva 'ventas'
       $totalVentas = $ventas['total_ventas'] ?? 0;
       $totalPages = $ventas['total_paginas'] ?? 1; // Ahora tomamos el valor del servicio
-
-      Log::info("Total de ventas: $totalVentas, Total de páginas: $totalPages, Page seleccionada: $page");
-
         // Renderizar la vista con los datos de ventas y la paginación
         return view('dashboard.order_report', [
             'ventas' => $ventas,
@@ -163,16 +160,95 @@ public function ventas_consolidadas(Request $request, $fecha_inicio = null, $fec
             return $this->ReporteVentasConsolidadas->generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango);
         });
 
-        // Convertir los resultados en una colección
+        // Convertir los resultados en una colección ordenada por título
         $ventasCollection = collect($ventas['ventas'] ?? []);
+        $ventasOrdenadas = $ventasCollection->sortBy('titulo')->values();
+
+        // Crear una lista de ventas consolidadas
+        $ventasConsolidadas = [];
+        $ventaAnterior = null;
+        $totalPorTitulo = [];
+        $tituloContador = [];
+        $imagenPorTitulo = [];
+
+
+        foreach ($ventasOrdenadas as $venta) {
+            // Guardar la primera imagen del título
+            if (!isset($imagenPorTitulo[$venta['titulo']])) {
+                $imagenPorTitulo[$venta['titulo']] = $venta['imagen'];
+            }
+            // Contar cuántas veces aparece cada título
+            $tituloContador[$venta['titulo']] = ($tituloContador[$venta['titulo']] ?? 0) + 1;
+
+            // Si el título cambió, agregar el total consolidado del título anterior y resetear los contadores
+            if ($ventaAnterior && $venta['titulo'] != $ventaAnterior['titulo']) {
+                // Solo agregar el total si hay más de una venta del mismo título
+                if ($tituloContador[$ventaAnterior['titulo']] > 1) {
+                    // Agregar el total consolidado por título
+                    $ventasConsolidadas[] = [
+                        'producto' => 'MLA' . rand(1000000000, 9999999999),
+                        'titulo' => "{$ventaAnterior['titulo']} Total",
+                        'cantidad_vendida' => $totalPorTitulo[$ventaAnterior['titulo']]['cantidad'],
+                        'tipo_publicacion' => 'gold_special',
+                        'fecha_venta' => now()->format('Y-m-d\TH:i:s.000-04:00'),
+                        'order_status' => 'paid',
+                        'seller_nickname' => 'TRTEK/TROTA',
+                        'fecha_ultima_venta' => now()->format('Y-m-d\TH:i:s.000-04:00'),
+                        'imagen' => $imagenPorTitulo[$ventaAnterior['titulo']],
+                        'stock' => $totalPorTitulo[$ventaAnterior['titulo']]['stock'],
+                        'sku' => 'No disp.',
+                        'estado' => 'No disp.',
+                        'url' => 'No disp',
+                        'dias_stock' => round($totalPorTitulo[$ventaAnterior['titulo']]['stock'] / ($totalPorTitulo[$ventaAnterior['titulo']]['cantidad'] / $diasDeRango), 2),
+                    ];
+                }
+                $totalPorTitulo[$ventaAnterior['titulo']] = ['cantidad' => 0, 'stock' => 0];  // Resetear el total por título
+            }
+
+            // Si es un nuevo título, agregar la venta
+            if (!isset($totalPorTitulo[$venta['titulo']])) {
+                $totalPorTitulo[$venta['titulo']] = ['cantidad' => 0, 'stock' => 0];
+            }
+
+            // Sumar la cantidad vendida y el stock por título
+            $totalPorTitulo[$venta['titulo']]['cantidad'] += $venta['cantidad_vendida'];
+            $totalPorTitulo[$venta['titulo']]['stock'] += $venta['stock'];
+
+            // Agregar la venta individual (detalle)
+            $ventasConsolidadas[] = $venta;
+            $ventaAnterior = $venta;
+        }
+
+        // Agregar el total del último título
+        if ($ventaAnterior) {
+            // Solo agregar el total si hay más de una venta del mismo título
+            if ($tituloContador[$ventaAnterior['titulo']] > 1) {
+                // Agregar el total consolidado por título
+                $ventasConsolidadas[] = [
+                    'producto' => 'MLA' . rand(1000000000, 9999999999),
+                    'titulo' => "{$ventaAnterior['titulo']} Total",
+                    'cantidad_vendida' => $totalPorTitulo[$ventaAnterior['titulo']]['cantidad'],
+                    'tipo_publicacion' => 'gold_special',
+                    'fecha_venta' => now()->format('Y-m-d\TH:i:s.000-04:00'),
+                    'order_status' => 'paid',
+                    'seller_nickname' => 'TRTEK/TROTA',
+                    'fecha_ultima_venta' => now()->format('Y-m-d\TH:i:s.000-04:00'),
+                    'imagen' => $imagenPorTitulo[$ventaAnterior['titulo']],
+                    'stock' => $totalPorTitulo[$ventaAnterior['titulo']]['stock'],
+                    'sku' => 'No disp.',
+                    'estado' => 'No disp.',
+                    'url' => 'No disp',
+                    'dias_stock' => round($totalPorTitulo[$ventaAnterior['titulo']]['stock'] / ($totalPorTitulo[$ventaAnterior['titulo']]['cantidad'] / $diasDeRango), 2),
+                ];
+            }
+        }
 
         // Calcular el total de ventas y total de páginas
-        $totalVentas = $ventasCollection->count();
+        $totalVentas = count($ventasConsolidadas);
         $totalPages = ceil($totalVentas / $limit);
-
+        session(['ventas_consolidadas' => $ventasConsolidadas]);
         // Paginación manual usando la colección (sin hacer una nueva llamada a la API)
-        $ventasPaginadas = $ventasCollection->forPage($page, $limit)->values();
-
+        $ventasPaginadas = collect($ventasConsolidadas)->forPage($page, $limit)->values();
         // Retornar la vista con los datos paginados
         return view('dashboard.ventasconsolidadas', [
             'ventas' => $ventasPaginadas,
@@ -188,6 +264,8 @@ public function ventas_consolidadas(Request $request, $fecha_inicio = null, $fec
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
+
+
 
 
 
@@ -217,8 +295,6 @@ public function venta_consolidada(Request $request, $item_id = null, $fecha_inic
       //  $ventas = $response['ventas']; // Asegúrate de que el servicio devuelva 'ventas'
       $totalVentas = $ventas['total_ventas'] ?? 0;
       $totalPages = $ventas['total_paginas'] ?? 1; // Ahora tomamos el valor del servicio
-
-      Log::info("Total de ventas: $totalVentas, Total de páginas: $totalPages, Page seleccionada: $page");
 
         // Renderizar la vista con los datos de ventas y la paginación
         return view('dashboard.order_report', [

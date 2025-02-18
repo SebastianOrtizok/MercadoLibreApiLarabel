@@ -78,6 +78,9 @@ class ReporteVentasService
                             'order_status' => $venta['status'] ?? 'unknown',
                             'seller_nickname' => $venta['seller']['nickname'] ?? 'unknown',
                             'fecha_ultima_venta' => $venta['date_closed'] ?? null,
+                            'descuento' => $venta['payments'][0]['coupon_id'] ?? null,  // Acceder al coupon_id del primer pago
+                            'descuento_detalle' => $venta['payments'][0]['coupon_amount'] ?? 0,  // Acceder al coupon_amount del primer pago
+
                         ];
                     }
                 }
@@ -104,7 +107,6 @@ class ReporteVentasService
                     round($articulo->stock_actual / $venta['cantidad_vendida'], 2) : null;
             }
         }
-
         return [
             'total_ventas' => $totalItems,
             'ventas' => $ventasGlobales,

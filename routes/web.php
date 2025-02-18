@@ -1,19 +1,21 @@
 <?php
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\PromotionsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Services\MercadoLibreService;
 use App\Services\ItemVenta;
 use Illuminate\Http\Request;
+use App\Exports\ConsolidadoVentasExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 
 Route::middleware(['auth'])->group(function () {
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('/dashboard/inventory', [AccountController::class, 'showInventory'])->name('dashboard.inventory');
+//Route::get('/dashboard/inventory', [AccountController::class, 'showInventory'])->name('dashboard.inventory');
 Route::get('/dashboard/account', [AccountController::class, 'showAccountInfo'])->name('dashboard.account');
 Route::get('/dashboard/order_report', [AccountController::class, 'ShowSales'])->name('dashboard.ventas');
 Route::get('/dashboard/order_report/{item_id?}/{fecha_inicio?}/{fecha_fin?}', [AccountController::class, 'venta_consolidada'])->name('dashboard.ventaid');
@@ -24,10 +26,15 @@ Route::post('/dashboard/category/{categoryId}', [AccountController::class, 'show
 Route::get('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
 // Route::get('/dashboard/analyze-low-conversion', [AccountController::class, 'analyzeLowConversion'])->name('dashboard.analyze.low_conversion');
 Route::get('/dashboard/item_venta', [ItemVenta::class, 'item_venta'])->name('dashboard.itemVenta');
+Route::get('/dashboard/promotions', [PromotionsController::class, 'promotions'])->name('dashboard.promociones');
 Route::get('/sincronizacion', [AccountController::class, 'sincronizacion'])->name('sincronizacion.index');
 Route::get('/sincronizacion/primera', [AccountController::class, 'primeraSincronizacionDB'])->name('sincronizacion.primera');
 Route::get('/sincronizacion/actualizar', [AccountController::class, 'actualizarArticulosDB'])->name('sincronizacion.actualizar');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/exportar-ventas', function () {
+    $ventas = session('ventas_consolidadas', []); // Asegúrate de que esté en la sesión
+    return Excel::download(new ConsolidadoVentasExport($ventas), 'ventas_consolidadas.xlsx');
+})->name('exportar.ventas');
 });
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

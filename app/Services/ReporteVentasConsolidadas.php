@@ -93,20 +93,27 @@ class ReporteVentasConsolidadas
                 $venta['sku'] = $articulo->sku;
                 $venta['estado'] = $articulo->estado;
                 $venta['url'] = $articulo->permalink;
-                $venta['dias_stock'] = ($venta['cantidad_vendida'] > 0 && $articulo->stock_actual > 0) ?
-                    round($articulo->stock_actual / $venta['cantidad_vendida'], 2) : null;
+                $ventasTotales = $venta['cantidad_vendida'];
+                $ventasDiariasPromedio = $ventasTotales / $diasDeRango;
+                $venta['dias_stock'] = ($ventasDiariasPromedio > 0 && $articulo->stock_actual > 0) ?
+                round($articulo->stock_actual / $ventasDiariasPromedio, 2) : null;
             }
         }
 
-        // Recalcular el total de ítems consolidados
-   //     $totalItems = count($ventasConsolidadas);
-   //     $totalPaginas = ceil($totalItems / $limit);
+        // Convertir a un array indexado para evitar agrupación por cuenta
+        $ventasLista = array_values($ventasConsolidadas);
 
-        // Aplicar paginación después de consolidar
+        // Ordenar la lista por título (de forma insensible a mayúsculas)
+        usort($ventasLista, function ($a, $b) {
+            return strcasecmp($a['titulo'] ?? '', $b['titulo'] ?? '');
+        });
+
+        // Calcular el total de ventas correctamente
+        $totalItems = array_sum(array_column($ventasLista, 'cantidad_vendida'));
 
         return [
             'total_ventas' => $totalItems,
-            'ventas' => $ventasConsolidadas,
+            'ventas' => $ventasLista,
         ];
     }
 
