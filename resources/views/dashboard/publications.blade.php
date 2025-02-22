@@ -157,7 +157,7 @@
     'limit' => $limit
 ])
 
-
+   </div>
 
 @endsection
 
@@ -175,12 +175,11 @@
         return;
     }
 
-    console.log("loadInventoryData ha sido llamada con:", { userProductId, mlAccountId });
 
     fetch(`/dashboard/inventory?user_product_id=${userProductId}&ml_account_id=${mlAccountId}`)
         .then(response => response.json())
         .then(data => {
-            console.log("Datos recibidos:", data);
+           // console.log("Datos recibidos:", data);
 
             let inventoryTable = document.getElementById("inventoryData");
 
@@ -189,13 +188,24 @@
                 return;
             }
 
-            let tableRows = data.locations.map(loc => `
-                <tr>
-                    <td>${loc.type || 'N/A'}</td>
-                    <td class="text-center">${loc.quantity || '0'}</td>
-                    <td>${loc.availability_type ? loc.availability_type.replace('_', ' ') : 'Desconocido'}</td>
-                </tr>
-            `).join('');
+            let typeMapping = {
+            'selling_address': 'Depósito del Vendedor',       // Depósito de tu tienda
+            'meli_facility': 'Depósito de Mercado Libre',     // Depósito de Mercado Libre
+            'warehouse': 'Almacén',                           // Otro tipo de almacén
+            'default': 'Depósito Predeterminado',             // Depósito predeterminado
+            'distribution_center': 'Centro de Distribución',  // Centro de distribución de Mercado Libre
+            // Puedes agregar más tipos aquí si es necesario
+        };
+
+        // Crear las filas de la tabla
+        let tableRows = data.locations.map(loc => `
+            <tr>
+                <td>${typeMapping[loc.type] || loc.type || 'N/A'}</td>  <!-- Mapeo del tipo de depósito -->
+                <td class="text-center">${loc.quantity || '0'}</td>  <!-- Cantidad disponible -->
+                <td>${loc.availability_type ? loc.availability_type.replace('_', ' ') : 'Desconocido'}</td>  <!-- Disponibilidad -->
+            </tr>
+        `).join('');
+
 
             inventoryTable.innerHTML = tableRows;
 
@@ -203,13 +213,13 @@
             if (modalElement) {
                 let modal = new bootstrap.Modal(modalElement);
                 modal.show();
-                console.log("Modal abierto correctamente.");
+               // console.log("Modal abierto correctamente.");
             } else {
-                console.error("No se encontró el modal en el DOM.");
+              //  console.error("No se encontró el modal en el DOM.");
             }
         })
         .catch(error => {
-            console.error("Error al obtener los datos:", error);
+           // console.error("Error al obtener los datos:", error);
             document.getElementById("inventoryData").innerHTML = `<tr><td colspan="3" class="text-center text-danger">Error al cargar los datos.</td></tr>`;
         });
 }
@@ -280,47 +290,32 @@ jQuery(document).ready(function () {
 
 
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const headers = document.querySelectorAll('th[data-sortable="true"]');
-    const tableBody = document.getElementById('table-body');
+ <!-- <script>
+ $(document).ready(function () {
+    var table = $('#publicationsTable').DataTable({
+        autoWidth: false,
+        responsive: false
+    });
 
-    headers.forEach(header => {
-        header.addEventListener('click', () => {
-            const column = header.getAttribute('data-column');
-            const rows = Array.from(tableBody.querySelectorAll('tr'));
-            const isAscending = header.classList.contains('ascending');
+    function removeClassesOnMobile() {
+        if (window.innerWidth <= 767) {
+            $('#publicationsTable td').removeClass('shrink-text dt-center');
+        }
+    }
 
-            // Ordenar las filas
-            rows.sort((rowA, rowB) => {
-                const cellA = rowA.querySelector(`[data-column="${column}"]`);
-                const cellB = rowB.querySelector(`[data-column="${column}"]`);
+    // Ejecutar cuando se carga la página
+    removeClassesOnMobile();
 
-                // Verificar si las celdas están visibles
-                if (cellA && cellB && cellA.offsetParent !== null && cellB.offsetParent !== null) {
-                    const textA = cellA.textContent.trim() || '';
-                    const textB = cellB.textContent.trim() || '';
+    // Ejecutar cada vez que DataTables redibuje la tabla
+    table.on('draw', function () {
+        removeClassesOnMobile();
+    });
 
-                    if (!isNaN(textA) && !isNaN(textB)) {
-                        return isAscending ? textA - textB : textB - textA;
-                    }
-
-                    return isAscending
-                        ? textA.localeCompare(textB)
-                        : textB.localeCompare(textA);
-                }
-
-                return 0; // Si alguna celda no es visible, no hacemos nada
-            });
-
-            // Actualizar clases para orden ascendente/descendente
-            headers.forEach(h => h.classList.remove('ascending', 'descending'));
-            header.classList.add(isAscending ? 'descending' : 'ascending');
-
-            // Renderizar las filas ordenadas
-            rows.forEach(row => tableBody.appendChild(row));
-        });
+    // También ejecutar cuando la pantalla cambia de tamaño
+    $(window).on('resize', function () {
+        removeClassesOnMobile();
     });
 });
 
-</script>
+
+</script>  -->

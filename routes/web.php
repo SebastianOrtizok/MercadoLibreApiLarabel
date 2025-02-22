@@ -9,13 +9,13 @@ use App\Services\ItemVenta;
 use Illuminate\Http\Request;
 use App\Exports\ConsolidadoVentasExport;
 use Maatwebsite\Excel\Facades\Excel;
-
+use App\Http\Controllers\ItemPromotionsController;
 
 
 Route::middleware(['auth'])->group(function () {
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-//Route::get('/dashboard/inventory', [AccountController::class, 'showInventory'])->name('dashboard.inventory');
+Route::get('/dashboard/inventory', [AccountController::class, 'showInventory'])->name('dashboard.inventory');
 Route::get('/dashboard/account', [AccountController::class, 'showAccountInfo'])->name('dashboard.account');
 Route::get('/dashboard/order_report', [AccountController::class, 'ShowSales'])->name('dashboard.ventas');
 Route::get('/dashboard/order_report/{item_id?}/{fecha_inicio?}/{fecha_fin?}', [AccountController::class, 'venta_consolidada'])->name('dashboard.ventaid');
@@ -24,9 +24,9 @@ Route::get('/dashboard/publications', [AccountController::class, 'showOwnPublica
 Route::post('dashboard/publications', [AccountController::class, 'showOwnPublications'])->name('dashboard.publications');
 Route::post('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
 Route::get('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
-// Route::get('/dashboard/analyze-low-conversion', [AccountController::class, 'analyzeLowConversion'])->name('dashboard.analyze.low_conversion');
 Route::get('/dashboard/item_venta', [ItemVenta::class, 'item_venta'])->name('dashboard.itemVenta');
 Route::get('/dashboard/promotions', [PromotionsController::class, 'promotions'])->name('dashboard.promociones');
+Route::get('/dashboard/item_promotions', [ItemPromotionsController::class, 'promotions']);
 Route::get('/sincronizacion', [AccountController::class, 'sincronizacion'])->name('sincronizacion.index');
 Route::get('/sincronizacion/primera', [AccountController::class, 'primeraSincronizacionDB'])->name('sincronizacion.primera');
 Route::get('/sincronizacion/actualizar', [AccountController::class, 'actualizarArticulosDB'])->name('sincronizacion.actualizar');

@@ -433,3 +433,142 @@ table.dataTable th.dt-center, table.dataTable td.dt-center, table.dataTable td.d
 .pagination {
     justify-content: center;
 }
+
+
+@media (max-width: 767px) {
+    /* Colapsamos la barra lateral por defecto */
+    .sidebar {
+        width: 50px; /* Solo se mostrarán los iconos */
+    }
+    .sidebar ul li {
+        padding: 0px; /* Ocultamos el texto */
+    }
+    /* Ocultamos el texto y mostramos solo los iconos */
+    .sidebar ul li a .text {
+        display: none; /* Ocultamos el texto */
+    }
+
+    .sidebar ul li a .icon {
+        margin-right: 0; /* Alineamos solo los iconos sin texto */
+    }
+    .sidebar .toggle-btn {
+        display: none; /* No mostramos el botón en móviles */
+    }
+    .sidebar h3 {
+        background: #ced4da;
+        text-align: center;
+        padding: 10px 0 0 0;
+        font-size: 15px;
+        margin: 0px 0px 0;
+        transition: opacity 0.3s;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    }
+
+    table {
+        font-size: 12px; /* Reducir el tamaño de la fuente para que quepa todo */
+    }
+
+    #publicationsTable th:nth-child(1),  /* Usuario en cabecera */
+    #publicationsTable td:nth-child(1),  /* Usuario en filas de datos */
+    #publicationsTable th:nth-child(5),  /* Condición en cabecera */
+    #publicationsTable td:nth-child(5),  /* Condición en filas de datos */
+    #publicationsTable th:nth-child(7),  /* SKU en cabecera */
+    #publicationsTable td:nth-child(7),  /* SKU en filas de datos */
+    #publicationsTable th:nth-child(8),  /* Otra columna en cabecera */
+    #publicationsTable td:nth-child(8) { /* Otra columna en filas de datos */
+        display: none;
+    }
+
+
+    /* Hacer que el contenido de la tabla se ajuste */
+    #publicationsTable td {
+        padding: 5px;
+        text-align: left;
+    }
+
+    /* Hacer los encabezados más pequeños y ajustados */
+    #publicationsTable th {
+        font-size: 11px;
+        padding: 5px;
+    }
+
+    /* ocultar columnas en consolidado de ventas */
+
+    #orderTable th:nth-child(1),  /* Cuenta en cabecera */
+    #orderTable td:nth-child(1),  /* Cuenta en filas */
+    #orderTable th:nth-child(3),  /* Producto en cabecera */
+    #orderTable td:nth-child(3),  /* Producto en filas */
+    #orderTable th:nth-child(4),  /* SKU en cabecera */
+    #orderTable td:nth-child(4),  /* SKU en filas */
+    #orderTable th:nth-child(10), /* Estado de la Orden en cabecera */
+    #orderTable td:nth-child(10), /* Estado de la Orden en filas */
+    #orderTable th:nth-child(11), /* Estado de la Publicación en cabecera */
+    #orderTable td:nth-child(11)  /* Estado de la Publicación en filas */
+    {
+        display: none;
+    }
+
+    /* Opcional: puedes cambiar la presentación de la tabla a una vista de lista */
+    /* #publicationsTable {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .table > thead {
+        display: none;
+    }
+
+    #publicationsTable {
+        display: block;
+        width: 100% !important;
+        table-layout: fixed !important;
+        overflow: hidden;
+    }
+
+    #publicationsTable tbody {
+        display: block;
+    }
+
+    #publicationsTable tr {
+        display: block;
+        width: 100%;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        padding: 0px;
+        background-color: #f9f9f9;
+    }
+
+    #publicationsTable th {
+        display: none;
+    }
+
+    #publicationsTable td {
+        display: flex;
+        width: 100% !important;
+        padding: 8px;
+        font-size: 14px;
+        border: none;
+        text-align: center;
+        align-items: center;
+        word-wrap: break-word;
+        flex-direction: column;
+    } */
+
+
+    /* Estilo de cada tarjeta */
+    /* #publicationsTable td span {
+        font-weight: bold;
+    } */
+
+    /* Ajuste de imagen */
+    /* #publicationsTable td img {
+        max-width: 100%;
+        height: auto;
+    } */
+
+    /* Deshabilitar estilos de DataTables */
+    /* .dataTables_wrapper {
+        all: unset !important;
+    } */
+}
+

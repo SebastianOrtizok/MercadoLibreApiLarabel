@@ -72,7 +72,6 @@ class ConsultaMercadoLibreService
 
                 // Decodificar la respuesta JSON para obtener los detalles del producto
                 $productDetails = json_decode($response->getBody(), true);
-
                 // Verificar si la respuesta está vacía o contiene error
                 if (!$productDetails || isset($productDetails['error'])) {
                     \Log::error("Datos del producto vacíos o con error: " . json_encode($productDetails));
@@ -177,7 +176,7 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
                 ]);
 
                 $details = json_decode($detailsResponse->getBody(), true);
-                dd($details);
+                //dd($details);
                 foreach ($details as $item) {
                     $body = $item['body'] ?? [];
 
