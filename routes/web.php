@@ -23,9 +23,9 @@ Route::get('/dashboard/order_report/{item_id?}/{fecha_inicio?}/{fecha_fin?}', [A
 Route::get('/dashboard/ventas_consolidadas/{fecha_inicio?}/{fecha_fin?}', [AccountController::class, 'ventas_consolidadas'])->name('dashboard.ventasconsolidadas');
 Route::get('/dashboard/ventas-consolidadas-db/{fecha_inicio?}/{fecha_fin?}', [VentasConsolidadasControllerDB::class, 'ventasConsolidadas'])->name('dashboard.ventasconsolidadasdb');
 Route::get('/dashboard/publications', [AccountController::class, 'showOwnPublications'])->name('dashboard.publications');
-Route::post('dashboard/publications', [AccountController::class, 'showOwnPublications'])->name('dashboard.publications');
+//Route::post('dashboard/publications', [AccountController::class, 'showOwnPublications'])->name('dashboard.publications');
 Route::post('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
-Route::get('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
+//Route::get('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
 Route::get('/dashboard/item_venta', [ItemVenta::class, 'item_venta'])->name('dashboard.itemVenta');
 Route::get('/dashboard/promotions', [PromotionsController::class, 'promotions'])->name('dashboard.promociones');
 Route::get('/dashboard/item_promotions', [ItemPromotionsController::class, 'promotions']);

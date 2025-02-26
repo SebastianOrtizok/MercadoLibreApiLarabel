@@ -21,33 +21,27 @@
                         <th class="text-center" data-column-name="Vendedor" data-sortable="true"><i class="fas fa-eye" ></i><br>Vendedor</th>
                         <th class="text-center" data-column-name="Item Ganador" data-sortable="true"><i class="fas fa-eye" ></i><br>Item Ganador</th>
                         <th class="text-center" data-column-name="Catalog Listing" data-sortable="true"><i class="fas fa-eye" ><br></i>Catalog Listing</th>
-                        <th class="text-center" data-column-name="Enlace" data-sortable="false"><i class="fas fa-eye" ></i><br>Enlace</th>
                     </tr>
                 </thead>
                 <tbody id="table-body-category">
                 @foreach($items as $item)
-                    <tr>
-                        <td><img src="{{ $item['thumbnail'] }}" alt="{{ $item['title'] }}" class="img-thumbnail" style="width: 100px;"></td>
-                        <td>{{ $item['title'] }}</td>
-                        <td>${{ number_format($item['price'], 2, ',', '.') }}</td>
-                        <td>{{ $item['available_quantity'] }}</td>
-                        <td>{{ $item['listing_type_id'] }}</td> <!-- Tipo de listado -->
-                        <td>{{ $item['seller']['nickname'] }}</td> <!-- Nickname del vendedor -->
-                        <td>{{ $item['winner_item_id'] ?? 'N/A' }}</td> <!-- Item ganador (si es null muestra 'N/A') -->
-                        <td>{{ $item['catalog_listing'] ? 'Sí' : 'No' }}</td> <!-- Catalog Listing -->
-                        <td><a href="{{ $item['permalink'] }}" class="btn btn-primary btn-sm" target="_blank">Ver en ML</a></td>
-                    </tr>
-                 @endforeach
+        <tr>
+            <td>
+                <img src="{{ $item['thumbnail'] ?? '' }}"
+                     alt="{{ $item['title'] ?? 'Sin título' }}"
+                     class="img-thumbnail"
+                     style="width: 100px;">
+            </td>
+            <td>{{ $item['title'] ?? 'Sin título' }}</td>
+            <td>${{ number_format($item['price'] ?? 0, 2, ',', '.') }}</td>
+            <td>{{ $item['available_quantity'] ?? 'N/A' }}</td>
+            <td>{{ $item['listing_type_id'] ?? 'N/A' }}</td>
+            <td>{{ $item['seller']['nickname'] ?? 'N/A' }}</td>
+            <td>{{ $item['winner_item_id'] ?? 'N/A' }}</td>
+            <td>{{ isset($item['catalog_listing']) && $item['catalog_listing'] ? 'Sí' : 'No' }}</td>
+        </tr>
+    @endforeach
 
-        @if($totalItems > count($items))
-        <div class="mt-3">
-        <p>Mostrando {{ count($items) }} de {{ $totalItems }} productos.</p>
-        </div>
-        @else
-        <div class="mt-3">
-            <p>Mostrando todos los productos disponibles.</p>
-        </div>
-        @endif
               </tbody>
          </table>
     </div>
@@ -55,42 +49,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Controles de paginación -->
-<nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-        <!-- Primer página -->
-        <li class="page-item {{ $currentPage == 1 ? 'disabled' : '' }}">
-            <a class="page-link" href="?page=1&limit={{ $limit }}" aria-label="Primera">Primera</a>
-        </li>
 
-        <!-- Página anterior -->
-        <li class="page-item {{ $currentPage == 1 ? 'disabled' : '' }}">
-            <a class="page-link" href="?page={{ $currentPage - 1 }}&limit={{ $limit }}" aria-label="Anterior">&laquo;</a>
-        </li>
-
-        <!-- Páginas cercanas -->
-        @php
-            $start = max(1, $currentPage - 2); // Mostrar 2 páginas antes
-            $end = min($totalPages, $currentPage + 2); // Mostrar 2 páginas después
-        @endphp
-
-        @for ($i = $start; $i <= $end; $i++)
-            <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
-                <a class="page-link" href="?page={{ $i }}&limit={{ $limit }}">{{ $i }}</a>
-            </li>
-        @endfor
-
-        <!-- Página siguiente -->
-        <li class="page-item {{ $currentPage == $totalPages ? 'disabled' : '' }}">
-            <a class="page-link" href="?page={{ $currentPage + 1 }}&limit={{ $limit }}" aria-label="Siguiente">&raquo;</a>
-        </li>
-
-        <!-- Última página -->
-        <li class="page-item {{ $currentPage == $totalPages ? 'disabled' : '' }}">
-            <a class="page-link" href="?page={{ $totalPages }}&limit={{ $limit }}" aria-label="Última">Última</a>
-        </li>
-    </ul>
-</nav>
 
 @endsection
 

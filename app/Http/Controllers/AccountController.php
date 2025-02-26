@@ -99,6 +99,29 @@ public function showOwnPublications(Request $request)
 }
 
 
+public function showItemsByCategory(Request $request, $categoryId)
+{
+    try {
+        $limit = $request->input('limit', 50);
+        $offset = $request->input('offset', 0);
+
+        // Llama al servicio para obtener los items por categoría
+        $data = $this->consultaService->getItemsByCategory($categoryId, $limit, $offset);
+
+        // Verifica si existe la clave "items" y extráela, sino usa un array vacío
+        $items = $data['items'] ?? [];
+
+        // Retorna la vista con los datos correctamente formateados
+        return view('dashboard.category_items', compact('items', 'categoryId'));
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+
+
 
 public function ShowSales(Request $request, $item_id = null, $fecha_inicio = null, $fecha_fin = null)
 {
