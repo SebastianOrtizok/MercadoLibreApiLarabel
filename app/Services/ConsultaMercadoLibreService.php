@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Articulo;
 use App\Models\SyncTimestamp;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ConsultaMercadoLibreService
 {
@@ -122,102 +123,103 @@ class ConsultaMercadoLibreService
 }
 
 
-public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = null, $status)
-{
-    try {
-        // Obtener los tokens de las cuentas vinculadas
-        $userData = $this->getUserId();
-        $userId = $userData['userId'];
-        $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
+public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = null, $status = 'active')
+    {
+        try {
+            // Obtener los tokens de las cuentas vinculadas
+            $userData = $this->getUserId();
+            $userId = $userData['userId'];
+            $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
 
-        $totalCuentas = $tokens->count();
-        if ($totalCuentas === 0) {
-            return ['items' => [], 'total' => 0];
-        }
-
-        $processedItems = [];
-        $total = 0;
-
-        // Repartir el `limit` entre las cuentas vinculadas
-        $limitPorCuenta = (int) ceil($limit / $totalCuentas);
-        $offsetPorCuenta = (int) ceil($offset / $totalCuentas);
-
-        foreach ($tokens as $token) {
-            $mlAccountId = $token->ml_account_id;
-
-            $queryParams = [
-                'include_attributes' => 'all',
-                'limit' => $limitPorCuenta,
-                'offset' => $offsetPorCuenta,
-                'status' => $status ?? 'active'
-            ];
-
-            if ($search) {
-                $queryParams['q'] = $search;
+            $totalCuentas = $tokens->count();
+            if ($totalCuentas === 0) {
+                return ['items' => [], 'total' => 0];
             }
 
-            $response = $this->client->get("users/{$mlAccountId}/items/search", [
-                'headers' => [
-                    'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
-                ],
-                'query' => $queryParams
-            ]);
+            $processedItems = [];
+            $total = 0;
 
-            $data = json_decode($response->getBody(), true);
-            if (empty($data['results'])) continue;
+            // Repartir el `limit` entre las cuentas vinculadas
+            $limitPorCuenta = (int) ceil($limit / $totalCuentas);
+            $offsetPorCuenta = (int) ceil($offset / $totalCuentas);
 
-            // Obtener detalles de los items en bloques de 20
-            foreach (array_chunk($data['results'], 20) as $chunk) {
-                $detailsResponse = $this->client->get("items", [
+            foreach ($tokens as $token) {
+                $mlAccountId = $token->ml_account_id;
+
+                $queryParams = [
+                    'include_attributes' => 'all',
+                    'limit' => $limitPorCuenta,
+                    'offset' => $offsetPorCuenta,
+                    'status' => $status ?? 'active'
+                ];
+
+                if ($search) {
+                    $queryParams['q'] = $search;
+                }
+
+                $response = $this->client->get("users/{$mlAccountId}/items/search", [
                     'headers' => [
                         'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
                     ],
-                    'query' => ['ids' => implode(',', $chunk)]
+                    'query' => $queryParams
                 ]);
+                $data = json_decode($response->getBody(), true);
+                if (empty($data['results'])) continue;
 
-                $details = json_decode($detailsResponse->getBody(), true);
-                //dd($details);
-                foreach ($details as $item) {
-                    $body = $item['body'] ?? [];
+                // Obtener detalles de los items en bloques de 20
+                foreach (array_chunk($data['results'], 20) as $chunk) {
+                    $detailsResponse = $this->client->get("items", [
+                        'headers' => [
+                            'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
+                        ],
+                        'query' => ['ids' => implode(',', $chunk)]
+                    ]);
 
-                    $processedItems[] = [
-                        'id' => $body['id'] ?? null,
-                        'titulo' => $body['title'] ?? 'Sin título',
-                        'imagen' => $body['thumbnail'] ?? null,
-                        'stockActual' => $body['available_quantity'] ?? 0,
-                        'precio' => $body['price'] ?? null,
-                        'estado' => $body['status'] ?? 'Desconocido',
-                        'permalink' => $body['permalink'] ?? '#',
-                        'condicion' => $body['condition'] ?? 'Desconocido',
-                        'sku' => $body['user_product_id'] ?? null,
-                        'tipoPublicacion' => $body['listing_type_id'] ?? null,
-                        'enCatalogo' => $body['catalog_listing'] ?? null,
-                        'categoryid' => $body['category_id'] ?? null,
-                        'ml_account_id' => $body['seller_id'] ?? null,
-                        'logistic_type' => $body['shipping']['logistic_type'] ?? '',
-                        'inventory_id' => $body['inventory_id'] ?? '',
-                        'user_product_id' => $body['user_product_id'] ?? '',
-                    ];
+                    $details = json_decode($detailsResponse->getBody(), true);
+                    foreach ($details as $item) {
+                        $body = $item['body'] ?? [];
+
+                        $processedItems[] = [
+                            'id' => $body['id'] ?? null,
+                            'titulo' => $body['title'] ?? 'Sin título',
+                            'imagen' => $body['thumbnail'] ?? null,
+                            'stockActual' => $body['available_quantity'] ?? 0,
+                            'precio' => $body['price'] ?? null,
+                            'precio_original' => $body['original_price'] ?? null, // Precio original
+                            'deal_ids' => $body['deal_ids'] ?? [], // IDs de promociones
+                            'tags' => $body['tags'] ?? [], // Etiquetas que podrían indicar promoción
+                            'estado' => $body['status'] ?? 'Desconocido',
+                            'permalink' => $body['permalink'] ?? '#',
+                            'condicion' => $body['condition'] ?? 'Desconocido',
+                            'sku' => $body['user_product_id'] ?? null,
+                            'tipoPublicacion' => $body['listing_type_id'] ?? null,
+                            'enCatalogo' => $body['catalog_listing'] ?? null,
+                            'categoryid' => $body['category_id'] ?? null,
+                            'ml_account_id' => $body['seller_id'] ?? null,
+                            'logistic_type' => $body['shipping']['logistic_type'] ?? '',
+                            'inventory_id' => $body['inventory_id'] ?? '',
+                            'user_product_id' => $body['user_product_id'] ?? '',
+                        ];
+                    }
                 }
+                $total += $data['paging']['total'] ?? 0;
+
+                sleep(1); // Evitar rate limit de la API
             }
-            $total += $data['paging']['total'] ?? 0;
 
-            sleep(1); // Evitar rate limit de la API
+            // Ordenar los elementos para evitar duplicados
+            $processedItems = array_slice($processedItems, 0, $limit);
+
+            return [
+                'items' => $processedItems,
+                'total' => $total
+            ];
+
+        } catch (RequestException $e) {
+            \Log::error("Error al obtener publicaciones propias: " . $e->getMessage());
+            throw $e;
         }
-
-        // Ordenar los elementos para evitar duplicados
-        $processedItems = array_slice($processedItems, 0, $limit);
-
-        return [
-            'items' => $processedItems,
-            'total' => $total
-        ];
-
-    } catch (RequestException $e) {
-        \Log::error("Error al obtener publicaciones propias: " . $e->getMessage());
-        throw $e;
     }
-}
 
 
 
@@ -225,78 +227,86 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
 
 // DESCARGAR A LA BASE DE DATOS
 
-public function DescargarArticulosDB($userId, $limit = 50, $offset = 0)
+public function DescargarArticulosDB($userId, $token, $limit = 50, $offset = 0)
 {
     try {
-        // Obtener todos los tokens asociados al usuario
-        $userData = $this->getUserId();
-        $userId = $userData['userId'];
-        $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
+        // Obtener solo el token de la cuenta específica
+       // $token = \App\Models\MercadoLibreToken::where('ml_account_id', $userId)->first();
+
+        if (!$token) {
+            \Log::error("No se encontró token para la cuenta de MercadoLibre: {$userId}");
+            return ['items' => [], 'total' => 0];
+        }
+
 
         $allItems = [];
         $total = 0;
+        $maxApiLimit = 1000; // Límite máximo de ítems paginables según la API
 
-        foreach ($tokens as $token) {
-            $mlAccountId = $token->ml_account_id;
-            $offset = 0; //
-            do {
-                // Obtener las publicaciones de la cuenta actual con paginación
-                $response = $this->client->get("users/{$mlAccountId}/items/search", [
-                    'headers' => [
-                        'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
-                    ],
-                    'query' => [
-                        'include_attributes' => 'all',
-                        'limit' => $limit,
-                        'offset' => $offset
-                    ]
+        $currentOffset = $offset;
+
+        do {
+            // Ajustar el límite si offset + limit supera el máximo permitido
+            $limitAdjusted = min($limit, max(0, $maxApiLimit - $currentOffset));
+
+            if ($limitAdjusted <= 0) {
+                break; // No hay más ítems para paginar
+            }
+
+            // Llamada a la API de MercadoLibre
+            $response = $this->client->get("users/{$userId}/items/search", [
+                'headers' => ['Authorization' => "Bearer {$token}"],
+                'query' => [
+                    'include_attributes' => 'all',
+                    'limit' => $limitAdjusted,
+                    'offset' => $currentOffset
+                ]
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            if (empty($data['results'])) {
+                break;
+            }
+
+            $itemIds = $data['results'];
+            $chunks = array_chunk($itemIds, 20);
+
+            foreach ($chunks as $chunk) {
+                $detailsResponse = $this->client->get("items", [
+                    'headers' => ['Authorization' => "Bearer {$token}"],
+                    'query' => ['ids' => implode(',', $chunk)]
                 ]);
 
-                $data = json_decode($response->getBody(), true);
+                $details = json_decode($detailsResponse->getBody(), true);
+                $allItems = array_merge($allItems, $details);
+            }
 
-                if (!isset($data['results']) || empty($data['results'])) {
-                    break; // Si no hay más resultados, terminamos el bucle
-                }
+            $total = $data['paging']['total'] ?? $total;
+            $currentOffset += $limitAdjusted;
 
-                $itemIds = $data['results'];
-                $chunks = array_chunk($itemIds, 20);
+            sleep(1);
+        } while ($currentOffset < $total && $currentOffset < $maxApiLimit);
 
-                foreach ($chunks as $chunk) {
-                    $detailsResponse = $this->client->get("items", [
-                        'headers' => [
-                            'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
-                        ],
-                        'query' => [
-                            'ids' => implode(',', $chunk)
-                        ]
-                    ]);
-
-                    $details = json_decode($detailsResponse->getBody(), true);
-                    $allItems = array_merge($allItems, $details);
-                }
-
-                $total = $data['paging']['total'] ?? $total;
-                $offset += $limit; // Incrementar el offset para obtener la siguiente página
-
-                // Esperar antes de realizar la siguiente solicitud
-                sleep(1);
-
-            } while ($offset < $total); // Continuar hasta que hayamos obtenido todos los resultados
-        }
-
+        // Procesar artículos
         $processedItems = [];
 
         foreach ($allItems as $item) {
             $body = $item['body'] ?? [];
             $sellerId = $body['seller_id'] ?? null;
 
+            // Calcular descuento si aplica
+            $precio = $body['price'] ?? null;
+            $precioOriginal = $body['original_price'] ?? null;
+            $enPromocion = $precioOriginal && $precio && $precioOriginal > $precio;
+            $descuentoPorcentaje = $enPromocion ? round((($precioOriginal - $precio) / $precioOriginal) * 100, 2) : null;
+
             $processedItems[] = [
                 'ml_product_id' => $body['id'] ?? null,
                 'titulo' => $body['title'] ?? 'Sin título',
                 'imagen' => $body['thumbnail'] ?? null,
-            //  'imagen' => $body['pictures'][0]['url'] ?? null,
                 'stockActual' => $body['available_quantity'] ?? 0,
-                'precio' => $body['price'] ?? null,
+                'precio' => $precio,
                 'estado' => $body['status'] ?? 'Desconocido',
                 'permalink' => $body['permalink'] ?? '#',
                 'condicion' => $body['condition'] ?? 'Desconocido',
@@ -304,66 +314,77 @@ public function DescargarArticulosDB($userId, $limit = 50, $offset = 0)
                 'tipoPublicacion' => $body['listing_type_id'] ?? null,
                 'enCatalogo' => $body['catalog_listing'] ?? null,
                 'token_id' => $sellerId,
+                'logistic_type' => $body['shipping']['logistic_type'] ?? null,
+                'inventory_id' => $body['inventory_id'] ?? null,
+                'user_product_id' => $body['user_product_id'] ?? null,
+                'precio_original' => $precioOriginal,
+                'category_id' => $body['category_id'] ?? null,
+                'en_promocion' => $enPromocion,
+                'descuento_porcentaje' => $descuentoPorcentaje,
+                'deal_ids' => json_encode($body['deal_ids'] ?? []),
             ];
         }
 
-        \Log::debug("Productos procesados:", $processedItems);
+        \Log::debug("Productos procesados para la cuenta {$userId}:", $processedItems);
 
-        return [
-            'items' => $processedItems,
-            'total' => $total
-        ];
+        return ['items' => $processedItems, 'total' => $total];
 
     } catch (RequestException $e) {
-        \Log::error("Error al obtener publicaciones propias: " . $e->getMessage());
+        \Log::error("Error al obtener publicaciones de MercadoLibre ({$userId}): " . $e->getMessage());
         throw $e;
     }
 }
 
+
 /**
  * SINCRONIZA LA BASE DE DATOS
  */
-public function sincronizarBaseDeDatos(string $userId, int $limit, int $page)
+public function sincronizarBaseDeDatos(string $userId, int $limit = 50, int $page)
 {
     try {
-        // Obtener el último timestamp de sincronización y convertirlo en Carbon
         $lastSync = new \Carbon\Carbon(\App\Models\SyncTimestamp::latest()->first()->timestamp ?? now());
-
-        // Obtener todos los tokens asociados al usuario
-        //$userData = $this->getUserId();
-        //$userId = $userData['userId'];
         $userId = auth()->user()->id;
         $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
         $offset = ($page - 1) * $limit;
-        $allUpdatedItems = [];
+
+        // Límite máximo de ítems paginables según la API (1000)
+        $maxApiLimit = 1000;
 
         foreach ($tokens as $token) {
             $mlAccountId = $token->ml_account_id;
-            $offset = 0; // Reiniciar el offset al comenzar con cada cuenta
+            $currentOffset = $offset;
             \Log::info("Procesando cuenta ML", ['mlAccountId' => $mlAccountId]);
 
-
-            // Obtener los IDs de los artículos ordenados por `last_updated` de manera descendente
             do {
+                // Asegurarse de que offset + limit no exceda el máximo permitido
+                if ($currentOffset + $limit > $maxApiLimit) {
+                    $limitAdjusted = $maxApiLimit - $currentOffset;
+                    if ($limitAdjusted <= 0) {
+                        break; // No hay más ítems que paginar dentro del límite
+                    }
+                } else {
+                    $limitAdjusted = $limit;
+                }
+
                 $response = Http::withToken($this->mercadoLibreService->getAccessToken($userId, $mlAccountId))
                     ->get("https://api.mercadolibre.com/users/{$mlAccountId}/items/search", [
-                        'limit' => 10,
-                        'offset' => $offset,
-                        'sort' => 'last_updated_desc',  // Ordenar por last_updated descendente
+                        'limit' => $limitAdjusted,
+                        'offset' => $currentOffset,
+                        'sort' => 'last_updated_desc',
                     ]);
 
                 if ($response->failed()) {
-                    throw new \Exception("Error al obtener datos para la cuenta {$mlAccountId}.");
+                    throw new \Exception("Error al obtener datos para la cuenta {$mlAccountId}: " . $response->body());
                 }
 
                 $data = $response->json();
                 $itemIds = $data['results'] ?? [];
                 if (empty($itemIds)) {
-                    break; // No hay más resultados
+                    break;
                 }
 
-                // Dividir los IDs en grupos de 20 para obtener detalles masivos
                 $chunks = array_chunk($itemIds, 20);
+                $anyUpdated = false;
 
                 foreach ($chunks as $chunk) {
                     $detailsResponse = Http::withToken($this->mercadoLibreService->getAccessToken($userId, $mlAccountId))
@@ -372,92 +393,82 @@ public function sincronizarBaseDeDatos(string $userId, int $limit, int $page)
                         ]);
 
                     if ($detailsResponse->failed()) {
-                        throw new \Exception("Error al obtener detalles de artículos.");
+                        throw new \Exception("Error al obtener detalles de artículos: " . $detailsResponse->body());
                     }
 
                     $details = $detailsResponse->json();
 
-                    // Indicador para saber si al menos un artículo fue actualizado
-                    $anyUpdated = false;
-
                     foreach ($details as $item) {
                         $body = $item['body'] ?? [];
-
-                        // Usar 'last_updated' para obtener la fecha de última actualización
                         $itemLastUpdated = isset($body['last_updated'])
                             ? new \Carbon\Carbon($body['last_updated'])
                             : null;
 
-                        // Si no existe 'last_updated', continuamos con el siguiente artículo
-                        if ($itemLastUpdated === null) {
-                            continue;
-                        }
-
-                        // Comparar la fecha de la última actualización con el timestamp de sincronización
-                        if ($itemLastUpdated->lessThan($lastSync)) {
+                        if ($itemLastUpdated === null || $itemLastUpdated->lessThan($lastSync)) {
                             \Log::info("Artículo no actualizado después de la última sincronización", [
-                                'itemLastUpdated' => $itemLastUpdated->toDateTimeString(),
+                                'itemLastUpdated' => $itemLastUpdated ? $itemLastUpdated->toDateTimeString() : 'N/A',
                                 'lastSync' => $lastSync->toDateTimeString(),
                             ]);
-                            // Si el artículo no ha sido actualizado después de la última sincronización, pasar al siguiente
                             continue;
                         }
 
-                        // Si el artículo tiene una fecha de actualización más reciente que la sincronización
-                        // Solo actualizar o crear el artículo en la base de datos en este caso
-                        else {
-                            Articulo::updateOrCreate(
-                                ['ml_product_id' => $body['id']],
-                                [
-                                    'user_id' => $userId,
-                                    'titulo' => $body['title'] ?? 'Sin título',
-                                    'imagen' => $body['thumbnail'] ?? null,
-                                    'stock_actual' => $body['available_quantity'] ?? 0,
-                                    'precio' => $body['price'] ?? 0.0,
-                                    'estado' => $body['status'] ?? 'Desconocido',
-                                    'permalink' => $body['permalink'] ?? '#',
-                                    'condicion' => $body['condition'] ?? 'Desconocido',
-                                    'tipo_publicacion' => $body['listing_type_id'] ?? 'Desconocido',
-                                    'en_catalogo' => $body['catalog_listing'] ?? false,
-                                    'token_id' => $mlAccountId,
-                                    'updated_at' => now(),
-                                ]
-                            );
+                        $precio = $body['price'] ?? null;
+                        $precioOriginal = $body['original_price'] ?? null;
+                        $enPromocion = $precioOriginal && $precio && $precioOriginal > $precio;
+                        $descuentoPorcentaje = $enPromocion ? round((($precioOriginal - $precio) / $precioOriginal) * 100, 2) : null;
 
-                           // Indicamos que al menos un artículo fue actualizado
-                            $anyUpdated = true;
-                        }
+                        Articulo::updateOrCreate(
+                            ['ml_product_id' => $body['id']],
+                            [
+                                'user_id' => $userId,
+                                'titulo' => $body['title'] ?? 'Sin título',
+                                'imagen' => $body['thumbnail'] ?? null,
+                                'stock_actual' => $body['available_quantity'] ?? 0,
+                                'precio' => $precio,
+                                'estado' => $body['status'] ?? 'Desconocido',
+                                'permalink' => $body['permalink'] ?? '#',
+                                'condicion' => $body['condition'] ?? 'Desconocido',
+                                'tipo_publicacion' => $body['listing_type_id'] ?? 'Desconocido',
+                                'en_catalogo' => $body['catalog_listing'] ?? false,
+                                'logistic_type' => $body['shipping']['logistic_type'] ?? null,
+                                'inventory_id' => $body['inventory_id'] ?? null,
+                                'user_product_id' => $body['user_product_id'] ?? null,
+                                'precio_original' => $precioOriginal,
+                                'category_id' => $body['category_id'] ?? null,
+                                'en_promocion' => $enPromocion,
+                                'descuento_porcentaje' => $descuentoPorcentaje,
+                                'deal_ids' => json_encode($body['deal_ids'] ?? []),
+                                'updated_at' => now(),
+                            ]
+                        );
+
+                        $anyUpdated = true;
                     }
 
-                    // Si no se actualizó ningún artículo, rompemos el bucle para pasar a la siguiente cuenta
                     if (!$anyUpdated) {
                         break;
                     }
                 }
 
-                $offset += $limit;
-
-                // Esperar antes de realizar la siguiente solicitud
+                $currentOffset += $limitAdjusted;
                 sleep(1);
-            } while ($offset < ($data['paging']['total'] ?? 0));
+            } while ($currentOffset < ($data['paging']['total'] ?? 0) && $currentOffset < $maxApiLimit);
 
-            // Solo actualizamos el SyncTimestamp si fue modificada la base de datos
             $syncTimestamp = \App\Models\SyncTimestamp::latest()->first();
             if ($syncTimestamp) {
                 $syncTimestamp->update(['timestamp' => now()]);
             } else {
                 \App\Models\SyncTimestamp::create(['timestamp' => now()]);
             }
-        }
-        \Log::info("Cuenta procesada: {$mlAccountId}, artículos actualizados: ", $allUpdatedItems);
 
+            \Log::info("Cuenta procesada: {$mlAccountId}, artículos actualizados.");
+        }
 
     } catch (\Exception $e) {
         \Log::error("Error al sincronizar la base de datos: " . $e->getMessage());
         throw $e;
     }
 }
-
 
 
 

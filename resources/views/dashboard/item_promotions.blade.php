@@ -4,7 +4,10 @@
     <div class="container">
         <h1 class="mb-4">Promociones del Ítem</h1>
 
-        @if (count($itemPromotions) > 0)
+        {{-- Ver la estructura de los datos --}}
+        {{-- @dd($itemPromotions) --}}
+
+        @if (!empty($itemPromotions))
             @php
                 $groupedPromotions = collect($itemPromotions)->groupBy('itemId');
             @endphp
@@ -16,10 +19,12 @@
                             <tr>
                                 <th>Tipo</th>
                                 <th>Estado</th>
-                                <th>Precio</th>
+                                <th>Nombre</th>
                                 <th>Fecha de Inicio</th>
                                 <th>Fecha de Fin</th>
-                                <th>Nombre</th>
+                                <th>Precio Original</th>
+                                <th>Precio con Descuento</th>
+                                <th>Beneficios</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -27,10 +32,26 @@
                                 <tr>
                                     <td>{{ $promotion['type'] ?? 'Desconocido' }}</td>
                                     <td>{{ $promotion['status'] ?? 'Desconocido' }}</td>
-                                    <td>{{ $promotion['price'] ?? 'No disponible' }}</td>
+                                    <td>{{ $promotion['name'] ?? 'Sin nombre' }}</td>
                                     <td>{{ $promotion['start_date'] ?? 'Fecha no disponible' }}</td>
                                     <td>{{ $promotion['finish_date'] ?? 'Fecha no disponible' }}</td>
-                                    <td>{{ $promotion['name'] ?? 'Sin nombre' }}</td>
+                                    <td>
+                                        {{ isset($promotion['original_price']) ? number_format($promotion['original_price'], 2) : 'No disponible' }}
+                                    </td>
+                                    <td>
+                                        {{ isset($promotion['new_price']) ? number_format($promotion['new_price'], 2) : 'No disponible' }}
+                                    </td>
+                                    <td>
+                                        @if (isset($promotion['benefits']) && !empty($promotion['benefits']))
+                                            <ul>
+                                                <li>Tipo de Beneficio: {{ $promotion['benefits']['type'] ?? 'Desconocido' }}</li>
+                                                <li>Porcentaje Meli: {{ $promotion['benefits']['meli_percent'] ?? 'N/A' }}%</li>
+                                                <li>Porcentaje Vendedor: {{ $promotion['benefits']['seller_percent'] ?? 'N/A' }}%</li>
+                                            </ul>
+                                        @else
+                                            <p>No hay beneficios disponibles.</p>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -41,4 +62,7 @@
             <p>No hay promociones disponibles.</p>
         @endif
     </div>
+
+       <!-- Controles de paginación -->
+
 @endsection

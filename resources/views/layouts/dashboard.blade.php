@@ -40,17 +40,19 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.ventasconsolidadas') }}">
+
+                    <a class="nav-link" href="{{ route('dashboard.ventasconsolidadasdb') }}">
                         <span class="icon"><i class="fas fa-boxes"></i></span>
-                        <span class="text">Ventas Consolidadas</span>
+                        <span class="text">Ventas ConsolidadasDB</span>
                     </a>
                 </li>
                 <!-- <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.itemVenta') }}">
-                        <span class="icon"><i class="fas fa-boxes"></i></span>
-                        <span class="text">Item Venta</span>
-                    </a>
-                </li> -->
+
+<a class="nav-link" href="{{ route('dashboard.ventasconsolidadas') }}">
+    <span class="icon"><i class="fas fa-boxes"></i></span>
+    <span class="text">Ventas ConsolidadasML</span>
+</a>
+</li> -->
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('sincronizacion.index') }}">
                         <span class="icon"><i class="fas fa-database"></i></span>

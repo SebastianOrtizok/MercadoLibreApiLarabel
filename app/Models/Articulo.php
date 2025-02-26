@@ -15,7 +15,7 @@ class Articulo extends Model
     // Columnas que son asignables en masa (mass assignment)
     protected $fillable = [
         'user_id',
-        'ml_product_id',  // Agregado el campo ml_product_id
+        'ml_product_id',
         'titulo',
         'imagen',
         'stock_actual',
@@ -26,6 +26,20 @@ class Articulo extends Model
         'sku',
         'tipo_publicacion',
         'en_catalogo',
+        'logistic_type',
+        'inventory_id',
+        'user_product_id',
+        'precio_original',
+        'category_id',
+        'en_promocion',
+        'descuento_porcentaje',
+        'deal_ids',
+    ];
+
+    // Casting para tipos específicos
+    protected $casts = [
+        'en_promocion' => 'boolean', // Convierte en_promocion a booleano
+        'deal_ids' => 'array',       // Convierte deal_ids a arreglo desde JSON
     ];
 
     // Relación con la tabla 'mercadolibre_tokens'

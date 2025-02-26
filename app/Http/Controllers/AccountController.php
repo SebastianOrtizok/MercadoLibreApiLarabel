@@ -81,10 +81,8 @@ public function showOwnPublications(Request $request)
 
         // Obteniendo publicaciones del servicio
         $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset, $search, $status);
-
         $totalPublications = $publications['total'] ?? 0;
         $totalPages = ceil($totalPublications / $limit);
-
         return view('dashboard.publications', [
             'publications' => $publications['items'],
             'totalPages' => $totalPages,
@@ -315,56 +313,78 @@ public function venta_consolidada(Request $request, $item_id = null, $fecha_inic
 
 
 
-public function sincronizacion()
-{
-    return view('sincronizacion.index'); // Vista para mostrar el estado de la sincronización
-}
+public function sincronizacion(Request $request)
+    {
+        $userId = auth()->id();
+        $cuentas = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
+
+        return view('sincronizacion.index', [
+            'cuentas' => $cuentas,
+            'dateFromDefault' => Carbon::today()->format('Y-m-d'),
+            'dateToDefault' => Carbon::today()->format('Y-m-d'),
+        ]);
+    }
+
 
 
 /**
 * Descarga todos los artículos de la datos de MercadoLibre.
 */
-public function primeraSincronizacionDB(Request $request)
+public function primeraSincronizacionDB(Request $request, $user_id)
 {
     try {
-        $userId = env('MERCADOLIBRE_USER_ID');
-        // Parámetros de paginación desde el request
+        $usuarioAutenticado = auth()->id(); // Obtener el ID del usuario logueado
+
+        // Verificar si el usuario autenticado tiene acceso a la cuenta de MercadoLibre seleccionada
+        $cuenta = \App\Models\MercadoLibreToken::where('ml_account_id', $user_id)
+                    ->where('user_id', $usuarioAutenticado)
+                    ->first();
+
+        if (!$cuenta) {
+            return redirect()->back()->with('error', 'No tienes permiso para sincronizar esta cuenta.');
+        }
+        $token = $cuenta->access_token;
+
+        // Si la cuenta pertenece al usuario, continuar con la sincronización
         $limit = (int) $request->input('limit', 50);
-        $page = (int) $request->input('page', 1); // Página actual (por defecto 1)
+        $page = (int) $request->input('page', 1);
         $offset = ($page - 1) * $limit;
+        $publications = $this->consultaService->DescargarArticulosDB($user_id, $token, $limit, $offset);
 
-        // Obteniendo publicaciones del servicio
-        $publications = $this->consultaService->DescargarArticulosDB($userId, $limit, $page);
-
-        // Almacenar o actualizar artículos en la base de datos
         foreach ($publications['items'] as $item) {
             \App\Models\Articulo::updateOrInsert(
-                // Condición para identificar un registro existente
                 ['ml_product_id' => $item['ml_product_id']],
-                // Datos que se actualizarán o insertarán
                 [
                     'user_id' => $item['token_id'],
                     'titulo' => $item['titulo'] ?? 'Sin título',
                     'imagen' => $item['imagen'] ?? null,
                     'stock_actual' => $item['stockActual'] ?? 0,
-              //    'dias_stock' => $item['dias_stock'] ?? 0,
                     'precio' => $item['precio'] ?? 0.0,
                     'estado' => $item['estado'] ?? 'Desconocido',
                     'permalink' => $item['permalink'] ?? '#',
                     'condicion' => $item['condicion'] ?? 'Desconocido',
                     'sku' => $item['sku'] ?? null,
-                    'tipo_publicacion' => $item['tipo_publicacion'] ?? 'Desconocido',
-                    'en_catalogo' => $item['en_catalogo'] ?? false,
+                    'tipo_publicacion' => $item['tipoPublicacion'] ?? 'Desconocido',
+                    'en_catalogo' => $item['enCatalogo'] ?? false,
+                    'logistic_type' => $item['logistic_type'] ?? null,
+                    'inventory_id' => $item['inventory_id'] ?? null,
+                    'user_product_id' => $item['user_product_id'] ?? null,
+                    'precio_original' => $item['precio_original'] ?? null,
+                    'category_id' => $item['category_id'] ?? null,
+                    'en_promocion' => $item['en_promocion'] ?? false,
+                    'descuento_porcentaje' => $item['descuento_porcentaje'] ?? null,
+                    'deal_ids' => $item['deal_ids'] ?? '[]',
                 ]
             );
         }
 
         return redirect()->back()->with('success', 'Sincronización completada con éxito.');
-            } catch (\Exception $e) {
-                // Redirige con un mensaje de error
-                return redirect()->back()->with('error', 'Error al sincronizar los artículos: ' . $e->getMessage());
-            }
-        }
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Error al sincronizar los artículos: ' . $e->getMessage());
+    }
+}
+
+
 
 
      /**

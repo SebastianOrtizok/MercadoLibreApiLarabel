@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Services\PromotionsService;
-use App\Models\MercadoLibreToken; 
+use App\Models\MercadoLibreToken;
 use Illuminate\Support\Facades\Log;
 
 class PromotionsController {
@@ -32,8 +32,6 @@ class PromotionsController {
             foreach ($accounts as $account) {
                 $accessToken = $account->access_token;
                 $promotionsData = $this->promotionsService->getAllPromotions($account->ml_account_id, $accessToken);
-                $discountsData = $this->promotionsService->getDiscountsByCategory($account->ml_account_id, $accessToken);
-
                 if (!isset($promotionsData['results'])) {
                     continue;
                 }
