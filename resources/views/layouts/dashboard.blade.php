@@ -4,22 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.11/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.11/css/jquery.dataTables.min.css">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <title>Dashboard</title>
 </head>
 <body>
-    <div class="container-fluid">
-        <!-- Sidebar -->
-        <div id="sidebar" class="sidebar">
-            <h3>Menu</h3>
+    <div class="container-fluid p-0">
+        <!-- Navbar para móviles (arriba, botón a la izquierda) -->
+        <nav class="navbar navbar-light bg-light sticky-top d-lg-none">
+            <div class="container-fluid">
+                <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#mobileNav" aria-controls="mobileNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mobileNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard.account') }}">
+                                <i class="fas fa-user-tag me-2"></i> Cuentas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard.publications') }}">
+                                <i class="fas fa-list me-2"></i> Mis Publicaciones
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard.ventas') }}">
+                                <i class="fas fa-dollar-sign me-2"></i> Ventas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard.ventasconsolidadasdb') }}">
+                                <i class="fas fa-boxes me-2"></i> Ventas ConsolidadasDB
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard.promociones') }}">
+                                <i class="fas fa-boxes me-2"></i> Promociones de ML
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('sincronizacion.index') }}">
+                                <i class="fas fa-database me-2"></i> Sincronización
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Sidebar para escritorio -->
+        <div id="sidebar" class="sidebar d-none d-lg-block">
+            <h3 class="sidebar-title">Menu</h3>
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.account') }}">
@@ -35,24 +88,22 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.ventas') }}">
-                    <span class="icon"><i class="fas fa-dollar-sign"></i></span>
+                        <span class="icon"><i class="fas fa-dollar-sign"></i></span>
                         <span class="text">Ventas</span>
                     </a>
                 </li>
                 <li class="nav-item">
-
                     <a class="nav-link" href="{{ route('dashboard.ventasconsolidadasdb') }}">
                         <span class="icon"><i class="fas fa-boxes"></i></span>
                         <span class="text">Ventas ConsolidadasDB</span>
                     </a>
                 </li>
-                <!-- <li class="nav-item">
-
-<a class="nav-link" href="{{ route('dashboard.ventasconsolidadas') }}">
-    <span class="icon"><i class="fas fa-boxes"></i></span>
-    <span class="text">Ventas ConsolidadasML</span>
-</a>
-</li> -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.promociones') }}">
+                        <span class="icon"><i class="fas fa-boxes"></i></span>
+                        <span class="text">Promociones de ML</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('sincronizacion.index') }}">
                         <span class="icon"><i class="fas fa-database"></i></span>
@@ -60,17 +111,14 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                    class="logout-button">
-                        <i class="fas fa-sign-out-alt"></i> <!-- Ícono -->
+                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link logout-button">
+                        <span class="icon"><i class="fas fa-sign-out-alt"></i></span>
                         <span class="text">Logout</span>
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
                 </li>
-
             </ul>
             <div class="toggle-btn"></div>
         </div>
@@ -93,13 +141,10 @@
         });
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- jQuery -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <!-- ColReorder para mover columnas -->
     <script src="https://cdn.datatables.net/colreorder/1.5.0/js/dataTables.colReorder.min.js"></script>
-
 </body>
 </html>

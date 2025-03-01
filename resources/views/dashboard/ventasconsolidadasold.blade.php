@@ -72,7 +72,7 @@
 
     <!-- Tabla de resultados -->
     <div class="table-responsive">
-    <table id="orderTable" class="table table-striped table-bordered table-hover">
+    <table id="orderTableold" class="table table-striped table-bordered table-hover">
     <thead class="thead-dark sticky-top">
         <tr>
             <th class="text-center" data-column-name="Cuenta"><i class="fas fa-eye" ></i><br>Cuenta</th>

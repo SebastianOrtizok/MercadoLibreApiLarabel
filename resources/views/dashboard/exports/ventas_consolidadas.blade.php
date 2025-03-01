@@ -7,7 +7,6 @@
             <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Título</th>
             <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Cantidad Vendida</th>
             <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Tipo Publicación</th>
-            <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Fecha Venta</th>
             <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Estado Orden</th>
             <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Vendedor</th>
             <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Última Venta</th>
@@ -25,9 +24,10 @@
             <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">{{ $venta['titulo'] }}</td>
             <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ $venta['cantidad_vendida'] }}</td>
             <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">{{ $venta['tipo_publicacion'] }}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ $venta['fecha_venta'] }}</td>
             <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ $venta['order_status'] }}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">{{ $venta['seller_nickname'] }}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">
+                {{ isset($venta['seller_nickname']) ? $venta['seller_nickname'] : ($venta['ml_account_id'] ?? 'No disponible') }}
+            </td>
             <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ $venta['fecha_ultima_venta'] }}</td>
             <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ $venta['stock'] }}</td>
             <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ $venta['sku'] }}</td>

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -21,14 +22,30 @@ class VentasConsolidadasControllerDB extends Controller
             $limit = $request->input('limit', 50);
             $page = (int) $request->input('page', 1);
 
+            // Priorizar fecha_inicio_calculada (del deslizador) si está presente
+        if ($request->has('fecha_inicio_calculada') && !empty($request->input('fecha_inicio_calculada'))) {
+            $fechaInicio = Carbon::parse($request->input('fecha_inicio_calculada'));
+        } else {
+            // Si no hay fecha_inicio_calculada, usar fecha_inicio manual o el default
             $fechaInicio = Carbon::parse($fecha_inicio ?? $request->input('fecha_inicio', Carbon::now()->subDays(30)->format('Y-m-d')));
+        }
+
             $fechaFin = Carbon::parse($fecha_fin ?? $request->input('fecha_fin', Carbon::now()->format('Y-m-d')));
             $diasDeRango = $fechaInicio->diffInDays($fechaFin) ?: 1;
 
-            $cacheKey = "ventas_consolidadas_db_{$fechaInicio->format('Ymd')}_{$fechaFin->format('Ymd')}";
+            // Recoger filtros del request
+            $filters = [
+                'search' => $request->input('search'),
+                'tipo_publicacion' => $request->input('tipo_publicacion'),
+                'order_status' => $request->input('order_status'),
+                'estado_publicacion' => $request->input('estado_publicacion'),
+                'ml_account_id' => $request->input('ml_account_id'),
+            ];
 
-            $ventas = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($fechaInicio, $fechaFin, $diasDeRango) {
-                return $this->reporteVentasConsolidadasDb->generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango);
+            $cacheKey = "ventas_consolidadas_db_{$fechaInicio->format('Ymd')}_{$fechaFin->format('Ymd')}_" . md5(serialize($filters));
+
+            $ventas = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($fechaInicio, $fechaFin, $diasDeRango, $filters) {
+                return $this->reporteVentasConsolidadasDb->generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango, $filters);
             });
 
             $ventasCollection = collect($ventas['ventas'] ?? []);
@@ -39,8 +56,13 @@ class VentasConsolidadasControllerDB extends Controller
             $totalPorTitulo = [];
             $tituloContador = [];
             $imagenPorTitulo = [];
+            $resumenPorCuenta = []; // Nuevo array para el resumen por cuenta
 
             foreach ($ventasOrdenadas as $venta) {
+                // Calcular resumen por cuenta
+                $cuenta = $venta['ml_account_id'] ?? $venta['seller_nickname'] ?? 'Desconocida';
+                $resumenPorCuenta[$cuenta] = ($resumenPorCuenta[$cuenta] ?? 0) + (int)$venta['cantidad_vendida'];
+
                 if (!isset($imagenPorTitulo[$venta['titulo']])) {
                     $imagenPorTitulo[$venta['titulo']] = $venta['imagen'];
                 }
@@ -101,6 +123,9 @@ class VentasConsolidadasControllerDB extends Controller
                 ];
             }
 
+            // Calcular el máximo valor de ventas para las barras de progreso
+            $maxVentasTotal = !empty($resumenPorCuenta) ? max($resumenPorCuenta) : 1;
+
             $totalVentas = count($ventasConsolidadas);
             $totalPages = ceil($totalVentas / $limit);
 
@@ -116,6 +141,9 @@ class VentasConsolidadasControllerDB extends Controller
                 'currentPage' => $page,
                 'limit' => $limit,
                 'totalVentas' => $totalVentas,
+                'diasSeleccionados' => $request->input('dias', 30), // Valor del deslizador
+                'resumenPorCuenta' => $resumenPorCuenta, // Nuevo dato para la vista
+                'maxVentasTotal' => $maxVentasTotal,     // Nuevo dato para la vista
             ]);
 
         } catch (\Exception $e) {

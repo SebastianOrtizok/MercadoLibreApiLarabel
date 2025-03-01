@@ -3,43 +3,41 @@
         <ul class="pagination justify-content-center">
             <!-- Botón Anterior -->
             <li class="page-item {{ $currentPage == 1 ? 'disabled' : '' }}">
-                <a class="page-link"
-                   href="{{ request()->fullUrlWithQuery(['page' => $currentPage - 1, 'limit' => $limit]) }}"
-                   aria-label="Anterior">&laquo;</a>
+                <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $currentPage - 1]) }}" aria-label="Anterior">«</a>
             </li>
 
             <!-- Primera página -->
-            @if ($currentPage > 3)
-                <li class="page-item">
-                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => 1, 'limit' => $limit]) }}">1</a>
-                </li>
-                @if ($currentPage > 4)
-                    <li class="page-item disabled"><span class="page-link">...</span></li>
-                @endif
+            <li class="page-item {{ $currentPage == 1 ? 'active' : '' }}">
+                <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => 1]) }}">1</a>
+            </li>
+
+            <!-- Elipsis si hay más de 5 páginas antes -->
+            @if ($currentPage > 4)
+                <li class="page-item disabled"><span class="page-link">...</span></li>
             @endif
 
-            <!-- Números de página dinámicos -->
-            @for ($i = max(1, $currentPage - 2); $i <= min($totalPages, $currentPage + 2); $i++)
+            <!-- Páginas cercanas -->
+            @for ($i = max(2, $currentPage - 2); $i <= min($totalPages - 1, $currentPage + 2); $i++)
                 <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
-                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $i, 'limit' => $limit]) }}">{{ $i }}</a>
+                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $i]) }}">{{ $i }}</a>
                 </li>
             @endfor
 
+            <!-- Elipsis si hay más de 5 páginas después -->
+            @if ($currentPage < $totalPages - 3)
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            @endif
+
             <!-- Última página -->
-            @if ($currentPage < $totalPages - 2)
-                @if ($currentPage < $totalPages - 3)
-                    <li class="page-item disabled"><span class="page-link">...</span></li>
-                @endif
-                <li class="page-item">
-                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $totalPages, 'limit' => $limit]) }}">{{ $totalPages }}</a>
+            @if ($totalPages > 1)
+                <li class="page-item {{ $currentPage == $totalPages ? 'active' : '' }}">
+                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $totalPages]) }}">{{ $totalPages }}</a>
                 </li>
             @endif
 
             <!-- Botón Siguiente -->
             <li class="page-item {{ $currentPage == $totalPages ? 'disabled' : '' }}">
-                <a class="page-link"
-                   href="{{ request()->fullUrlWithQuery(['page' => $currentPage + 1, 'limit' => $limit]) }}"
-                   aria-label="Siguiente">&raquo;</a>
+                <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $currentPage + 1]) }}" aria-label="Siguiente">»</a>
             </li>
         </ul>
     </nav>

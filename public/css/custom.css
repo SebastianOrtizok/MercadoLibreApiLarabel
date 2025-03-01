@@ -419,11 +419,14 @@ th[data-sortable="true"]:hover {
     z-index: 1000;
 }
 
-table.dataTable thead th,table.dataTable thead td {
+table.dataTable thead th,
+table.dataTable thead td {
     padding: 8px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 }
-table.dataTable th.dt-center, table.dataTable td.dt-center, table.dataTable td.dataTables_empty {
+table.dataTable th.dt-center,
+table.dataTable td.dt-center,
+table.dataTable td.dataTables_empty {
     text-align: center;
     word-wrap: break-word;
     word-break: break-word;
@@ -434,141 +437,377 @@ table.dataTable th.dt-center, table.dataTable td.dt-center, table.dataTable td.d
     justify-content: center;
 }
 
-
-@media (max-width: 767px) {
-    /* Colapsamos la barra lateral por defecto */
-    .sidebar {
-        width: 50px; /* Solo se mostrarán los iconos */
-    }
-    .sidebar ul li {
-        padding: 0px; /* Ocultamos el texto */
-    }
-    /* Ocultamos el texto y mostramos solo los iconos */
-    .sidebar ul li a .text {
-        display: none; /* Ocultamos el texto */
-    }
-
-    .sidebar ul li a .icon {
-        margin-right: 0; /* Alineamos solo los iconos sin texto */
-    }
-    .sidebar .toggle-btn {
-        display: none; /* No mostramos el botón en móviles */
-    }
-    .sidebar h3 {
-        background: #ced4da;
-        text-align: center;
-        padding: 10px 0 0 0;
-        font-size: 15px;
-        margin: 0px 0px 0;
-        transition: opacity 0.3s;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    }
-
-    table {
-        font-size: 12px; /* Reducir el tamaño de la fuente para que quepa todo */
-    }
-
-    #publicationsTable th:nth-child(1),  /* Usuario en cabecera */
-    #publicationsTable td:nth-child(1),  /* Usuario en filas de datos */
-    #publicationsTable th:nth-child(5),  /* Condición en cabecera */
-    #publicationsTable td:nth-child(5),  /* Condición en filas de datos */
-    #publicationsTable th:nth-child(7),  /* SKU en cabecera */
-    #publicationsTable td:nth-child(7),  /* SKU en filas de datos */
-    #publicationsTable th:nth-child(8),  /* Otra columna en cabecera */
-    #publicationsTable td:nth-child(8) { /* Otra columna en filas de datos */
-        display: none;
-    }
-
-
-    /* Hacer que el contenido de la tabla se ajuste */
-    #publicationsTable td {
-        padding: 5px;
-        text-align: left;
-    }
-
-    /* Hacer los encabezados más pequeños y ajustados */
-    #publicationsTable th {
-        font-size: 11px;
-        padding: 5px;
-    }
-
-    /* ocultar columnas en consolidado de ventas */
-
-    #orderTable th:nth-child(1),  /* Cuenta en cabecera */
-    #orderTable td:nth-child(1),  /* Cuenta en filas */
-    #orderTable th:nth-child(3),  /* Producto en cabecera */
-    #orderTable td:nth-child(3),  /* Producto en filas */
-    #orderTable th:nth-child(4),  /* SKU en cabecera */
-    #orderTable td:nth-child(4),  /* SKU en filas */
-    #orderTable th:nth-child(10), /* Estado de la Orden en cabecera */
-    #orderTable td:nth-child(10), /* Estado de la Orden en filas */
-    #orderTable th:nth-child(11), /* Estado de la Publicación en cabecera */
-    #orderTable td:nth-child(11)  /* Estado de la Publicación en filas */
-    {
-        display: none;
-    }
-
-    /* Opcional: puedes cambiar la presentación de la tabla a una vista de lista */
-    /* #publicationsTable {
-        display: block;
-        overflow-x: auto;
-    }
-
-    .table > thead {
-        display: none;
-    }
-
-    #publicationsTable {
-        display: block;
-        width: 100% !important;
-        table-layout: fixed !important;
-        overflow: hidden;
-    }
-
-    #publicationsTable tbody {
-        display: block;
-    }
-
-    #publicationsTable tr {
-        display: block;
-        width: 100%;
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        padding: 0px;
-        background-color: #f9f9f9;
-    }
-
-    #publicationsTable th {
-        display: none;
-    }
-
-    #publicationsTable td {
-        display: flex;
-        width: 100% !important;
-        padding: 8px;
-        font-size: 14px;
-        border: none;
-        text-align: center;
-        align-items: center;
-        word-wrap: break-word;
-        flex-direction: column;
-    } */
-
-
-    /* Estilo de cada tarjeta */
-    /* #publicationsTable td span {
-        font-weight: bold;
-    } */
-
-    /* Ajuste de imagen */
-    /* #publicationsTable td img {
-        max-width: 100%;
-        height: auto;
-    } */
-
-    /* Deshabilitar estilos de DataTables */
-    /* .dataTables_wrapper {
-        all: unset !important;
-    } */
+/* Estilo general de la tabla */
+.modern-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
 }
 
+/* Encabezados */
+.modern-table thead th {
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 12px 8px;
+    text-align: center;
+    border-bottom: 2px solid #e9ecef;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.modern-table th span {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Íconos de visibilidad */
+.modern-table .toggle-visibility {
+    margin-left: 6px;
+    font-size: 0.85rem;
+    color: #6c757d;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.modern-table .toggle-visibility:hover {
+    color: #0d6efd;
+}
+
+/* Filas */
+.modern-table tbody tr {
+    transition: background-color 0.2s;
+}
+
+.modern-table tbody tr:hover {
+    background-color: #f1f3f5;
+}
+
+.modern-table td {
+    padding: 10px 8px;
+    font-size: 0.9rem;
+    color: #495057;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* Imágenes */
+.modern-table .table-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* Enlaces */
+.modern-table .table-link {
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.modern-table .table-link:hover {
+    text-decoration: underline;
+}
+
+.modern-table .table-icon-link {
+    margin-left: 8px;
+    color: #28a745;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.modern-table .table-icon-link:hover {
+    color: #218838;
+}
+
+/* Resaltar datos clave */
+.modern-table .highlight {
+    background-color: #e7f1ff;
+    font-weight: 500;
+    color: #0d6efd;
+}
+
+/* Mensaje de tabla vacía */
+.modern-table td.text-muted {
+    padding: 20px;
+    font-style: italic;
+}
+
+/* Título principal */
+.main-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #333;
+    letter-spacing: 0.5px;
+}
+
+/* Tarjetas de resumen */
+.summary-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card .card-body {
+    padding: 20px;
+}
+
+.summary-card .card-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.summary-card .card-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+/* Tarjeta de la tabla */
+.modern-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.modern-card .card-header {
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 12px 20px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* Estilo general de la tabla */
+.modern-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 0; /* Elimina margen extra */
+}
+
+/* Encabezados */
+.modern-table thead th {
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 2px solid #e9ecef;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Filas */
+.modern-table tbody tr {
+    transition: background-color 0.2s;
+}
+
+.modern-table tbody tr:hover {
+    background-color: #f1f3f5;
+}
+
+.modern-table td {
+    padding: 12px 15px;
+    font-size: 0.9rem;
+    color: #495057;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* Resaltar datos clave */
+.modern-table .highlight {
+    font-weight: 500;
+    color: #0d6efd;
+}
+
+/* Badges de estado */
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 12px;
+}
+
+.status-badge.active {
+    background-color: #e6ffe6;
+    color: #28a745;
+}
+
+.status-badge.inactive {
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+
+/* Tarjeta moderna (reutilizada de vistas anteriores) */
+.modern-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.modern-card .card-header {
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 12px 20px;
+    border-bottom: 2px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modern-card .card-header h4 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.days-range {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-left: 8px;
+}
+
+.export-btn {
+    font-size: 0.85rem;
+    padding: 4px 12px;
+}
+
+.modern-card .card-body {
+    padding: 20px;
+}
+
+/* Contenedor de barras de progreso */
+.progress-container {
+    min-width: 200px;
+    margin-bottom: 15px;
+}
+
+.progress-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 4px;
+}
+
+/* Barra de progreso modernizada */
+.modern-progress {
+    height: 24px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.modern-progress .progress-bar {
+    background-color: #0d6efd; /* Azul sutil en lugar de verde */
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+    transition: width 0.3s ease;
+}
+
+/* Mensaje de vacío */
+.modern-card .text-muted {
+    font-size: 0.9rem;
+    padding: 20px;
+}
+
+/* Media queries para móviles */
+@media (max-width: 768px) {
+    .modern-card .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 15px;
+    }
+
+    .modern-card .card-header h4 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+
+    .export-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .progress-container {
+        min-width: 100%;
+    }
+
+    .modern-progress {
+        height: 20px;
+    }
+}
+
+@media (max-width: 991px) {
+    .sidebar {
+        display: none; /* Ocultar sidebar en móviles */
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding-top: 50px; /* Espacio para el navbar fijo arriba */
+    }
+
+    .navbar {
+        height: 50px; /* Altura fija para el navbar */
+    }
+}
+
+@media (min-width: 992px) {
+    .navbar {
+        display: none; /* Ocultar navbar en escritorio */
+    }
+    .sidebar {
+        display: none; /* Ocultar sidebar en móviles */
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding-top: 70px; /* Espacio para el navbar fijo arriba */
+        padding-left: 15px;
+        padding-right: 15px;
+        width: 100%;
+        max-width: 100vw; /* No exceder el ancho del viewport */
+        overflow-x: auto; /* Permitir desplazamiento horizontal si es necesario */
+        box-sizing: border-box; /* Incluir padding en el ancho total */
+    }
+
+    .navbar {
+        height: 50px; /* Altura fija del navbar */
+    }
+}
+
+/* Asegurar que el contenido interno no se desborde */
+.main-content > div {
+    width: 100%;
+    max-width: 100%; /* Evitar que el contenido hijo exceeda el contenedor */
+    overflow-x: auto; /* Desplazamiento horizontal para tablas u otros elementos anchos */
+}
