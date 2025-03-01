@@ -44,9 +44,10 @@ class VentasConsolidadasControllerDB extends Controller
 
             $cacheKey = "ventas_consolidadas_db_{$fechaInicio->format('Ymd')}_{$fechaFin->format('Ymd')}_" . md5(serialize($filters));
 
-            $ventas = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($fechaInicio, $fechaFin, $diasDeRango, $filters) {
-                return $this->reporteVentasConsolidadasDb->generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango, $filters);
-            });
+// $ventas = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($fechaInicio, $fechaFin, $diasDeRango, $filters) {
+//     return $this->reporteVentasConsolidadasDb->generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango, $filters);
+// });
+$ventas = $this->reporteVentasConsolidadasDb->generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango, $filters);
 
             $ventasCollection = collect($ventas['ventas'] ?? []);
             $ventasOrdenadas = $ventasCollection->sortBy('titulo')->values();
