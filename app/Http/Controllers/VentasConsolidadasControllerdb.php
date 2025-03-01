@@ -19,6 +19,7 @@ class VentasConsolidadasControllerDB extends Controller
     public function ventasConsolidadas(Request $request, $fecha_inicio = null, $fecha_fin = null)
     {
         try {
+            \Log::info('Filtros recibidos en el controlador:', $request->all()); // Agregar log aquí
             $limit = $request->input('limit', 50);
             $page = (int) $request->input('page', 1);
 
@@ -48,6 +49,7 @@ class VentasConsolidadasControllerDB extends Controller
 //     return $this->reporteVentasConsolidadasDb->generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango, $filters);
 // });
 $ventas = $this->reporteVentasConsolidadasDb->generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango, $filters);
+\Log::info('Datos devueltos por el servicio:', $ventas);
 
             $ventasCollection = collect($ventas['ventas'] ?? []);
             $ventasOrdenadas = $ventasCollection->sortBy('titulo')->values();
