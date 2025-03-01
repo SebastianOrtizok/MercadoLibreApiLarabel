@@ -739,75 +739,70 @@ table.dataTable td.dataTables_empty {
     padding: 20px;
 }
 
-/* Media queries para móviles */
-@media (max-width: 768px) {
-    .modern-card .card-header {
+/* Ajustes para el navbar móvil */
+@media (max-width: 991px) {
+    /* Contenedor del navbar */
+    .navbar {
+        position: fixed; /* Fijo en la parte superior */
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    }
+
+    /* Menú desplegable */
+    .navbar-collapse {
+        position: absolute;
+        top: 50px; /* Debajo del botón hamburguesa */
+        left: 0;
+        width: 250px; /* Ancho fijo para el menú */
+        height: 100vh; /* Cubre toda la altura de la pantalla */
+        background-color: #f8f9fa; /* Fondo claro como el navbar */
+        z-index: 1001; /* Por encima del resto del contenido */
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Sombra opcional */
+        padding: 10px;
+    }
+
+    /* Ajustar los ítems del menú */
+    .navbar-nav {
         flex-direction: column;
-        align-items: flex-start;
+    }
+
+    .nav-item {
+        width: 100%;
+    }
+
+    .nav-link {
         padding: 10px 15px;
     }
 
-    .modern-card .card-header h4 {
-        font-size: 1.1rem;
-        margin-bottom: 8px;
-    }
-
-    .export-btn {
-        width: 100%;
-        text-align: center;
-    }
-
-    .progress-container {
-        min-width: 100%;
-    }
-
-    .modern-progress {
-        height: 20px;
-    }
-}
-
-@media (max-width: 991px) {
-    .sidebar {
-        display: none; /* Ocultar sidebar en móviles */
-    }
-
+    /* Contenido principal */
     .main-content {
         margin-left: 0;
-        padding-top: 50px; /* Espacio para el navbar fijo arriba */
-    }
-
-    .navbar {
-        height: 50px; /* Altura fija para el navbar */
+        padding-top: 60px; /* Espacio para el navbar fijo */
+        position: relative;
+        z-index: 1; /* Por debajo del menú */
     }
 }
 
+/* Asegurar que el sidebar no interfiera en móvil */
+@media (max-width: 991px) {
+    .sidebar {
+        display: none; /* Ya lo tienes, pero lo refuerzo */
+    }
+}
+
+/* Estilos para escritorio */
 @media (min-width: 992px) {
     .navbar {
         display: none; /* Ocultar navbar en escritorio */
     }
+
     .sidebar {
-        display: none; /* Ocultar sidebar en móviles */
+        display: block; /* Mostrar sidebar en escritorio */
     }
 
     .main-content {
-        margin-left: 0;
-        padding-top: 70px; /* Espacio para el navbar fijo arriba */
-        padding-left: 15px;
-        padding-right: 15px;
-        width: 100%;
-        max-width: 100vw; /* No exceder el ancho del viewport */
-        overflow-x: auto; /* Permitir desplazamiento horizontal si es necesario */
-        box-sizing: border-box; /* Incluir padding en el ancho total */
+        padding-top: 0;
     }
-
-    .navbar {
-        height: 50px; /* Altura fija del navbar */
-    }
-}
-
-/* Asegurar que el contenido interno no se desborde */
-.main-content > div {
-    width: 100%;
-    max-width: 100%; /* Evitar que el contenido hijo exceeda el contenedor */
-    overflow-x: auto; /* Desplazamiento horizontal para tablas u otros elementos anchos */
 }
