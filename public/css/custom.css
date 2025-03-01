@@ -429,7 +429,6 @@ table.dataTable td.dt-center,
 table.dataTable td.dataTables_empty {
     text-align: center;
     word-wrap: break-word;
-    word-break: break-word;
     max-width: 150px;
 }
 
@@ -739,6 +738,8 @@ table.dataTable td.dataTables_empty {
     padding: 20px;
 }
 
+
+
 /* Ajustes para el navbar móvil */
 @media (max-width: 991px) {
     /* Contenedor del navbar */
@@ -749,6 +750,10 @@ table.dataTable td.dataTables_empty {
         width: 100%;
         z-index: 1000; /* Asegura que esté por encima de otros elementos */
     }
+    .container, .container-md, .container-sm {
+         max-width: 720px;
+    }
+
 
     /* Menú desplegable */
     .navbar-collapse {
@@ -779,10 +784,20 @@ table.dataTable td.dataTables_empty {
     /* Contenido principal */
     .main-content {
         margin-left: 0;
-        padding-top: 60px; /* Espacio para el navbar fijo */
+        padding: 60px 5px 5px 5px;
+        max-width: 100%;
         position: relative;
         z-index: 1; /* Por debajo del menú */
     }
+    table.dataTable th.dt-center,
+    table.dataTable td.dt-center,
+    table.dataTable td.dataTables_empty {
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 }
 
 /* Asegurar que el sidebar no interfiera en móvil */

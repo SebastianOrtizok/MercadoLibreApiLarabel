@@ -235,7 +235,7 @@ jQuery(document).ready(function () {
             searching: false,
             info: true,
             autoWidth: false,
-            responsive: true,
+            responsive: false,
             scrollX: true,
             stateSave: false,
             processing: false,
@@ -345,6 +345,17 @@ document.addEventListener('DOMContentLoaded', function () {
     diasRange.addEventListener('input', function () {
         updateFechaInicio();
         console.log('Deslizador movido');
+    });
+});
+</script>
+<!-- script para truncar el titulo en mobiles -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('td[data-column="titulo"]').forEach(td => {
+        let text = td.textContent.trim();
+        if (text.length > 30) {
+            td.textContent = text.substring(0, 30) + '...';
+        }
     });
 });
 </script>
