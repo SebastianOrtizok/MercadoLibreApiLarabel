@@ -157,9 +157,7 @@
                         <td>{{ $item['fecha_ultima_venta'] ? \Carbon\Carbon::parse($item['fecha_ultima_venta'])->format('d/m/Y H:i') : 'N/A' }}</td>
                     </tr>
                 @empty
-                    <tr>
-                        <td colspan="12" class="text-center text-muted">No hay {{ $showSinVentas ? 'artículos sin ventas' : 'ventas' }} para mostrar.</td>
-                    </tr>
+
                 @endforelse
             </tbody>
         </table>

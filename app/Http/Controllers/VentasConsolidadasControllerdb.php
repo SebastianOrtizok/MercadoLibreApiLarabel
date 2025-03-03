@@ -153,7 +153,20 @@ class VentasConsolidadasControllerDB extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            $showSinVentas = $request->input('sin_ventas', false);
+            return view('dashboard.ventasconsolidadasdb', [
+                'data' => collect(),
+                'showSinVentas' => $showSinVentas, // Asegurar que siempre esté definida
+                'fechaInicio' => Carbon::now()->subDays(30),
+                'fechaFin' => Carbon::now(),
+                'diasDeRango' => 30,
+                'totalPages' => 1,
+                'currentPage' => 1,
+                'limit' => 50,
+                'totalVentas' => 0,
+                'resumenPorCuenta' => [],
+                'maxVentasTotal' => 1,
+            ]);
         }
     }
 }
