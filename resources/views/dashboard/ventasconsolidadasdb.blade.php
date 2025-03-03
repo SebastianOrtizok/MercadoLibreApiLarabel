@@ -144,29 +144,31 @@
                 </tr>
             </thead>
             <tbody id="table-body">
-            @forelse ($data ?? collect() as $item)
-                    <tr>
-                        <td data-column="Cuenta">{{ $item['ml_account_id'] ?? 'N/A' }}</td>
-                        <td><img src="{{ $item['imagen'] ?? asset('images/default.png') }}" alt="{{ $item['titulo'] ?? 'Sin título' }}" class="table-img"></td>
-                        <td data-column="producto">
-                            <a href="{{ route('dashboard.ventaid', ['item_id' => $item['producto'], 'fecha_inicio' => request('fecha_inicio'), 'fecha_fin' => request('fecha_fin')]) }}"
-                               class="table-link">{{ $item['producto'] }}</a>
-                            <a href="{{ $item['url'] }}" target="_blank" class="table-icon-link"><i class="fas fa-external-link-alt"></i></a>
-                        </td>
-                        <td data-column="sku">{{ $item['sku'] ?? 'N/A' }}</td>
-                        <td data-column="titulo">{{ $item['titulo'] }}</td>
-                        <td data-column="ventas_diarias">{{ $item['cantidad_vendida'] }}</td>
-                        <td>{{ $item['tipo_publicacion'] ?? 'N/A' }}</td>
-                        <td data-column="stock">{{ $item['stock'] ?? 'Sin stock' }}</td>
-                        <td data-column="dias_stock" class="highlight">{{ $item['dias_stock'] ?? 'N/A' }}</td>
-                        <td>{{ $item['order_status'] ?? 'N/A' }}</td>
-                        <td>{{ $item['estado'] ?? 'Desconocido' }}</td>
-                        <td>{{ $item['fecha_ultima_venta'] ? \Carbon\Carbon::parse($item['fecha_ultima_venta'])->format('d/m/Y H:i') : 'N/A' }}</td>
-                    </tr>
-                @empty
-
-                @endforelse
-            </tbody>
+    @forelse ($data ?? collect() as $item)
+        <tr>
+            <td data-column="Cuenta">{{ $item['ml_account_id'] ?? 'N/A' }}</td>
+            <td><img src="{{ $item['imagen'] ?? asset('images/default.png') }}" alt="{{ $item['titulo'] ?? 'Sin título' }}" class="table-img"></td>
+            <td data-column="producto">
+                <a href="{{ route('dashboard.ventaid', ['item_id' => $item['producto'], 'fecha_inicio' => request('fecha_inicio'), 'fecha_fin' => request('fecha_fin')]) }}" class="table-link">{{ $item['producto'] }}</a>
+                <a href="{{ $item['url'] }}" target="_blank" class="table-icon-link"><i class="fas fa-external-link-alt"></i></a>
+            </td>
+            <td data-column="sku">{{ $item['sku'] ?? 'N/A' }}</td>
+            <td data-column="titulo">{{ $item['titulo'] }}</td>
+            <td data-column="ventas_diarias" class="{{ isset($showSinVentas) && $showSinVentas ? 'highlight' : '' }}">
+                {{ $item['cantidad_vendida'] }}
+            </td>
+            <td>{{ $item['tipo_publicacion'] ?? 'N/A' }}</td>
+            <td data-column="stock">{{ $item['stock'] ?? 'Sin stock' }}</td>
+            <td data-column="dias_stock" class="{{ isset($showSinVentas) && !$showSinVentas ? 'highlight' : '' }}">
+                {{ $item['dias_stock'] ?? 'N/A' }}
+            </td>
+            <td>{{ $item['order_status'] ?? 'N/A' }}</td>
+            <td>{{ $item['estado'] ?? 'Desconocido' }}</td>
+            <td>{{ $item['fecha_ultima_venta'] ? \Carbon\Carbon::parse($item['fecha_ultima_venta'])->format('d/m/Y H:i') : 'N/A' }}</td>
+        </tr>
+    @empty
+    @endforelse
+</tbody>
         </table>
     </div>
 
