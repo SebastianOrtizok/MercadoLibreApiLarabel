@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\ItemPromotionsController;
 use App\Http\Controllers\OrderDbController;
 use App\Http\Controllers\VentasConsolidadasControllerDB;
-use App\Http\Controllers\SinVentasController;
+// use App\Http\Controllers\SinVentasController;
 
 Route::middleware(['auth'])->group(function () {
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -23,7 +23,7 @@ Route::get('/dashboard/order_report', [AccountController::class, 'ShowSales'])->
 Route::get('/dashboard/order_report/{item_id?}/{fecha_inicio?}/{fecha_fin?}', [AccountController::class, 'venta_consolidada'])->name('dashboard.ventaid');
 Route::get('/dashboard/ventas_consolidadas/{fecha_inicio?}/{fecha_fin?}', [AccountController::class, 'ventas_consolidadas'])->name('dashboard.ventasconsolidadas');
 Route::get('/dashboard/ventas-consolidadas-db/{fecha_inicio?}/{fecha_fin?}', [VentasConsolidadasControllerDB::class, 'ventasConsolidadas'])->name('dashboard.ventasconsolidadasdb');
-Route::get('/dashboard/sin-ventas', [SinVentasController::class, 'index'])->name('dashboard.sinventas');
+// Route::get('/dashboard/sin-ventas', [SinVentasController::class, 'index'])->name('dashboard.sinventas');
 Route::get('/dashboard/publications', [AccountController::class, 'showOwnPublications'])->name('dashboard.publications');
 Route::post('/dashboard/category/{categoryId}', [AccountController::class, 'showItemsByCategory'])->name('dashboard.category.items');
 Route::get('/dashboard/item_venta', [ItemVenta::class, 'item_venta'])->name('dashboard.itemVenta');

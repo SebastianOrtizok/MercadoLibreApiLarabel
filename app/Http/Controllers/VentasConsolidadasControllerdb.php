@@ -21,11 +21,12 @@ class VentasConsolidadasControllerDB extends Controller
 
     public function ventasConsolidadas(Request $request, $fecha_inicio = null, $fecha_fin = null)
     {
+
+        $showSinVentas = $request->input('sin_ventas', false);
         try {
             \Log::info('Filtros recibidos en el controlador:', $request->all());
             $limit = $request->input('limit', 50);
             $page = (int) $request->input('page', 1);
-            $showSinVentas = $request->input('sin_ventas', false);
 
             $fechaInicio = Carbon::parse($fecha_inicio ?? $request->input('fecha_inicio', Carbon::now()->subDays(30)->format('Y-m-d')));
             $fechaFin = Carbon::parse($fecha_fin ?? $request->input('fecha_fin', Carbon::now()->format('Y-m-d')));

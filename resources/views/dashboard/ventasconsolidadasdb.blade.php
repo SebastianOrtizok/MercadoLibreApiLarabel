@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-5">
-    <h2 class="mb-4">{{ $showSinVentas ? 'Artículos Sin Ventas' : 'Listado de Ventas Consolidadas DB' }}</h2>
+<h2 class="mb-4">{{ isset($showSinVentas) && $showSinVentas ? 'Artículos Sin Ventas' : 'Listado de Ventas Consolidadas DB' }}</h2>
 
     <!-- Formulario de filtros colapsado -->
     <div class="mb-4">
@@ -73,12 +73,19 @@
     </div>
 
     <!-- Botón para alternar entre ventas y sin ventas -->
-    <div class="mb-4">
-        <a href="{{ route('dashboard.ventasconsolidadasdb', array_merge(request()->all(), ['sin_ventas' => !$showSinVentas])) }}"
-           class="btn btn-outline-secondary">
-            <i class="fas fa-box-open"></i> {{ $showSinVentas ? 'Mostrar Ventas Consolidadas' : 'Mostrar Artículos Sin Ventas' }}
-        </a>
-    </div>
+<!-- Botón para alternar entre ventas y sin ventas -->
+<div class="mb-4">
+    @php
+        $showSinVentas = $showSinVentas ?? false; // Si no está definido, asigna false
+    @endphp
+
+    <a href="{{ route('dashboard.ventasconsolidadasdb', array_merge(request()->all(), ['sin_ventas' => !$showSinVentas])) }}"
+       class="btn btn-outline-secondary">
+        <i class="fas fa-box-open"></i>
+        {{ $showSinVentas ? 'Mostrar Ventas Consolidadas' : 'Mostrar Artículos Sin Ventas' }}
+    </a>
+</div>
+
 
     <!-- Sección de resumen por cuenta -->
     <div class="card modern-card mb-4">
