@@ -45,4 +45,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    public function articulos()
+    {
+        return $this->hasMany(Articulo::class, 'user_id');
+    }
+
+
 }

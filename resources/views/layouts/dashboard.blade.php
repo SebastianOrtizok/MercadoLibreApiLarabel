@@ -52,6 +52,12 @@
                                 <i class="fas fa-boxes me-2"></i> Promociones de ML
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard.item_promotions') }}">
+                                <i class="fas fa-tags"></i> Items en Promoción
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('sincronizacion.index') }}">
                                 <i class="fas fa-database me-2"></i> Sincronización
@@ -102,6 +108,12 @@
                     <a class="nav-link" href="{{ route('dashboard.promociones') }}">
                         <span class="icon"><i class="fas fa-boxes"></i></span>
                         <span class="text">Promociones de ML</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.item_promotions') }}">
+                    <span class="icon"><i class="fas fa-tags"></i></span>
+                    <span class="text">Items en Promoción</span>
                     </a>
                 </li>
                 <li class="nav-item">
