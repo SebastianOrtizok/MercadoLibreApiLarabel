@@ -21,10 +21,11 @@ class VentasConsolidadasControllerDB extends Controller
 
     public function ventasConsolidadas(Request $request, $fecha_inicio = null, $fecha_fin = null)
     {
-
         $showSinVentas = $request->input('sin_ventas', false);
+        $data = collect(); // Definir $data por defecto como colección vacía
+
         try {
-            \Log::info('Filtros recibidos en el controlador:', $request->all());
+            \Log::info('Inicio de ventasConsolidadas', ['request' => $request->all()]);
             $limit = $request->input('limit', 50);
             $page = (int) $request->input('page', 1);
 
@@ -42,14 +43,13 @@ class VentasConsolidadasControllerDB extends Controller
 
             if ($showSinVentas) {
                 $sinVentasData = $this->sinVentasService->getProductosOrdenadosPorVentas($fechaInicio, $fechaFin, $filters);
-                $dataToShow = collect($sinVentasData)->filter(function ($item) {
+                $data = collect($sinVentasData)->filter(function ($item) {
                     return $item->cantidad_vendida == 0;
                 })->map(function ($item) {
                     $arrayItem = (array) $item;
-                    // Normalizar claves para consistencia con la vista
                     $arrayItem['producto'] = $arrayItem['ml_product_id'];
                     $arrayItem['url'] = $arrayItem['permalink'];
-                    $arrayItem['fecha_ultima_venta'] = null; // Agregar clave faltante como null
+                    $arrayItem['fecha_ultima_venta'] = null;
                     unset($arrayItem['ml_product_id']);
                     unset($arrayItem['permalink']);
                     return $arrayItem;
@@ -131,7 +131,7 @@ class VentasConsolidadasControllerDB extends Controller
                     ];
                 }
 
-                $dataToShow = collect($ventasConsolidadas)->forPage($page, $limit)->values();
+                $data = collect($ventasConsolidadas)->forPage($page, $limit)->values();
                 $totalItems = count($ventasConsolidadas);
             }
 
@@ -139,8 +139,9 @@ class VentasConsolidadasControllerDB extends Controller
             $totalPages = ceil($totalItems / $limit);
 
             session(['ventas_consolidadas' => $ventasConsolidadas ?? []]);
+            \Log::info('Renderizando vista con datos', ['data_count' => $data->count()]);
             return view('dashboard.ventasconsolidadasdb', [
-                'data' => $dataToShow,
+                'data' => $data,
                 'showSinVentas' => $showSinVentas,
                 'fechaInicio' => $fechaInicio,
                 'fechaFin' => $fechaFin,
@@ -154,10 +155,13 @@ class VentasConsolidadasControllerDB extends Controller
             ]);
 
         } catch (\Exception $e) {
-            $showSinVentas = $request->input('sin_ventas', false);
+            \Log::error('Error en ventasConsolidadas', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return view('dashboard.ventasconsolidadasdb', [
-                'data' => collect(),
-                'showSinVentas' => $showSinVentas, // Asegurar que siempre esté definida
+                'data' => $data, // Usar la colección vacía definida al inicio
+                'showSinVentas' => $showSinVentas,
                 'fechaInicio' => Carbon::now()->subDays(30),
                 'fechaFin' => Carbon::now(),
                 'diasDeRango' => 30,

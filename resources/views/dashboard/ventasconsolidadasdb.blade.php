@@ -144,7 +144,7 @@
                 </tr>
             </thead>
             <tbody id="table-body">
-                @forelse ($data as $item)
+            @forelse ($data ?? collect() as $item)
                     <tr>
                         <td data-column="Cuenta">{{ $item['ml_account_id'] ?? 'N/A' }}</td>
                         <td><img src="{{ $item['imagen'] ?? asset('images/default.png') }}" alt="{{ $item['titulo'] ?? 'Sin título' }}" class="table-img"></td>
