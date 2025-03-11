@@ -3,164 +3,164 @@
 @section('content')
 <div class="container mt-5">
     <h2 class="mb-4">Listado de Publicaciones</h2>
-    <div class="filtros-container mb-4 p-3 bg-light rounded shadow-sm">
-        <!-- Campo de búsqueda y filtro por estado -->
-        <form method="GET" action="{{ route('dashboard.publications') }}" class="mb-0 w-100 d-flex align-items-center gap-3">
-            @csrf
-            <div class="input-group w-50">
-                <input type="text" name="search" class="form-control" placeholder="Buscar por título..." value="{{ request('search') }}">
-            </div>
 
-            <!-- Select para el estado de las publicaciones -->
-            <div class="w-25">
-                <select name="status" class="form-select">
-                    <option value="active" {{ request('status', 'active') == 'active' ? 'selected' : '' }}>Activas</option>
-                    <option value="paused" {{ request('status') == 'paused' ? 'selected' : '' }}>Pausadas</option>
-                    <option value="under_review" {{ request('status') == 'under_review' ? 'selected' : '' }}>En Revisión</option>
-                    <option value="closed" {{ request('status') == 'closed' ? 'selected' : '' }}>Cerradas</option>
-                    <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Todas</option>
-                </select>
-            </div>
-
-            <div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-search"></i> Buscar
-                </button>
-            </div>
-        </form>
+    <!-- Formulario de filtros colapsado -->
+    <div class="mb-4">
+        <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
+            <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
+        </button>
+        <div class="collapse" id="filtrosCollapse">
+            <form method="GET" action="{{ route('dashboard.publications') }}" class="mt-3">
+                <div class="filtros-container p-3 bg-light rounded shadow-sm">
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <label>Buscar (Título/SKU)</label>
+                            <input type="text" name="search" class="form-control" placeholder="Buscar por título o SKU" value="{{ request('search') }}">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label>Estado de la Publicación</label>
+                            <select name="status" class="form-control">
+                                <option value="active" {{ request('status', 'active') == 'active' ? 'selected' : '' }}>Activas</option>
+                                <option value="paused" {{ request('status') == 'paused' ? 'selected' : '' }}>Pausadas</option>
+                                <option value="under_review" {{ request('status') == 'under_review' ? 'selected' : '' }}>En Revisión</option>
+                                <option value="closed" {{ request('status') == 'closed' ? 'selected' : '' }}>Cerradas</option>
+                                <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Todas</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Filtrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
- <!-- Contenedor de botones para mostrar columnas ocultas -->
- <div id="restore-columns" class="mb-3 d-flex flex-wrap gap-2"></div>
 
- <div class="filtros-container mb-4 p-3 bg-light rounded shadow-sm">
+    <!-- Contenedor para columnas ocultas -->
+    <div id="restore-columns" class="mb-3 d-flex flex-wrap gap-2"></div>
+
+    <!-- Tabla de resultados -->
     <div class="table-responsive">
-        <table id="publicationsTable" class="table table-sm table-bordered table-hover">
-            <thead class="thead-dark sticky-top">
+        <table id="publicationsTable" class="table table-hover modern-table">
+            <thead>
                 <tr>
-                    <th class="text-center" data-column-name="Usuario" data-sortable="false"><i class="fas fa-eye" id="toggleUsuario"></i><br> Usuario</th>
-                    <th class="text-center" data-column-name="Imagen" data-sortable="false"><i class="fas fa-eye" id="toggleImagen"></i><br> Imagen</th>
-                    <th class="text-center" data-column-name="Título" data-sortable="true"><i class="fas fa-eye" id="toggleTitulo"></i><br> Título</th>
-                    <th class="text-center" data-column-name="Precio" data-sortable="true"><i class="fas fa-eye" id="togglePrecio"></i><br> Precio</th>
-                    <th class="text-center" data-column-name="Condición" data-sortable="false"><i class="fas fa-eye" id="toggleCondicion"></i><br> Condición</th>
-                    <th class="text-center" data-column-name="Stock Actual" data-sortable="true"><i class="fas fa-eye" id="toggleStockActual"></i><br> Stock Actual</th>
-                    <th class="text-center" data-column-name="Estado" data-sortable="true"><i class="fas fa-eye" id="toggleEstado"></i><br> Estado</th>
-                    <th class="text-center" data-column-name="SKU" data-sortable="true"><i class="fas fa-eye" id="toggleSku"></i><br> SKU</th>
-                    <th class="text-center" data-column-name="Tipo de Publicación" data-sortable="true"><i class="fas fa-eye" id="toggleTipoPublicacion"></i><br> Tipo de Publicación</th>
-                    <th class="text-center" data-column-name="Catálogo" data-sortable="true"><i class="fas fa-eye" id="toggleCatalogo"></i><br> Catálogo</th>
-                    <th class="text-center" data-column-name="Categoría" data-sortable="false"><i class="fas fa-eye" id="toggleCategoria"></i><br> Categoría</th>
+                    <th data-column-name="Usuario"><span>Usuario</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Imagen"><span>Imagen</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Título" data-sortable="true" data-column="titulo"><span>Título</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Precio" data-sortable="true" data-column="precio"><span>Precio</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Condición"><span>Condición</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Stock Actual" data-sortable="true" data-column="stockActual"><span>Stock Actual</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Estado" data-sortable="true" data-column="estado"><span>Estado</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="SKU" data-sortable="true" data-column="sku"><span>SKU</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Tipo de Publicación" data-sortable="true" data-column="tipoPublicacion"><span>Tipo Pub.</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Catálogo"><span>Catálogo</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Categoría"><span>Categoría</span><i class="fas fa-eye toggle-visibility"></i></th>
                 </tr>
             </thead>
             <tbody id="table-body">
                 @forelse($publications as $item)
                     <tr>
-                        <td>{{ $item['ml_account_id'] }}</td>
+                        <td data-column="Usuario">{{ $item['ml_account_id'] }}</td>
                         <td>
-                            <div class="img-container">
-                                @if(isset($item['imagen']) && $item['imagen'])
-                                    <img class="text-center" src="{{ $item['imagen'] }}" alt="Imagen del producto" class="img-fluid">
-                                @else
-                                    <span>No disponible</span>
-                                @endif
-                            </div>
+                            <img src="{{ $item['imagen'] ?? asset('images/default.png') }}" alt="{{ $item['titulo'] ?? 'Sin título' }}" class="table-img">
                         </td>
-                        <td>{{ $item['titulo'] }}<br>
-                            <span class="spanid">{{ $item['id'] }}</span>
-                            <a href="{{ $item['permalink'] }}" target="_blank" class="spanid">
-                                <i class="fas fa-external-link-alt" style="font-size: 14px; color:rgb(62, 137, 58);"></i>
+                        <td data-column="titulo">
+                            {{ $item['titulo'] }}
+                            <br>
+                            <small class="text-muted">{{ $item['id'] }}</small>
+                            <a href="{{ $item['permalink'] }}" target="_blank" class="table-icon-link">
+                                <i class="fas fa-external-link-alt"></i>
                             </a>
                         </td>
-                        <td>${{ number_format($item['precio'], 2, ',', '.') }}</td>
-                        <td class="text-center">{{ ucfirst($item['condicion']) }}</td>
-                        <td  class="text-center">{{ $item['stockActual'] }}
-                        <br>
-                        <span style="color: green; font-weight: bold;">
-                            {{ $item['logistic_type'] ?? 'No disponible' }}
-                        </span>
-                        <br>
-                        @if(!empty($item['user_product_id']))
-                            <a href="#" class="spanid"
-                            data-user_product_id="{{ $item['user_product_id'] }}"
-                            data-ml_account_id="{{ $item['ml_account_id'] }}"
-                            onclick="loadInventoryData(this)">
-                                <span>{{ $item['user_product_id'] }}</span>
-                            </a>
-                        @else
-                            <span style="color: red; font-weight: bold;">Sin inventario</span>
-                        @endif
-
-             <!-- Modal de Inventario -->
-                    <div class="modal fade" id="inventoryModal" tabindex="-1" aria-labelledby="inventoryModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header bg-primary text-white">
-                                    <h5 class="modal-title" id="inventoryModalLabel">Detalles del Producto</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-bordered">
-                                            <thead class="table-dark">
-                                                <tr>
-                                                    <th>Tipo</th>
-                                                    <th>Cantidad</th>
-                                                    <th>Disponibilidad</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="inventoryData">
-                                                <tr>
-                                                    <td colspan="3" class="text-center">Cargando datos...</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                   <!-- Fin Modal -->
-
+                        <td data-column="precio">${{ number_format($item['precio'], 2, ',', '.') }}</td>
+                        <td data-column="condicion">{{ ucfirst($item['condicion']) }}</td>
+                        <td data-column="stockActual">
+                            {{ $item['stockActual'] }}
+                            <br>
+                            <span style="color: green; font-weight: bold;">
+                                {{ $item['logistic_type'] ?? 'No disponible' }}
+                            </span>
+                            <br>
+                            @if(!empty($item['user_product_id']))
+                                <a href="#" class="table-link"
+                                   data-user_product_id="{{ $item['user_product_id'] }}"
+                                   data-ml_account_id="{{ $item['ml_account_id'] }}"
+                                   onclick="loadInventoryData(this)">
+                                    {{ $item['user_product_id'] }}
+                                </a>
+                            @else
+                                <span style="color: red; font-weight: bold;">Sin inventario</span>
+                            @endif
                         </td>
-                        <td class="text-center">{{ ucfirst($item['estado']) }}</td>
-                        <td>{{ $item['sku'] ?? 'No disponible' }}</td>
-                        <td class="text-center">{{ $item['tipoPublicacion'] ?? 'Desconocido' }}</td>
-                        <td class="text-center">
+                        <td data-column="estado">{{ ucfirst($item['estado']) }}</td>
+                        <td data-column="sku">{{ $item['sku'] ?? 'N/A' }}</td>
+                        <td data-column="tipoPublicacion">{{ $item['tipoPublicacion'] ?? 'Desconocido' }}</td>
+                        <td data-column="catalogo">
                             @if($item['enCatalogo'] === true)
                                 <span style="color: green; font-weight: bold;">En catálogo</span>
                             @else
                                 <span style="color: red;">No</span>
                             @endif
                         </td>
-                        <td>
-                            <form method="POST" action="{{ route('dashboard.category.items', ['categoryId' => $item['categoryid']]) }}">
+                        <td data-column="categoria">
+                            <form method="POST" action="{{ route('dashboard.category.items', ['categoryId' => $item['categoryid']]) }}" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-primary btn-sm">Ver Categoría</button>
                             </form>
                         </td>
                     </tr>
                 @empty
-
+                    <tr>
+                        <td colspan="11" class="text-center text-muted">No hay publicaciones para mostrar.</td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
+
+    <!-- Modal de Inventario -->
+    <div class="modal fade" id="inventoryModal" tabindex="-1" aria-labelledby="inventoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="inventoryModalLabel">Detalles del Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Cantidad</th>
+                                    <th>Disponibilidad</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryData">
+                                <tr>
+                                    <td colspan="3" class="text-center">Cargando datos...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Paginación -->
+    @include('layouts.pagination', [
+        'currentPage' => $currentPage,
+        'totalPages' => $totalPages,
+        'limit' => $limit
+    ])
 </div>
-
-
-
-   <!-- Controles de paginación -->
-   @include('layouts.pagination', [
-    'currentPage' => $currentPage,
-    'totalPages' => $totalPages,
-    'limit' => $limit
-])
-
-   </div>
-
 @endsection
-
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- script para obtener datos del modal -->

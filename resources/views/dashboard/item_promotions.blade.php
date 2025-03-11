@@ -1,68 +1,241 @@
 @extends('layouts.dashboard')
 
 @section('content')
-    <div class="container">
-        <h1 class="mb-4">Promociones del Ítem</h1>
+    <div class="container mt-5">
+        <h2 class="mb-4">Promociones Sincronizadas</h2>
 
-        {{-- Ver la estructura de los datos --}}
-        {{-- @dd($itemPromotions) --}}
+        <!-- Formulario de filtros colapsado -->
+        <div class="mb-4">
+            <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
+                <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
+            </button>
+            <div class="collapse" id="filtrosCollapse">
+            <form method="GET" action="{{ route('dashboard.item_promotions') }}" class="mt-3">
+                    <div class="filtros-container p-3 bg-light rounded shadow-sm">
+                        <div class="row">
+                            <div class="col-md-3 mb-2">
+                                <label>Cuenta</label>
+                                <select name="ml_account_id" class="form-control">
+                                    <option value="">Todas las cuentas</option>
+                                    @foreach (\DB::table('mercadolibre_tokens')->where('user_id', auth()->id())->select('ml_account_id', 'seller_name')->distinct()->get() as $account)
+                                        <option value="{{ $account->ml_account_id }}" {{ request('ml_account_id') == $account->ml_account_id ? 'selected' : '' }}>
+                                            {{ $account->seller_name ?? $account->ml_account_id }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label>Estado</label>
+                                <select name="status" class="form-control">
+                                    <option value="">Todos los estados</option>
+                                    <option value="started" {{ request('status') == 'started' ? 'selected' : '' }}>Iniciada</option>
+                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pendiente</option>
+                                    <option value="candidate" {{ request('status') == 'candidate' ? 'selected' : '' }}>Candidata</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label>Buscar (ID/Título)</label>
+                                <input type="text" name="search" class="form-control" placeholder="Buscar por ID o título" value="{{ request('search') }}">
+                            </div>
+                            <div class="col-md-3 mb-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search"></i> Filtrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-        @if (!empty($itemPromotions))
-            @php
-                $groupedPromotions = collect($itemPromotions)->groupBy('itemId');
-            @endphp
-            @foreach ($groupedPromotions as $itemId => $promotions)
-                <div class="mb-3">
-                    <h2 class="bg-success text-white p-2">{{ $itemId ?? 'Desconocido' }}</h2>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Tipo</th>
-                                <th>Estado</th>
-                                <th>Nombre</th>
-                                <th>Fecha de Inicio</th>
-                                <th>Fecha de Fin</th>
-                                <th>Precio Original</th>
-                                <th>Precio con Descuento</th>
-                                <th>Beneficios</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($promotions as $promotion)
-                                <tr>
-                                    <td>{{ $promotion['type'] ?? 'Desconocido' }}</td>
-                                    <td>{{ $promotion['status'] ?? 'Desconocido' }}</td>
-                                    <td>{{ $promotion['name'] ?? 'Sin nombre' }}</td>
-                                    <td>{{ $promotion['start_date'] ?? 'Fecha no disponible' }}</td>
-                                    <td>{{ $promotion['finish_date'] ?? 'Fecha no disponible' }}</td>
-                                    <td>
-                                        {{ isset($promotion['original_price']) ? number_format($promotion['original_price'], 2) : 'No disponible' }}
-                                    </td>
-                                    <td>
-                                        {{ isset($promotion['new_price']) ? number_format($promotion['new_price'], 2) : 'No disponible' }}
-                                    </td>
-                                    <td>
-                                        @if (isset($promotion['benefits']) && !empty($promotion['benefits']))
-                                            <ul>
-                                                <li>Tipo de Beneficio: {{ $promotion['benefits']['type'] ?? 'Desconocido' }}</li>
-                                                <li>Porcentaje Meli: {{ $promotion['benefits']['meli_percent'] ?? 'N/A' }}%</li>
-                                                <li>Porcentaje Vendedor: {{ $promotion['benefits']['seller_percent'] ?? 'N/A' }}%</li>
-                                            </ul>
-                                        @else
-                                            <p>No hay beneficios disponibles.</p>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @endforeach
-        @else
-            <p>No hay promociones disponibles.</p>
-        @endif
+        <!-- Botones para restaurar columnas -->
+        <div id="restore-columns-promotions" class="mt-3 d-flex flex-wrap gap-2"></div>
+
+        <!-- Tabla de promociones -->
+        <div class="table-responsive">
+            <table id="promotionsTable" class="table table-hover modern-table">
+                <thead>
+                    <tr>
+                        <th data-column-name="Cuenta">
+                            <span>Cuenta</span>
+                            <i class="fas fa-eye toggle-visibility"></i>
+                        </th>
+                        <th data-column-name="Producto" data-sortable="true" data-column="ml_product_id">
+                            <span>Producto</span>
+                            <i class="fas fa-eye toggle-visibility"></i>
+                        </th>
+                        <th data-column-name="ID Promoción" data-sortable="true" data-column="promotion_id">
+                            <span>ID Promoción</span>
+                            <i class="fas fa-eye toggle-visibility"></i>
+                        </th>
+                        <th data-column-name="Tipo" data-sortable="true" data-column="type">
+                            <span>Tipo</span>
+                            <i class="fas fa-eye toggle-visibility"></i>
+                        </th>
+                        <th data-column-name="Estado" data-sortable="true" data-column="status">
+                            <span>Estado</span>
+                            <i class="fas fa-eye toggle-visibility"></i>
+                        </th>
+                        <th data-column-name="Precio Original" data-sortable="true" data-column="original_price">
+                            <span>Precio Original</span>
+                            <i class="fas fa-eye toggle-visibility"></i>
+                        </th>
+                        <th data-column-name="Precio Nuevo" data-sortable="true" data-column="new_price">
+                            <span>Precio Nuevo</span>
+                            <i class="fas fa-eye toggle-visibility"></i>
+                        </th>
+                        <th data-column-name="Inicio" data-sortable="true" data-column="start_date">
+                            <span>Inicio</span>
+                            <i class="fas fa-eye toggle-visibility"></i>
+                        </th>
+                        <th data-column-name="Fin" data-sortable="true" data-column="finish_date">
+                            <span>Fin</span>
+                            <i class="fas fa-eye toggle-visibility"></i>
+                        </th>
+                        <th data-column-name="Días Restantes" data-sortable="true" data-column="days_remaining">
+                            <span>Días Restantes</span>
+                            <i class="fas fa-eye toggle-visibility"></i>
+                        </th>
+                        <th data-column-name="Nombre" data-sortable="true" data-column="name">
+                            <span>Nombre</span>
+                            <i class="fas fa-eye toggle-visibility"></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    @forelse ($promotions as $promo)
+                        <tr>
+                            <td data-column="Cuenta">{{ $promo->seller_name }}</td>
+                            <td data-column="ml_product_id">{{ $promo->titulo }}
+                            <span style="font-weight: bold;">
+                            {{ $promo->ml_product_id }} </span>
+                                <a href="https://www.mercadolibre.com.ar/p/{{ $promo->ml_product_id }}" target="_blank" class="table-link">
+                                </a>
+                                <a href="https://www.mercadolibre.com.ar/p/{{ $promo->ml_product_id }}" target="_blank" class="table-icon-link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </td>
+                            <td data-column="promotion_id">{{ $promo->promotion_id }}</td>
+                            <td data-column="type">{{ $promo->type ?? 'N/A' }}</td>
+                            <td data-column="status">{{ $promo->status ?? 'N/A' }}</td>
+                            <td data-column="original_price">{{ $promo->original_price ?? 'N/A' }}</td>
+                            <td data-column="new_price">{{ $promo->new_price ?? 'N/A' }}</td>
+                            <td data-column="start_date">
+                                {{ $promo->start_date ? \Carbon\Carbon::parse($promo->start_date)->format('d M Y') : 'N/A' }}
+                            </td>
+                            <td data-column="finish_date">
+                                {{ $promo->finish_date ? \Carbon\Carbon::parse($promo->finish_date)->format('d M Y') : 'N/A' }}
+                            </td>
+                            <td data-column="days_remaining" class="{{ $promo->days_remaining < 0 ? 'text-danger' : '' }}">
+                                {{ round($promo->days_remaining) ?? 'N/A' }}
+                            </td>
+
+                            <td data-column="name">{{ $promo->name ?? 'Sin nombre' }}</td>
+                        </tr>
+                    @empty
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        @include('layouts.pagination', [
+        'currentPage' => $currentPage,
+        'totalPages' => $totalPages,
+        'limit' => $limit
+    ])
+        <a href="{{ route('sincronizacion.index') }}" class="btn btn-primary mt-3">Volver a Sincronización</a>
     </div>
+    @endsection
 
-       <!-- Controles de paginación -->
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        jQuery(document).ready(function () {
+            function initDataTable() {
+                if ($.fn.DataTable.isDataTable('#promotionsTable')) {
+                    $('#promotionsTable').DataTable().clear().destroy();
+                }
 
-@endsection
+                const isMobile = window.matchMedia("(max-width: 768px)").matches;
+                const config = {
+                    paging: false,
+                    searching: false,
+                    info: true,
+                    autoWidth: false,
+                    responsive: false,
+                    scrollX: true,
+                    stateSave: true,
+                    processing: false,
+                    width: '95%',
+                    ordering: true,
+                    columnDefs: [
+                        { targets: '_all', className: 'shrink-text dt-center' },
+                        { targets: [1], width: '20%' } // Producto
+                    ]
+                };
+
+                config.colReorder = !isMobile;
+                var table = $('#promotionsTable').DataTable(config);
+
+                var restoreContainer = $('#restore-columns-promotions');
+
+                $('th i.fas.fa-eye').click(function () {
+                    var th = $(this).closest('th');
+                    var columnName = th.data('column-name');
+                    var column = table.column(th);
+                    column.visible(false);
+                    table.columns.adjust().draw(false);
+                    addRestoreButton(th, columnName);
+                });
+
+                function addRestoreButton(th, columnName) {
+                    var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
+                    button.on('click', function () {
+                        table.column(th).visible(true);
+                        table.columns.adjust().draw(false);
+                        $(this).remove();
+                    });
+                    restoreContainer.append(button);
+                }
+            }
+
+            initDataTable();
+        });
+    </script>
+
+    <!-- Script para el menú de filtros -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleBtn = document.querySelector('[data-bs-target="#filtrosCollapse"]');
+            const toggleText = toggleBtn ? toggleBtn.querySelector('#toggleText') : null;
+            const collapseElement = document.getElementById('filtrosCollapse');
+
+            if (toggleBtn && toggleText && collapseElement) {
+                toggleText.textContent = collapseElement.classList.contains('show') ? 'Ocultar Filtros' : 'Mostrar Filtros';
+
+                collapseElement.addEventListener('shown.bs.collapse', function () {
+                    toggleText.textContent = 'Ocultar Filtros';
+                });
+                collapseElement.addEventListener('hidden.bs.collapse', function () {
+                    toggleText.textContent = 'Mostrar Filtros';
+                });
+            }
+        });
+    </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function isMobile() {
+            return window.innerWidth <= 768; // Ajusta según sea necesario
+        }
+
+        document.querySelectorAll('td[data-column="ml_product_id"]').forEach(td => {
+            let text = td.textContent.trim();
+            if (isMobile() && text.length > 30) {
+                td.textContent = text.substring(0, 30) + '...';
+            }
+        });
+    });
+</script>
+

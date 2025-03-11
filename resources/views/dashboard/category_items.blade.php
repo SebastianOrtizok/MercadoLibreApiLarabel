@@ -1,56 +1,86 @@
 @extends('layouts.dashboard')
-@section('content')
-    <div class="container mt-5">
-        <h1>Productos de la Categoría: {{ $categoryId }}</h1>
-        <!-- Botón para volver a la página anterior -->
-        <div class="table-responsive">
-            <a href="javascript:history.back()" class="btn btn-primary mb-3">
-                <i class="fas fa-arrow-left"></i> Volver
-            </a>
-            <div id="restore-columns-category" class="mb-3 d-flex flex-wrap gap-2"></div>
-            <div class="filtros-container mb-4 p-3 bg-light rounded shadow-sm">
-                 <div class="table-responsive">
-                      <table id= "categoryTable" class="table table-striped table-sm table-bordered table-hover">
-                <thead class="thead-dark sticky-top">
-                    <tr>
-                        <th class="text-center" data-column-name="Imagen" data-sortable="false"><i class="fas fa-eye" ></i><br>Imagen</th>
-                        <th class="text-center" data-column-name="Título" data-sortable="true"><i class="fas fa-eye"></i><br>Título</th>
-                        <th class="text-center" data-column-name="Precio" data-sortable="true"><i class="fas fa-eye"></i><br>Precio</th>
-                        <th class="text-center" data-column-name="Disponibles" data-sortable="true"><i class="fas fa-eye"></i><br>Disponibles</th>
-                        <th class="text-center" data-column-name="Tipo de Listado" data-sortable="true"><i class="fas fa-eye"></i><br>Tipo de Listado</th>
-                        <th class="text-center" data-column-name="Vendedor" data-sortable="true"><i class="fas fa-eye" ></i><br>Vendedor</th>
-                        <th class="text-center" data-column-name="Item Ganador" data-sortable="true"><i class="fas fa-eye" ></i><br>Item Ganador</th>
-                        <th class="text-center" data-column-name="Catalog Listing" data-sortable="true"><i class="fas fa-eye" ><br></i>Catalog Listing</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body-category">
-                @foreach($items as $item)
-        <tr>
-            <td>
-                <img src="{{ $item['thumbnail'] ?? '' }}"
-                     alt="{{ $item['title'] ?? 'Sin título' }}"
-                     class="img-thumbnail"
-                     style="width: 100px;">
-            </td>
-            <td>{{ $item['title'] ?? 'Sin título' }}</td>
-            <td>${{ number_format($item['price'] ?? 0, 2, ',', '.') }}</td>
-            <td>{{ $item['available_quantity'] ?? 'N/A' }}</td>
-            <td>{{ $item['listing_type_id'] ?? 'N/A' }}</td>
-            <td>{{ $item['seller']['nickname'] ?? 'N/A' }}</td>
-            <td>{{ $item['winner_item_id'] ?? 'N/A' }}</td>
-            <td>{{ isset($item['catalog_listing']) && $item['catalog_listing'] ? 'Sí' : 'No' }}</td>
-        </tr>
-    @endforeach
 
-              </tbody>
-         </table>
+@section('content')
+<div class="container mt-5">
+    <h1 class="mb-4">Productos de la Categoría: {{ $categoryId }}</h1>
+
+    <!-- Botón para volver -->
+    <div class="mb-4">
+        <a href="javascript:history.back()" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    <!-- Espacio para filtros colapsables (opcional, por si querés agregar después) -->
+    
+    <!-- Contenedor para columnas ocultas -->
+    <div id="restore-columns-category" class="mb-3 d-flex flex-wrap gap-2"></div>
+
+    <!-- Tabla de resultados -->
+    <div class="table-responsive">
+        <table id="categoryTable" class="table table-hover modern-table">
+            <thead>
+                <tr>
+                    <th data-column-name="Imagen"><span>Imagen</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Título" data-sortable="true" data-column="title"><span>Título</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Precio" data-sortable="true" data-column="price"><span>Precio</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Disponibles" data-sortable="true" data-column="available_quantity"><span>Disponibles</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Tipo de Listado" data-sortable="true" data-column="listing_type_id"><span>Tipo de Listado</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Vendedor" data-sortable="true" data-column="seller"><span>Vendedor</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Item Ganador" data-sortable="true" data-column="winner_item_id"><span>Item Ganador</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Catalog Listing" data-sortable="true" data-column="catalog_listing"><span>Catalog Listing</span><i class="fas fa-eye toggle-visibility"></i></th>
+                </tr>
+            </thead>
+            <tbody id="table-body-category">
+                @forelse($items as $item)
+                    <tr>
+                        <td>
+                            <img src="{{ $item['thumbnail'] ?? asset('images/default.png') }}"
+                                 alt="{{ $item['title'] ?? 'Sin título' }}"
+                                 class="table-img">
+                        </td>
+                        <td data-column="title">{{ $item['title'] ?? 'Sin título' }}</td>
+                        <td data-column="price">${{ number_format($item['price'] ?? 0, 2, ',', '.') }}</td>
+                        <td data-column="available_quantity">{{ $item['available_quantity'] ?? 'N/A' }}</td>
+                        <td data-column="listing_type_id">{{ $item['listing_type_id'] ?? 'N/A' }}</td>
+                        <td data-column="seller">{{ $item['seller']['nickname'] ?? 'N/A' }}</td>
+                        <td data-column="winner_item_id">{{ $item['winner_item_id'] ?? 'N/A' }}</td>
+                        <td data-column="catalog_listing">
+                            {{ isset($item['catalog_listing']) && $item['catalog_listing'] ? 'Sí' : 'No' }}
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">No hay productos para esta categoría.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@endsection
 
-
-
+@section('scripts')
+<script>
+    document.querySelectorAll('.toggle-visibility').forEach(icon => {
+        icon.addEventListener('click', function() {
+            const columnName = this.parentElement.getAttribute('data-column-name');
+            const cells = document.querySelectorAll(`td[data-column="${columnName.toLowerCase()}"], th[data-column-name="${columnName}"]`);
+            cells.forEach(cell => {
+                cell.style.display = cell.style.display === 'none' ? '' : 'none';
+            });
+            const restoreBtn = document.createElement('button');
+            restoreBtn.className = 'btn btn-sm btn-outline-secondary';
+            restoreBtn.textContent = `Mostrar ${columnName}`;
+            restoreBtn.onclick = () => {
+                cells.forEach(cell => cell.style.display = '');
+                restoreBtn.remove();
+            };
+            document.getElementById('restore-columns-category').appendChild(restoreBtn);
+        });
+    });
+</script>
 @endsection
 
 

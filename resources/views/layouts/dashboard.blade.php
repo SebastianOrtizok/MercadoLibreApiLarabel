@@ -89,7 +89,13 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.publications') }}">
                         <span class="icon"><i class="fas fa-list"></i></span>
-                        <span class="text">Mis Publicaciones</span>
+                        <span class="text">Publicaciones</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.sku') }}">
+                        <span class="icon"><i class="fas fa-barcode"></i></span>
+                        <span class="text">SKU</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -100,20 +106,26 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.ventasconsolidadasdb') }}">
-                        <span class="icon"><i class="fas fa-boxes"></i></span>
-                        <span class="text">Ventas ConsolidadasDB</span>
+                        <span class="icon"><i class="fas fa-chart-line"></i></span>
+                        <span class="text">Ventas Consolidadas</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.promociones') }}">
                         <span class="icon"><i class="fas fa-boxes"></i></span>
-                        <span class="text">Promociones de ML</span>
+                        <span class="text">Promociones ML</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.item_promotions') }}">
+                    <span class="icon"><i class="fas fa-ticket-alt"></i></span>
+                    <span class="text">Items Promo</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.catalogo') }}">
                     <span class="icon"><i class="fas fa-tags"></i></span>
-                    <span class="text">Items en Promoción</span>
+                    <span class="text">Catálogo</span>
                     </a>
                 </li>
                 <li class="nav-item">

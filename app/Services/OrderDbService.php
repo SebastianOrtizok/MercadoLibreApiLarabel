@@ -9,18 +9,17 @@ use Carbon\Carbon;
 
 class OrderDbService
 {
-    public function syncOrders($mlAccountId, $accessToken, $dateFrom = null, $dateTo = null)
+    public function syncOrders($mlAccountId, $accessToken, $dateFrom = null, $dateTo = null, $orderStatus = 'paid')
     {
         try {
             $offset = 0;
             $limit = 50;
             $ordersProcessed = 0;
 
-            // Solo el día actual (25 de febrero)
             $dateFrom = $dateFrom ?? Carbon::today()->startOfDay()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
             $dateTo = $dateTo ?? Carbon::today()->endOfDay()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
 
-            Log::info("Sincronizando órdenes para cuenta: $mlAccountId, desde: $dateFrom, hasta: $dateTo");
+            Log::info("Sincronizando órdenes para cuenta: $mlAccountId, desde: $dateFrom, hasta: $dateTo, estado: $orderStatus");
 
             do {
                 $params = [
@@ -28,7 +27,7 @@ class OrderDbService
                     'offset' => $offset,
                     'limit' => $limit,
                     'sort' => 'date_desc',
-                    'order.status' => 'paid',
+                    'order.status' => $orderStatus, // Usar el estado dinámico
                     'order.date_created.from' => $dateFrom,
                     'order.date_created.to' => $dateTo
                 ];

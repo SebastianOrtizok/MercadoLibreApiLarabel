@@ -1,6 +1,4 @@
 <?php
-
-// app/Services/SinVentasService.php
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
@@ -20,8 +18,9 @@ class SinVentasService
         $query = DB::table('articulos as a')
             ->leftJoin('ordenes as o', function ($join) use ($fechaInicio, $fechaFin) {
                 $join->on('a.ml_product_id', '=', 'o.ml_product_id')
-                    ->whereBetween('o.fecha_venta', [$fechaInicio, $fechaFin]);
+                     ->whereBetween('o.fecha_venta', [$fechaInicio, $fechaFin]);
             })
+            ->join('mercadolibre_tokens as mt', 'a.user_id', '=', 'mt.ml_account_id')
             ->whereIn('a.user_id', $tokens);
 
         // Aplicar filtros
@@ -43,7 +42,7 @@ class SinVentasService
 
         return $query->select(
                 'a.ml_product_id',
-                'a.user_id',
+                'mt.seller_name',
                 'a.titulo',
                 'a.permalink',
                 'a.imagen',
@@ -51,13 +50,12 @@ class SinVentasService
                 'a.sku',
                 'a.tipo_publicacion',
                 'a.estado',
-                DB::raw('SUM(o.cantidad) as cantidad_vendida')
+                DB::raw('COALESCE(SUM(o.cantidad), 0) as cantidad_vendida')
             )
-            ->groupBy('a.ml_product_id', 'a.user_id', 'a.titulo', 'a.permalink', 'a.imagen', 'a.stock_actual', 'a.sku', 'a.tipo_publicacion', 'a.estado')
+            ->groupBy('a.ml_product_id', 'mt.seller_name', 'a.titulo', 'a.permalink', 'a.imagen', 'a.stock_actual', 'a.sku', 'a.tipo_publicacion', 'a.estado')
             ->orderBy('cantidad_vendida', 'asc')
             ->get()
             ->map(function ($producto) use ($fechaInicio, $fechaFin) {
-                $producto->cantidad_vendida = $producto->cantidad_vendida ?? 0;
                 $diasDeRango = $fechaInicio->diffInDays($fechaFin) ?: 1;
                 $ventasDiariasPromedio = $producto->cantidad_vendida / $diasDeRango;
                 $producto->dias_stock = ($ventasDiariasPromedio > 0 && $producto->stock_actual > 0)

@@ -738,7 +738,27 @@ table.dataTable td.dataTables_empty {
     padding: 20px;
 }
 
-
+.progress-container {
+    margin-bottom: 20px;
+}
+.progress-label {
+    font-size: 14px;
+    color: #333;
+}
+.modern-progress {
+    height: 20px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.progress-bar {
+    background-color: #007bff;
+    transition: width 0.6s ease;
+    color: #fff;
+    text-align: center;
+    line-height: 20px;
+    font-size: 12px;
+}
 
 /* Ajustes para el navbar móvil */
 @media (max-width: 991px) {
@@ -750,10 +770,11 @@ table.dataTable td.dataTables_empty {
         width: 100%;
         z-index: 1000; /* Asegura que esté por encima de otros elementos */
     }
-    .container, .container-md, .container-sm {
-         max-width: 720px;
+    .container,
+    .container-md,
+    .container-sm {
+        max-width: 720px;
     }
-
 
     /* Menú desplegable */
     .navbar-collapse {
@@ -792,12 +813,12 @@ table.dataTable td.dataTables_empty {
     table.dataTable th.dt-center,
     table.dataTable td.dt-center,
     table.dataTable td.dataTables_empty {
-    text-align: center;
-    word-wrap: break-word;
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+        text-align: center;
+        word-wrap: break-word;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 /* Asegurar que el sidebar no interfiera en móvil */

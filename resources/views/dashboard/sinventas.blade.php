@@ -2,7 +2,14 @@
 
 @section('content')
 <div class="container mt-5">
-    <h2 class="mb-4">Listado de Ventas Consolidadas</h2>
+    <h2 class="mb-4">Artículos Sin Ventas</h2>
+
+    <!-- Botón para volver a Ventas Consolidadas -->
+    <div class="mb-4">
+        <a href="{{ route('dashboard.ventasconsolidadasdb') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-shopping-cart"></i> Ver Ventas Consolidadas
+        </a>
+    </div>
 
     <!-- Formulario de filtros colapsado -->
     <div class="mb-4">
@@ -10,16 +17,16 @@
             <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
         </button>
         <div class="collapse" id="filtrosCollapse">
-            <form method="GET" action="{{ route('dashboard.ventasconsolidadasdb') }}" class="mt-3">
+            <form method="GET" action="{{ route('dashboard.sinventas') }}" class="mt-3">
                 <div class="filtros-container p-3 bg-light rounded shadow-sm">
                     <div class="row">
                         <div class="col-md-3 mb-2">
                             <label>Fecha Inicio</label>
-                            <input type="date" name="fecha_inicio" class="form-control" value="{{ request('fecha_inicio', now()->subDays(30)->format('Y-m-d')) }}">
+                            <input type="date" name="fecha_inicio" class="form-control" value="{{ request('fecha_inicio', $fechaInicio->format('Y-m-d')) }}">
                         </div>
                         <div class="col-md-3 mb-2">
                             <label>Fecha Fin</label>
-                            <input type="date" name="fecha_fin" class="form-control" value="{{ request('fecha_fin', now()->format('Y-m-d')) }}">
+                            <input type="date" name="fecha_fin" class="form-control" value="{{ request('fecha_fin', $fechaFin->format('Y-m-d')) }}">
                         </div>
                         <div class="col-md-3 mb-2">
                             <label>Buscar (SKU/Título)</label>
@@ -46,16 +53,6 @@
                             </select>
                         </div>
                         <div class="col-md-3 mb-2">
-                            <label>Estado de la Orden</label>
-                            <select name="order_status" class="form-control">
-                                <option value="">Todos los estados</option>
-                                <option value="paid" {{ request('order_status') == 'paid' ? 'selected' : '' }}>Pagada</option>
-                                <option value="pending" {{ request('order_status') == 'pending' ? 'selected' : '' }}>Pendiente</option>
-                                <option value="shipped" {{ request('order_status') == 'shipped' ? 'selected' : '' }}>Enviada</option>
-                                <option value="cancelled" {{ request('order_status') == 'cancelled' ? 'selected' : '' }}>Cancelada</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 mb-2">
                             <label>Estado de la Publicación</label>
                             <select name="estado_publicacion" class="form-control">
                                 <option value="">Todos los estados</option>
@@ -63,13 +60,6 @@
                                 <option value="paused" {{ request('estado_publicacion') == 'paused' ? 'selected' : '' }}>Pausado</option>
                                 <option value="under_review" {{ request('estado_publicacion') == 'under_review' ? 'selected' : '' }}>En revisión</option>
                             </select>
-                        </div>
-                        <div class="col-md-3 mb-2">
-                            <label>Consolidar por SKU</label>
-                            <div class="form-check">
-                                <input type="checkbox" name="consolidar_por_sku" value="true" class="form-check-input" {{ request('consolidar_por_sku') === 'true' ? 'checked' : '' }}>
-                                <label class="form-check-label">Agrupar por SKU Interno</label>
-                            </div>
                         </div>
                         <div class="col-md-3 mb-2 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary w-100">
@@ -82,97 +72,46 @@
         </div>
     </div>
 
-    <!-- Botón para ir a "Sin Ventas" -->
-    <div class="mb-4">
-        <a href="{{ route('dashboard.sinventas') }}" class="btn btn-outline-secondary">
-            <i class="fas fa-box-open"></i> Ver Artículos Sin Ventas
-        </a>
-    </div>
-
-    <!-- Sección de resumen por cuenta -->
-    <div class="card modern-card mb-4">
-        <div class="card-header">
-            <h4 class="mb-0">
-                Resumen de Ventas ({{ \Carbon\Carbon::parse($fechaInicio)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($fechaFin)->format('d/m/Y') }})
-                <span class="days-range">{{ $diasDeRango }} días</span>
-            </h4>
-            <a href="{{ route('exportar.ventas') }}" class="btn btn-outline-primary btn-sm export-btn">
-                <i class="fas fa-file-excel"></i> Exportar a Excel
-            </a>
-        </div>
-        <div class="card-body">
-        @if(isset($resumenPorCuenta) && !empty($resumenPorCuenta))
-            <div class="d-flex flex-wrap gap-3">
-                @foreach($resumenPorCuenta as $cuenta => $total)
-                    <div class="progress-container" style="width: 100%; max-width: 400px;">
-                        <div class="progress-label d-flex justify-content-between align-items-center mb-1">
-                            <span>{{ $cuenta }}</span>
-                            <span class="fw-bold">{{ $total }} ventas</span>
-                        </div>
-                        <div class="progress modern-progress">
-                            <div class="progress-bar"
-                                role="progressbar"
-                                style="width: {{ log($total + 1) / log($maxVentasTotal + 1) * 100 }}%;"
-                                aria-valuenow="{{ $total }}"
-                                aria-valuemin="0"
-                                aria-valuemax="{{ $maxVentasTotal }}">
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        @else
-                <p class="text-muted text-center">No hay datos de ventas para mostrar en este período.</p>
-            @endif
-            <div id="restore-columns-order" class="mt-3 d-flex flex-wrap gap-2"></div>
-        </div>
-    </div>
-
     <!-- Tabla de resultados -->
     <div class="table-responsive">
-        <table id="orderTable" class="table table-hover modern-table">
+        <table id="sinVentasTable" class="table table-hover modern-table">
             <thead>
                 <tr>
                     <th data-column-name="Cuenta"><span>Cuenta</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Imagen"><span>Imagen</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Producto" data-sortable="true" data-column="producto"><span>Producto</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Producto" data-sortable="true" data-column="ml_product_id"><span>Producto</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="SKU" data-sortable="true" data-column="sku"><span>SKU</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Título" data-sortable="true" data-column="titulo"><span>Título</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Ventas" data-sortable="true" data-column="ventas_diarias"><span>Ventas</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Ventas" data-sortable="true" data-column="cantidad_vendida"><span>Ventas</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Publicación"><span>Publicación</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Stock" data-sortable="true" data-column="stock"><span>Stock</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Días de Stock" data-sortable="true" data-column="dias_stock"><span>Días de Stock</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Estado de la Orden"><span>Estado Orden</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Stock" data-sortable="true" data-column="stock_actual"><span>Stock</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Estado de la Publicación"><span>Estado Pub.</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Fecha de Última Venta"><span>Última Venta</span><i class="fas fa-eye toggle-visibility"></i></th>
                 </tr>
             </thead>
             <tbody id="table-body">
-                @forelse ($data ?? collect() as $item)
+                @forelse ($productosPorVentas as $producto)
                     <tr>
-                        <td data-column="Cuenta">{{ $item['seller_name'] ?? 'N/A' }}</td>
-                        <td><img src="{{ $item['imagen'] ?? asset('images/default.png') }}" alt="{{ $item['titulo'] ?? 'Sin título' }}" class="table-img"></td>
-                        <td data-column="producto">
-                            <a href="{{ route('dashboard.ventaid', ['item_id' => $item['producto'], 'fecha_inicio' => request('fecha_inicio'), 'fecha_fin' => request('fecha_fin')]) }}" class="table-link">{{ $item['producto'] }}</a>
-                            <a href="{{ $item['url'] }}" target="_blank" class="table-icon-link"><i class="fas fa-external-link-alt"></i></a>
+                        <td data-column="Cuenta">{{ $producto->seller_name ?? 'N/A' }}</td>
+                        <td><img src="{{ $producto->imagen ?? asset('images/default.png') }}" alt="{{ $producto->titulo ?? 'Sin título' }}" class="table-img"></td>
+                        <td data-column="ml_product_id">
+                            <a href="{{ $producto->permalink }}" target="_blank" class="table-link">{{ $producto->ml_product_id }}</a>
+                            <a href="{{ $producto->permalink }}" target="_blank" class="table-icon-link"><i class="fas fa-external-link-alt"></i></a>
                         </td>
-                        <td data-column="sku">{{ $item['sku'] ?? 'N/A' }}</td>
-                        <td data-column="titulo">{{ $item['titulo'] }}</td>
-                        <td data-column="ventas_diarias">{{ $item['cantidad_vendida'] }}</td>
-                        <td>{{ $item['tipo_publicacion'] ?? 'N/A' }}</td>
-                        <td data-column="stock">{{ $item['stock'] ?? 'Sin stock' }}</td>
-                        <td data-column="dias_stock">{{ $item['dias_stock'] ?? 'N/A' }}</td>
-                        <td>{{ $item['order_status'] ?? 'N/A' }}</td>
-                        <td>{{ $item['estado'] ?? 'Desconocido' }}</td>
-                        <td>{{ $item['fecha_ultima_venta'] ? \Carbon\Carbon::parse($item['fecha_ultima_venta'])->format('d/m/Y H:i') : 'N/A' }}</td>
+                        <td data-column="sku">{{ $producto->sku ?? 'N/A' }}</td>
+                        <td data-column="titulo">{{ $producto->titulo }}</td>
+                        <td data-column="cantidad_vendida" class="highlight">{{ $producto->cantidad_vendida }}</td>
+                        <td>{{ $producto->tipo_publicacion ?? 'N/A' }}</td>
+                        <td data-column="stock_actual">{{ $producto->stock_actual ?? 'Sin stock' }}</td>
+                        <td>{{ $producto->estado ?? 'Desconocido' }}</td>
                     </tr>
                 @empty
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">No hay artículos sin ventas en el período seleccionado.</td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-
-    <!-- Paginación -->
     @include('layouts.pagination', [
         'currentPage' => $currentPage,
         'totalPages' => $totalPages,
@@ -186,10 +125,10 @@
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script>
 jQuery(document).ready(function () {
-    if ($.fn.DataTable.isDataTable('#orderTable')) {
-        $('#orderTable').DataTable().clear().destroy();
+    if ($.fn.DataTable.isDataTable('#sinVentasTable')) {
+        $('#sinVentasTable').DataTable().clear().destroy();
     }
-    var table = $('#orderTable').DataTable({
+    var table = $('#sinVentasTable').DataTable({
         paging: false,
         searching: false,
         info: true,
@@ -206,7 +145,7 @@ jQuery(document).ready(function () {
         ]
     });
 
-    var restoreContainer = $('#restore-columns-order');
+    var restoreContainer = $('#restore-columns-sinventas');
 
     $('th i.fas.fa-eye.toggle-visibility').click(function () {
         var th = $(this).closest('th');

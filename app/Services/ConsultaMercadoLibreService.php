@@ -178,7 +178,6 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
                     $details = json_decode($detailsResponse->getBody(), true);
                     foreach ($details as $item) {
                         $body = $item['body'] ?? [];
-
                         $processedItems[] = [
                             'id' => $body['id'] ?? null,
                             'titulo' => $body['title'] ?? 'Sin título',

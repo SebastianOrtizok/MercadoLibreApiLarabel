@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\ConsultaMercadoLibreService;
 use App\Services\ReporteVentasService;
-use App\Services\ReporteVentasConsolidadas;
+// use App\Services\ReporteVentasConsolidadas;
 use App\Services\ReporteVentaConsolidada;
 use App\Services\MercadoLibreService;
 use Carbon\Carbon;
@@ -18,16 +18,16 @@ class AccountController extends Controller
     private $consultaService;
     private $mercadoLibreService;
     private $reporteVentasService;
-    private $ReporteVentasConsolidadas;
+    //private $ReporteVentasConsolidadas;
     private $ReporteVentaConsolidada;
     protected $client;
 
-    public function __construct(ConsultaMercadoLibreService $consultaService, MercadoLibreService $mercadoLibreService, ReporteVentasService $reporteVentasService,ReporteVentasConsolidadas $ReporteVentasConsolidadas,ReporteVentaConsolidada $ReporteVentaConsolidada)
+    public function __construct(ConsultaMercadoLibreService $consultaService, MercadoLibreService $mercadoLibreService, ReporteVentasService $reporteVentasService,ReporteVentaConsolidada $ReporteVentaConsolidada)
     {
         $this->consultaService = $consultaService;
         $this->mercadoLibreService = $mercadoLibreService;
         $this->reporteVentasService = $reporteVentasService;
-        $this->ReporteVentasConsolidadas = $ReporteVentasConsolidadas;
+       // $this->ReporteVentasConsolidadas = $ReporteVentasConsolidadas;
         $this->ReporteVentaConsolidada = $ReporteVentaConsolidada;
     }
 
@@ -161,130 +161,7 @@ public function ShowSales(Request $request, $item_id = null, $fecha_inicio = nul
 }
 
 
-public function ventas_consolidadas(Request $request, $fecha_inicio = null, $fecha_fin = null)
-{
-    try {
-        // Parámetros de paginación
-        $limit = $request->input('limit', 50);
-        $page = (int) $request->input('page', 1);
 
-        // Fechas
-        $fechaInicio = Carbon::parse($fecha_inicio ?? $request->input('fecha_inicio', Carbon::now()->format('Y-m-d')));
-        $fechaFin = Carbon::parse($fecha_fin ?? $request->input('fecha_fin', Carbon::now()->format('Y-m-d')));
-        $diasDeRango = $fechaInicio->diffInDays($fechaFin);
-
-        // Generar una clave única para la caché basada en las fechas
-        $cacheKey = "ventas_consolidadas_{$fechaInicio->format('Ymd')}_{$fechaFin->format('Ymd')}";
-
-        // Intentar obtener las ventas desde la caché
-        $ventas = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($fechaInicio, $fechaFin, $diasDeRango) {
-            return $this->ReporteVentasConsolidadas->generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango);
-        });
-
-        // Convertir los resultados en una colección ordenada por título
-        $ventasCollection = collect($ventas['ventas'] ?? []);
-        $ventasOrdenadas = $ventasCollection->sortBy('titulo')->values();
-
-        // Crear una lista de ventas consolidadas
-        $ventasConsolidadas = [];
-        $ventaAnterior = null;
-        $totalPorTitulo = [];
-        $tituloContador = [];
-        $imagenPorTitulo = [];
-
-
-        foreach ($ventasOrdenadas as $venta) {
-            // Guardar la primera imagen del título
-            if (!isset($imagenPorTitulo[$venta['titulo']])) {
-                $imagenPorTitulo[$venta['titulo']] = $venta['imagen'];
-            }
-            // Contar cuántas veces aparece cada título
-            $tituloContador[$venta['titulo']] = ($tituloContador[$venta['titulo']] ?? 0) + 1;
-
-            // Si el título cambió, agregar el total consolidado del título anterior y resetear los contadores
-            if ($ventaAnterior && $venta['titulo'] != $ventaAnterior['titulo']) {
-                // Solo agregar el total si hay más de una venta del mismo título
-                if ($tituloContador[$ventaAnterior['titulo']] > 1) {
-                    // Agregar el total consolidado por título
-                    $ventasConsolidadas[] = [
-                        'producto' => 'MLA' . rand(1000000000, 9999999999),
-                        'titulo' => "{$ventaAnterior['titulo']} Total",
-                        'cantidad_vendida' => $totalPorTitulo[$ventaAnterior['titulo']]['cantidad'],
-                        'tipo_publicacion' => 'gold_special',
-                        'fecha_venta' => now()->format('Y-m-d\TH:i:s.000-04:00'),
-                        'order_status' => 'paid',
-                        'seller_nickname' => 'TRTEK/TROTA',
-                        'fecha_ultima_venta' => now()->format('Y-m-d\TH:i:s.000-04:00'),
-                        'imagen' => $imagenPorTitulo[$ventaAnterior['titulo']],
-                        'stock' => $totalPorTitulo[$ventaAnterior['titulo']]['stock'],
-                        'sku' => 'No disp.',
-                        'estado' => 'No disp.',
-                        'url' => 'No disp',
-                        'dias_stock' => round($totalPorTitulo[$ventaAnterior['titulo']]['stock'] / ($totalPorTitulo[$ventaAnterior['titulo']]['cantidad'] / $diasDeRango), 2),
-                    ];
-                }
-                $totalPorTitulo[$ventaAnterior['titulo']] = ['cantidad' => 0, 'stock' => 0];  // Resetear el total por título
-            }
-
-            // Si es un nuevo título, agregar la venta
-            if (!isset($totalPorTitulo[$venta['titulo']])) {
-                $totalPorTitulo[$venta['titulo']] = ['cantidad' => 0, 'stock' => 0];
-            }
-
-            // Sumar la cantidad vendida y el stock por título
-            $totalPorTitulo[$venta['titulo']]['cantidad'] += $venta['cantidad_vendida'];
-            $totalPorTitulo[$venta['titulo']]['stock'] += $venta['stock'];
-
-            // Agregar la venta individual (detalle)
-            $ventasConsolidadas[] = $venta;
-            $ventaAnterior = $venta;
-        }
-
-        // Agregar el total del último título
-        if ($ventaAnterior) {
-            // Solo agregar el total si hay más de una venta del mismo título
-            if ($tituloContador[$ventaAnterior['titulo']] > 1) {
-                // Agregar el total consolidado por título
-                $ventasConsolidadas[] = [
-                    'producto' => 'MLA' . rand(1000000000, 9999999999),
-                    'titulo' => "{$ventaAnterior['titulo']} Total",
-                    'cantidad_vendida' => $totalPorTitulo[$ventaAnterior['titulo']]['cantidad'],
-                    'tipo_publicacion' => 'gold_special',
-                    'fecha_venta' => now()->format('Y-m-d\TH:i:s.000-04:00'),
-                    'order_status' => 'paid',
-                    'seller_nickname' => 'TRTEK/TROTA',
-                    'fecha_ultima_venta' => now()->format('Y-m-d\TH:i:s.000-04:00'),
-                    'imagen' => $imagenPorTitulo[$ventaAnterior['titulo']],
-                    'stock' => $totalPorTitulo[$ventaAnterior['titulo']]['stock'],
-                    'sku' => 'No disp.',
-                    'estado' => 'No disp.',
-                    'url' => 'No disp',
-                    'dias_stock' => round($totalPorTitulo[$ventaAnterior['titulo']]['stock'] / ($totalPorTitulo[$ventaAnterior['titulo']]['cantidad'] / $diasDeRango), 2),
-                ];
-            }
-        }
-
-        // Calcular el total de ventas y total de páginas
-        $totalVentas = count($ventasConsolidadas);
-        $totalPages = ceil($totalVentas / $limit);
-        session(['ventas_consolidadas' => $ventasConsolidadas]);
-        // Paginación manual usando la colección (sin hacer una nueva llamada a la API)
-        $ventasPaginadas = collect($ventasConsolidadas)->forPage($page, $limit)->values();
-        // Retornar la vista con los datos paginados
-        return view('dashboard.ventasconsolidadas', [
-            'ventas' => $ventasPaginadas,
-            'fechaInicio' => $fechaInicio,
-            'fechaFin' => $fechaFin,
-            'diasDeRango' => $diasDeRango,
-            'totalPages' => $totalPages,
-            'currentPage' => $page,
-            'limit' => $limit,
-            'totalVentas' => $totalVentas,
-        ]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
-    }
-}
 
 
 

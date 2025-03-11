@@ -1,8 +1,11 @@
 <?php
-
-use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote')->hourly();
+Artisan::command('orders:sync-daily', function () {
+    $this->comment('Ejecutando orders:sync-daily');
+    // Acá podrías poner la lógica de sincronización directamente
+    // O mejor, llamar a tu comando existente:
+    $this->call(\App\Console\Commands\SyncOrdersDaily::class);
+})->describe('Sincroniza las órdenes de MercadoLibre diariamente')
+  ->dailyAt('22:30');
+

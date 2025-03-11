@@ -2,48 +2,36 @@
 
 @section('content')
 <div class="container mt-5">
-    <h2 class="mb-4">Listado de Ventas</h2>
+    <h2 class="mb-4">Listado de Ventas Online</h2>
 
     <!-- Formulario para seleccionar el rango de días -->
     <form method="GET" action="{{ route('dashboard.ventas') }}" class="mb-4">
-    <div class="form-row d-flex align-items-center gap-3">
-        <!-- Columna para el campo de fecha de inicio -->
-        <div class="col-md-3 mb-2">
-            <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" value="{{ request('fecha_inicio', now()->format('Y-m-d')) }}">
+        <div class="form-row d-flex align-items-center gap-3">
+            <div class="col-md-3 mb-2">
+                <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" value="{{ request('fecha_inicio', now()->format('Y-m-d')) }}">
+            </div>
+            <div class="col-md-3 mb-2">
+                <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" value="{{ request('fecha_fin', now()->format('Y-m-d')) }}">
+            </div>
+            <div class="col-md-2 mb-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
         </div>
-
-        <!-- Columna para el campo de fecha de fin -->
-        <div class="col-md-3 mb-2">
-            <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" value="{{ request('fecha_fin', now()->format('Y-m-d')) }}">
-        </div>
-
-        <!-- Columna para el botón de búsqueda -->
-        <div class="col-md-2 mb-2">
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="fas fa-search"></i> <!-- Ícono de búsqueda -->
-            </button>
-        </div>
-    </div>
-
     </form>
-
 
     <!-- Filtros y buscador en el frontend -->
     <div class="filtros-container mb-4 p-3 bg-light rounded shadow-sm">
         <div class="row">
-            <!-- Buscador por título o SKU -->
             <div class="col-md-4 mb-2">
                 <input type="text" id="searchInput" class="form-control" placeholder="Buscar por título o SKU">
             </div>
-
-            <!-- Filtro por estado de la orden -->
             <div class="col-md-4 mb-2">
                 <select id="estadoFilter" class="form-control">
                     <option value="paid">Pagadas</option>
                 </select>
             </div>
-
-            <!-- Filtro por estado de la publicación -->
             <div class="col-md-4 mb-2">
                 <select id="estadoPublicacionFilter" class="form-control">
                     <option value="">Todos los estados de la publicación</option>
@@ -56,237 +44,170 @@
     </div>
 
     <!-- Mostrar las fechas seleccionadas -->
-
     <p class="mb-3">
-    <strong>Rango de fechas:</strong>
-    {{ \Carbon\Carbon::parse($fechaInicio)->format('d/m/Y') }} -
-    {{ \Carbon\Carbon::parse($fechaFin)->format('d/m/Y') }} -
-    {{ $diasDeRango }} días
-</p>
-<div class="filtros-container mb-4 p-3 bg-light rounded shadow-sm">
-<div id="restore-columns-order" class="mb-3 d-flex flex-wrap gap-2"></div>
+        <strong>Rango de fechas:</strong>
+        {{ \Carbon\Carbon::parse($fechaInicio)->format('d/m/Y') }} -
+        {{ \Carbon\Carbon::parse($fechaFin)->format('d/m/Y') }} -
+        {{ $diasDeRango }} días
+    </p>
 
+    <div class="filtros-container mb-4 p-3 bg-light rounded shadow-sm">
+        <div id="restore-columns-order" class="mb-3 d-flex flex-wrap gap-2"></div>
+    </div>
 
     <!-- Tabla de resultados -->
     <div class="table-responsive">
-        <table id="orderTable" class="table table-striped table-bordered table-hover">
-            <thead class="thead-dark sticky-top">
+        <table id="orderTable" class="table table-hover modern-table">
+            <thead>
                 <tr>
-                    <th class="text-center" data-column-name="Cuenta"><i class="fas fa-eye" ></i><br>Cuenta</th>
-                    <th class="text-center" data-column-name="Imagen"><i class="fas fa-eye" ></i><br>Imagen</th>
-                    <th class="text-center" data-column-name="Producto" data-sortable="true" data-column="producto"><i class="fas fa-eye" ></i><br>Producto</th>
-                    <th class="text-center" data-column-name="SKU" data-sortable="true" data-column="sku"><i class="fas fa-eye" ></i><br>SKU</th>
-                    <th class="text-center" data-column-name="Título" data-sortable="true" data-column="titulo"><i class="fas fa-eye" ></i><br>Título</th>
-                    <th class="text-center" data-column-name="Ventas" data-sortable="true" data-column="ventas_diarias"><i class="fas fa-eye" ></i><br>Ventas</th>
-                    <th class="text-center" data-column-name="Publicación"><i class="fas fa-eye" ></i><br>Publicación</th>
-                    <th class="text-center" data-column-name="Stock" data-sortable="true" data-column="stock"><i class="fas fa-eye" ></i><br>Stock</th>
-                    <th class="text-center" data-column-name="ImDías de Stock" data-sortable="true" data-column="dias_stock"><i class="fas fa-eye" ></i><br>Días de Stock</th>
-                    <th class="text-center" data-column-name="Estado de la Orden"><i class="fas fa-eye" ></i><br>Estado de la Orden</th>
-                    <th class="text-center" data-column-name="Estado de la Publicación"><i class="fas fa-eye" ></i><br>Estado de la Publicación</th>
-                    <th class="text-center" data-column-name="Fecha de Última Venta"><i class="fas fa-eye" ></i><br>Fecha de Última Venta</th>
+                    <th data-column-name="Cuenta"><span>Cuenta</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Imagen"><span>Imagen</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Producto" data-sortable="true" data-column="producto"><span>Producto</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="SKU" data-sortable="true" data-column="sku"><span>SKU</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Título" data-sortable="true" data-column="titulo"><span>Título</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Ventas" data-sortable="true" data-column="ventas_diarias"><span>Ventas</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Publicación"><span>Publicación</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Stock" data-sortable="true" data-column="stock"><span>Stock</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Días de Stock" data-sortable="true" data-column="dias_stock"><span>Días de Stock</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Estado de la Orden"><span>Estado Orden</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Estado de la Publicación"><span>Estado Pub.</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Fecha de Última Venta"><span>Última Venta</span><i class="fas fa-eye toggle-visibility"></i></th>
                 </tr>
             </thead>
             <tbody id="table-body">
-            @forelse($ventas['ventas'] as $venta)
-                <tr>
-                    <td>
-                        <div data-column="Cuenta">
-                        {{ $venta['seller_nickname'] }}
-                        </div>
-                    </td>
-                    <!-- Mostrar imagen del producto -->
-                    <td>
-                       <img src="{{ $venta['imagen'] }}" alt="Imagen de {{ $venta['titulo'] }}" class="img-fluid" style="max-width: 50px;">
-                    </td>
-
-                    <!-- Producto -->
-                    <td data-column="producto">
-                    <a href="{{ route('dashboard.ventaid', ['item_id' => $venta['producto'], 'fecha_inicio' => request('fecha_inicio', now()->format('Y-m-d')), 'fecha_fin' => request('fecha_fin', now()->format('Y-m-d'))]) }}">
-                        {{ $venta['producto'] }}
-                    </a>
-                    <br><br>
-                        <a href="{{ $venta['url'] }}" target="_blank" class="spanid">
-                             <i class="fas fa-external-link-alt" style="font-size: 14px; color:rgb(62, 137, 58);"></i>
-                        </a>
-                    </td>
-                    <!-- Mostrar SKU -->
-                    <td data-column="sku">{{ $venta['sku'] }}</td>
-                    <!-- Mostrar título del producto con enlace a MercadoLibre -->
-                    <td data-column="titulo">
-                        {{ $venta['titulo'] }}
-                    </td>
-                    <!-- Mostrar ventas diarias -->
-                    <td data-column="ventas_diarias">{{ $venta['cantidad_vendida'] }}</td>
-                    <!-- Mostrar el tipo de publicación -->
-                    <td>{{ $venta['tipo_publicacion'] }}</td>
-                    <!-- Mostrar stock -->
-                    <td data-column="stock">{{ $venta['stock'] }}</td>
-                    <!-- Mostrar días de stock -->
-                    <td data-column="dias_stock">{{ $venta['dias_stock'] }}</td>
-                    <!-- Estado de la orden -->
-                    <td>{{ $venta['order_status'] }}</td>
-                    <!-- Estado de la publicación -->
-                    <td>{{ $venta['estado'] }}</td>
-                    <!-- Mostrar fecha de la última venta -->
-                    <td>{{ \Carbon\Carbon::parse($venta['fecha_ultima_venta'])->format('d/m/Y H:i') }}</td>
-                </tr>
-            @empty
-
-            @endforelse
+                @forelse($ventas['ventas'] as $venta)
+                    <tr>
+                        <td data-column="Cuenta">{{ $venta['seller_name'] }}</td>
+                        <td><img src="{{ $venta['imagen'] }}" alt="{{ $venta['titulo'] }}" class="table-img"></td>
+                        <td data-column="producto">
+                            <a href="{{ route('dashboard.ventaid', ['item_id' => $venta['producto'], 'fecha_inicio' => request('fecha_inicio', now()->format('Y-m-d')), 'fecha_fin' => request('fecha_fin', now()->format('Y-m-d'))]) }}" class="table-link">{{ $venta['producto'] }}</a>
+                            <a href="{{ $venta['url'] }}" target="_blank" class="table-icon-link"><i class="fas fa-external-link-alt"></i></a>
+                        </td>
+                        <td data-column="sku">{{ $venta['sku'] }}</td>
+                        <td data-column="titulo">{{ $venta['titulo'] }}</td>
+                        <td data-column="ventas_diarias">{{ $venta['cantidad_vendida'] }}</td>
+                        <td>{{ $venta['tipo_publicacion'] }}</td>
+                        <td data-column="stock">{{ $venta['stock'] }}</td>
+                        <td data-column="dias_stock">{{ $venta['dias_stock'] }}</td>
+                        <td>{{ $venta['order_status'] }}</td>
+                        <td>{{ $venta['estado'] }}</td>
+                        <td>{{ \Carbon\Carbon::parse($venta['fecha_ultima_venta'])->format('d/m/Y H:i') }}</td>
+                    </tr>
+                @empty
+                @endforelse
             </tbody>
         </table>
     </div>
-</div>
+
+    <!-- Controles de paginación -->
+    @include('layouts.pagination', [
+        'currentPage' => $currentPage,
+        'totalPages' => $totalPages,
+        'limit' => $limit
+    ])
 </div>
 
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-
-<!-- Controles de paginación -->
-   <!-- Controles de paginación -->
-   @include('layouts.pagination', [
-    'currentPage' => $currentPage,
-    'totalPages' => $totalPages,
-    'limit' => $limit
-])
-
-
-
-@endsection
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- script para ordenar las columnas y ocultar -->
 <script>
-jQuery(document).ready(function () {
-
+jQuery(document).ready(function ($) {
     if ($.fn.DataTable.isDataTable('#orderTable')) {
-    $('#orderTable').DataTable().clear().destroy();
-}
+        $('#orderTable').DataTable().destroy();
+    }
+
     var table = $('#orderTable').DataTable({
         paging: false,
-   // transform: scale(0.95);
-    searching: false,
-    info: true,
-    colReorder: true,
-    autoWidth: false,
-    responsive: true,
-    scrollX: false,
-    stateSave: false,
-    processing: true,
-    width: '95%',   // Forzar que la tabla ocupe el 100% del ancho
-    columnDefs: [
-        { targets: '_all', className: 'shrink-text dt-center' },  // Aplica 'shrink-text' a todas las columnas
-        { targets: [4], width: '20%' }  // Aumenta el ancho de la columna 5 (índice 4) a un 20%plica la clase 'titulo-columna' solo a la primera columna
-    ]
+        searching: false,
+        info: true,
+        colReorder: true, // Habilitar arrastrar columnas
+        autoWidth: false,
+        responsive: true,
+        scrollX: true,
+        stateSave: false,
+        processing: true,
+        columnDefs: [
+            { targets: '_all', className: 'shrink-text dt-center' },
+            { targets: 4, width: '20%' } // Título
+        ]
     });
 
     var restoreContainer = $('#restore-columns-order');
 
-    // Ocultar columna al hacer clic en el ícono del ojo
-    $('th i.fas.fa-eye').click(function () {
+    $('th i.fas.fa-eye.toggle-visibility').on('click', function () {
         var th = $(this).closest('th');
         var columnName = th.data('column-name');
-
-        // Obtener la columna usando el nodo th directamente
-        var column = table.column(th);
-
-        console.log(`Ocultando columna: ${columnName}`);
-
-        // Ocultar la columna
-        column.visible(false);
+        var column = table.column(th.index());
+        column.visible(!column.visible());
         table.columns.adjust().draw(false);
 
-        // Agregar botón para restaurar la columna
-        addRestoreButton(th, columnName);
+        if (!column.visible()) {
+            addRestoreButton(th, columnName);
+        }
     });
 
-    // Función para agregar el botón de restauración
     function addRestoreButton(th, columnName) {
         var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
         button.on('click', function () {
-            console.log(`Restaurando columna: ${columnName}`);
-
-            // Restaurar la columna usando el mismo th
-            table.column(th).visible(true);
+            table.column(th.index()).visible(true);
             table.columns.adjust().draw(false);
-
-            // Remover el botón de restauración
             $(this).remove();
         });
         restoreContainer.append(button);
     }
 });
-
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const headers = document.querySelectorAll('th[data-sortable="true"]');
-        const tableBody = document.getElementById('table-body');
+document.addEventListener('DOMContentLoaded', () => {
+    const headers = document.querySelectorAll('th[data-sortable="true"]');
+    const tableBody = document.getElementById('table-body');
 
-        headers.forEach(header => {
-            header.addEventListener('click', () => {
-                const column = header.getAttribute('data-column');
-                const rows = Array.from(tableBody.querySelectorAll('tr'));
-                const isAscending = header.classList.contains('ascending');
+    headers.forEach(header => {
+        header.addEventListener('click', () => {
+            const column = header.getAttribute('data-column');
+            const rows = Array.from(tableBody.querySelectorAll('tr'));
+            const isAscending = header.classList.contains('ascending');
 
-                // Ordenar las filas
-                rows.sort((rowA, rowB) => {
-                    const cellA = rowA.querySelector(`[data-column="${column}"]`).textContent.trim().toLowerCase();
-                    const cellB = rowB.querySelector(`[data-column="${column}"]`).textContent.trim().toLowerCase();
+            rows.sort((rowA, rowB) => {
+                const cellA = rowA.querySelector(`[data-column="${column}"]`).textContent.trim().toLowerCase();
+                const cellB = rowB.querySelector(`[data-column="${column}"]`).textContent.trim().toLowerCase();
 
-                    if (!isNaN(parseFloat(cellA)) && !isNaN(parseFloat(cellB))) {
-                        return isAscending ? parseFloat(cellA) - parseFloat(cellB) : parseFloat(cellB) - parseFloat(cellA);
-                    }
-
-                    return isAscending
-                        ? cellA.localeCompare(cellB)
-                        : cellB.localeCompare(cellA);
-                });
-
-                // Actualizar las clases de orden en los encabezados
-                headers.forEach(h => h.classList.remove('ascending', 'descending'));
-                header.classList.add(isAscending ? 'descending' : 'ascending');
-
-                // Renderizar las filas ordenadas
-                rows.forEach(row => tableBody.appendChild(row));
+                if (!isNaN(parseFloat(cellA)) && !isNaN(parseFloat(cellB))) {
+                    return isAscending ? parseFloat(cellA) - parseFloat(cellB) : parseFloat(cellB) - parseFloat(cellA);
+                }
+                return isAscending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
             });
+
+            headers.forEach(h => h.classList.remove('ascending', 'descending'));
+            header.classList.add(isAscending ? 'descending' : 'ascending');
+            rows.forEach(row => tableBody.appendChild(row));
         });
     });
-</script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const searchInput = document.getElementById('searchInput');
-        const estadoPublicacionFilter = document.getElementById('estadoPublicacionFilter');
-        const tableBody = document.getElementById('table-body');
-        const rows = Array.from(tableBody.querySelectorAll('tr'));
+    const searchInput = document.getElementById('searchInput');
+    const estadoPublicacionFilter = document.getElementById('estadoPublicacionFilter');
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
 
-        // Filtro de búsqueda por SKU o título
-        searchInput.addEventListener('input', () => {
-            const searchTerm = searchInput.value.toLowerCase();
-            rows.forEach(row => {
-                const productTitle = row.querySelector('[data-column="titulo"]').textContent.toLowerCase();
-                const sku = row.querySelector('[data-column="sku"]').textContent.toLowerCase();
-                if (productTitle.includes(searchTerm) || sku.includes(searchTerm)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-
-        // Filtro de estado de la publicación
-        estadoPublicacionFilter.addEventListener('change', () => {
-            const selectedPublicationStatus = estadoPublicacionFilter.value;
-            rows.forEach(row => {
-                const publicationStatus = row.querySelector('td:nth-child(11)').textContent.trim().toLowerCase();
-                if (!selectedPublicationStatus || publicationStatus === selectedPublicationStatus) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
+    searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        rows.forEach(row => {
+            const productTitle = row.querySelector('[data-column="titulo"]').textContent.toLowerCase();
+            const sku = row.querySelector('[data-column="sku"]').textContent.toLowerCase();
+            row.style.display = (productTitle.includes(searchTerm) || sku.includes(searchTerm)) ? '' : 'none';
         });
     });
+
+    estadoPublicacionFilter.addEventListener('change', () => {
+        const selectedPublicationStatus = estadoPublicacionFilter.value;
+        rows.forEach(row => {
+            const publicationStatus = row.querySelector('td:nth-child(11)').textContent.trim().toLowerCase();
+            row.style.display = (!selectedPublicationStatus || publicationStatus === selectedPublicationStatus) ? '' : 'none';
+        });
+    });
+});
 </script>
+@endsection
