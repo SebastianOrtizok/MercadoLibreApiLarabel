@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\ConsultaMercadoLibreService;
 use App\Services\ReporteVentasService;
-// use App\Services\ReporteVentasConsolidadas;
 use App\Services\ReporteVentaConsolidada;
 use App\Services\MercadoLibreService;
 use Carbon\Carbon;
@@ -13,22 +12,22 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 
-
 class AccountController extends Controller
 {
     private $consultaService;
     private $mercadoLibreService;
     private $reporteVentasService;
-    //private $ReporteVentasConsolidadas;
     private $ReporteVentaConsolidada;
-    protected $client;
 
-    public function __construct(ConsultaMercadoLibreService $consultaService, MercadoLibreService $mercadoLibreService, ReporteVentasService $reporteVentasService,ReporteVentaConsolidada $ReporteVentaConsolidada)
-    {
+    public function __construct(
+        ConsultaMercadoLibreService $consultaService,
+        MercadoLibreService $mercadoLibreService,
+        ReporteVentasService $reporteVentasService,
+        ReporteVentaConsolidada $ReporteVentaConsolidada
+    ) {
         $this->consultaService = $consultaService;
         $this->mercadoLibreService = $mercadoLibreService;
         $this->reporteVentasService = $reporteVentasService;
-       // $this->ReporteVentasConsolidadas = $ReporteVentasConsolidadas;
         $this->ReporteVentaConsolidada = $ReporteVentaConsolidada;
     }
 
@@ -298,7 +297,7 @@ public function segundaSincronizacionDB(Request $request, $user_id)
 
             // Obtener ml_product_id que están en ordenes pero no en articulos
             $missingIds = DB::table('ordenes')
-                ->where('ml_account_id', $user_id) // Cambiamos user_id por ml_account_id
+                ->where('ml_account_id', $user_id)
                 ->whereNotIn('ml_product_id', DB::table('articulos')->select('ml_product_id'))
                 ->pluck('ml_product_id')
                 ->unique()
@@ -310,20 +309,8 @@ public function segundaSincronizacionDB(Request $request, $user_id)
 
             \Log::info("Sincronizando artículos faltantes para {$user_id}", ['count' => count($missingIds), 'sample' => array_slice($missingIds, 0, 5)]);
 
-            // Descargar detalles de los ítems faltantes
-            $chunks = array_chunk($missingIds, 20); // Máximo 20 IDs por llamada
-            $allItems = [];
-
-            foreach ($chunks as $chunk) {
-                $response = $this->consultaService->client->get("items", [
-                    'headers' => ['Authorization' => "Bearer {$token}"],
-                    'query' => ['ids' => implode(',', $chunk)]
-                ]);
-
-                $details = json_decode($response->getBody(), true);
-                $allItems = array_merge($allItems, $details);
-                sleep(1); // Evitar rate limiting
-            }
+            // Usar el nuevo método del servicio
+            $allItems = $this->consultaService->descargarItemsPorIds($token, $missingIds);
 
             // Procesar e insertar los ítems
             foreach ($allItems as $item) {
