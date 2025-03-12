@@ -161,7 +161,7 @@
                         <td data-column="ventas_diarias">{{ $item['cantidad_vendida'] }}</td>
                         <td>{{ $item['tipo_publicacion'] ?? 'N/A' }}</td>
                         <td data-column="stock">{{ $item['stock'] ?? 'Sin stock' }}</td>
-                        <td data-column="dias_stock">{{ $item['dias_stock'] ?? 'N/A' }}</td>
+                        <td data-column="dias_stock" class="highlight">{{ $item['dias_stock'] ?? 'N/A' }}</td>
                         <td>{{ $item['order_status'] ?? 'N/A' }}</td>
                         <td>{{ $item['estado'] ?? 'Desconocido' }}</td>
                         <td>{{ $item['fecha_ultima_venta'] ? \Carbon\Carbon::parse($item['fecha_ultima_venta'])->format('d/m/Y H:i') : 'N/A' }}</td>
