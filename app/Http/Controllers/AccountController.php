@@ -295,40 +295,72 @@ public function segundaSincronizacionDB(Request $request, $user_id)
         }
         $token = $cuenta->access_token;
 
-        $limit = (int) $request->input('limit', 50);
-        $offset = (int) $request->input('offset', 1000); // Offset inicial desde 1000
-        $publications = $this->consultaService->DescargarArticulosDB($user_id, $token, $limit, $offset);
+        // Obtener ml_product_id que están en ordenes pero no en articulos
+        $missingIds = DB::table('ordenes')
+            ->where('user_id', $user_id)
+            ->whereNotIn('ml_product_id', DB::table('articulos')->select('ml_product_id'))
+            ->pluck('ml_product_id')
+            ->unique()
+            ->toArray();
 
-        foreach ($publications['items'] as $item) {
+        if (empty($missingIds)) {
+            return redirect()->back()->with('success', 'No hay artículos faltantes para sincronizar.');
+        }
+
+        \Log::info("Sincronizando artículos faltantes para {$user_id}", ['count' => count($missingIds), 'sample' => array_slice($missingIds, 0, 5)]);
+
+        // Descargar detalles de los ítems faltantes
+        $chunks = array_chunk($missingIds, 20); // Máximo 20 IDs por llamada
+        $allItems = [];
+
+        foreach ($chunks as $chunk) {
+            $response = $this->consultaService->client->get("items", [
+                'headers' => ['Authorization' => "Bearer {$token}"],
+                'query' => ['ids' => implode(',', $chunk)]
+            ]);
+
+            $details = json_decode($response->getBody(), true);
+            $allItems = array_merge($allItems, $details);
+            sleep(1); // Evitar rate limiting
+        }
+
+        // Procesar e insertar los ítems
+        foreach ($allItems as $item) {
+            $body = $item['body'] ?? [];
+            $precio = $body['price'] ?? null;
+            $precioOriginal = $body['original_price'] ?? null;
+            $enPromocion = $precioOriginal && $precio && $precioOriginal > $precio;
+            $descuentoPorcentaje = $enPromocion ? round((($precioOriginal - $precio) / $precioOriginal) * 100, 2) : null;
+
             \App\Models\Articulo::updateOrInsert(
-                ['ml_product_id' => $item['ml_product_id']],
+                ['ml_product_id' => $body['id']],
                 [
-                    'user_id' => $item['token_id'],
-                    'titulo' => $item['titulo'] ?? 'Sin título',
-                    'imagen' => $item['imagen'] ?? null,
-                    'stock_actual' => $item['stockActual'] ?? 0,
-                    'precio' => $item['precio'] ?? 0.0,
-                    'estado' => $item['estado'] ?? 'Desconocido',
-                    'permalink' => $item['permalink'] ?? '#',
-                    'condicion' => $item['condicion'] ?? 'Desconocido',
-                    'sku' => $item['sku'] ?? null,
-                    'tipo_publicacion' => $item['tipoPublicacion'] ?? 'Desconocido',
-                    'en_catalogo' => $item['enCatalogo'] ?? false,
-                    'logistic_type' => $item['logistic_type'] ?? null,
-                    'inventory_id' => $item['inventory_id'] ?? null,
-                    'user_product_id' => $item['user_product_id'] ?? null,
-                    'precio_original' => $item['precio_original'] ?? null,
-                    'category_id' => $item['category_id'] ?? null,
-                    'en_promocion' => $item['en_promocion'] ?? false,
-                    'descuento_porcentaje' => $item['descuento_porcentaje'] ?? null,
-                    'deal_ids' => $item['deal_ids'] ?? '[]',
-                    // Sin sku_interno para protegerlo
+                    'user_id' => $user_id,
+                    'titulo' => $body['title'] ?? 'Sin título',
+                    'imagen' => $body['thumbnail'] ?? null,
+                    'stock_actual' => $body['available_quantity'] ?? 0,
+                    'precio' => $precio,
+                    'estado' => $body['status'] ?? 'Desconocido',
+                    'permalink' => $body['permalink'] ?? '#',
+                    'condicion' => $body['condition'] ?? 'Desconocido',
+                    'sku' => $body['user_product_id'] ?? null,
+                    'tipo_publicacion' => $body['listing_type_id'] ?? 'Desconocido',
+                    'en_catalogo' => $body['catalog_listing'] ?? false,
+                    'logistic_type' => $body['shipping']['logistic_type'] ?? null,
+                    'inventory_id' => $body['inventory_id'] ?? null,
+                    'user_product_id' => $body['user_product_id'] ?? null,
+                    'precio_original' => $precioOriginal,
+                    'category_id' => $body['category_id'] ?? null,
+                    'en_promocion' => $enPromocion,
+                    'descuento_porcentaje' => $descuentoPorcentaje,
+                    'deal_ids' => json_encode($body['deal_ids'] ?? []),
                 ]
             );
         }
 
-        return redirect()->back()->with('success', 'Segunda sincronización completada con éxito.');
+        return redirect()->back()->with('success', 'Segunda sincronización completada con éxito. Se agregaron ' . count($allItems) . ' artículos faltantes.');
     } catch (\Exception $e) {
+        \Log::error("Error en segunda sincronización para {$user_id}: " . $e->getMessage());
         return redirect()->back()->with('error', 'Error al sincronizar los artículos: ' . $e->getMessage());
     }
 }

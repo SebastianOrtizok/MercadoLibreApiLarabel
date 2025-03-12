@@ -40,7 +40,6 @@
                         </a>
                         <form action="{{ route('sincronizacion.segunda', ['user_id' => $cuenta->ml_account_id]) }}" method="POST">
                             @csrf
-                            <input type="hidden" name="offset" value="1000">
                             <button type="submit" class="btn btn-outline-danger">
                                 <i class="fas fa-sync-alt me-2"></i>2da Sincronización {{ $cuenta->ml_account_id }}
                             </button>
