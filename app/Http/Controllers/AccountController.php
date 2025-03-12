@@ -233,9 +233,7 @@ public function sincronizacion(Request $request)
 public function primeraSincronizacionDB(Request $request, $user_id)
 {
     try {
-        $usuarioAutenticado = auth()->id(); // Obtener el ID del usuario logueado
-
-        // Verificar si el usuario autenticado tiene acceso a la cuenta de MercadoLibre seleccionada
+        $usuarioAutenticado = auth()->id();
         $cuenta = \App\Models\MercadoLibreToken::where('ml_account_id', $user_id)
                     ->where('user_id', $usuarioAutenticado)
                     ->first();
@@ -245,7 +243,6 @@ public function primeraSincronizacionDB(Request $request, $user_id)
         }
         $token = $cuenta->access_token;
 
-        // Si la cuenta pertenece al usuario, continuar con la sincronización
         $limit = (int) $request->input('limit', 50);
         $page = (int) $request->input('page', 1);
         $offset = ($page - 1) * $limit;
@@ -274,6 +271,7 @@ public function primeraSincronizacionDB(Request $request, $user_id)
                     'en_promocion' => $item['en_promocion'] ?? false,
                     'descuento_porcentaje' => $item['descuento_porcentaje'] ?? null,
                     'deal_ids' => $item['deal_ids'] ?? '[]',
+                    // No incluimos sku_interno para que no se sobrescriba
                 ]
             );
         }
@@ -284,7 +282,56 @@ public function primeraSincronizacionDB(Request $request, $user_id)
     }
 }
 
+public function segundaSincronizacionDB(Request $request, $user_id)
+{
+    try {
+        $usuarioAutenticado = auth()->id();
+        $cuenta = \App\Models\MercadoLibreToken::where('ml_account_id', $user_id)
+                    ->where('user_id', $usuarioAutenticado)
+                    ->first();
 
+        if (!$cuenta) {
+            return redirect()->back()->with('error', 'No tienes permiso para sincronizar esta cuenta.');
+        }
+        $token = $cuenta->access_token;
+
+        $limit = (int) $request->input('limit', 50);
+        $offset = (int) $request->input('offset', 1000); // Offset inicial desde 1000
+        $publications = $this->consultaService->DescargarArticulosDB($user_id, $token, $limit, $offset);
+
+        foreach ($publications['items'] as $item) {
+            \App\Models\Articulo::updateOrInsert(
+                ['ml_product_id' => $item['ml_product_id']],
+                [
+                    'user_id' => $item['token_id'],
+                    'titulo' => $item['titulo'] ?? 'Sin título',
+                    'imagen' => $item['imagen'] ?? null,
+                    'stock_actual' => $item['stockActual'] ?? 0,
+                    'precio' => $item['precio'] ?? 0.0,
+                    'estado' => $item['estado'] ?? 'Desconocido',
+                    'permalink' => $item['permalink'] ?? '#',
+                    'condicion' => $item['condicion'] ?? 'Desconocido',
+                    'sku' => $item['sku'] ?? null,
+                    'tipo_publicacion' => $item['tipoPublicacion'] ?? 'Desconocido',
+                    'en_catalogo' => $item['enCatalogo'] ?? false,
+                    'logistic_type' => $item['logistic_type'] ?? null,
+                    'inventory_id' => $item['inventory_id'] ?? null,
+                    'user_product_id' => $item['user_product_id'] ?? null,
+                    'precio_original' => $item['precio_original'] ?? null,
+                    'category_id' => $item['category_id'] ?? null,
+                    'en_promocion' => $item['en_promocion'] ?? false,
+                    'descuento_porcentaje' => $item['descuento_porcentaje'] ?? null,
+                    'deal_ids' => $item['deal_ids'] ?? '[]',
+                    // Sin sku_interno para protegerlo
+                ]
+            );
+        }
+
+        return redirect()->back()->with('success', 'Segunda sincronización completada con éxito.');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Error al sincronizar los artículos: ' . $e->getMessage());
+    }
+}
 
 
      /**

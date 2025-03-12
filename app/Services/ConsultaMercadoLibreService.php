@@ -229,42 +229,29 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
 public function DescargarArticulosDB($userId, $token, $limit = 50, $offset = 0)
 {
     try {
-        // Obtener solo el token de la cuenta específica
-       // $token = \App\Models\MercadoLibreToken::where('ml_account_id', $userId)->first();
-
         if (!$token) {
             \Log::error("No se encontró token para la cuenta de MercadoLibre: {$userId}");
             return ['items' => [], 'total' => 0];
         }
 
-
         $allItems = [];
         $total = 0;
-        $maxApiLimit = 1000; // Límite máximo de ítems paginables según la API
-
         $currentOffset = $offset;
 
         do {
-            // Ajustar el límite si offset + limit supera el máximo permitido
-            $limitAdjusted = min($limit, max(0, $maxApiLimit - $currentOffset));
-
-            if ($limitAdjusted <= 0) {
-                break; // No hay más ítems para paginar
-            }
-
-            // Llamada a la API de MercadoLibre
+            \Log::info("Descargando ítems para {$userId}", ['offset' => $currentOffset, 'limit' => $limit]);
             $response = $this->client->get("users/{$userId}/items/search", [
                 'headers' => ['Authorization' => "Bearer {$token}"],
                 'query' => [
                     'include_attributes' => 'all',
-                    'limit' => $limitAdjusted,
+                    'limit' => $limit,
                     'offset' => $currentOffset
                 ]
             ]);
 
             $data = json_decode($response->getBody(), true);
-
             if (empty($data['results'])) {
+                \Log::info("No más resultados en offset {$currentOffset} para {$userId}");
                 break;
             }
 
@@ -282,19 +269,17 @@ public function DescargarArticulosDB($userId, $token, $limit = 50, $offset = 0)
             }
 
             $total = $data['paging']['total'] ?? $total;
-            $currentOffset += $limitAdjusted;
+            $currentOffset += $limit;
+            sleep(1); // Evitar rate limiting
+        } while ($currentOffset < $total);
 
-            sleep(1);
-        } while ($currentOffset < $total && $currentOffset < $maxApiLimit);
+        \Log::info("Descargados {$total} ítems para {$userId}", ['items_count' => count($allItems)]);
 
-        // Procesar artículos
+        // Procesamiento de ítems (sin sku_interno)...
         $processedItems = [];
-
         foreach ($allItems as $item) {
             $body = $item['body'] ?? [];
             $sellerId = $body['seller_id'] ?? null;
-
-            // Calcular descuento si aplica
             $precio = $body['price'] ?? null;
             $precioOriginal = $body['original_price'] ?? null;
             $enPromocion = $precioOriginal && $precio && $precioOriginal > $precio;
@@ -324,10 +309,7 @@ public function DescargarArticulosDB($userId, $token, $limit = 50, $offset = 0)
             ];
         }
 
-        \Log::debug("Productos procesados para la cuenta {$userId}:", $processedItems);
-
         return ['items' => $processedItems, 'total' => $total];
-
     } catch (RequestException $e) {
         \Log::error("Error al obtener publicaciones de MercadoLibre ({$userId}): " . $e->getMessage());
         throw $e;
@@ -345,8 +327,6 @@ public function sincronizarBaseDeDatos(string $userId, int $limit = 50, int $pag
         $userId = auth()->user()->id;
         $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
         $offset = ($page - 1) * $limit;
-
-        // Límite máximo de ítems paginables según la API (1000)
         $maxApiLimit = 1000;
 
         foreach ($tokens as $token) {
@@ -355,15 +335,8 @@ public function sincronizarBaseDeDatos(string $userId, int $limit = 50, int $pag
             \Log::info("Procesando cuenta ML", ['mlAccountId' => $mlAccountId]);
 
             do {
-                // Asegurarse de que offset + limit no exceda el máximo permitido
-                if ($currentOffset + $limit > $maxApiLimit) {
-                    $limitAdjusted = $maxApiLimit - $currentOffset;
-                    if ($limitAdjusted <= 0) {
-                        break; // No hay más ítems que paginar dentro del límite
-                    }
-                } else {
-                    $limitAdjusted = $limit;
-                }
+                $limitAdjusted = min($limit, max(0, $maxApiLimit - $currentOffset));
+                if ($limitAdjusted <= 0) break;
 
                 $response = Http::withToken($this->mercadoLibreService->getAccessToken($userId, $mlAccountId))
                     ->get("https://api.mercadolibre.com/users/{$mlAccountId}/items/search", [
@@ -378,9 +351,7 @@ public function sincronizarBaseDeDatos(string $userId, int $limit = 50, int $pag
 
                 $data = $response->json();
                 $itemIds = $data['results'] ?? [];
-                if (empty($itemIds)) {
-                    break;
-                }
+                if (empty($itemIds)) break;
 
                 $chunks = array_chunk($itemIds, 20);
                 $anyUpdated = false;
@@ -416,7 +387,7 @@ public function sincronizarBaseDeDatos(string $userId, int $limit = 50, int $pag
                         $enPromocion = $precioOriginal && $precio && $precioOriginal > $precio;
                         $descuentoPorcentaje = $enPromocion ? round((($precioOriginal - $precio) / $precioOriginal) * 100, 2) : null;
 
-                        Articulo::updateOrCreate(
+                        \App\Models\Articulo::updateOrCreate(
                             ['ml_product_id' => $body['id']],
                             [
                                 'user_id' => $userId,
@@ -438,15 +409,14 @@ public function sincronizarBaseDeDatos(string $userId, int $limit = 50, int $pag
                                 'descuento_porcentaje' => $descuentoPorcentaje,
                                 'deal_ids' => json_encode($body['deal_ids'] ?? []),
                                 'updated_at' => now(),
+                                // No incluimos sku_interno para que no se sobrescriba
                             ]
                         );
 
                         $anyUpdated = true;
                     }
 
-                    if (!$anyUpdated) {
-                        break;
-                    }
+                    if (!$anyUpdated) break;
                 }
 
                 $currentOffset += $limitAdjusted;
