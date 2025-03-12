@@ -64,24 +64,30 @@ class ReporteVentasConsolidadasDb
             $query->where('o.ml_account_id', $filters['ml_account_id']);
         }
 
-        // Definir los campos de selección y agrupación según si se agrupa por SKU
+        // Excluir SKU nulos o vacíos cuando se consolida por SKU
+        if ($consolidarPorSku) {
+            $query->whereNotNull('a.sku_interno')->where('a.sku_interno', '!=', '');
+        }
+
+        // Definir los campos de selección y agrupación
         if ($consolidarPorSku) {
             $selectFields = [
                 'a.sku_interno as producto',
-                DB::raw('MAX(a.titulo) as titulo'), // Obtener el título correspondiente
+                DB::raw('MAX(a.titulo) as titulo'),
                 'a.sku_interno as sku',
                 DB::raw('SUM(o.cantidad) as cantidad_vendida'),
-                DB::raw('MAX(a.tipo_publicacion) as tipo_publicacion'), // Asegurar que haya tipo de publicación
+                DB::raw('MAX(a.tipo_publicacion) as tipo_publicacion'),
                 DB::raw('MAX(a.imagen) as imagen'),
-                DB::raw('MAX(a.stock_actual) as stock'),
+                DB::raw('SUM(a.stock_actual) as stock'), // Sumar stock across cuentas si no hay filtro
                 DB::raw('MAX(a.estado) as estado'),
                 DB::raw('MAX(a.permalink) as url'),
                 DB::raw('MAX(o.fecha_venta) as fecha_ultima_venta'),
                 DB::raw('MAX(o.estado_orden) as order_status'),
-                DB::raw('MAX(mt.seller_name) as seller_name')
+                DB::raw('GROUP_CONCAT(DISTINCT mt.seller_name SEPARATOR ", ") as seller_name') // Mostrar todas las cuentas
             ];
 
-            $groupByFields = ['a.sku_interno'];
+            // Agrupar solo por SKU si no hay filtro de cuenta, o por SKU y cuenta si hay filtro
+            $groupByFields = !empty($filters['ml_account_id']) ? ['a.sku_interno', 'o.ml_account_id'] : ['a.sku_interno'];
         } else {
             $selectFields = [
                 'o.ml_product_id as producto',
