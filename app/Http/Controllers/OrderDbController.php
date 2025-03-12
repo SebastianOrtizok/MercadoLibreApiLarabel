@@ -38,7 +38,7 @@ class OrderDbController extends Controller
                 ? Carbon::parse($request->input('date_from'))->startOfDay()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z')
                 : Carbon::today()->startOfDay()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
             $dateTo = $request->input('date_to')
-                ? Carbon::parse($request->input('date_to'))->endOfDay()->setTimezoneZA('UTC')->format('Y-m-d\TH:i:s\Z')
+                ? Carbon::parse($request->input('date_to'))->endOfDay()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z')
                 : Carbon::today()->endOfDay()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
             $orderStatus = $request->input('order_status', 'paid'); // Valor por defecto: 'paid'
 

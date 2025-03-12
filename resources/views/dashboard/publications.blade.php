@@ -194,7 +194,7 @@
             'warehouse': 'Almacén',                           // Otro tipo de almacén
             'default': 'Depósito Predeterminado',             // Depósito predeterminado
             'distribution_center': 'Centro de Distribución',  // Centro de distribución de Mercado Libre
-            // Puedes agregar más tipos aquí si es necesario
+            // agregar más tipos aquí si es necesario
         };
 
         // Crear las filas de la tabla
@@ -238,7 +238,7 @@ jQuery(document).ready(function () {
     colReorder: true,
     autoWidth: false,
     responsive: true,
-    scrollX: false,
+    scrollX: true,
     stateSave: true,
     processing: true,
     width: '95%',   // Forzar que la tabla ocupe el 100% del ancho

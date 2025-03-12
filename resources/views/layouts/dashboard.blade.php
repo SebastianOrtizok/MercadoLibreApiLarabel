@@ -34,7 +34,13 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard.publications') }}">
-                                <i class="fas fa-list me-2"></i> Mis Publicaciones
+                                <i class="fas fa-list me-2"></i>Publicaciones
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard.sku') }}">
+                                <span class="icon"><i class="fas fa-barcode"></i></span>
+                                <span class="text">SKU</span>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -44,7 +50,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard.ventasconsolidadasdb') }}">
-                                <i class="fas fa-boxes me-2"></i> Ventas ConsolidadasDB
+                                <i class="fas fa-chart-line me-2"></i> Ventas ConsolidadasDB
                             </a>
                         </li>
                         <li class="nav-item">
@@ -55,7 +61,13 @@
 
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard.item_promotions') }}">
-                                <i class="fas fa-tags"></i> Items en Promoción
+                                <i class="fas fa-ticket-alt"></i> Items en Promoción
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard.catalogo') }}">
+                            <span class="icon"><i class="fas fa-tags"></i></span>
+                            <span class="text">Catálogo</span>
                             </a>
                         </li>
                         <li class="nav-item">
