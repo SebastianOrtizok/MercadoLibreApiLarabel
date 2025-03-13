@@ -49,6 +49,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/missing-articles/sync/{mlAccountId}', [App\Http\Controllers\MissingArticlesController::class, 'sync'])->name('missing.articles.sync');
     Route::get('/sincronizacion/actualizar', [AccountController::class, 'actualizarArticulosDB'])->name('sincronizacion.actualizar');
     Route::get('/sync-orders-db', [OrderDbController::class, 'syncOrders'])->name('sync.orders.db');
+    Route::get('/sync/deal-promotions', [App\Http\Controllers\ItemPromotionsController::class, 'dealPromotions'])->name('sync.deal.promotions');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/exportar-ventas', function () {

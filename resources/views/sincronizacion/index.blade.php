@@ -93,23 +93,30 @@
     </div>
 
     <!-- Sección de sincronización de promociones -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-success text-white">
-            <h2 class="mb-0">Sincronización de Promociones</h2>
-        </div>
-        <div class="card-body">
-            <div class="d-flex flex-wrap gap-2">
-                <a href="{{ route('sync.promotions.db') }}" class="text-decoration-none">
-                    <button class="btn btn-success">
-                        <i class="fas fa-sync-alt me-2"></i>Sincronizar Promociones
-                    </button>
-                </a>
-                <a href="{{ route('dashboard.item_promotions') }}" class="text-decoration-none">
-                    <button class="btn btn-info">
-                        <i class="fas fa-eye me-2"></i>Ver Promociones Sincronizadas
-                    </button>
-                </a>
-            </div>
+<div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+        <h2 class="mb-0">Sincronización de Promociones</h2>
+    </div>
+    <div class="card-body">
+        <div class="d-flex flex-wrap gap-2">
+            <!-- Botón para ítems con descuento -->
+            <a href="{{ route('sync.promotions.db') }}" class="text-decoration-none">
+                <button class="btn btn-success">
+                    <i class="fas fa-sync-alt me-2"></i>Sincronizar Promociones (Descuentos)
+                </button>
+            </a>
+            <!-- Nuevo botón para ítems con deal_ids -->
+            <a href="{{ route('sync.deal.promotions') }}" class="text-decoration-none">
+                <button class="btn btn-success">
+                    <i class="fas fa-sync-alt me-2"></i>Sincronizar Promociones (Deal IDs)
+                </button>
+            </a>
+            <!-- Botón para ver promociones -->
+            <a href="{{ route('dashboard.item_promotions') }}" class="text-decoration-none">
+                <button class="btn btn-info">
+                    <i class="fas fa-eye me-2"></i>Ver Promociones Sincronizadas
+                </button>
+            </a>
         </div>
     </div>
 </div>

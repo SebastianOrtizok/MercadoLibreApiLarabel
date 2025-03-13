@@ -54,7 +54,7 @@
         <!-- Tabla de promociones -->
         <div class="table-responsive">
             <table id="promotionsTable" class="table table-hover modern-table">
-                <thead>
+                <thead class="sticky">
                     <tr>
                         <th data-column-name="Cuenta">
                             <span>Cuenta</span>

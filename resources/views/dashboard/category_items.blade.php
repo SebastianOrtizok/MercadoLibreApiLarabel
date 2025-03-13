@@ -12,14 +12,14 @@
     </div>
 
     <!-- Espacio para filtros colapsables (opcional, por si querés agregar después) -->
-    
+
     <!-- Contenedor para columnas ocultas -->
     <div id="restore-columns-category" class="mb-3 d-flex flex-wrap gap-2"></div>
 
     <!-- Tabla de resultados -->
     <div class="table-responsive">
         <table id="categoryTable" class="table table-hover modern-table">
-            <thead>
+             <thead class="sticky">
                 <tr>
                     <th data-column-name="Imagen"><span>Imagen</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Título" data-sortable="true" data-column="title"><span>Título</span><i class="fas fa-eye toggle-visibility"></i></th>
