@@ -111,105 +111,120 @@ class ItemPromotionsController extends Controller
     }
 
     public function dealPromotions(Request $request)
-    {
-        try {
-            $userId = auth()->user()->id;
+{
+    try {
+        $userId = auth()->user()->id;
 
-            $mlAccounts = DB::table('mercadolibre_tokens')
-                ->where('user_id', $userId)
-                ->select('ml_account_id', 'access_token')
-                ->get();
+        $mlAccounts = DB::table('mercadolibre_tokens')
+            ->where('user_id', $userId)
+            ->select('ml_account_id', 'access_token')
+            ->get();
 
-            if ($mlAccounts->isEmpty()) {
-                return redirect()->back()->with('error', 'El usuario no tiene cuentas asociadas.');
+        if ($mlAccounts->isEmpty()) {
+            return redirect()->back()->with('error', 'El usuario no tiene cuentas asociadas.');
+        }
+
+        // Contar ítems con deal_ids válidos, excluyendo descuentos
+        $dealItemsCount = DB::table('articulos')
+            ->where('estado', 'active')
+            ->whereIn('user_id', $mlAccounts->pluck('ml_account_id'))
+            ->whereNotNull('deal_ids')
+            ->where('deal_ids', '!=', '[]')
+            ->where('deal_ids', 'LIKE', '%[%"%"]%') // Solo deal_ids con valores
+            ->where(function ($query) {
+                $query->whereNull('precio_original')
+                      ->orWhereColumn('precio', '>=', 'precio_original');
+            })
+            ->count();
+
+        Log::info("Total de ítems con deal_ids válidos encontrados (sin descuento): {$dealItemsCount}");
+
+        // Obtener ítems con deal_ids válidos
+        $products = DB::table('articulos')
+            ->where('estado', 'active')
+            ->whereIn('user_id', $mlAccounts->pluck('ml_account_id'))
+            ->whereNotNull('deal_ids')
+            ->where('deal_ids', '!=', '[]')
+            ->where('deal_ids', 'LIKE', '%[%"%"]%')
+            ->where(function ($query) {
+                $query->whereNull('precio_original')
+                      ->orWhereColumn('precio', '>=', 'precio_original');
+            })
+            ->select('ml_product_id', 'user_id', 'precio', 'precio_original')
+            ->get();
+
+        if ($products->isEmpty()) {
+            return redirect()->back()->with('error', 'No se encontraron productos con deal_ids válidos (sin descuento).');
+        }
+
+        Log::info("Productos con deal_ids a sincronizar: " . $products->count());
+
+        $allItemPromotions = [];
+        $messages = []; // Para guardar mensajes por cuenta
+
+        foreach ($mlAccounts as $account) {
+            $accountProducts = $products->where('user_id', $account->ml_account_id);
+            if ($accountProducts->isEmpty()) {
+                continue; // Si no hay productos para esta cuenta, saltar
             }
 
-            // Contar ítems con deal_ids no nulos ni vacíos, excluyendo los que tienen descuento
-            $dealItemsCount = DB::table('articulos')
-                ->where('estado', 'active')
-                ->whereIn('user_id', $mlAccounts->pluck('ml_account_id'))
-                ->whereNotNull('deal_ids')
-                ->where('deal_ids', '!=', '[]')
-                ->where(function ($query) {
-                    $query->whereNull('precio_original')
-                          ->orWhereColumn('precio', '>=', 'precio_original');
-                })
-                ->count();
+            $promotionsData = $this->itemPromotionsService->syncItemPromotions(
+                $accountProducts,
+                $account->access_token
+            );
 
-            Log::info("Total de ítems con deal_ids encontrados (sin descuento): {$dealItemsCount}");
+            Log::info("promotionsData para {$account->ml_account_id}: " . json_encode($promotionsData));
 
-            // Obtener ítems con deal_ids no nulos ni vacíos, excluyendo los que tienen descuento
-            $products = DB::table('articulos')
-                ->where('estado', 'active')
-                ->whereIn('user_id', $mlAccounts->pluck('ml_account_id'))
-                ->whereNotNull('deal_ids')
-                ->where('deal_ids', '!=', '[]')
-                ->where(function ($query) {
-                    $query->whereNull('precio_original')
-                          ->orWhereColumn('precio', '>=', 'precio_original');
-                })
-                ->select('ml_product_id', 'user_id', 'precio', 'precio_original')
-                ->get();
-
-            if ($products->isEmpty()) {
-                return redirect()->back()->with('error', 'No se encontraron productos con deal_ids (sin descuento).');
+            if (!is_array($promotionsData)) {
+                Log::error("promotionsData no es array para {$account->ml_account_id}: " . $promotionsData);
+                continue;
             }
 
-            Log::info("Productos con deal_ids a sincronizar: " . $products->count());
-
-            $allItemPromotions = [];
-            foreach ($mlAccounts as $account) {
-                $promotionsData = $this->itemPromotionsService->syncItemPromotions(
-                    $products->where('user_id', $account->ml_account_id),
-                    $account->access_token
-                );
-
-                Log::info("promotionsData para {$account->ml_account_id}: " . json_encode($promotionsData));
-
-                if (!is_array($promotionsData)) {
-                    Log::error("promotionsData no es array: " . $promotionsData);
+            $accountPromotionsCount = 0;
+            foreach ($promotionsData as $itemId => $promotions) {
+                if (isset($promotions['error'])) {
+                    Log::warning("Error para {$itemId}: " . $promotions['error']);
                     continue;
                 }
 
-                foreach ($promotionsData as $itemId => $promotions) {
-                    if (isset($promotions['error'])) {
-                        Log::warning("Error para {$itemId}: " . $promotions['error']);
-                        continue;
-                    }
+                if (!is_array($promotions)) {
+                    Log::warning("promotions no es array para {$itemId}: " . json_encode($promotions));
+                    continue;
+                }
 
-                    if (!is_array($promotions)) {
-                        Log::warning("promotions no es array para {$itemId}: " . json_encode($promotions));
-                        continue;
-                    }
-
-                    foreach ($promotions as $promotion) {
-                        $offer = $promotion['offers'][0] ?? null;
-                        $allItemPromotions[] = [
-                            'itemId' => $itemId,
-                            'type' => $promotion['type'] ?? 'Desconocido',
-                            'status' => $promotion['status'] ?? 'Desconocido',
-                            'original_price' => $offer['original_price'] ?? $promotion['price'] ?? null,
-                            'new_price' => $offer['new_price'] ?? $promotion['price'] ?? null,
-                            'start_date' => isset($promotion['start_date']) ? Carbon::parse($promotion['start_date'])->toDateTimeString() : null,
-                            'finish_date' => isset($promotion['finish_date']) ? Carbon::parse($promotion['finish_date'])->toDateTimeString() : null,
-                            'name' => $promotion['name'] ?? 'Sin nombre',
-                        ];
-                    }
+                foreach ($promotions as $promotion) {
+                    $offer = $promotion['offers'][0] ?? null;
+                    $allItemPromotions[] = [
+                        'itemId' => $itemId,
+                        'type' => $promotion['type'] ?? 'Desconocido',
+                        'status' => $promotion['status'] ?? 'Desconocido',
+                        'original_price' => $offer['original_price'] ?? $promotion['price'] ?? null,
+                        'new_price' => $offer['new_price'] ?? $promotion['price'] ?? null,
+                        'start_date' => isset($promotion['start_date']) ? Carbon::parse($promotion['start_date'])->toDateTimeString() : null,
+                        'finish_date' => isset($promotion['finish_date']) ? Carbon::parse($promotion['finish_date'])->toDateTimeString() : null,
+                        'name' => $promotion['name'] ?? 'Sin nombre',
+                    ];
+                    $accountPromotionsCount++;
                 }
             }
 
-            if (empty($allItemPromotions)) {
-                return redirect()->back()->with('warning', "Se encontraron {$dealItemsCount} productos con deal_ids (sin descuento), pero no tienen promociones activas.");
+            if ($accountPromotionsCount > 0) {
+                $messages[] = "Se actualizaron {$accountPromotionsCount} ítems correctamente de la cuenta {$account->ml_account_id}";
             }
-
-            $message = "Se encontraron {$dealItemsCount} productos con deal_ids (sin descuento). Promociones sincronizadas: " . count($allItemPromotions) . ".";
-            Log::info($message);
-            return redirect()->back()->with('success', $message);
-        } catch (\Exception $e) {
-            Log::error("Error al sincronizar promociones por deal_ids: " . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al sincronizar promociones por deal_ids: ' . $e->getMessage());
         }
+
+        if (empty($allItemPromotions)) {
+            return redirect()->back()->with('warning', "Se encontraron {$dealItemsCount} productos con deal_ids válidos (sin descuento), pero no tienen promociones activas.");
+        }
+
+        $finalMessage = implode('. ', $messages) . '.';
+        Log::info($finalMessage);
+        return redirect()->back()->with('success', $finalMessage);
+    } catch (\Exception $e) {
+        Log::error("Error al sincronizar promociones por deal_ids: " . $e->getMessage());
+        return redirect()->back()->with('error', 'Error al sincronizar promociones por deal_ids: ' . $e->getMessage());
     }
+}
 
     // Método showPromotions sigue igual...
     public function showPromotions(Request $request)
