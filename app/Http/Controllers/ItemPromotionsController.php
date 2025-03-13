@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -7,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class ItemPromotionsController
+class ItemPromotionsController extends Controller
 {
     private $itemPromotionsService;
 
@@ -30,6 +31,18 @@ class ItemPromotionsController
                 return redirect()->back()->with('error', 'El usuario no tiene cuentas asociadas.');
             }
 
+            // Contar ítems con descuento en articulos
+            $discountedItemsCount = DB::table('articulos')
+                ->where('estado', 'active')
+                ->whereIn('user_id', $mlAccounts->pluck('ml_account_id'))
+                ->whereNotNull('precio')
+                ->whereNotNull('precio_original')
+                ->whereColumn('precio', '<', 'precio_original')
+                ->count();
+
+            Log::info("Total de ítems con descuento encontrados: {$discountedItemsCount}");
+
+            // Obtener TODOS los productos con descuento
             $products = DB::table('articulos')
                 ->where('estado', 'active')
                 ->whereIn('user_id', $mlAccounts->pluck('ml_account_id'))
@@ -42,6 +55,8 @@ class ItemPromotionsController
             if ($products->isEmpty()) {
                 return redirect()->back()->with('error', 'No se encontraron productos con descuento.');
             }
+
+            Log::info("Productos con descuento a sincronizar: " . $products->count());
 
             $allItemPromotions = [];
             foreach ($mlAccounts as $account) {
@@ -85,10 +100,12 @@ class ItemPromotionsController
             }
 
             if (empty($allItemPromotions)) {
-                return redirect()->back()->with('error', 'No se encontraron promociones para los productos.');
+                return redirect()->back()->with('warning', "Se encontraron {$discountedItemsCount} productos con descuento, pero no tienen promociones activas.");
             }
 
-            return redirect()->back()->with('success', 'Promociones sincronizadas correctamente. Total: ' . count($allItemPromotions));
+            $message = "Se encontraron {$discountedItemsCount} productos con descuento. Promociones sincronizadas: " . count($allItemPromotions) . ".";
+            Log::info($message);
+            return redirect()->back()->with('success', $message);
         } catch (\Exception $e) {
             Log::error("Error al sincronizar promociones: " . $e->getMessage());
             return redirect()->back()->with('error', 'Error al sincronizar promociones: ' . $e->getMessage());
@@ -121,7 +138,6 @@ class ItemPromotionsController
                 'mercadolibre_tokens.seller_name'
             );
 
-        // Filtros
         if ($request->filled('ml_account_id')) {
             $query->where('articulos.user_id', $request->ml_account_id);
         }
@@ -136,17 +152,15 @@ class ItemPromotionsController
             });
         }
 
-        // Paginación
-        $limit = $request->input('limit', 30); // Número de registros por página, por defecto 10
+        $limit = $request->input('limit', 30);
         $promotions = $query->orderBy('item_promotions.finish_date', 'asc')
             ->paginate($limit);
 
-        // Calcular días restantes
         $promotions->getCollection()->transform(function ($promo) {
             if ($promo->finish_date) {
                 $finishDate = Carbon::parse($promo->finish_date);
                 $today = Carbon::today();
-                $promo->days_remaining = $today->diffInDays($finishDate, false); // Negativos permitidos
+                $promo->days_remaining = $today->diffInDays($finishDate, false);
             } else {
                 $promo->days_remaining = null;
             }
