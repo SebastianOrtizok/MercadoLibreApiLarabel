@@ -46,7 +46,7 @@ Route::middleware(['auth'])->group(function () {
     // Rutas de sincronización
     Route::get('/sincronizacion', [AccountController::class, 'sincronizacion'])->name('sincronizacion.index');
     Route::get('/sincronizar/primera/{user_id}', [AccountController::class, 'primeraSincronizacionDB'])->name('sincronizacion.primera');
-    Route::post('/sincronizacion/segunda/{user_id}', [AccountController::class, 'segundaSincronizacionDB'])->name('sincronizacion.segunda');
+    Route::post('/missing-articles/sync/{mlAccountId}', [App\Http\Controllers\MissingArticlesController::class, 'sync'])->name('missing.articles.sync');
     Route::get('/sincronizacion/actualizar', [AccountController::class, 'actualizarArticulosDB'])->name('sincronizacion.actualizar');
     Route::get('/sync-orders-db', [OrderDbController::class, 'syncOrders'])->name('sync.orders.db');
 

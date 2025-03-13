@@ -32,19 +32,19 @@
 
             <div class="d-flex flex-wrap gap-2 mb-3">
                 @foreach($cuentas as $cuenta)
-                    <div class="d-flex flex-column gap-2">
-                        <a href="{{ route('sincronizacion.primera', ['user_id' => $cuenta->ml_account_id]) }}" class="text-decoration-none">
-                            <button class="btn btn-outline-danger">
-                                <i class="fas fa-sync-alt me-2"></i>Sincronizar {{ $cuenta->ml_account_id }}
-                            </button>
-                        </a>
-                        <form action="{{ route('sincronizacion.segunda', ['user_id' => $cuenta->ml_account_id]) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-outline-danger">
-                                <i class="fas fa-sync-alt me-2"></i>2da Sincronización {{ $cuenta->ml_account_id }}
-                            </button>
-                        </form>
-                    </div>
+                <div class="d-flex flex-column gap-2">
+                    <a href="{{ route('sincronizacion.primera', ['user_id' => $cuenta->ml_account_id]) }}" class="text-decoration-none">
+                        <button class="btn btn-outline-danger">
+                            <i class="fas fa-sync-alt me-2"></i>Sincronizar {{ $cuenta->ml_account_id }}
+                        </button>
+                    </a>
+                    <form action="{{ route('missing.articles.sync', ['mlAccountId' => $cuenta->ml_account_id]) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="fas fa-sync-alt me-2"></i>Sincronizar Faltantes {{ $cuenta->ml_account_id }}
+                        </button>
+                    </form>
+                </div>
                 @endforeach
             </div>
 
