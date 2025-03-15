@@ -31,16 +31,6 @@ class ItemPromotionsController extends Controller
                 return redirect()->back()->with('error', 'El usuario no tiene cuentas asociadas.');
             }
 
-            // Contar ítems con deal_ids no nulos
-            $itemsCount = DB::table('articulos')
-                ->where('estado', 'active')
-                ->whereIn('user_id', $mlAccounts->pluck('ml_account_id'))
-                ->whereNotNull('deal_ids')
-                ->count();
-
-            Log::info("Total de ítems con deal_ids no nulos encontrados: {$itemsCount}");
-
-            // Obtener ítems con deal_ids no nulos
             $products = DB::table('articulos')
                 ->where('estado', 'active')
                 ->whereIn('user_id', $mlAccounts->pluck('ml_account_id'))
@@ -52,10 +42,7 @@ class ItemPromotionsController extends Controller
                 return redirect()->back()->with('error', 'No se encontraron productos con deal_ids no nulos.');
             }
 
-            Log::info("Productos a sincronizar: " . $products->count());
-
-            $allItemPromotions = [];
-            $messages = [];
+            Log::info("Iniciando sincronización de " . $products->count() . " productos");
 
             foreach ($mlAccounts as $account) {
                 $accountProducts = $products->where('user_id', $account->ml_account_id);
@@ -63,67 +50,20 @@ class ItemPromotionsController extends Controller
                     continue;
                 }
 
-                $promotionsData = $this->itemPromotionsService->syncItemPromotions(
-                    $accountProducts,
-                    $account->access_token
-                );
-
-                Log::info("promotionsData para {$account->ml_account_id}: " . json_encode($promotionsData));
-
-                if (!is_array($promotionsData)) {
-                    Log::error("promotionsData no es array para {$account->ml_account_id}: " . $promotionsData);
-                    continue;
+                // Dividir en lotes de 200 (1400 / 200 = 7 jobs aprox.)
+                foreach ($accountProducts->chunk(200) as $chunk) {
+                    SyncItemPromotionsJob::dispatch($chunk, $account->access_token, $account->ml_account_id);
                 }
-
-                $accountPromotionsCount = 0;
-                foreach ($promotionsData as $itemId => $promotions) {
-                    if (isset($promotions['error'])) {
-                        Log::warning("Error para {$itemId}: " . $promotions['error']);
-                        continue;
-                    }
-
-                    if (!is_array($promotions)) {
-                        Log::warning("promotions no es array para {$itemId}: " . json_encode($promotions));
-                        continue;
-                    }
-
-                    foreach ($promotions as $promotion) {
-                        $allItemPromotions[] = [
-                            'itemId' => $itemId,
-                            'type' => $promotion['type'] ?? 'Desconocido',
-                            'status' => $promotion['status'] ?? 'Desconocido',
-                            'original_price' => $promotion['original_price'] ?? null,
-                            'new_price' => $promotion['new_price'] ?? null,
-                            'start_date' => isset($promotion['start_date']) ? Carbon::parse($promotion['start_date'])->toDateTimeString() : null,
-                            'finish_date' => isset($promotion['finish_date']) ? Carbon::parse($promotion['finish_date'])->toDateTimeString() : null,
-                            'name' => $promotion['name'] ?? 'Sin nombre',
-                        ];
-                        $accountPromotionsCount++;
-                    }
-                }
-
-                if ($accountPromotionsCount > 0) {
-                    $messages[] = "Se actualizaron {$accountPromotionsCount} ítems correctamente de la cuenta {$account->ml_account_id}";
-                }
-
-                // Pausa de 1 segundo entre cuentas para evitar sobrecarga
-                sleep(1);
             }
 
-            if (empty($allItemPromotions)) {
-                return redirect()->back()->with('warning', "Se encontraron {$itemsCount} productos con deal_ids no nulos, pero no tienen promociones activas.");
-            }
-
-            $finalMessage = implode('. ', $messages) . '.';
-            Log::info($finalMessage);
-            return redirect()->back()->with('success', $finalMessage);
+            return redirect()->back()->with('success', 'Sincronización iniciada en segundo plano. Revisa el estado en unos minutos.');
         } catch (\Exception $e) {
-            Log::error("Error al sincronizar promociones: " . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al sincronizar promociones: ' . $e->getMessage());
+            Log::error("Error al iniciar sincronización: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al iniciar sincronización: ' . $e->getMessage());
         }
     }
 
-    
+
     public function showPromotions(Request $request)
     {
         $userId = auth()->user()->id;
