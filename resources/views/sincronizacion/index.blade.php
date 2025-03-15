@@ -92,23 +92,17 @@
         </div>
     </div>
 
-    <!-- Sección de sincronización de promociones -->
+   <!-- Sección de sincronización de promociones -->
 <div class="card shadow-sm">
     <div class="card-header bg-success text-white">
         <h2 class="mb-0">Sincronización de Promociones</h2>
     </div>
     <div class="card-body">
         <div class="d-flex flex-wrap gap-2">
-            <!-- Botón para ítems con descuento -->
+            <!-- Botón unificado para sincronizar promociones -->
             <a href="{{ route('sync.promotions.db') }}" class="text-decoration-none">
                 <button class="btn btn-success">
-                    <i class="fas fa-sync-alt me-2"></i>Sincronizar Promociones (Descuentos)
-                </button>
-            </a>
-            <!-- Nuevo botón para ítems con deal_ids -->
-            <a href="{{ route('sync.deal.promotions') }}" class="text-decoration-none">
-                <button class="btn btn-success">
-                    <i class="fas fa-sync-alt me-2"></i>Sincronizar Promociones (Deal IDs)
+                    <i class="fas fa-sync-alt me-2"></i>Sincronizar Promociones
                 </button>
             </a>
             <!-- Botón para ver promociones -->

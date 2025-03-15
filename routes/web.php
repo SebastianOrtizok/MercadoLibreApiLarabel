@@ -38,9 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/catalogo/competencia/{mlProductId}', [CatalogoController::class, 'competencia'])->name('dashboard.catalogo.competencia');
     // Viejo PromotionsController (dejamos como está)
     Route::get('/dashboard/promotions', [PromotionsController::class, 'promotions'])->name('dashboard.promociones');
-
-    // Nuevas rutas para ItemPromotionsController
-    Route::get('/sync-promotions-db', [ItemPromotionsController::class, 'promotions'])->name('sync.promotions.db'); // Sincronizar
+    Route::get('/sync-promotions-db', [ItemPromotionsController::class, 'syncPromotions'])->name('sync.promotions.db'); // Sincronizar
     Route::get('/dashboard/item_promotions', [ItemPromotionsController::class, 'showPromotions'])->name('dashboard.item_promotions'); // Mostrar
 
     // Rutas de sincronización
@@ -49,7 +47,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/missing-articles/sync/{mlAccountId}', [App\Http\Controllers\MissingArticlesController::class, 'sync'])->name('missing.articles.sync');
     Route::get('/sincronizacion/actualizar', [AccountController::class, 'actualizarArticulosDB'])->name('sincronizacion.actualizar');
     Route::get('/sync-orders-db', [OrderDbController::class, 'syncOrders'])->name('sync.orders.db');
-    Route::get('/sync/deal-promotions', [App\Http\Controllers\ItemPromotionsController::class, 'dealPromotions'])->name('sync.deal.promotions');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/exportar-ventas', function () {

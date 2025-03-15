@@ -13,6 +13,7 @@ class ItemPromotionsService
     {
         try {
             $promotions = [];
+            $requestCount = 0;
 
             foreach ($products as $product) {
                 $itemId = $product->ml_product_id;
@@ -33,13 +34,13 @@ class ItemPromotionsService
                     }
 
                     foreach ($promotionData as $index => $promo) {
-                        // Usar 'id', 'ref_id' o un hash (máx 50 caracteres)
                         $promoId = $promo['id'] ?? $promo['ref_id'] ?? substr(md5($itemId . $index . json_encode($promo)), 0, 50);
                         $offer = $promo['offers'][0] ?? null;
-                        $originalPrice = $offer['original_price'] ?? $promo['price'] ?? null;
+
+                        // Usar precio_original de la tabla articulos si la API no lo proporciona correctamente
+                        $originalPrice = $offer['original_price'] ?? $product->precio_original ?? $promo['price'] ?? null;
                         $newPrice = $offer['new_price'] ?? $promo['price'] ?? null;
 
-                        // Parsear fechas solo si existen
                         $startDate = isset($promo['start_date']) ? Carbon::parse($promo['start_date'])->toDateTimeString() : null;
                         $finishDate = isset($promo['finish_date']) ? Carbon::parse($promo['finish_date'])->toDateTimeString() : null;
 
@@ -59,11 +60,26 @@ class ItemPromotionsService
                                 'updated_at' => now(),
                             ]
                         );
-                        $promotions[$itemId][] = $promo;
+                        $promotions[$itemId][] = [
+                            'type' => $promo['type'] ?? null,
+                            'status' => $promo['status'] ?? null,
+                            'original_price' => $originalPrice,
+                            'new_price' => $newPrice,
+                            'start_date' => $startDate,
+                            'finish_date' => $finishDate,
+                            'name' => $promo['name'] ?? null,
+                        ];
                     }
                 } else {
                     Log::warning("Error API para {$itemId}: " . $response->body());
                     $promotions[$itemId] = ['error' => $response->body()];
+                }
+
+                // Pausa cada 10 solicitudes para evitar sobrecarga (ajustable)
+                $requestCount++;
+                if ($requestCount % 10 === 0) {
+                    Log::info("Pausa después de {$requestCount} solicitudes");
+                    sleep(1); // Pausa de 1 segundo
                 }
             }
 
