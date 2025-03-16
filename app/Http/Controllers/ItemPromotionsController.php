@@ -87,6 +87,8 @@ class ItemPromotionsController extends Controller
                 'item_promotions.finish_date',
                 'item_promotions.name',
                 'articulos.titulo',
+                'articulos.imagen',
+                'articulos.permalink',
                 'mercadolibre_tokens.seller_name'
             );
 
@@ -130,3 +132,4 @@ class ItemPromotionsController extends Controller
         ]);
     }
 }
+

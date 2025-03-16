@@ -66,16 +66,16 @@
             <table id="promotionsTable" class="table table-hover modern-table">
                 <thead class="sticky">
                     <tr>
+                        <th data-column-name="ID Promoción" data-sortable="true" data-column="promotion_id">
+                            <span>Imágen</span>
+                            <i class="fas fa-eye toggle-visibility"></i>
+                        </th>
                         <th data-column-name="Cuenta">
                             <span>Cuenta</span>
                             <i class="fas fa-eye toggle-visibility"></i>
                         </th>
                         <th data-column-name="Producto" data-sortable="true" data-column="ml_product_id">
                             <span>Producto</span>
-                            <i class="fas fa-eye toggle-visibility"></i>
-                        </th>
-                        <th data-column-name="ID Promoción" data-sortable="true" data-column="promotion_id">
-                            <span>Imágen</span>
                             <i class="fas fa-eye toggle-visibility"></i>
                         </th>
                         <th data-column-name="Tipo" data-sortable="true" data-column="type">
@@ -115,15 +115,15 @@
                 <tbody id="table-body">
                     @forelse ($promotions as $promo)
                         <tr>
+                            <td><img src="{{ $promo->imagen ?? '' }}" alt="Producto" style="max-width: 50px;"></td>
                             <td data-column="Cuenta">{{ $promo->seller_name }}</td>
                             <td data-column="ml_product_id">{{ $promo->titulo }}
                             <span style="font-weight: bold;">
                             {{ $promo->ml_product_id }} </span>
                             <a href="{{ $promo->permalink ?? '#' }}" target="_blank">
-                                    <i class="fas fa-external-link-alt"></i>
+                                <i class="fas fa-external-link-alt"></i>
                             </a>
                             </td>
-                            <td><img src="{{ $promo->imagen ?? '' }}" alt="Producto" style="max-width: 50px;"></td>
                             <td data-column="type">{{ $promo->type ?? 'N/A' }}</td>
                             <td data-column="status">{{ $promo->status ?? 'N/A' }}</td>
                             <td data-column="original_price">{{ $promo->original_price ?? 'N/A' }}</td>

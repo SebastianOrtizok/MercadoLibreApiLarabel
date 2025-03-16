@@ -18,6 +18,10 @@ class ItemPromotionsService
                 $itemId = $product->ml_product_id;
                 $url = "https://api.mercadolibre.com/seller-promotions/items/{$itemId}?app_version=v2";
 
+                // Log de datos existentes en item_promotions
+                $existingPromos = DB::table('item_promotions')->where('ml_product_id', $itemId)->get();
+                Log::info("Datos existentes en item_promotions para {$itemId}: " . $existingPromos->toJson());
+
                 $response = Http::withToken($accessToken)
                     ->timeout(10)
                     ->get($url);
@@ -58,8 +62,6 @@ class ItemPromotionsService
                                 'start_date' => $startDate,
                                 'finish_date' => $finishDate,
                                 'name' => $promo['name'] ?? null,
-                                'imagen' => $product->imagen ?? null,
-                                'permalink' => $product->permalink ?? null,
                                 'updated_at' => now(),
                             ]
                         );
@@ -71,8 +73,6 @@ class ItemPromotionsService
                             'start_date' => $startDate,
                             'finish_date' => $finishDate,
                             'name' => $promo['name'] ?? null,
-                            'imagen' => $product->imagen ?? null,
-                            'permalink' => $product->permalink ?? null,
                         ];
                     }
                 } else {
