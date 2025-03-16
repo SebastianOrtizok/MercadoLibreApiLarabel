@@ -99,13 +99,12 @@ class ArticuloSyncService
                         ]);
 
                         if ($itemLastUpdated->lessThanOrEqualTo($lastSyncCarbon)) {
-                            $continueSync = false;
-                            Log::info("Ítem más antiguo encontrado, deteniendo sincronización", [
+                            Log::info("Ítem anterior a last_sync, no se sincroniza", [
                                 'ml_product_id' => $body['id'],
                                 'last_updated' => $itemLastUpdated->toDateTimeString(),
-                                'last_sync' => $lastSyncCarbon->toDateTimeString(),
                             ]);
-                            break;
+                            $continueSync = false; // Parar el do-while después de este chunk
+                            continue; // Saltar este ítem, pero seguir revisando el chunk
                         }
 
                         $itemsToSync[] = $body['id'];
@@ -125,6 +124,7 @@ class ArticuloSyncService
                         ]);
                     } else {
                         Log::info("No hay ítems para despachar en este chunk", ['offset' => $offset]);
+                        $continueSync = false; // Parar si no hay nada para sincronizar
                     }
 
                     $offset += $limit;
