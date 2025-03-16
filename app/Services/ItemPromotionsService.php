@@ -14,7 +14,7 @@ class ItemPromotionsService
         try {
             $promotions = [];
             $requestCount = 0;
-            $maxRequests = 10; // Límite de 10 ítems para debug
+            $maxRequests = 10;
 
             foreach ($products as $product) {
                 if ($requestCount >= $maxRequests) {
@@ -33,6 +33,7 @@ class ItemPromotionsService
                 Log::info("Respuesta cruda API para {$itemId}: " . $responseBody);
                 $promotionData = $response->json();
                 Log::info("Respuesta parseada para {$itemId}: " . json_encode($promotionData));
+                Log::info("Precios de articulos para {$itemId}: precio_original={$product->precio_original}, precio={$product->precio}");
 
                 if ($response->successful()) {
                     if (!is_array($promotionData)) {
@@ -45,8 +46,8 @@ class ItemPromotionsService
                         $promoId = $promo['id'] ?? $promo['ref_id'] ?? substr(md5($itemId . $index . json_encode($promo)), 0, 50);
                         $offer = $promo['offers'][0] ?? null;
 
-                        $originalPrice = $offer['original_price'] ?? $product->precio_original ?? $promo['price'] ?? null;
-                        $newPrice = $offer['new_price'] ?? $promo['price'] ?? null;
+                        $originalPrice = $product->precio_original ?? $offer['original_price'] ?? $promo['price'] ?? null;
+                        $newPrice = $offer['new_price'] ?? $promo['price'] ?? $product->precio ?? null;
 
                         $startDate = isset($promo['start_date']) ? Carbon::parse($promo['start_date'])->toDateTimeString() : null;
                         $finishDate = isset($promo['finish_date']) ? Carbon::parse($promo['finish_date'])->toDateTimeString() : null;
