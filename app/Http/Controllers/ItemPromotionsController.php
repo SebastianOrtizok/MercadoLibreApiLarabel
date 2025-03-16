@@ -36,7 +36,7 @@ class ItemPromotionsController extends Controller
                 ->where('estado', 'active')
                 ->whereIn('user_id', $mlAccounts->pluck('ml_account_id'))
                 ->whereNotNull('deal_ids')
-                ->select('ml_product_id', 'user_id', 'precio', 'precio_original')
+                ->select('ml_product_id', 'user_id', 'precio', 'precio_original', 'imagen', 'permalink')
                 ->get();
 
             if ($products->isEmpty()) {
@@ -51,7 +51,6 @@ class ItemPromotionsController extends Controller
                     continue;
                 }
 
-                // Dividir en lotes de 200 (1400 / 200 = 7 jobs aprox.)
                 foreach ($accountProducts->chunk(200) as $chunk) {
                     SyncItemPromotionsJob::dispatch($chunk, $account->access_token, $account->ml_account_id);
                 }
@@ -96,6 +95,9 @@ class ItemPromotionsController extends Controller
         }
         if ($request->filled('status')) {
             $query->where('item_promotions.status', $request->status);
+        }
+        if ($request->filled('type')) {
+            $query->where('item_promotions.type', $request->input('type'));
         }
         if ($request->filled('search')) {
             $search = $request->search;

@@ -13,15 +13,8 @@ class ItemPromotionsService
     {
         try {
             $promotions = [];
-            $requestCount = 0;
-            $maxRequests = 10;
 
             foreach ($products as $product) {
-                if ($requestCount >= $maxRequests) {
-                    Log::info("Límite de {$maxRequests} solicitudes alcanzado. Deteniendo...");
-                    break;
-                }
-
                 $itemId = $product->ml_product_id;
                 $url = "https://api.mercadolibre.com/seller-promotions/items/{$itemId}?app_version=v2";
 
@@ -33,7 +26,7 @@ class ItemPromotionsService
                 Log::info("Respuesta cruda API para {$itemId}: " . $responseBody);
                 $promotionData = $response->json();
                 Log::info("Respuesta parseada para {$itemId}: " . json_encode($promotionData));
-                Log::info("Precios de articulos para {$itemId}: precio_original={$product->precio_original}, precio={$product->precio}");
+                Log::info("Datos de articulos para {$itemId}: precio_original={$product->precio_original}, precio={$product->precio}, imagen={$product->imagen}, permalink={$product->permalink}");
 
                 if ($response->successful()) {
                     if (!is_array($promotionData)) {
@@ -65,6 +58,8 @@ class ItemPromotionsService
                                 'start_date' => $startDate,
                                 'finish_date' => $finishDate,
                                 'name' => $promo['name'] ?? null,
+                                'imagen' => $product->imagen ?? null,
+                                'permalink' => $product->permalink ?? null,
                                 'updated_at' => now(),
                             ]
                         );
@@ -76,14 +71,14 @@ class ItemPromotionsService
                             'start_date' => $startDate,
                             'finish_date' => $finishDate,
                             'name' => $promo['name'] ?? null,
+                            'imagen' => $product->imagen ?? null,
+                            'permalink' => $product->permalink ?? null,
                         ];
                     }
                 } else {
                     Log::warning("Error API para {$itemId}: " . $responseBody);
                     $promotions[$itemId] = ['error' => $responseBody];
                 }
-
-                $requestCount++;
             }
 
             return $promotions;

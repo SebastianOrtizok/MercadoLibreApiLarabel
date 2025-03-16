@@ -10,7 +10,7 @@
                 <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
             </button>
             <div class="collapse" id="filtrosCollapse">
-            <form method="GET" action="{{ route('dashboard.item_promotions') }}" class="mt-3">
+                <form method="GET" action="{{ route('dashboard.item_promotions') }}" class="mt-3">
                     <div class="filtros-container p-3 bg-light rounded shadow-sm">
                         <div class="row">
                             <div class="col-md-3 mb-2">
@@ -31,6 +31,16 @@
                                     <option value="started" {{ request('status') == 'started' ? 'selected' : '' }}>Iniciada</option>
                                     <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pendiente</option>
                                     <option value="candidate" {{ request('status') == 'candidate' ? 'selected' : '' }}>Candidata</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label>Tipo de Promoción</label>
+                                <select name="type" class="form-control">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="SMART" {{ request('type') == 'SMART' ? 'selected' : '' }}>Smart</option>
+                                    <option value="PRICE_DISCOUNT" {{ request('type') == 'PRICE_DISCOUNT' ? 'selected' : '' }}>Descuento en Precio</option>
+                                    <option value="UNHEALTHY_STOCK" {{ request('type') == 'UNHEALTHY_STOCK' ? 'selected' : '' }}>Stock No Saludable</option>
+                                    <option value="DEAL" {{ request('type') == 'DEAL' ? 'selected' : '' }}>Oferta Especial</option>
                                 </select>
                             </div>
                             <div class="col-md-3 mb-2">
@@ -65,7 +75,7 @@
                             <i class="fas fa-eye toggle-visibility"></i>
                         </th>
                         <th data-column-name="ID Promoción" data-sortable="true" data-column="promotion_id">
-                            <span>ID Promoción</span>
+                            <span>Imágen</span>
                             <i class="fas fa-eye toggle-visibility"></i>
                         </th>
                         <th data-column-name="Tipo" data-sortable="true" data-column="type">
@@ -109,13 +119,11 @@
                             <td data-column="ml_product_id">{{ $promo->titulo }}
                             <span style="font-weight: bold;">
                             {{ $promo->ml_product_id }} </span>
-                                <a href="https://www.mercadolibre.com.ar/p/{{ $promo->ml_product_id }}" target="_blank" class="table-link">
-                                </a>
-                                <a href="https://www.mercadolibre.com.ar/p/{{ $promo->ml_product_id }}" target="_blank" class="table-icon-link">
+                            <a href="{{ $promo->permalink ?? '#' }}" target="_blank">
                                     <i class="fas fa-external-link-alt"></i>
-                                </a>
+                            </a>
                             </td>
-                            <td data-column="promotion_id">{{ $promo->promotion_id }}</td>
+                            <td><img src="{{ $promo->imagen ?? '' }}" alt="Producto" style="max-width: 50px;"></td>
                             <td data-column="type">{{ $promo->type ?? 'N/A' }}</td>
                             <td data-column="status">{{ $promo->status ?? 'N/A' }}</td>
                             <td data-column="original_price">{{ $promo->original_price ?? 'N/A' }}</td>
