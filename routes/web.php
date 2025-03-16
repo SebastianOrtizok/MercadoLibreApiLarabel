@@ -16,6 +16,7 @@ use App\Http\Controllers\VentasConsolidadasControllerDB;
 use App\Http\Controllers\SinVentasController;
 use App\Http\Controllers\SkuController;
 use App\Http\Controllers\CatalogoController;
+use App\Http\Controllers\ArticuloSyncController;
 
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
 
@@ -42,10 +43,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/item_promotions', [ItemPromotionsController::class, 'showPromotions'])->name('dashboard.item_promotions'); // Mostrar
 
     // Rutas de sincronización
+    Route::get('/articulos/sync', [ArticuloSyncController::class, 'sync'])->name('articulos.sync');
     Route::get('/sincronizacion', [AccountController::class, 'sincronizacion'])->name('sincronizacion.index');
     Route::get('/sincronizar/primera/{user_id}', [AccountController::class, 'primeraSincronizacionDB'])->name('sincronizacion.primera');
     Route::post('/missing-articles/sync/{mlAccountId}', [App\Http\Controllers\MissingArticlesController::class, 'sync'])->name('missing.articles.sync');
-    Route::get('/sincronizacion/actualizar', [AccountController::class, 'actualizarArticulosDB'])->name('sincronizacion.actualizar');
+    //Route::get('/sincronizacion/actualizar', [AccountController::class, 'actualizarArticulosDB'])->name('sincronizacion.actualizar');
     Route::get('/sync-orders-db', [OrderDbController::class, 'syncOrders'])->name('sync.orders.db');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

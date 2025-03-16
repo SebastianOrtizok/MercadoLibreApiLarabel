@@ -48,7 +48,7 @@
                 @endforeach
             </div>
 
-            <a href="{{ route('sincronizacion.actualizar') }}" class="text-decoration-none">
+            <a href="{{ route('articulos.sync') }}" class="text-decoration-none">
                 <button class="btn btn-warning w-100">
                     <i class="fas fa-sync-alt me-2"></i>Actualizar Todos los Artículos
                 </button>

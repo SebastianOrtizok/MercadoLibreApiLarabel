@@ -283,28 +283,4 @@ public function primeraSincronizacionDB(Request $request, $user_id)
 }
 
 
-
-     /**
-     * Sincroniza los artículos de la datos de MercadoLibre.
-     */
-    public function actualizarArticulosDB(Request $request)
-    {
-        try {
-            $userId = env('MERCADOLIBRE_USER_ID');
-            // Parámetros de paginación desde el request
-            $limit = (int) $request->input('limit', 50);
-            $page = (int) $request->input('page', 1); // Página actual (por defecto 1)
-            $offset = ($page - 1) * $limit;
-
-            $syncService = $this->consultaService->sincronizarBaseDeDatos($userId, $limit, $page);
-
-           // Mensaje de éxito
-           return redirect()->back()->with('success', 'Sincronización completada con éxito.');
-            } catch (\Exception $e) {
-                // Mensaje de error
-                return redirect()->back()->with('error', 'Error al sincronizar los artículos: ' . $e->getMessage());
-            }
-        }
-
-
 }
