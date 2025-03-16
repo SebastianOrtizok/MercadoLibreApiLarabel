@@ -14,8 +14,14 @@ class ItemPromotionsService
         try {
             $promotions = [];
             $requestCount = 0;
+            $maxRequests = 10; // Límite de 10 ítems para esta prueba
 
             foreach ($products as $product) {
+                if ($requestCount >= $maxRequests) {
+                    Log::info("Límite de {$maxRequests} solicitudes alcanzado. Deteniendo...");
+                    break; // Salimos después de 10
+                }
+
                 $itemId = $product->ml_product_id;
                 $url = "https://api.mercadolibre.com/seller-promotions/items/{$itemId}?app_version=v2";
 
@@ -27,6 +33,9 @@ class ItemPromotionsService
 
                 if ($response->successful()) {
                     $promotionData = $response->json();
+                    // Mostrar la respuesta cruda y parar
+                    dd("Respuesta para {$itemId}", $promotionData);
+
                     if (!is_array($promotionData)) {
                         Log::warning("promotionData no es array para {$itemId}: " . json_encode($promotionData));
                         $promotions[$itemId] = ['error' => 'Respuesta inválida: ' . json_encode($promotionData)];
@@ -37,7 +46,6 @@ class ItemPromotionsService
                         $promoId = $promo['id'] ?? $promo['ref_id'] ?? substr(md5($itemId . $index . json_encode($promo)), 0, 50);
                         $offer = $promo['offers'][0] ?? null;
 
-                        // Usar precio_original de la tabla articulos si la API no lo proporciona correctamente
                         $originalPrice = $offer['original_price'] ?? $product->precio_original ?? $promo['price'] ?? null;
                         $newPrice = $offer['new_price'] ?? $promo['price'] ?? null;
 
@@ -75,12 +83,7 @@ class ItemPromotionsService
                     $promotions[$itemId] = ['error' => $response->body()];
                 }
 
-                // Pausa cada 10 solicitudes para evitar sobrecarga (ajustable)
                 $requestCount++;
-                if ($requestCount % 10 === 0) {
-                    Log::info("Pausa después de {$requestCount} solicitudes");
-                    sleep(1); // Pausa de 1 segundo
-                }
             }
 
             return $promotions;
