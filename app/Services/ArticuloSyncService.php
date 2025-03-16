@@ -18,13 +18,13 @@ class ArticuloSyncService
         $this->mercadoLibreService = $mercadoLibreService;
     }
 
-    public function syncArticulos(string $userId, int $limit = 50)
+    public function syncArticulos(string $userId, int $limit = 20) // Cambiamos el default a 20
     {
         try {
             $lastSync = SyncTimestamp::latest()->first()->timestamp ?? now();
             $lastSyncCarbon = Carbon::parse($lastSync);
             $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
-            $maxLimit = 50; // Límite máximo por página de la API de ML
+            $maxLimit = 20; // Límite máximo por página para coincidir con /items
             $limit = min($limit, $maxLimit);
 
             foreach ($tokens as $token) {
@@ -81,7 +81,6 @@ class ArticuloSyncService
                     }
 
                     $details = $detailsResponse->json();
-                    $chunks = array_chunk($itemIds, 20);
                     $oldestLastUpdated = null;
 
                     foreach ($details as $item) {
@@ -101,9 +100,8 @@ class ArticuloSyncService
                         $oldestLastUpdated = $itemLastUpdated;
                     }
 
-                    foreach ($chunks as $chunk) {
-                        ArticuloSyncJob::dispatch($chunk, $token->access_token, $userId, $mlAccountId);
-                    }
+                    // Como $limit ya es 20, no necesitamos dividir en chunks adicionales
+                    ArticuloSyncJob::dispatch($itemIds, $token->access_token, $userId, $mlAccountId);
 
                     Log::info("Procesando ítems para cuenta {$mlAccountId}", [
                         'offset' => $offset,
