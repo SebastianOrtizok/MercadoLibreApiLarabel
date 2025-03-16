@@ -18,14 +18,12 @@ class ItemPromotionsService
                 $itemId = $product->ml_product_id;
                 $url = "https://api.mercadolibre.com/seller-promotions/items/{$itemId}?app_version=v2";
 
-                // Log de datos existentes en item_promotions
+                // Datos existentes en item_promotions
                 $existingPromos = DB::table('item_promotions')->where('ml_product_id', $itemId)->get();
                 Log::info("Datos existentes en item_promotions para {$itemId}: " . $existingPromos->toJson());
 
-                $response = Http::withToken($accessToken)
-                    ->timeout(10)
-                    ->get($url);
-
+                // API de promociones
+                $response = Http::withToken($accessToken)->timeout(10)->get($url);
                 $responseBody = $response->body();
                 Log::info("Respuesta cruda API para {$itemId}: " . $responseBody);
                 $promotionData = $response->json();
@@ -43,7 +41,9 @@ class ItemPromotionsService
                         $promoId = $promo['id'] ?? $promo['ref_id'] ?? substr(md5($itemId . $index . json_encode($promo)), 0, 50);
                         $offer = $promo['offers'][0] ?? null;
 
-                        $originalPrice = $product->precio_original ?? $offer['original_price'] ?? $promo['price'] ?? null;
+                        // Si precio_original está vacío, usamos precio como original
+                        $originalPrice = $product->precio_original ?? $product->precio ?? null;
+                        // Si la promo tiene precio específico, lo usamos; sino, precio de articulos
                         $newPrice = $offer['new_price'] ?? $promo['price'] ?? $product->precio ?? null;
 
                         $startDate = isset($promo['start_date']) ? Carbon::parse($promo['start_date'])->toDateTimeString() : null;
