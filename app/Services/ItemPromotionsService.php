@@ -14,12 +14,12 @@ class ItemPromotionsService
         try {
             $promotions = [];
             $requestCount = 0;
-            $maxRequests = 10; // Límite de 10 ítems para esta prueba
+            $maxRequests = 10; // Límite de 10 ítems para debug
 
             foreach ($products as $product) {
                 if ($requestCount >= $maxRequests) {
                     Log::info("Límite de {$maxRequests} solicitudes alcanzado. Deteniendo...");
-                    break; // Salimos después de 10
+                    break;
                 }
 
                 $itemId = $product->ml_product_id;
@@ -29,13 +29,12 @@ class ItemPromotionsService
                     ->timeout(10)
                     ->get($url);
 
-                Log::info("Respuesta API para {$itemId}: " . $response->body());
+                $responseBody = $response->body();
+                Log::info("Respuesta cruda API para {$itemId}: " . $responseBody);
+                $promotionData = $response->json();
+                Log::info("Respuesta parseada para {$itemId}: " . json_encode($promotionData));
 
                 if ($response->successful()) {
-                    $promotionData = $response->json();
-                    // Mostrar la respuesta cruda y parar
-                    dd("Respuesta para {$itemId}", $promotionData);
-
                     if (!is_array($promotionData)) {
                         Log::warning("promotionData no es array para {$itemId}: " . json_encode($promotionData));
                         $promotions[$itemId] = ['error' => 'Respuesta inválida: ' . json_encode($promotionData)];
@@ -79,8 +78,8 @@ class ItemPromotionsService
                         ];
                     }
                 } else {
-                    Log::warning("Error API para {$itemId}: " . $response->body());
-                    $promotions[$itemId] = ['error' => $response->body()];
+                    Log::warning("Error API para {$itemId}: " . $responseBody);
+                    $promotions[$itemId] = ['error' => $responseBody];
                 }
 
                 $requestCount++;
