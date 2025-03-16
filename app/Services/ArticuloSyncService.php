@@ -18,13 +18,13 @@ class ArticuloSyncService
         $this->mercadoLibreService = $mercadoLibreService;
     }
 
-    public function syncArticulos(string $userId, int $limit = 20) // Cambiamos el default a 20
+    public function syncArticulos(string $userId, int $limit = 20)
     {
         try {
             $lastSync = SyncTimestamp::latest()->first()->timestamp ?? now();
             $lastSyncCarbon = Carbon::parse($lastSync);
             $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
-            $maxLimit = 20; // Límite máximo por página para coincidir con /items
+            $maxLimit = 20;
             $limit = min($limit, $maxLimit);
 
             foreach ($tokens as $token) {
@@ -70,7 +70,6 @@ class ArticuloSyncService
                         'total' => $totalItems,
                     ]);
 
-                    // Obtener detalles para verificar last_updated
                     $detailsResponse = Http::withToken($this->mercadoLibreService->getAccessToken($userId, $mlAccountId))
                         ->get("https://api.mercadolibre.com/items", [
                             'ids' => implode(',', $itemIds),
@@ -82,6 +81,7 @@ class ArticuloSyncService
 
                     $details = $detailsResponse->json();
                     $oldestLastUpdated = null;
+                    $itemsToSync = [];
 
                     foreach ($details as $item) {
                         $body = $item['body'] ?? [];
@@ -94,19 +94,21 @@ class ArticuloSyncService
                                 'last_updated' => $itemLastUpdated->toDateTimeString(),
                                 'last_sync' => $lastSyncCarbon->toDateTimeString(),
                             ]);
-                            break 2; // Salir del do-while
+                            break; // Salir del foreach, pero despachar lo que ya tenemos
                         }
 
+                        $itemsToSync[] = $body['id'];
                         $oldestLastUpdated = $itemLastUpdated;
                     }
 
-                    // Como $limit ya es 20, no necesitamos dividir en chunks adicionales
-                    ArticuloSyncJob::dispatch($itemIds, $token->access_token, $userId, $mlAccountId);
-
-                    Log::info("Procesando ítems para cuenta {$mlAccountId}", [
-                        'offset' => $offset,
-                        'oldest_last_updated' => $oldestLastUpdated->toDateTimeString(),
-                    ]);
+                    if (!empty($itemsToSync)) {
+                        ArticuloSyncJob::dispatch($itemsToSync, $token->access_token, $userId, $mlAccountId);
+                        Log::info("Procesando ítems para cuenta {$mlAccountId}", [
+                            'offset' => $offset,
+                            'oldest_last_updated' => $oldestLastUpdated->toDateTimeString(),
+                            'item_count' => count($itemsToSync),
+                        ]);
+                    }
 
                     $offset += $limit;
                 } while ($continueSync && $offset < $totalItems);
