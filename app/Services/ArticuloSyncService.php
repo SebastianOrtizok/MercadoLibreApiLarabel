@@ -27,6 +27,8 @@ class ArticuloSyncService
             $maxLimit = 20;
             $limit = min($limit, $maxLimit);
 
+            Log::info("Inicio de syncArticulos", ['user_id' => $userId, 'limit' => $limit]);
+
             foreach ($tokens as $token) {
                 $mlAccountId = $token->ml_account_id;
                 $offset = 0;
@@ -60,15 +62,16 @@ class ArticuloSyncService
                     $itemIds = $data['results'] ?? [];
                     $totalItems = $data['paging']['total'] ?? 0;
 
+                    Log::info("Respuesta de /items/search", [
+                        'item_count' => count($itemIds),
+                        'total' => $totalItems,
+                        'item_ids' => $itemIds,
+                    ]);
+
                     if (empty($itemIds)) {
                         Log::info("No hay más ítems para cuenta {$mlAccountId}", ['offset' => $offset]);
                         break;
                     }
-
-                    Log::info("Items obtenidos para cuenta {$mlAccountId}", [
-                        'count' => count($itemIds),
-                        'total' => $totalItems,
-                    ]);
 
                     $detailsResponse = Http::withToken($this->mercadoLibreService->getAccessToken($userId, $mlAccountId))
                         ->get("https://api.mercadolibre.com/items", [
@@ -83,9 +86,17 @@ class ArticuloSyncService
                     $oldestLastUpdated = null;
                     $itemsToSync = [];
 
+                    Log::info("Procesando detalles de ítems", ['details_count' => count($details)]);
+
                     foreach ($details as $item) {
                         $body = $item['body'] ?? [];
                         $itemLastUpdated = Carbon::parse($body['last_updated'] ?? now());
+
+                        Log::info("Revisando ítem", [
+                            'ml_product_id' => $body['id'],
+                            'last_updated' => $itemLastUpdated->toDateTimeString(),
+                            'last_sync' => $lastSyncCarbon->toDateTimeString(),
+                        ]);
 
                         if ($itemLastUpdated->lessThanOrEqualTo($lastSyncCarbon)) {
                             $continueSync = false;
@@ -94,7 +105,7 @@ class ArticuloSyncService
                                 'last_updated' => $itemLastUpdated->toDateTimeString(),
                                 'last_sync' => $lastSyncCarbon->toDateTimeString(),
                             ]);
-                            break; // Salir del foreach, pero despachar lo que ya tenemos
+                            break;
                         }
 
                         $itemsToSync[] = $body['id'];
@@ -102,12 +113,18 @@ class ArticuloSyncService
                     }
 
                     if (!empty($itemsToSync)) {
+                        Log::info("Despachando job para ítems", [
+                            'items_to_sync' => $itemsToSync,
+                            'count' => count($itemsToSync),
+                        ]);
                         ArticuloSyncJob::dispatch($itemsToSync, $token->access_token, $userId, $mlAccountId);
-                        Log::info("Procesando ítems para cuenta {$mlAccountId}", [
+                        Log::info("Job despachado para cuenta {$mlAccountId}", [
                             'offset' => $offset,
                             'oldest_last_updated' => $oldestLastUpdated->toDateTimeString(),
                             'item_count' => count($itemsToSync),
                         ]);
+                    } else {
+                        Log::info("No hay ítems para despachar en este chunk", ['offset' => $offset]);
                     }
 
                     $offset += $limit;
@@ -116,8 +133,10 @@ class ArticuloSyncService
                 SyncTimestamp::updateOrCreate([], ['timestamp' => now()]);
                 Log::info("Cuenta procesada: {$mlAccountId}", ['total_items' => $totalItems]);
             }
+
+            Log::info("Fin de syncArticulos", ['user_id' => $userId]);
         } catch (\Exception $e) {
-            Log::error("Error en syncArticulos: " . $e->getMessage());
+            Log::error("Error en syncArticulos: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             throw $e;
         }
     }
