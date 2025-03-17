@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Services\MercadoLibreService;
 use App\Models\Articulo;
 
 class ArticuloSyncJob implements ShouldQueue
@@ -19,6 +20,7 @@ class ArticuloSyncJob implements ShouldQueue
     protected $accessToken;
     protected $userId;
     protected $mlAccountId;
+    protected $mercadoLibreService;
 
     public function __construct(array $itemIds, string $accessToken, string $userId, string $mlAccountId)
     {
@@ -26,18 +28,26 @@ class ArticuloSyncJob implements ShouldQueue
         $this->accessToken = $accessToken;
         $this->userId = $userId;
         $this->mlAccountId = $mlAccountId;
+        $this->mercadoLibreService = app(MercadoLibreService::class); // Inyectamos el servicio
     }
 
     public function handle()
     {
         try {
+            // Usamos el token inicial, pero si falla con 401, refrescamos
             $response = Http::withToken($this->accessToken)
-                ->get("https://api.mercadolibre.com/items", [
-                    'ids' => implode(',', $this->itemIds),
-                ]);
+                ->get('https://api.mercadolibre.com/items', ['ids' => implode(',', $this->itemIds)]);
 
             if ($response->failed()) {
-                throw new \Exception("Error al obtener detalles: " . $response->body());
+                if ($response->status() === 401) {
+                    // Token inválido, refrescamos y reintentamos
+                    $this->accessToken = $this->mercadoLibreService->getAccessToken($this->userId, $this->mlAccountId);
+                    $response = Http::withToken($this->accessToken)
+                        ->get('https://api.mercadolibre.com/items', ['ids' => implode(',', $this->itemIds)]);
+                }
+                if ($response->failed()) {
+                    throw new \Exception("Error al obtener detalles: " . $response->body());
+                }
             }
 
             $details = $response->json();
@@ -77,7 +87,7 @@ class ArticuloSyncJob implements ShouldQueue
             Log::info("Procesado chunk de ítems para cuenta {$this->mlAccountId}", ['itemIds' => $this->itemIds]);
         } catch (\Exception $e) {
             Log::error("Error en ArticuloSyncJob: " . $e->getMessage(), ['itemIds' => $this->itemIds]);
-            throw $e; // Re-lanza para reintentos si está configurado
+            $this->fail($e); // Fallamos el job para que quede registrado
         }
     }
 }
