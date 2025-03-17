@@ -8,6 +8,7 @@ class Kernel extends ConsoleKernel
 {
     protected $commands = [
         \App\Console\Commands\SyncOrdersDaily::class,
+        \App\Console\Commands\SyncArticles::class, 
     ];
 
     protected function schedule(Schedule $schedule)
