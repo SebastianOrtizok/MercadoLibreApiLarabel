@@ -34,13 +34,11 @@ class ArticuloSyncJob implements ShouldQueue
     public function handle()
     {
         try {
-            // Usamos el token inicial, pero si falla con 401, refrescamos
             $response = Http::withToken($this->accessToken)
                 ->get('https://api.mercadolibre.com/items', ['ids' => implode(',', $this->itemIds)]);
 
             if ($response->failed()) {
                 if ($response->status() === 401) {
-                    // Token inválido, refrescamos y reintentamos
                     $this->accessToken = $this->mercadoLibreService->getAccessToken($this->userId, $this->mlAccountId);
                     $response = Http::withToken($this->accessToken)
                         ->get('https://api.mercadolibre.com/items', ['ids' => implode(',', $this->itemIds)]);
@@ -58,10 +56,10 @@ class ArticuloSyncJob implements ShouldQueue
                 $enPromocion = $precioOriginal && $precio && $precioOriginal > $precio;
                 $descuentoPorcentaje = $enPromocion ? round((($precioOriginal - $precio) / $precioOriginal) * 100, 2) : null;
 
-                Articulo::updateOrCreate(
+                Articulo::updateOrInsert(
                     ['ml_product_id' => $body['id']],
                     [
-                        'user_id' => $this->userId,
+                        'user_id' => $this->mlAccountId, // Cambiado de $this->userId a $this->mlAccountId
                         'titulo' => $body['title'] ?? 'Sin título',
                         'imagen' => $body['thumbnail'] ?? null,
                         'stock_actual' => $body['available_quantity'] ?? 0,
@@ -87,7 +85,7 @@ class ArticuloSyncJob implements ShouldQueue
             Log::info("Procesado chunk de ítems para cuenta {$this->mlAccountId}", ['itemIds' => $this->itemIds]);
         } catch (\Exception $e) {
             Log::error("Error en ArticuloSyncJob: " . $e->getMessage(), ['itemIds' => $this->itemIds]);
-            $this->fail($e); // Fallamos el job para que quede registrado
+            $this->fail($e);
         }
     }
 }
