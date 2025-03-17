@@ -224,98 +224,105 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
 
 
 
-// DESCARGAR A LA BASE DE DATOS
-
-public function DescargarArticulosDB($userId, $token, $limit = 50, $offset = 0)
-{
-    try {
-        if (!$token) {
-            \Log::error("No se encontró token para la cuenta de MercadoLibre: {$userId}");
-            return ['items' => [], 'total' => 0];
-        }
-
-        $allItems = [];
-        $total = 0;
-        $currentOffset = $offset;
-
-        do {
-            \Log::info("Descargando ítems para {$userId}", ['offset' => $currentOffset, 'limit' => $limit]);
-            $response = $this->client->get("users/{$userId}/items/search", [
-                'headers' => ['Authorization' => "Bearer {$token}"],
-                'query' => [
-                    'include_attributes' => 'all',
-                    'limit' => $limit,
-                    'offset' => $currentOffset
-                ]
-            ]);
-
-            $data = json_decode($response->getBody(), true);
-            if (empty($data['results'])) {
-                \Log::info("No más resultados en offset {$currentOffset} para {$userId}");
-                break;
+    public function DescargarArticulosDB($userId, $token, $limit = 50, $offset = 0)
+    {
+        try {
+            if (!$token) {
+                \Log::error("No se encontró token para la cuenta de MercadoLibre: {$userId}");
+                return ['items' => [], 'total' => 0];
             }
 
-            $itemIds = $data['results'];
-            $chunks = array_chunk($itemIds, 20);
+            $allItems = [];
+            $total = 0;
+            $currentOffset = $offset;
+            $maxOffset = 950; // Límite seguro para offset (950 + 50 = 1000)
 
-            foreach ($chunks as $chunk) {
-                $detailsResponse = $this->client->get("items", [
+            do {
+                if ($currentOffset > $maxOffset) {
+                    \Log::info("Alcanzado el límite máximo de offset ($maxOffset) para {$userId}, deteniendo sincronización.");
+                    break;
+                }
+
+                \Log::info("Descargando ítems para {$userId}", ['offset' => $currentOffset, 'limit' => $limit]);
+                $response = $this->client->get("users/{$userId}/items/search", [
                     'headers' => ['Authorization' => "Bearer {$token}"],
-                    'query' => ['ids' => implode(',', $chunk)]
+                    'query' => [
+                        'include_attributes' => 'all',
+                        'limit' => $limit,
+                        'offset' => $currentOffset
+                    ]
                 ]);
 
-                $details = json_decode($detailsResponse->getBody(), true);
-                $allItems = array_merge($allItems, $details);
+                $data = json_decode($response->getBody(), true);
+                if (empty($data['results'])) {
+                    \Log::info("No más resultados en offset {$currentOffset} para {$userId}");
+                    break;
+                }
+
+                $itemIds = $data['results'];
+                $chunks = array_chunk($itemIds, 20);
+
+                foreach ($chunks as $chunk) {
+                    $detailsResponse = $this->client->get("items", [
+                        'headers' => ['Authorization' => "Bearer {$token}"],
+                        'query' => ['ids' => implode(',', $chunk)]
+                    ]);
+
+                    $details = json_decode($detailsResponse->getBody(), true);
+                    $allItems = array_merge($allItems, $details);
+                }
+
+                $total = $data['paging']['total'] ?? $total;
+                $currentOffset += $limit;
+                sleep(1); // Evitar rate limiting
+            } while ($currentOffset <= $maxOffset && $currentOffset < $total); // Condición ajustada
+
+            \Log::info("Descargados ítems para {$userId}", [
+                'items_count' => count($allItems),
+                'total_reported_by_api' => $total,
+                'stopped_at_offset' => $currentOffset
+            ]);
+
+            // Procesamiento de ítems (sin sku_interno)...
+            $processedItems = [];
+            foreach ($allItems as $item) {
+                $body = $item['body'] ?? [];
+                $sellerId = $body['seller_id'] ?? null;
+                $precio = $body['price'] ?? null;
+                $precioOriginal = $body['original_price'] ?? null;
+                $enPromocion = $precioOriginal && $precio && $precioOriginal > $precio;
+                $descuentoPorcentaje = $enPromocion ? round((($precioOriginal - $precio) / $precioOriginal) * 100, 2) : null;
+
+                $processedItems[] = [
+                    'ml_product_id' => $body['id'] ?? null,
+                    'titulo' => $body['title'] ?? 'Sin título',
+                    'imagen' => $body['thumbnail'] ?? null,
+                    'stockActual' => $body['available_quantity'] ?? 0,
+                    'precio' => $precio,
+                    'estado' => $body['status'] ?? 'Desconocido',
+                    'permalink' => $body['permalink'] ?? '#',
+                    'condicion' => $body['condition'] ?? 'Desconocido',
+                    'sku' => $body['user_product_id'] ?? null,
+                    'tipoPublicacion' => $body['listing_type_id'] ?? null,
+                    'enCatalogo' => $body['catalog_listing'] ?? null,
+                    'token_id' => $sellerId,
+                    'logistic_type' => $body['shipping']['logistic_type'] ?? null,
+                    'inventory_id' => $body['inventory_id'] ?? null,
+                    'user_product_id' => $body['user_product_id'] ?? null,
+                    'precio_original' => $precioOriginal,
+                    'category_id' => $body['category_id'] ?? null,
+                    'en_promocion' => $enPromocion,
+                    'descuento_porcentaje' => $descuentoPorcentaje,
+                    'deal_ids' => json_encode($body['deal_ids'] ?? []),
+                ];
             }
 
-            $total = $data['paging']['total'] ?? $total;
-            $currentOffset += $limit;
-            sleep(1); // Evitar rate limiting
-        } while ($currentOffset < $total);
-
-        \Log::info("Descargados {$total} ítems para {$userId}", ['items_count' => count($allItems)]);
-
-        // Procesamiento de ítems (sin sku_interno)...
-        $processedItems = [];
-        foreach ($allItems as $item) {
-            $body = $item['body'] ?? [];
-            $sellerId = $body['seller_id'] ?? null;
-            $precio = $body['price'] ?? null;
-            $precioOriginal = $body['original_price'] ?? null;
-            $enPromocion = $precioOriginal && $precio && $precioOriginal > $precio;
-            $descuentoPorcentaje = $enPromocion ? round((($precioOriginal - $precio) / $precioOriginal) * 100, 2) : null;
-
-            $processedItems[] = [
-                'ml_product_id' => $body['id'] ?? null,
-                'titulo' => $body['title'] ?? 'Sin título',
-                'imagen' => $body['thumbnail'] ?? null,
-                'stockActual' => $body['available_quantity'] ?? 0,
-                'precio' => $precio,
-                'estado' => $body['status'] ?? 'Desconocido',
-                'permalink' => $body['permalink'] ?? '#',
-                'condicion' => $body['condition'] ?? 'Desconocido',
-                'sku' => $body['user_product_id'] ?? null,
-                'tipoPublicacion' => $body['listing_type_id'] ?? null,
-                'enCatalogo' => $body['catalog_listing'] ?? null,
-                'token_id' => $sellerId,
-                'logistic_type' => $body['shipping']['logistic_type'] ?? null,
-                'inventory_id' => $body['inventory_id'] ?? null,
-                'user_product_id' => $body['user_product_id'] ?? null,
-                'precio_original' => $precioOriginal,
-                'category_id' => $body['category_id'] ?? null,
-                'en_promocion' => $enPromocion,
-                'descuento_porcentaje' => $descuentoPorcentaje,
-                'deal_ids' => json_encode($body['deal_ids'] ?? []),
-            ];
+            return ['items' => $processedItems, 'total' => $total];
+        } catch (RequestException $e) {
+            \Log::error("Error al obtener publicaciones de MercadoLibre ({$userId}): " . $e->getMessage());
+            throw $e;
         }
-
-        return ['items' => $processedItems, 'total' => $total];
-    } catch (RequestException $e) {
-        \Log::error("Error al obtener publicaciones de MercadoLibre ({$userId}): " . $e->getMessage());
-        throw $e;
     }
-}
-
 
 
 
