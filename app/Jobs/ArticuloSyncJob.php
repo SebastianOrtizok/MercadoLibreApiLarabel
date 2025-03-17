@@ -28,7 +28,7 @@ class ArticuloSyncJob implements ShouldQueue
         $this->accessToken = $accessToken;
         $this->userId = $userId;
         $this->mlAccountId = $mlAccountId;
-        $this->mercadoLibreService = app(MercadoLibreService::class); // Inyectamos el servicio
+        $this->mercadoLibreService = app(MercadoLibreService::class);
     }
 
     public function handle()
@@ -59,7 +59,7 @@ class ArticuloSyncJob implements ShouldQueue
                 Articulo::updateOrInsert(
                     ['ml_product_id' => $body['id']],
                     [
-                        'user_id' => $this->mlAccountId, // Cambiado de $this->userId a $this->mlAccountId
+                        'user_id' => $this->mlAccountId, // Corregido
                         'titulo' => $body['title'] ?? 'Sin título',
                         'imagen' => $body['thumbnail'] ?? null,
                         'stock_actual' => $body['available_quantity'] ?? 0,
