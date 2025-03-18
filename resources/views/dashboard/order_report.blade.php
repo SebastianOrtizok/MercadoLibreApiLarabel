@@ -77,7 +77,7 @@
             <tbody id="table-body">
                 @forelse($ventas['ventas'] as $venta)
                     <tr>
-                        <td data-column="Cuenta">{{ $venta['seller_name'] }}</td>
+                        <td data-column="Cuenta">{{ $venta['seller_nickname'] }}</td>
                         <td><img src="{{ $venta['imagen'] }}" alt="{{ $venta['titulo'] }}" class="table-img"></td>
                         <td data-column="producto">
                             <a href="{{ route('dashboard.ventaid', ['item_id' => $venta['producto'], 'fecha_inicio' => request('fecha_inicio', now()->format('Y-m-d')), 'fecha_fin' => request('fecha_fin', now()->format('Y-m-d'))]) }}" class="table-link">{{ $venta['producto'] }}</a>
