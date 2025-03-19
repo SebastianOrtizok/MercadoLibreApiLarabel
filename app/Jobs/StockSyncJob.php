@@ -16,8 +16,8 @@ class StockSyncJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $userId; // ID del usuario logueado
-    protected $mlAccountId; // Seller ID de Mercado Libre (equivalente a user_id en articulos)
+    protected $userId;
+    protected $mlAccountId;
     protected $accessToken;
 
     public function __construct($userId, $mlAccountId, $accessToken)
@@ -29,8 +29,8 @@ class StockSyncJob implements ShouldQueue
 
     public function handle()
     {
+        Log::info("Iniciando StockSyncJob para ml_account_id {$this->mlAccountId}");
         try {
-            // Filtrar artículos por el seller_id (ml_account_id)
             $articulos = Articulo::where('user_id', $this->mlAccountId)->get();
             Log::info("Artículos encontrados para ml_account_id {$this->mlAccountId}: " . $articulos->count());
 
@@ -112,7 +112,6 @@ class StockSyncJob implements ShouldQueue
                         }
                     }
                 } else {
-                    // Si no hay user_product_id, usar stock_actual según logistic_type
                     if ($articulo->logistic_type === 'fulfillment') {
                         $articulo->update([
                             'stock_fulfillment' => $articulo->stock_actual,
@@ -131,6 +130,7 @@ class StockSyncJob implements ShouldQueue
                         ]);
                     }
                 }
+                usleep(500000); // Retraso de 0.5 segundos entre solicitudes
             }
         } catch (\Exception $e) {
             Log::error("Error en StockSyncJob para ml_account_id {$this->mlAccountId}: " . $e->getMessage(), [
