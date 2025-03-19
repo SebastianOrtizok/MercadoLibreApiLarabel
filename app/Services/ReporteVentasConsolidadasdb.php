@@ -30,14 +30,6 @@ class ReporteVentasConsolidadasDb
             throw new \Exception('No se encontraron cuentas asociadas al usuario.');
         }
 
-        // Subconsulta para obtener el stock más reciente según el tipo seleccionado
-        $stockSubquery = DB::table('articulos')
-            ->select('sku_interno', DB::raw("`$stockType` as stock"), 'ml_product_id')
-            ->whereIn('ml_account_id', $tokens)
-            ->where('estado', 'active')
-            ->orderBy('updated_at', 'desc')
-            ->limit(1);
-
         // Consulta principal
         $query = DB::table('ordenes as o')
             ->leftJoin('articulos as a', 'o.ml_product_id', '=', 'a.ml_product_id')
@@ -48,7 +40,7 @@ class ReporteVentasConsolidadasDb
             $query->whereBetween('o.fecha_venta', [$fechaInicio, $fechaFin]);
         }
 
-        // Aplicar filtros existentes
+        // Aplicar filtros
         if (!empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
                 $q->where('a.sku_interno', 'like', "%{$filters['search']}%")
@@ -80,7 +72,7 @@ class ReporteVentasConsolidadasDb
                 DB::raw('SUM(o.cantidad) as cantidad_vendida'),
                 DB::raw('MAX(a.tipo_publicacion) as tipo_publicacion'),
                 DB::raw('MAX(a.imagen) as imagen'),
-                DB::raw("(SELECT `$stockType` FROM articulos WHERE sku_interno = a.sku_interno AND estado = 'active' ORDER BY updated_at DESC LIMIT 1) as stock"), // Stock según tipo seleccionado
+                DB::raw("MAX(a.$stockType) as stock"), // Usar el stock seleccionado directamente
                 DB::raw('MAX(a.estado) as estado'),
                 DB::raw('MAX(a.permalink) as url'),
                 DB::raw('MAX(o.fecha_venta) as fecha_ultima_venta'),
@@ -96,7 +88,7 @@ class ReporteVentasConsolidadasDb
                 DB::raw('SUM(o.cantidad) as cantidad_vendida'),
                 'a.tipo_publicacion',
                 'a.imagen',
-                "a.$stockType as stock", // Usar el tipo de stock seleccionado
+                "a.$stockType as stock", // Usar el stock seleccionado directamente
                 'a.estado',
                 'a.permalink as url',
                 DB::raw('MAX(o.fecha_venta) as fecha_ultima_venta'),
@@ -124,6 +116,7 @@ class ReporteVentasConsolidadasDb
         Log::info('Ventas consolidadas generadas', [
             'total_ventas' => $totalVentas,
             'count' => count($ventasConsolidadas),
+            'stock_type' => $stockType, // Log para depurar
         ]);
 
         return [
