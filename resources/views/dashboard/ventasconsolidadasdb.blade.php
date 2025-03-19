@@ -46,6 +46,14 @@
                             </select>
                         </div>
                         <div class="col-md-3 mb-2">
+                            <label>Tipo de Stock</label>
+                            <select name="stock_type" class="form-control">
+                                <option value="stock_actual" {{ request('stock_type', 'stock_actual') == 'stock_actual' ? 'selected' : '' }}>Stock Actual</option>
+                                <option value="stock_deposito" {{ request('stock_type') == 'stock_deposito' ? 'selected' : '' }}>Stock Depósito</option>
+                                <option value="stock_fulfillment" {{ request('stock_type') == 'stock_fulfillment' ? 'selected' : '' }}>Stock Fulfillment</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-2">
                             <label>Estado de la Orden</label>
                             <select name="order_status" class="form-control">
                                 <option value="">Todos los estados</option>
@@ -140,7 +148,7 @@
                     <th data-column-name="Título" data-sortable="true" data-column="titulo"><span>Título</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Ventas" data-sortable="true" data-column="ventas_diarias"><span>Ventas</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Publicación"><span>Publicación</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Stock" data-sortable="true" data-column="stock"><span>Stock</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Stock" data-sortable="true" data-column="stock"><span>Stock ({{ request('stock_type', 'stock_actual') }})</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Días de Stock" data-sortable="true" data-column="dias_stock"><span>Días de Stock</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Estado de la Orden"><span>Estado Orden</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Estado de la Publicación"><span>Estado Pub.</span><i class="fas fa-eye toggle-visibility"></i></th>

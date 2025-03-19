@@ -23,7 +23,8 @@ class VentasConsolidadasControllerDB extends Controller
 
             $limit = $request->input('limit', 50);
             $page = (int) $request->input('page', 1);
-            $consolidarPorSku = $request->input('consolidar_por_sku', false) === 'true'; // Filtro para consolidar por SKU
+            $consolidarPorSku = $request->input('consolidar_por_sku', false) === 'true';
+            $stockType = $request->input('stock_type', 'stock_actual'); // Obtener el tipo de stock del formulario
 
             $fechaInicio = Carbon::parse($fecha_inicio ?? $request->input('fecha_inicio', Carbon::now()->subDays(30)->format('Y-m-d')));
             $fechaFin = Carbon::parse($fecha_fin ?? $request->input('fecha_fin', Carbon::now()->format('Y-m-d')));
@@ -39,7 +40,14 @@ class VentasConsolidadasControllerDB extends Controller
             ];
             \Log::info('Filtros aplicados:', $filters);
 
-            $ventasData = $this->reporteVentasConsolidadasDb->generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango, $filters, $consolidarPorSku);
+            $ventasData = $this->reporteVentasConsolidadasDb->generarReporteVentasConsolidadas(
+                $fechaInicio,
+                $fechaFin,
+                $diasDeRango,
+                $filters,
+                $consolidarPorSku,
+                $stockType // Pasar el tipo de stock al servicio
+            );
             \Log::info('Datos de ventas:', ['count' => count($ventasData['ventas'] ?? []), 'sample' => !empty($ventasData['ventas']) ? $ventasData['ventas'][0] : null]);
 
             $ventasCollection = collect($ventasData['ventas'] ?? []);
@@ -69,6 +77,7 @@ class VentasConsolidadasControllerDB extends Controller
                 'resumenPorCuenta' => $resumenPorCuenta ?? [],
                 'maxVentasTotal' => $maxVentasTotal,
                 'consolidarPorSku' => $consolidarPorSku,
+                'stockType' => $stockType, // Pasar el tipo de stock a la vista si es necesario
             ]);
         } catch (\Exception $e) {
             \Log::error('Error en VentasConsolidadasControllerDB: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
@@ -84,6 +93,7 @@ class VentasConsolidadasControllerDB extends Controller
                 'resumenPorCuenta' => [],
                 'maxVentasTotal' => 1,
                 'consolidarPorSku' => false,
+                'stockType' => 'stock_actual',
             ]);
         }
     }
