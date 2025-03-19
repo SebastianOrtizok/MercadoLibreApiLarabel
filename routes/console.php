@@ -16,10 +16,11 @@ Artisan::command('articles:sync', function () {
   ->dailyAt('08:00')
   ->withoutOverlapping();
 
-Artisan::command('stocks:sync', function () {
+Artisan::command('stocks:sync {userId?}', function ($userId = null) {
     $this->comment('Ejecutando stocks:sync');
-    $userId = 1; // Ajustá este ID al usuario que querés o hacelo dinámico
+    $userId = $userId ?? 1; // Por defecto user_id 1 si no se pasa argumento
     app(StockSyncService::class)->syncStocks($userId);
+    $this->info("Sincronización iniciada para user_id: {$userId}");
 })->describe('Sincroniza los stocks de fulfillment y depósito diariamente')
   ->dailyAt('09:00')
   ->withoutOverlapping();

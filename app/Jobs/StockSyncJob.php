@@ -60,7 +60,7 @@ class StockSyncJob implements ShouldQueue
                         ]);
                     } else {
                         if ($response->status() === 401) {
-                            $this->accessToken = app(MercadoLibreService::class)->getAccessToken($this->userId, null); // Ajustar si necesitas ml_account_id
+                            $this->accessToken = app(MercadoLibreService::class)->getAccessToken($this->userId, null); 
                             $response = Http::withToken($this->accessToken)
                                 ->get("https://api.mercadolibre.com/user-products/{$articulo->user_product_id}/stock");
                             if ($response->successful()) {
