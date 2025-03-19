@@ -25,6 +25,7 @@ class StockSyncJob implements ShouldQueue
         $this->userId = $userId;
         $this->mlAccountId = $mlAccountId;
         $this->accessToken = $accessToken;
+        $this->onConnection('database')->onQueue('default');
     }
 
     public function handle()
