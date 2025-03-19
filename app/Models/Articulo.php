@@ -34,6 +34,8 @@ class Articulo extends Model
         'en_promocion',
         'descuento_porcentaje',
         'deal_ids',
+        'stock_fulfillment', 
+        'stock_deposito',
     ];
 
     // Casting para tipos específicos
