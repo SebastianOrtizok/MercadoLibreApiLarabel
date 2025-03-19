@@ -16,19 +16,22 @@ class StockSyncJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $userId;
+    protected $userId; // Usuario logueado (ej. 1)
+    protected $mlAccountId; // Seller ID (ej. 506205901)
     protected $accessToken;
 
-    public function __construct($userId, $accessToken)
+    public function __construct($userId, $mlAccountId, $accessToken)
     {
         $this->userId = $userId;
+        $this->mlAccountId = $mlAccountId;
         $this->accessToken = $accessToken;
     }
 
     public function handle()
     {
         try {
-            $articulos = Articulo::where('user_id', $this->userId)->get();
+            // Filtrar artículos por ml_account_id (seller_id) en lugar de user_id
+            $articulos = Articulo::where('user_id', $this->mlAccountId)->get();
 
             foreach ($articulos as $articulo) {
                 if ($articulo->user_product_id) {
@@ -60,7 +63,7 @@ class StockSyncJob implements ShouldQueue
                         ]);
                     } else {
                         if ($response->status() === 401) {
-                            $this->accessToken = app(MercadoLibreService::class)->getAccessToken($this->userId, null); 
+                            $this->accessToken = app(MercadoLibreService::class)->getAccessToken($this->userId, $this->mlAccountId);
                             $response = Http::withToken($this->accessToken)
                                 ->get("https://api.mercadolibre.com/user-products/{$articulo->user_product_id}/stock");
                             if ($response->successful()) {
@@ -98,7 +101,7 @@ class StockSyncJob implements ShouldQueue
                 }
             }
         } catch (\Exception $e) {
-            Log::error("Error en StockSyncJob: " . $e->getMessage());
+            Log::error("Error en StockSyncJob para ml_account_id {$this->mlAccountId}: " . $e->getMessage());
             $this->fail($e);
         }
     }
