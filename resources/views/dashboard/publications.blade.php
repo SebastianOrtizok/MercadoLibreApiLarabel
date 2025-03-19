@@ -285,37 +285,3 @@ jQuery(document).ready(function () {
 });
 
 </script>
-
-
-
-
-
- <!-- <script>
- $(document).ready(function () {
-    var table = $('#publicationsTable').DataTable({
-        autoWidth: false,
-        responsive: false
-    });
-
-    function removeClassesOnMobile() {
-        if (window.innerWidth <= 767) {
-            $('#publicationsTable td').removeClass('shrink-text dt-center');
-        }
-    }
-
-    // Ejecutar cuando se carga la página
-    removeClassesOnMobile();
-
-    // Ejecutar cada vez que DataTables redibuje la tabla
-    table.on('draw', function () {
-        removeClassesOnMobile();
-    });
-
-    // También ejecutar cuando la pantalla cambia de tamaño
-    $(window).on('resize', function () {
-        removeClassesOnMobile();
-    });
-});
-
-
-</script>  -->

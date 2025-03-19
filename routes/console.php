@@ -1,17 +1,25 @@
 <?php
+
 use Illuminate\Support\Facades\Artisan;
+use App\Services\StockSyncService;
 
 Artisan::command('orders:sync-daily', function () {
     $this->comment('Ejecutando orders:sync-daily');
-    // Acá podrías poner la lógica de sincronización directamente
-    // O mejor, llamar a tu comando existente:
     $this->call(\App\Console\Commands\SyncOrdersDaily::class);
 })->describe('Sincroniza las órdenes de MercadoLibre diariamente')
   ->dailyAt('22:30');
 
-  Artisan::command('articles:sync', function () {
+Artisan::command('articles:sync', function () {
     $this->comment('Ejecutando articles:sync');
     $this->call(\App\Console\Commands\SyncArticles::class);
-})->describe('Sincroniza los artículos de MercadoLibre cada 15 minutos')
+})->describe('Sincroniza los artículos de MercadoLibre diariamente')
   ->dailyAt('08:00')
+  ->withoutOverlapping();
+
+Artisan::command('stocks:sync', function () {
+    $this->comment('Ejecutando stocks:sync');
+    $userId = 1; // Ajustá este ID al usuario que querés o hacelo dinámico
+    app(StockSyncService::class)->syncStocks($userId);
+})->describe('Sincroniza los stocks de fulfillment y depósito diariamente')
+  ->dailyAt('09:00')
   ->withoutOverlapping();
