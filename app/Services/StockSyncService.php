@@ -21,7 +21,7 @@ class StockSyncService
             }
 
             foreach ($tokens as $token) {
-                StockSyncJob::dispatch($userId, $token->access_token, $token->ml_account_id);
+                StockSyncJob::dispatch($userId, $token->access_token);
                 Log::info("Despachado StockSyncJob para cuenta {$token->ml_account_id}");
             }
         } catch (\Exception $e) {

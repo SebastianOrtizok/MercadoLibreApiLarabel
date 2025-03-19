@@ -18,25 +18,20 @@ class StockSyncJob implements ShouldQueue
 
     protected $userId;
     protected $accessToken;
-    protected $mlAccountId;
 
-    public function __construct($userId, $accessToken, $mlAccountId)
+    public function __construct($userId, $accessToken)
     {
         $this->userId = $userId;
         $this->accessToken = $accessToken;
-        $this->mlAccountId = $mlAccountId;
     }
 
     public function handle()
     {
         try {
-            $articulos = Articulo::where('user_id', $this->userId)
-                ->where('ml_account_id', $this->mlAccountId)
-                ->get();
+            $articulos = Articulo::where('user_id', $this->userId)->get();
 
             foreach ($articulos as $articulo) {
                 if ($articulo->user_product_id) {
-                    // Llamar al endpoint de inventario
                     $response = Http::withToken($this->accessToken)
                         ->get("https://api.mercadolibre.com/user-products/{$articulo->user_product_id}/stock");
 
@@ -65,7 +60,7 @@ class StockSyncJob implements ShouldQueue
                         ]);
                     } else {
                         if ($response->status() === 401) {
-                            $this->accessToken = app(MercadoLibreService::class)->getAccessToken($this->userId, $this->mlAccountId);
+                            $this->accessToken = app(MercadoLibreService::class)->getAccessToken($this->userId, null); // Ajustar si necesitas ml_account_id
                             $response = Http::withToken($this->accessToken)
                                 ->get("https://api.mercadolibre.com/user-products/{$articulo->user_product_id}/stock");
                             if ($response->successful()) {
@@ -91,15 +86,12 @@ class StockSyncJob implements ShouldQueue
                         Log::warning("Fallo al obtener stock para {$articulo->ml_product_id}", ['status' => $response->status()]);
                     }
                 } else {
-                    // Sin user_product_id, usamos logistic_type
                     if ($articulo->logistic_type === 'fulfillment') {
                         $articulo->stock_fulfillment = $articulo->stock_actual;
-                        // No tocamos stock_deposito
                         $articulo->save();
                         Log::info("Stock fulfillment copiado desde stock_actual para {$articulo->ml_product_id}", ['stock' => $articulo->stock_fulfillment]);
                     } else {
                         $articulo->stock_deposito = $articulo->stock_actual;
-                        // No tocamos stock_fulfillment
                         $articulo->save();
                         Log::info("Stock deposito copiado desde stock_actual para {$articulo->ml_product_id}", ['stock' => $articulo->stock_deposito]);
                     }
