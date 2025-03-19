@@ -16,8 +16,8 @@ class StockSyncJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $userId; // Usuario logueado (ej. 1)
-    protected $mlAccountId; // Seller ID (ej. 506205901)
+    protected $userId; // ID del usuario logueado
+    protected $mlAccountId; // Seller ID de Mercado Libre (equivalente a user_id en articulos)
     protected $accessToken;
 
     public function __construct($userId, $mlAccountId, $accessToken)
@@ -30,8 +30,14 @@ class StockSyncJob implements ShouldQueue
     public function handle()
     {
         try {
-            // Filtrar artículos por ml_account_id (seller_id) en lugar de user_id
+            // Filtrar artículos por el seller_id (ml_account_id)
             $articulos = Articulo::where('user_id', $this->mlAccountId)->get();
+            Log::info("Artículos encontrados para ml_account_id {$this->mlAccountId}: " . $articulos->count());
+
+            if ($articulos->isEmpty()) {
+                Log::warning("No se encontraron artículos para ml_account_id {$this->mlAccountId}");
+                return;
+            }
 
             foreach ($articulos as $articulo) {
                 if ($articulo->user_product_id) {
@@ -53,19 +59,26 @@ class StockSyncJob implements ShouldQueue
                             }
                         }
 
-                        $articulo->stock_fulfillment = $stockFulfillment;
-                        $articulo->stock_deposito = $stockDeposito;
-                        $articulo->save();
+                        $articulo->update([
+                            'stock_fulfillment' => $stockFulfillment,
+                            'stock_deposito' => $stockDeposito,
+                        ]);
 
                         Log::info("Stock actualizado para {$articulo->ml_product_id}", [
                             'fulfillment' => $stockFulfillment,
                             'deposito' => $stockDeposito
                         ]);
                     } else {
+                        Log::warning("Fallo al obtener stock para {$articulo->ml_product_id}", [
+                            'status' => $response->status(),
+                            'response' => $response->body()
+                        ]);
+
                         if ($response->status() === 401) {
                             $this->accessToken = app(MercadoLibreService::class)->getAccessToken($this->userId, $this->mlAccountId);
                             $response = Http::withToken($this->accessToken)
                                 ->get("https://api.mercadolibre.com/user-products/{$articulo->user_product_id}/stock");
+
                             if ($response->successful()) {
                                 $stockData = $response->json();
                                 $locations = $stockData['locations'] ?? [];
@@ -81,27 +94,48 @@ class StockSyncJob implements ShouldQueue
                                     }
                                 }
 
-                                $articulo->stock_fulfillment = $stockFulfillment;
-                                $articulo->stock_deposito = $stockDeposito;
-                                $articulo->save();
+                                $articulo->update([
+                                    'stock_fulfillment' => $stockFulfillment,
+                                    'stock_deposito' => $stockDeposito,
+                                ]);
+
+                                Log::info("Stock actualizado tras reintento para {$articulo->ml_product_id}", [
+                                    'fulfillment' => $stockFulfillment,
+                                    'deposito' => $stockDeposito
+                                ]);
+                            } else {
+                                Log::error("Fallo tras reintento para {$articulo->ml_product_id}", [
+                                    'status' => $response->status(),
+                                    'response' => $response->body()
+                                ]);
                             }
                         }
-                        Log::warning("Fallo al obtener stock para {$articulo->ml_product_id}", ['status' => $response->status()]);
                     }
                 } else {
+                    // Si no hay user_product_id, usar stock_actual según logistic_type
                     if ($articulo->logistic_type === 'fulfillment') {
-                        $articulo->stock_fulfillment = $articulo->stock_actual;
-                        $articulo->save();
-                        Log::info("Stock fulfillment copiado desde stock_actual para {$articulo->ml_product_id}", ['stock' => $articulo->stock_fulfillment]);
+                        $articulo->update([
+                            'stock_fulfillment' => $articulo->stock_actual,
+                            'stock_deposito' => 0,
+                        ]);
+                        Log::info("Stock fulfillment copiado desde stock_actual para {$articulo->ml_product_id}", [
+                            'stock' => $articulo->stock_fulfillment
+                        ]);
                     } else {
-                        $articulo->stock_deposito = $articulo->stock_actual;
-                        $articulo->save();
-                        Log::info("Stock deposito copiado desde stock_actual para {$articulo->ml_product_id}", ['stock' => $articulo->stock_deposito]);
+                        $articulo->update([
+                            'stock_deposito' => $articulo->stock_actual,
+                            'stock_fulfillment' => 0,
+                        ]);
+                        Log::info("Stock deposito copiado desde stock_actual para {$articulo->ml_product_id}", [
+                            'stock' => $articulo->stock_deposito
+                        ]);
                     }
                 }
             }
         } catch (\Exception $e) {
-            Log::error("Error en StockSyncJob para ml_account_id {$this->mlAccountId}: " . $e->getMessage());
+            Log::error("Error en StockSyncJob para ml_account_id {$this->mlAccountId}: " . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
             $this->fail($e);
         }
     }
