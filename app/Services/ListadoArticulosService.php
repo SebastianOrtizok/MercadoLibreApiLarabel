@@ -21,20 +21,13 @@ class ListadoArticulosService
             $query->where('estado', $filters['estado']);
         }
 
-        $result = $query->select([
-                'id',
-                'titulo',
-                'precio',
-                'stock_actual',
-                'estado',
-                'sku_interno',
-                'imagen',
-                'permalink',
-            ])
-            ->orderBy('titulo', 'asc')
-            ->get();
+        $result = $query->orderBy('titulo', 'asc')
+            ->get(); // Sin select(), trae todos los campos por defecto
 
-        Log::info('Datos crudos de ListadoArticulosService', ['result_count' => $result->count(), 'sample' => $result->first()]);
+        Log::info('Datos crudos de ListadoArticulosService', [
+            'result_count' => $result->count(),
+            'sample' => $result->first() ? json_encode($result->first()) : 'No data'
+        ]);
 
         return $result;
     }
