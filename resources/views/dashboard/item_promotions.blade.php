@@ -123,7 +123,7 @@
                 </thead>
                 <tbody id="table-body">
                     @forelse ($promotions as $promo)
-                        <tr class="{{ $promo->promotion_id === null ? 'no-promotion' : '' }}">
+                        <tr>
                             <td><img src="{{ $promo->imagen ?? '' }}" alt="Producto" style="max-width: 50px;"></td>
                             <td data-column="Cuenta">{{ $promo->seller_name }}</td>
                             <td data-column="ml_product_id">{{ $promo->titulo }}
@@ -166,10 +166,9 @@
     <!-- Estilos personalizados -->
     <style>
         .no-promotion {
-            background-color: #ffe6e6; /* Rojo muy suave, delicado y pálido */
+            background-color: #ffe6e6 !important; /* Rojo suave, forzado para DataTables */
         }
     </style>
-@endsection
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -197,7 +196,13 @@
                     columnDefs: [
                         { targets: '_all', className: 'shrink-text dt-center' },
                         { targets: [1], width: '20%' } // Producto
-                    ]
+                    ],
+                    createdRow: function (row, data, dataIndex) {
+                        // Si promotion_id es null, aplicar la clase no-promotion
+                        if (data[0] === null || data[3] === 'N/A') { // Índice 0 es Imagen (ignoramos), 3 es type como indicador
+                            $(row).addClass('no-promotion');
+                        }
+                    }
                 };
 
                 config.colReorder = !isMobile;
@@ -249,18 +254,18 @@
         });
     </script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        function isMobile() {
-            return window.innerWidth <= 768; // Ajusta según sea necesario
-        }
-
-        document.querySelectorAll('td[data-column="ml_product_id"]').forEach(td => {
-            let text = td.textContent.trim();
-            if (isMobile() && text.length > 30) {
-                td.textContent = text.substring(0, 30) + '...';
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function isMobile() {
+                return window.innerWidth <= 768; // Ajusta según sea necesario
             }
-        });
-    });
-</script>
 
+            document.querySelectorAll('td[data-column="ml_product_id"]').forEach(td => {
+                let text = td.textContent.trim();
+                if (isMobile() && text.length > 30) {
+                    td.textContent = text.substring(0, 30) + '...';
+                }
+            });
+        });
+    </script>
+@endsection
