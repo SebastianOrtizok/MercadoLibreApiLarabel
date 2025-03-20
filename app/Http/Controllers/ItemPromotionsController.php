@@ -86,14 +86,14 @@ class ItemPromotionsController extends Controller
                 })
                 ->select(
                     'articulos.ml_product_id',
-                    DB::raw('NULL as promotion_id'), // Campos de item_promotions como NULL
-                    DB::raw('NULL as type'),
-                    DB::raw('NULL as status'),
-                    DB::raw('NULL as original_price'),
-                    DB::raw('NULL as new_price'),
-                    DB::raw('NULL as start_date'),
-                    DB::raw('NULL as finish_date'),
-                    DB::raw('NULL as name'),
+                    DB::raw('"Sin Promoción" as promotion_id'),
+                    DB::raw('"Sin Promoción" as type'),
+                    DB::raw('"Sin Promoción" as status'),
+                    DB::raw('"Sin Promoción" as original_price'),
+                    DB::raw('"Sin Promoción" as new_price'),
+                    DB::raw('"Sin Promoción" as start_date'),
+                    DB::raw('"Sin Promoción" as finish_date'),
+                    DB::raw('"Sin Promoción" as name'),
                     'articulos.titulo',
                     'articulos.imagen',
                     'articulos.permalink',
@@ -147,16 +147,16 @@ class ItemPromotionsController extends Controller
         }
 
         $limit = $request->input('limit', 30);
-        $promotions = $query->orderBy('articulos.titulo', 'asc') // Cambié el orden a algo más neutral
+        $promotions = $query->orderBy('articulos.titulo', 'asc')
             ->paginate($limit);
 
         $promotions->getCollection()->transform(function ($promo) {
-            if ($promo->finish_date) {
+            if ($promo->finish_date && $promo->finish_date !== 'Sin Promoción') {
                 $finishDate = Carbon::parse($promo->finish_date);
                 $today = Carbon::today();
                 $promo->days_remaining = $today->diffInDays($finishDate, false);
             } else {
-                $promo->days_remaining = null;
+                $promo->days_remaining = 'Sin Promoción';
             }
             return $promo;
         });

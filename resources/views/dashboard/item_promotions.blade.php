@@ -136,21 +136,14 @@
                             <td data-column="status">{{ $promo->status ?? 'N/A' }}</td>
                             <td data-column="original_price">{{ $promo->original_price ?? 'N/A' }}</td>
                             <td data-column="new_price">{{ $promo->new_price ?? 'N/A' }}</td>
-                            <td data-column="start_date">
-                                {{ $promo->start_date ? \Carbon\Carbon::parse($promo->start_date)->format('d M Y') : 'N/A' }}
+                            <td data-column="start_date">{{ $promo->start_date ?? 'N/A' }}</td>
+                            <td data-column="finish_date">{{ $promo->finish_date ?? 'N/A' }}</td>
+                            <td data-column="days_remaining" class="{{ $promo->days_remaining < 0 && $promo->days_remaining !== 'Sin Promoción' ? 'text-danger' : '' }}">
+                                {{ $promo->days_remaining ?? 'N/A' }}
                             </td>
-                            <td data-column="finish_date">
-                                {{ $promo->finish_date ? \Carbon\Carbon::parse($promo->finish_date)->format('d M Y') : 'N/A' }}
-                            </td>
-                            <td data-column="days_remaining" class="{{ $promo->days_remaining < 0 ? 'text-danger' : '' }}">
-                                {{ round($promo->days_remaining) ?? 'N/A' }}
-                            </td>
-                            <td data-column="name">{{ $promo->name ?? 'Sin nombre' }}</td>
+                            <td data-column="name">{{ $promo->name ?? 'N/A' }}</td>
                         </tr>
                     @empty
-                        <tr>
-                            <td colspan="11" class="text-center">No hay promociones para mostrar.</td>
-                        </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -162,11 +155,11 @@
         ])
         <a href="{{ route('sincronizacion.index') }}" class="btn btn-primary mt-3">Volver a Sincronización</a>
     </div>
-
+    @endsection
     <!-- Estilos personalizados -->
     <style>
         .no-promotion {
-            background-color: #ffe6e6 !important; /* Rojo suave, forzado para DataTables */
+            background-color: #ffe6e6 !important;
         }
     </style>
 
@@ -198,8 +191,8 @@
                         { targets: [1], width: '20%' } // Producto
                     ],
                     createdRow: function (row, data, dataIndex) {
-                        // Si promotion_id es null, aplicar la clase no-promotion
-                        if (data[0] === null || data[3] === 'N/A') { // Índice 0 es Imagen (ignoramos), 3 es type como indicador
+                        // Si la columna "Precio Nuevo" (índice 6) es "Sin Promoción", aplicar la clase
+                        if (data[6] === 'Sin Promoción') {
                             $(row).addClass('no-promotion');
                         }
                     }
@@ -268,4 +261,4 @@
             });
         });
     </script>
-@endsection
+
