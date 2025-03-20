@@ -20,7 +20,7 @@ class ItemPromotionsController extends Controller
 
     public function syncPromotions(Request $request)
     {
-        // Este método no necesita cambios para el filtro, ya que solo sincroniza promociones existentes
+        // Este método no necesita cambios
         try {
             $userId = auth()->user()->id;
 
@@ -72,44 +72,70 @@ class ItemPromotionsController extends Controller
             ->where('user_id', $userId)
             ->pluck('ml_account_id');
 
-        // Consulta base: ahora usamos LEFT JOIN para incluir artículos sin promociones
-        $query = DB::table('articulos')
-            ->leftJoin('item_promotions', 'articulos.ml_product_id', '=', 'item_promotions.ml_product_id')
-            ->join('mercadolibre_tokens', 'articulos.user_id', '=', 'mercadolibre_tokens.ml_account_id')
-            ->whereIn('articulos.user_id', $mlAccounts)
-            ->where('articulos.estado', 'active')
-            ->select(
-                'articulos.ml_product_id',
-                'item_promotions.promotion_id',
-                'item_promotions.type',
-                'item_promotions.status',
-                'item_promotions.original_price',
-                'item_promotions.new_price',
-                'item_promotions.start_date',
-                'item_promotions.finish_date',
-                'item_promotions.name',
-                'articulos.titulo',
-                'articulos.imagen',
-                'articulos.permalink',
-                'mercadolibre_tokens.seller_name'
-            );
-
-        // Aplicar filtro de promociones
         $promotionFilter = $request->input('promotion_filter', 'with_promotions');
-        if ($promotionFilter === 'with_promotions') {
-            $query->whereNotNull('articulos.deal_ids');
-        } elseif ($promotionFilter === 'without_promotions') {
-            $query->whereNull('articulos.deal_ids');
-        } // 'all' no aplica filtro adicional
+
+        if ($promotionFilter === 'without_promotions') {
+            // Para "Sin Promociones", solo usamos articulos sin JOIN con item_promotions
+            $query = DB::table('articulos')
+                ->join('mercadolibre_tokens', 'articulos.user_id', '=', 'mercadolibre_tokens.ml_account_id')
+                ->whereIn('articulos.user_id', $mlAccounts)
+                ->where('articulos.estado', 'active')
+                ->where(function ($q) {
+                    $q->whereNull('articulos.deal_ids')
+                      ->orWhere('articulos.deal_ids', '=', '[]');
+                })
+                ->select(
+                    'articulos.ml_product_id',
+                    DB::raw('NULL as promotion_id'), // Campos de item_promotions como NULL
+                    DB::raw('NULL as type'),
+                    DB::raw('NULL as status'),
+                    DB::raw('NULL as original_price'),
+                    DB::raw('NULL as new_price'),
+                    DB::raw('NULL as start_date'),
+                    DB::raw('NULL as finish_date'),
+                    DB::raw('NULL as name'),
+                    'articulos.titulo',
+                    'articulos.imagen',
+                    'articulos.permalink',
+                    'mercadolibre_tokens.seller_name'
+                );
+        } else {
+            // Para "Con Promociones" y "Todos", usamos LEFT JOIN con item_promotions
+            $query = DB::table('articulos')
+                ->leftJoin('item_promotions', 'articulos.ml_product_id', '=', 'item_promotions.ml_product_id')
+                ->join('mercadolibre_tokens', 'articulos.user_id', '=', 'mercadolibre_tokens.ml_account_id')
+                ->whereIn('articulos.user_id', $mlAccounts)
+                ->where('articulos.estado', 'active')
+                ->select(
+                    'articulos.ml_product_id',
+                    'item_promotions.promotion_id',
+                    'item_promotions.type',
+                    'item_promotions.status',
+                    'item_promotions.original_price',
+                    'item_promotions.new_price',
+                    'item_promotions.start_date',
+                    'item_promotions.finish_date',
+                    'item_promotions.name',
+                    'articulos.titulo',
+                    'articulos.imagen',
+                    'articulos.permalink',
+                    'mercadolibre_tokens.seller_name'
+                );
+
+            if ($promotionFilter === 'with_promotions') {
+                $query->whereNotNull('articulos.deal_ids')
+                      ->where('articulos.deal_ids', '!=', '[]');
+            } // 'all' no aplica filtro adicional
+        }
 
         // Otros filtros existentes
         if ($request->filled('ml_account_id')) {
             $query->where('articulos.user_id', $request->ml_account_id);
         }
-        if ($request->filled('status')) {
+        if ($request->filled('status') && $promotionFilter !== 'without_promotions') {
             $query->where('item_promotions.status', $request->status);
         }
-        if ($request->filled('type')) {
+        if ($request->filled('type') && $promotionFilter !== 'without_promotions') {
             $query->where('item_promotions.type', $request->input('type'));
         }
         if ($request->filled('search')) {
@@ -121,7 +147,7 @@ class ItemPromotionsController extends Controller
         }
 
         $limit = $request->input('limit', 30);
-        $promotions = $query->orderBy('item_promotions.finish_date', 'asc')
+        $promotions = $query->orderBy('articulos.titulo', 'asc') // Cambié el orden a algo más neutral
             ->paginate($limit);
 
         $promotions->getCollection()->transform(function ($promo) {
