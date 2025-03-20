@@ -42,27 +42,65 @@
             <thead>
                 <tr>
                     <th data-column-name="ID"><span>ID</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Imagen"><span>Imagen</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Usuario"><span>Usuario</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="ML Product ID"><span>ML Product ID</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Logistic Type"><span>Tipo Logístico</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Inventory ID"><span>ID Inventario</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="User Product ID"><span>ID Producto Usuario</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Título"><span>Título</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Imagen"><span>Imagen</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Stock Actual"><span>Stock Actual</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Stock Fulfillment"><span>Stock Fulfillment</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Stock Depósito"><span>Stock Depósito</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Precio"><span>Precio</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Stock"><span>Stock</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Precio Original"><span>Precio Original</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="En Promoción"><span>En Promoción</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Descuento %"><span>Descuento %</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Deal IDs"><span>Deal IDs</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Estado"><span>Estado</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="SKU"><span>SKU Interno</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Permalink"><span>Permalink</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Condición"><span>Condición</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="SKU"><span>SKU</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="SKU Interno"><span>SKU Interno</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Tipo Publicación"><span>Tipo Publicación</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="En Catálogo"><span>En Catálogo</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Categoría"><span>Categoría</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Creado"><span>Creado</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Actualizado"><span>Actualizado</span><i class="fas fa-eye toggle-visibility"></i></th>
                 </tr>
             </thead>
             <tbody id="table-body">
                 @forelse ($articulos as $articulo)
                     <tr>
-                        <td>{{ $articulo->id }}</td>
-                        <td><img src="{{ $articulo->imagen ?? asset('images/default.png') }}" alt="{{ $articulo->titulo }}" class="table-img"></td>
-                        <td><a href="{{ $articulo->permalink }}" target="_blank" class="table-link">{{ $articulo->titulo }}</a></td>
-                        <td>{{ number_format($articulo->precio, 2) }}</td>
-                        <td>{{ $articulo->stock_actual }}</td>
-                        <td>{{ $articulo->estado }}</td>
+                        <td>{{ $articulo->id ?? 'N/A' }}</td>
+                        <td>{{ $articulo->user_id ?? 'N/A' }}</td>
+                        <td>{{ $articulo->ml_product_id ?? 'N/A' }}</td>
+                        <td>{{ $articulo->logistic_type ?? 'N/A' }}</td>
+                        <td>{{ $articulo->inventory_id ?? 'N/A' }}</td>
+                        <td>{{ $articulo->user_product_id ?? 'N/A' }}</td>
+                        <td><a href="{{ $articulo->permalink ?? '#' }}" target="_blank" class="table-link">{{ $articulo->titulo ?? 'N/A' }}</a></td>
+                        <td><img src="{{ $articulo->imagen ?? asset('images/default.png') }}" alt="{{ $articulo->titulo ?? 'Sin título' }}" class="table-img"></td>
+                        <td>{{ $articulo->stock_actual ?? 'N/A' }}</td>
+                        <td>{{ $articulo->stock_fulfillment ?? 'N/A' }}</td>
+                        <td>{{ $articulo->stock_deposito ?? 'N/A' }}</td>
+                        <td>{{ $articulo->precio ? number_format($articulo->precio, 2) : 'N/A' }}</td>
+                        <td>{{ $articulo->precio_original ? number_format($articulo->precio_original, 2) : 'N/A' }}</td>
+                        <td>{{ $articulo->en_promocion ? ($articulo->en_promocion == 1 ? 'Sí' : 'No') : 'N/A' }}</td>
+                        <td>{{ $articulo->descuento_porcentaje ? number_format($articulo->descuento_porcentaje, 2) . '%' : 'N/A' }}</td>
+                        <td>{{ $articulo->deal_ids ?? 'N/A' }}</td>
+                        <td>{{ $articulo->estado ?? 'N/A' }}</td>
+                        <td><a href="{{ $articulo->permalink ?? '#' }}" target="_blank">Ver</a></td>
+                        <td>{{ $articulo->condicion ?? 'N/A' }}</td>
+                        <td>{{ $articulo->sku ?? 'N/A' }}</td>
                         <td>{{ $articulo->sku_interno ?? 'N/A' }}</td>
+                        <td>{{ $articulo->tipo_publicacion ?? 'N/A' }}</td>
+                        <td>{{ $articulo->en_catalogo ? ($articulo->en_catalogo == 1 ? 'Sí' : 'No') : 'N/A' }}</td>
+                        <td>{{ $articulo->category_id ?? 'N/A' }}</td>
+                        <td>{{ $articulo->created_at ?? 'N/A' }}</td>
+                        <td>{{ $articulo->updated_at ?? 'N/A' }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="7">No hay artículos para mostrar</td></tr>
+                    <tr><td colspan="26">No hay artículos para mostrar</td></tr>
                 @endforelse
             </tbody>
         </table>
