@@ -30,11 +30,11 @@ class ItemPromotionsService
                 Log::info("Promociones para {$itemId}: " . json_encode($promotionData));
 
                 if ($promoResponse->successful() && is_array($promotionData)) {
-                    // Limpiar registros previos para este ítem
+                    // Limpiar registros previos
                     DB::table('item_promotions')->where('ml_product_id', $itemId)->delete();
 
                     if (empty($promotionData)) {
-                        // Sin promociones: registrar como "Sin Promoción"
+                        // Sin promociones
                         DB::table('item_promotions')->insert([
                             'ml_product_id' => $itemId,
                             'promotion_id' => 'Sin Promoción',
@@ -55,7 +55,6 @@ class ItemPromotionsService
                             'descuento_porcentaje' => null,
                             'updated_at' => now(),
                         ];
-                        // Si hay descuento local, mantenerlo
                         if ($originalPrice && $originalPrice > $currentPrice) {
                             $updateData['en_promocion'] = 1;
                             $updateData['descuento_porcentaje'] = round((($originalPrice - $currentPrice) / $originalPrice) * 100, 2);
@@ -72,7 +71,8 @@ class ItemPromotionsService
                         $newOriginalPrice = $originalPrice;
 
                         foreach ($promotionData as $index => $promo) {
-                            $promoId = $promo['id'] ?? $promo['ref_id'] ?? substr(md5($itemId . $index . json_encode($promo)), 0, 50);
+                            // Generar ID si no existe
+                            $promoId = $promo['id'] ?? $promo['ref_id'] ?? 'promo_' . substr(md5($itemId . $index . json_encode($promo)), 0, 50);
                             $offer = $promo['offers'][0] ?? null;
 
                             $promoOriginalPrice = $promo['original_price'] ?? $originalPrice;
@@ -105,10 +105,12 @@ class ItemPromotionsService
                                 'name' => $promo['name'] ?? 'N/A',
                             ];
 
-                            if ($promo['id']) {
+                            // Solo agregar deal_ids si existe explícitamente
+                            if (isset($promo['id'])) {
                                 $dealIds[] = $promo['id'];
                             }
-                            if ($promo['status'] === 'started') {
+
+                            if (($promo['status'] ?? 'N/A') === 'started') {
                                 $hasActivePromotion = true;
                                 $newPrice = $promoNewPrice;
                                 $newOriginalPrice = $promoOriginalPrice;
@@ -135,12 +137,12 @@ class ItemPromotionsService
                     $promotions[$itemId] = ['error' => $promoResponse->body()];
                 }
 
-                usleep(250000); // 0.25s entre requests
+                usleep(250000);
             }
 
             return $promotions;
         } catch (\Exception $e) {
-            Log::error("Excepción en syncItemPromotions: " . $e->getMessage());
+            Log::error("Excepción en syncItemPromotions: " . $e->getMessage() . "\n" . $e->getTraceAsString());
             return ['error' => $e->getMessage()];
         }
     }
