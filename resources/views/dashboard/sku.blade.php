@@ -65,6 +65,7 @@
     </div>
 
     <!-- Tabla de resultados -->
+    <div id="restore-columns-productdb" class="mt-3 d-flex flex-wrap gap-2"></div>
     <div class="table-responsive">
         <table id="productTable" class="table table-hover modern-table">
             <thead>

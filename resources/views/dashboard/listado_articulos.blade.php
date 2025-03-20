@@ -36,9 +36,12 @@
         </div>
     </div>
 
+    <!-- Contenedor para botones de restauración -->
+    <div id="restore-columns-listado-articulos" class="mt-3 d-flex flex-wrap gap-2"></div>
+
     <!-- Tabla de resultados -->
     <div class="table-responsive">
-        <table id="articulosTable" class="table table-hover modern-table">
+        <table id="ListadoArticulosTable" class="table table-hover modern-table">
             <thead>
                 <tr>
                     <th data-column-name="ID"><span>ID</span><i class="fas fa-eye toggle-visibility"></i></th>
@@ -100,7 +103,6 @@
                         <td>{{ $articulo->updated_at ?? 'N/A' }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="26">No hay artículos para mostrar</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -120,17 +122,42 @@
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script>
 jQuery(document).ready(function () {
-    if ($.fn.DataTable.isDataTable('#articulosTable')) {
-        $('#articulosTable').DataTable().clear().destroy();
+    // Inicializar DataTable y guardar la instancia en la variable 'table'
+    if ($.fn.DataTable.isDataTable('#ListadoArticulosTable')) {
+        $('#ListadoArticulosTable').DataTable().clear().destroy();
     }
-    $('#articulosTable').DataTable({
+    var table = $('#ListadoArticulosTable').DataTable({
         paging: false,
         searching: false,
         info: true,
         autoWidth: false,
         responsive: true,
-        scrollX: true,
+        scrollX: true
     });
+
+    // Contenedor para los botones de restauración
+    var restoreContainer = $('#restore-columns-listado-articulos');
+
+    // Evento para ocultar columnas
+    $('th i.fas.fa-eye.toggle-visibility').click(function () {
+        var th = $(this).closest('th');
+        var columnName = th.data('column-name');
+        var column = table.column(th.index()); // Usar el índice de la columna
+        column.visible(false);
+        table.columns.adjust().draw(false);
+        addRestoreButton(th, columnName);
+    });
+
+    // Función para agregar botones de restauración
+    function addRestoreButton(th, columnName) {
+        var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
+        button.on('click', function () {
+            table.column(th.index()).visible(true); // Usar el índice de la columna
+            table.columns.adjust().draw(false);
+            $(this).remove();
+        });
+        restoreContainer.append(button);
+    }
 });
 
 // Script para el menú de filtros
