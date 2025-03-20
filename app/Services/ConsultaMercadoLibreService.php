@@ -133,14 +133,19 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
 
         $totalCuentas = $tokens->count();
         if ($totalCuentas === 0) {
+            \Log::info("No se encontraron cuentas vinculadas para el usuario {$userId}");
             return ['items' => [], 'total' => 0];
         }
 
         $processedItems = [];
         $total = 0;
 
-        // Si se proporciona un mla_id, consultar directamente ese item
+        // Log para verificar si se proporciona mla_id
+        \Log::info("getOwnPublications llamado con mla_id: " . ($mlaId ?? 'No proporcionado'));
+
+        // Si se proporciona un mla_id, buscar solo ese ítem y devolverlo
         if ($mlaId) {
+            \Log::info("Buscando ítem específico con ID: {$mlaId}");
             foreach ($tokens as $token) {
                 $mlAccountId = $token->ml_account_id;
                 $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
@@ -155,7 +160,10 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
                 ]);
 
                 $item = json_decode($response->getBody(), true);
-                if ($response->getStatusCode() === 200 && !empty($item)) {
+
+                // Verificar que el ítem existe y pertenece al usuario autenticado
+                if ($response->getStatusCode() === 200 && !empty($item) && $item['seller_id'] == $mlAccountId) {
+                    \Log::info("Ítem encontrado: {$mlaId} pertenece a ml_account_id: {$mlAccountId}");
                     $processedItems[] = [
                         'id' => $item['id'] ?? null,
                         'titulo' => $item['title'] ?? 'Sin título',
@@ -177,18 +185,30 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
                         'inventory_id' => $item['inventory_id'] ?? '',
                         'user_product_id' => $item['user_product_id'] ?? '',
                     ];
-                    $total = 1; // Solo un item
-                    break; // Salir del bucle tras encontrar el item
+                    $total = 1;
+                    \Log::info("Devolviendo solo el ítem {$mlaId}");
+                    return [
+                        'items' => $processedItems,
+                        'total' => $total
+                    ];
+                } else {
+                    \Log::warning("Ítem {$mlaId} no encontrado o no pertenece a ml_account_id: {$mlAccountId}", [
+                        'status' => $response->getStatusCode(),
+                        'response' => $item
+                    ]);
                 }
             }
 
+            // Si no se encontró el ítem en ninguna cuenta
+            \Log::warning("No se encontró el ítem con ID {$mlaId} para el usuario {$userId}");
             return [
-                'items' => $processedItems,
-                'total' => $total
+                'items' => [],
+                'total' => 0
             ];
         }
 
         // Si no hay mla_id, proceder con la búsqueda normal
+        \Log::info("Realizando búsqueda general para usuario {$userId}");
         $limitPorCuenta = (int) ceil($limit / $totalCuentas);
         $offsetPorCuenta = (int) ceil($offset / $totalCuentas);
 
@@ -213,9 +233,12 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
                 'query' => $queryParams
             ]);
             $data = json_decode($response->getBody(), true);
-            if (empty($data['results'])) continue;
+            if (empty($data['results'])) {
+                \Log::info("No se encontraron resultados para ml_account_id: {$mlAccountId}");
+                continue;
+            }
 
-            // Obtener detalles de los items en bloques de 20
+            // Obtener detalles de los ítems en bloques de 20
             foreach (array_chunk($data['results'], 20) as $chunk) {
                 $detailsResponse = $this->client->get("items", [
                     'headers' => [
@@ -258,6 +281,7 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
         // Ordenar los elementos para evitar duplicados
         $processedItems = array_slice($processedItems, 0, $limit);
 
+        \Log::info("Devolviendo búsqueda general con {$total} ítems totales, limitados a {$limit}");
         return [
             'items' => $processedItems,
             'total' => $total

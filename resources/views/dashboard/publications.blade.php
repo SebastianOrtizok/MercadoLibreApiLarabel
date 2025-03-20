@@ -4,12 +4,6 @@
 <div class="container mt-5">
     <h2 class="mb-4">Listado de Publicaciones</h2>
 
-    <!-- Formulario de filtros colapsado -->
-    <div class="mb-4">
-        <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
-            <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
-        </button>
-        <div class="collapse" id="filtrosCollapse">
 <!-- Formulario de filtros colapsado -->
 <div class="mb-4">
         <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">

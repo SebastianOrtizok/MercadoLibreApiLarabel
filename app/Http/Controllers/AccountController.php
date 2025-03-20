@@ -81,7 +81,7 @@ public function showOwnPublications(Request $request)
         }
 
         // Obteniendo publicaciones del servicio
-        $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset, $search, $status);
+        $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset, $search, $status, $mlaId);
         $totalPublications = $publications['total'] ?? 0;
         $totalPages = ceil($totalPublications / $limit);
         return view('dashboard.publications', [
