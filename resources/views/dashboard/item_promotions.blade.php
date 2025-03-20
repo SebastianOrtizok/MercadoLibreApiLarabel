@@ -123,7 +123,7 @@
                 </thead>
                 <tbody id="table-body">
                     @forelse ($promotions as $promo)
-                        <tr>
+                        <tr class="{{ $promo->promotion_id === null ? 'no-promotion' : '' }}">
                             <td><img src="{{ $promo->imagen ?? '' }}" alt="Producto" style="max-width: 50px;"></td>
                             <td data-column="Cuenta">{{ $promo->seller_name }}</td>
                             <td data-column="ml_product_id">{{ $promo->titulo }}
@@ -162,6 +162,13 @@
         ])
         <a href="{{ route('sincronizacion.index') }}" class="btn btn-primary mt-3">Volver a Sincronización</a>
     </div>
+
+    <!-- Estilos personalizados -->
+    <style>
+        .no-promotion {
+            background-color: #ffe6e6; /* Rojo muy suave, delicado y pálido */
+        }
+    </style>
 @endsection
 
     <!-- Scripts -->
