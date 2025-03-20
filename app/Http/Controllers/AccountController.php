@@ -73,6 +73,7 @@ public function showOwnPublications(Request $request)
         $page = (int) $request->input('page', 1);
         $offset = ($page - 1) * $limit;
         $search = $request->input('search');
+        $mlaId = $request->input('mla_id');
         $status = $request->input('status', 'active');
 
         if ($status === 'all') {

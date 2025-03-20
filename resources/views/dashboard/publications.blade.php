@@ -10,14 +10,24 @@
             <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
         </button>
         <div class="collapse" id="filtrosCollapse">
+<!-- Formulario de filtros colapsado -->
+<div class="mb-4">
+        <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
+            <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
+        </button>
+        <div class="collapse" id="filtrosCollapse">
             <form method="GET" action="{{ route('dashboard.publications') }}" class="mt-3">
                 <div class="filtros-container p-3 bg-light rounded shadow-sm">
                     <div class="row">
-                        <div class="col-md-4 mb-2">
+                        <div class="col-md-3 mb-2">
                             <label>Buscar (Título/SKU)</label>
                             <input type="text" name="search" class="form-control" placeholder="Buscar por título o SKU" value="{{ request('search') }}">
                         </div>
-                        <div class="col-md-4 mb-2">
+                        <div class="col-md-3 mb-2">
+                            <label>ID MercadoLibre (MLA)</label>
+                            <input type="text" name="mla_id" class="form-control" placeholder="Ej: MLA123456789" value="{{ request('mla_id') }}">
+                        </div>
+                        <div class="col-md-3 mb-2">
                             <label>Estado de la Publicación</label>
                             <select name="status" class="form-control">
                                 <option value="active" {{ request('status', 'active') == 'active' ? 'selected' : '' }}>Activas</option>
@@ -27,7 +37,7 @@
                                 <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Todas</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-2 d-flex align-items-end">
+                        <div class="col-md-3 mb-2 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="fas fa-search"></i> Filtrar
                             </button>
@@ -112,9 +122,6 @@
                         </td>
                     </tr>
                 @empty
-                    <tr>
-                        <td colspan="11" class="text-center text-muted">No hay publicaciones para mostrar.</td>
-                    </tr>
                 @endforelse
             </tbody>
         </table>

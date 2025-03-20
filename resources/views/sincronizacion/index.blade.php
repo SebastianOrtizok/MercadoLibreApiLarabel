@@ -114,11 +114,7 @@
         </div>
     </div>
 </div>
-<!-- Sección de sincronización de stock -->
-<div class="card shadow-sm mt-4">
-    <div class="card-header bg-warning text-white">
-        <h2 class="mb-0">Sincronización de Stock</h2>
-    </div>
+
  <!-- Sección de sincronización de stock -->
 <div class="card shadow-sm mt-4">
     <div class="card-header bg-warning text-white">

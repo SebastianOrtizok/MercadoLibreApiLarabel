@@ -123,102 +123,151 @@ class ConsultaMercadoLibreService
 }
 
 
-public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = null, $status = 'active')
-    {
-        try {
-            // Obtener los tokens de las cuentas vinculadas
-            $userData = $this->getUserId();
-            $userId = $userData['userId'];
-            $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
+public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = null, $status = 'active', $mlaId = null)
+{
+    try {
+        // Obtener los tokens de las cuentas vinculadas
+        $userData = $this->getUserId();
+        $userId = $userData['userId'];
+        $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();
 
-            $totalCuentas = $tokens->count();
-            if ($totalCuentas === 0) {
-                return ['items' => [], 'total' => 0];
-            }
+        $totalCuentas = $tokens->count();
+        if ($totalCuentas === 0) {
+            return ['items' => [], 'total' => 0];
+        }
 
-            $processedItems = [];
-            $total = 0;
+        $processedItems = [];
+        $total = 0;
 
-            // Repartir el `limit` entre las cuentas vinculadas
-            $limitPorCuenta = (int) ceil($limit / $totalCuentas);
-            $offsetPorCuenta = (int) ceil($offset / $totalCuentas);
-
+        // Si se proporciona un mla_id, consultar directamente ese item
+        if ($mlaId) {
             foreach ($tokens as $token) {
                 $mlAccountId = $token->ml_account_id;
+                $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
 
-                $queryParams = [
-                    'include_attributes' => 'all',
-                    'limit' => $limitPorCuenta,
-                    'offset' => $offsetPorCuenta,
-                    'status' => $status ?? 'active'
-                ];
-
-                if ($search) {
-                    $queryParams['q'] = $search;
-                }
-
-                $response = $this->client->get("users/{$mlAccountId}/items/search", [
+                $response = $this->client->get("items/{$mlaId}", [
                     'headers' => [
-                        'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
+                        'Authorization' => "Bearer {$accessToken}"
                     ],
-                    'query' => $queryParams
+                    'query' => [
+                        'include_attributes' => 'all',
+                    ]
                 ]);
-                $data = json_decode($response->getBody(), true);
-                if (empty($data['results'])) continue;
 
-                // Obtener detalles de los items en bloques de 20
-                foreach (array_chunk($data['results'], 20) as $chunk) {
-                    $detailsResponse = $this->client->get("items", [
-                        'headers' => [
-                            'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
-                        ],
-                        'query' => ['ids' => implode(',', $chunk)]
-                    ]);
-
-                    $details = json_decode($detailsResponse->getBody(), true);
-                    foreach ($details as $item) {
-                        $body = $item['body'] ?? [];
-                        $processedItems[] = [
-                            'id' => $body['id'] ?? null,
-                            'titulo' => $body['title'] ?? 'Sin título',
-                            'imagen' => $body['thumbnail'] ?? null,
-                            'stockActual' => $body['available_quantity'] ?? 0,
-                            'precio' => $body['price'] ?? null,
-                            'precio_original' => $body['original_price'] ?? null, // Precio original
-                            'deal_ids' => $body['deal_ids'] ?? [], // IDs de promociones
-                            'tags' => $body['tags'] ?? [], // Etiquetas que podrían indicar promoción
-                            'estado' => $body['status'] ?? 'Desconocido',
-                            'permalink' => $body['permalink'] ?? '#',
-                            'condicion' => $body['condition'] ?? 'Desconocido',
-                            'sku' => $body['user_product_id'] ?? null,
-                            'tipoPublicacion' => $body['listing_type_id'] ?? null,
-                            'enCatalogo' => $body['catalog_listing'] ?? null,
-                            'categoryid' => $body['category_id'] ?? null,
-                            'ml_account_id' => $body['seller_id'] ?? null,
-                            'logistic_type' => $body['shipping']['logistic_type'] ?? '',
-                            'inventory_id' => $body['inventory_id'] ?? '',
-                            'user_product_id' => $body['user_product_id'] ?? '',
-                        ];
-                    }
+                $item = json_decode($response->getBody(), true);
+                if ($response->getStatusCode() === 200 && !empty($item)) {
+                    $processedItems[] = [
+                        'id' => $item['id'] ?? null,
+                        'titulo' => $item['title'] ?? 'Sin título',
+                        'imagen' => $item['thumbnail'] ?? null,
+                        'stockActual' => $item['available_quantity'] ?? 0,
+                        'precio' => $item['price'] ?? null,
+                        'precio_original' => $item['original_price'] ?? null,
+                        'deal_ids' => $item['deal_ids'] ?? [],
+                        'tags' => $item['tags'] ?? [],
+                        'estado' => $item['status'] ?? 'Desconocido',
+                        'permalink' => $item['permalink'] ?? '#',
+                        'condicion' => $item['condition'] ?? 'Desconocido',
+                        'sku' => $item['user_product_id'] ?? null,
+                        'tipoPublicacion' => $item['listing_type_id'] ?? null,
+                        'enCatalogo' => $item['catalog_listing'] ?? null,
+                        'categoryid' => $item['category_id'] ?? null,
+                        'ml_account_id' => $item['seller_id'] ?? null,
+                        'logistic_type' => $item['shipping']['logistic_type'] ?? '',
+                        'inventory_id' => $item['inventory_id'] ?? '',
+                        'user_product_id' => $item['user_product_id'] ?? '',
+                    ];
+                    $total = 1; // Solo un item
+                    break; // Salir del bucle tras encontrar el item
                 }
-                $total += $data['paging']['total'] ?? 0;
-
-                sleep(1); // Evitar rate limit de la API
             }
-
-            // Ordenar los elementos para evitar duplicados
-            $processedItems = array_slice($processedItems, 0, $limit);
 
             return [
                 'items' => $processedItems,
                 'total' => $total
             ];
-
-        } catch (RequestException $e) {
-            \Log::error("Error al obtener publicaciones propias: " . $e->getMessage());
-            throw $e;
         }
+
+        // Si no hay mla_id, proceder con la búsqueda normal
+        $limitPorCuenta = (int) ceil($limit / $totalCuentas);
+        $offsetPorCuenta = (int) ceil($offset / $totalCuentas);
+
+        foreach ($tokens as $token) {
+            $mlAccountId = $token->ml_account_id;
+
+            $queryParams = [
+                'include_attributes' => 'all',
+                'limit' => $limitPorCuenta,
+                'offset' => $offsetPorCuenta,
+                'status' => $status ?? 'active'
+            ];
+
+            if ($search) {
+                $queryParams['q'] = $search;
+            }
+
+            $response = $this->client->get("users/{$mlAccountId}/items/search", [
+                'headers' => [
+                    'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
+                ],
+                'query' => $queryParams
+            ]);
+            $data = json_decode($response->getBody(), true);
+            if (empty($data['results'])) continue;
+
+            // Obtener detalles de los items en bloques de 20
+            foreach (array_chunk($data['results'], 20) as $chunk) {
+                $detailsResponse = $this->client->get("items", [
+                    'headers' => [
+                        'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
+                    ],
+                    'query' => ['ids' => implode(',', $chunk)]
+                ]);
+
+                $details = json_decode($detailsResponse->getBody(), true);
+                foreach ($details as $item) {
+                    $body = $item['body'] ?? [];
+                    $processedItems[] = [
+                        'id' => $body['id'] ?? null,
+                        'titulo' => $body['title'] ?? 'Sin título',
+                        'imagen' => $body['thumbnail'] ?? null,
+                        'stockActual' => $body['available_quantity'] ?? 0,
+                        'precio' => $body['price'] ?? null,
+                        'precio_original' => $body['original_price'] ?? null,
+                        'deal_ids' => $body['deal_ids'] ?? [],
+                        'tags' => $body['tags'] ?? [],
+                        'estado' => $body['status'] ?? 'Desconocido',
+                        'permalink' => $body['permalink'] ?? '#',
+                        'condicion' => $body['condition'] ?? 'Desconocido',
+                        'sku' => $body['user_product_id'] ?? null,
+                        'tipoPublicacion' => $body['listing_type_id'] ?? null,
+                        'enCatalogo' => $body['catalog_listing'] ?? null,
+                        'categoryid' => $body['category_id'] ?? null,
+                        'ml_account_id' => $body['seller_id'] ?? null,
+                        'logistic_type' => $body['shipping']['logistic_type'] ?? '',
+                        'inventory_id' => $body['inventory_id'] ?? '',
+                        'user_product_id' => $body['user_product_id'] ?? '',
+                    ];
+                }
+            }
+            $total += $data['paging']['total'] ?? 0;
+
+            sleep(1); // Evitar rate limit de la API
+        }
+
+        // Ordenar los elementos para evitar duplicados
+        $processedItems = array_slice($processedItems, 0, $limit);
+
+        return [
+            'items' => $processedItems,
+            'total' => $total
+        ];
+
+    } catch (RequestException $e) {
+        \Log::error("Error al obtener publicaciones propias: " . $e->getMessage());
+        throw $e;
     }
+}
 
 
 
