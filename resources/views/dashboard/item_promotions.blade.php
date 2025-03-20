@@ -10,7 +10,7 @@
                 <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
             </button>
             <div class="collapse" id="filtrosCollapse">
-                <form method="GET" action="{{ route('dashboard.item_promotions') }}" class="mt-3">
+            <form method="GET" action="{{ route('dashboard.item_promotions') }}" class="mt-3">
                     <div class="filtros-container p-3 bg-light rounded shadow-sm">
                         <div class="row">
                             <div class="col-md-3 mb-2">
@@ -47,11 +47,11 @@
                                 <label>Buscar (ID/Título)</label>
                                 <input type="text" name="search" class="form-control" placeholder="Buscar por ID o título" value="{{ request('search') }}">
                             </div>
-                            <!-- Nuevo filtro para promociones -->
+                            <!-- Filtro de promociones ajustado -->
                             <div class="col-md-3 mb-2">
                                 <label>Promociones</label>
                                 <select name="promotion_filter" class="form-control">
-                                    <option value="all" {{ request('promotion_filter', 'with_promotions') == 'all' ? 'selected' : '' }}>Todos</option>
+                                    <option value="all" {{ request('promotion_filter') == 'all' ? 'selected' : '' }}>Todos</option>
                                     <option value="with_promotions" {{ request('promotion_filter', 'with_promotions') == 'with_promotions' ? 'selected' : '' }}>Con Promociones</option>
                                     <option value="without_promotions" {{ request('promotion_filter') == 'without_promotions' ? 'selected' : '' }}>Sin Promociones</option>
                                 </select>

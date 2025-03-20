@@ -20,7 +20,6 @@ class ItemPromotionsController extends Controller
 
     public function syncPromotions(Request $request)
     {
-        // Este método no necesita cambios
         try {
             $userId = auth()->user()->id;
 
@@ -36,15 +35,14 @@ class ItemPromotionsController extends Controller
             $products = DB::table('articulos')
                 ->where('estado', 'active')
                 ->whereIn('user_id', $mlAccounts->pluck('ml_account_id'))
-                ->whereNotNull('deal_ids')
-                ->select('ml_product_id', 'user_id', 'precio', 'precio_original', 'imagen', 'permalink')
+                ->select('ml_product_id', 'user_id', 'precio', 'precio_original', 'deal_ids')
                 ->get();
 
             if ($products->isEmpty()) {
-                return redirect()->back()->with('error', 'No se encontraron productos con deal_ids no nulos.');
+                return redirect()->back()->with('error', 'No se encontraron productos activos.');
             }
 
-            Log::info("Iniciando sincronización de " . $products->count() . " productos");
+            Log::info("Iniciando sincronización de " . $products->count() . " productos activos");
 
             foreach ($mlAccounts as $account) {
                 $accountProducts = $products->where('user_id', $account->ml_account_id);
@@ -52,12 +50,12 @@ class ItemPromotionsController extends Controller
                     continue;
                 }
 
-                foreach ($accountProducts->chunk(200) as $chunk) {
+                foreach ($accountProducts->chunk(50) as $chunk) {
                     SyncItemPromotionsJob::dispatch($chunk, $account->access_token, $account->ml_account_id);
                 }
             }
 
-            return redirect()->back()->with('success', 'Sincronización iniciada en segundo plano. Revisa el estado en unos minutos.');
+            return redirect()->back()->with('success', 'Sincronización iniciada para ' . $products->count() . ' productos activos.');
         } catch (\Exception $e) {
             Log::error("Error al iniciar sincronización: " . $e->getMessage());
             return redirect()->back()->with('error', 'Error al iniciar sincronización: ' . $e->getMessage());
@@ -99,27 +97,12 @@ class ItemPromotionsController extends Controller
             );
 
         if ($promotionFilter === 'with_promotions') {
-            $query->where(function ($q) {
-                $q->whereNotNull('item_promotions.promotion_id') // Promoción oficial en item_promotions
-                  ->orWhere(function ($q2) {
-                      $q2->whereNotNull('articulos.precio_original')
-                         ->whereColumn('articulos.precio', '<', 'articulos.precio_original'); // Descuento visible
-                  })
-                  ->orWhere(function ($q3) {
-                      $q3->whereNotNull('articulos.deal_ids')
-                         ->where('articulos.deal_ids', '!=', '[]'); // Promoción oficial con deal_ids
-                  });
-            });
+            $query->where('item_promotions.promotion_id', '!=', 'Sin Promoción')
+                  ->whereNotNull('item_promotions.promotion_id');
         } elseif ($promotionFilter === 'without_promotions') {
-            $query->whereNull('item_promotions.promotion_id') // Sin promoción oficial
-                  ->where(function ($q) {
-                      $q->whereNull('articulos.precio_original') // Sin precio original
-                        ->orWhereColumn('articulos.precio', '=', 'articulos.precio_original'); // Sin descuento
-                  })
-                  ->whereNull('articulos.deal_ids'); // Solo nulo, no vacío
+            $query->where('item_promotions.promotion_id', '=', 'Sin Promoción');
         }
 
-        // Otros filtros
         if ($request->filled('ml_account_id')) {
             $query->where('articulos.user_id', $request->ml_account_id);
         }
@@ -142,21 +125,12 @@ class ItemPromotionsController extends Controller
             ->paginate($limit);
 
         $promotions->getCollection()->transform(function ($promo) {
-            if ($promo->finish_date && $promo->promotion_id) {
+            if ($promo->finish_date && $promo->promotion_id !== 'Sin Promoción') {
                 $finishDate = Carbon::parse($promo->finish_date);
                 $today = Carbon::today();
                 $promo->days_remaining = $today->diffInDays($finishDate, false);
             } else {
                 $promo->days_remaining = 'N/A';
-            }
-            if (!$promo->promotion_id) {
-                $promo->original_price = $promo->precio_original ?? $promo->precio;
-                $promo->new_price = $promo->precio;
-                $promo->type = $promo->deal_ids === '[]' && $promo->precio < $promo->precio_original ? 'Descuento Manual' : 'Sin Promoción';
-                $promo->status = 'N/A';
-                $promo->start_date = 'N/A';
-                $promo->finish_date = 'N/A';
-                $promo->name = $promo->deal_ids === '[]' && $promo->precio < $promo->precio_original ? 'Descuento del Vendedor' : 'Sin Promoción';
             }
             return $promo;
         });
