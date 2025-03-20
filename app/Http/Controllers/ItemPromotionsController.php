@@ -74,61 +74,52 @@ class ItemPromotionsController extends Controller
 
         $promotionFilter = $request->input('promotion_filter', 'with_promotions');
 
-        if ($promotionFilter === 'without_promotions') {
-            // Para "Sin Promociones", solo usamos articulos sin JOIN con item_promotions
-            $query = DB::table('articulos')
-                ->join('mercadolibre_tokens', 'articulos.user_id', '=', 'mercadolibre_tokens.ml_account_id')
-                ->whereIn('articulos.user_id', $mlAccounts)
-                ->where('articulos.estado', 'active')
-                ->where(function ($q) {
-                    $q->whereNull('articulos.deal_ids')
-                      ->orWhere('articulos.deal_ids', '=', '[]');
-                })
-                ->select(
-                    'articulos.ml_product_id',
-                    DB::raw('"Sin Promoción" as promotion_id'),
-                    DB::raw('"Sin Promoción" as type'),
-                    DB::raw('"Sin Promoción" as status'),
-                    DB::raw('"Sin Promoción" as original_price'),
-                    DB::raw('"Sin Promoción" as new_price'),
-                    DB::raw('"Sin Promoción" as start_date'),
-                    DB::raw('"Sin Promoción" as finish_date'),
-                    DB::raw('"Sin Promoción" as name'),
-                    'articulos.titulo',
-                    'articulos.imagen',
-                    'articulos.permalink',
-                    'mercadolibre_tokens.seller_name'
-                );
-        } else {
-            // Para "Con Promociones" y "Todos", usamos LEFT JOIN con item_promotions
-            $query = DB::table('articulos')
-                ->leftJoin('item_promotions', 'articulos.ml_product_id', '=', 'item_promotions.ml_product_id')
-                ->join('mercadolibre_tokens', 'articulos.user_id', '=', 'mercadolibre_tokens.ml_account_id')
-                ->whereIn('articulos.user_id', $mlAccounts)
-                ->where('articulos.estado', 'active')
-                ->select(
-                    'articulos.ml_product_id',
-                    'item_promotions.promotion_id',
-                    'item_promotions.type',
-                    'item_promotions.status',
-                    'item_promotions.original_price',
-                    'item_promotions.new_price',
-                    'item_promotions.start_date',
-                    'item_promotions.finish_date',
-                    'item_promotions.name',
-                    'articulos.titulo',
-                    'articulos.imagen',
-                    'articulos.permalink',
-                    'mercadolibre_tokens.seller_name'
-                );
+        $query = DB::table('articulos')
+            ->leftJoin('item_promotions', 'articulos.ml_product_id', '=', 'item_promotions.ml_product_id')
+            ->join('mercadolibre_tokens', 'articulos.user_id', '=', 'mercadolibre_tokens.ml_account_id')
+            ->whereIn('articulos.user_id', $mlAccounts)
+            ->where('articulos.estado', 'active')
+            ->select(
+                'articulos.ml_product_id',
+                'item_promotions.promotion_id',
+                'item_promotions.type',
+                'item_promotions.status',
+                'item_promotions.original_price',
+                'item_promotions.new_price',
+                'item_promotions.start_date',
+                'item_promotions.finish_date',
+                'item_promotions.name',
+                'articulos.titulo',
+                'articulos.imagen',
+                'articulos.permalink',
+                'mercadolibre_tokens.seller_name',
+                'articulos.precio',
+                'articulos.precio_original',
+                'articulos.deal_ids'
+            );
 
-            if ($promotionFilter === 'with_promotions') {
-                $query->whereNotNull('articulos.deal_ids')
-                      ->where('articulos.deal_ids', '!=', '[]');
-            } // 'all' no aplica filtro adicional
+        if ($promotionFilter === 'with_promotions') {
+            $query->where(function ($q) {
+                $q->whereNotNull('item_promotions.promotion_id') // Promoción oficial en item_promotions
+                  ->orWhere(function ($q2) {
+                      $q2->whereNotNull('articulos.precio_original')
+                         ->whereColumn('articulos.precio', '<', 'articulos.precio_original'); // Descuento visible
+                  })
+                  ->orWhere(function ($q3) {
+                      $q3->whereNotNull('articulos.deal_ids')
+                         ->where('articulos.deal_ids', '!=', '[]'); // Promoción oficial con deal_ids
+                  });
+            });
+        } elseif ($promotionFilter === 'without_promotions') {
+            $query->whereNull('item_promotions.promotion_id') // Sin promoción oficial
+                  ->where(function ($q) {
+                      $q->whereNull('articulos.precio_original') // Sin precio original
+                        ->orWhereColumn('articulos.precio', '=', 'articulos.precio_original'); // Sin descuento
+                  })
+                  ->whereNull('articulos.deal_ids'); // Solo nulo, no vacío
         }
 
-        // Otros filtros existentes
+        // Otros filtros
         if ($request->filled('ml_account_id')) {
             $query->where('articulos.user_id', $request->ml_account_id);
         }
@@ -151,12 +142,21 @@ class ItemPromotionsController extends Controller
             ->paginate($limit);
 
         $promotions->getCollection()->transform(function ($promo) {
-            if ($promo->finish_date && $promo->finish_date !== 'Sin Promoción') {
+            if ($promo->finish_date && $promo->promotion_id) {
                 $finishDate = Carbon::parse($promo->finish_date);
                 $today = Carbon::today();
                 $promo->days_remaining = $today->diffInDays($finishDate, false);
             } else {
-                $promo->days_remaining = 'Sin Promoción';
+                $promo->days_remaining = 'N/A';
+            }
+            if (!$promo->promotion_id) {
+                $promo->original_price = $promo->precio_original ?? $promo->precio;
+                $promo->new_price = $promo->precio;
+                $promo->type = $promo->deal_ids === '[]' && $promo->precio < $promo->precio_original ? 'Descuento Manual' : 'Sin Promoción';
+                $promo->status = 'N/A';
+                $promo->start_date = 'N/A';
+                $promo->finish_date = 'N/A';
+                $promo->name = $promo->deal_ids === '[]' && $promo->precio < $promo->precio_original ? 'Descuento del Vendedor' : 'Sin Promoción';
             }
             return $promo;
         });

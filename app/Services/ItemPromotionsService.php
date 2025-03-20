@@ -16,45 +16,60 @@ class ItemPromotionsService
 
             foreach ($products as $product) {
                 $itemId = $product->ml_product_id;
-                $url = "https://api.mercadolibre.com/seller-promotions/items/{$itemId}?app_version=v2";
 
-                // Datos existentes en item_promotions
-                $existingPromos = DB::table('item_promotions')->where('ml_product_id', $itemId)->get();
-                Log::info("Datos existentes en item_promotions para {$itemId}: " . $existingPromos->toJson());
+                // Consultar datos del ítem desde /items/{id}
+                $itemResponse = Http::withToken($accessToken)->get("https://api.mercadolibre.com/items/{$itemId}");
+                $itemData = $itemResponse->json();
+                Log::info("Datos de /items para {$itemId}: " . json_encode($itemData));
 
-                // API de promociones
-                $response = Http::withToken($accessToken)->timeout(10)->get($url);
-                $responseBody = $response->body();
-                Log::info("Respuesta cruda API para {$itemId}: " . $responseBody);
-                $promotionData = $response->json();
-                Log::info("Respuesta parseada para {$itemId}: " . json_encode($promotionData));
-                Log::info("Datos de articulos para {$itemId}: precio_original={$product->precio_original}, precio={$product->precio}, imagen={$product->imagen}, permalink={$product->permalink}");
+                if ($itemResponse->successful()) {
+                    DB::table('articulos')
+                        ->where('ml_product_id', $itemId)
+                        ->update([
+                            'precio' => $itemData['price'] ?? $product->precio,
+                            'precio_original' => $itemData['original_price'] ?? $itemData['price'] ?? $product->precio_original,
+                            'deal_ids' => json_encode($itemData['deal_ids'] ?? []), // Siempre array, nunca null
+                            'updated_at' => now(),
+                        ]);
+                }
 
-                if ($response->successful()) {
-                    if (!is_array($promotionData)) {
-                        Log::warning("promotionData no es array para {$itemId}: " . json_encode($promotionData));
-                        $promotions[$itemId] = ['error' => 'Respuesta inválida: ' . json_encode($promotionData)];
-                        continue;
-                    }
+                // Consultar promociones
+                $promoResponse = Http::withToken($accessToken)->get("https://api.mercadolibre.com/seller-promotions/items/{$itemId}?app_version=v2");
+                $promotionData = $promoResponse->json();
+                Log::info("Promociones para {$itemId}: " . json_encode($promotionData));
 
-                    foreach ($promotionData as $index => $promo) {
-                        $promoId = $promo['id'] ?? $promo['ref_id'] ?? substr(md5($itemId . $index . json_encode($promo)), 0, 50);
-                        $offer = $promo['offers'][0] ?? null;
+                if ($promoResponse->successful() && is_array($promotionData)) {
+                    if (empty($promotionData)) {
+                        DB::table('item_promotions')->where('ml_product_id', $itemId)->delete();
+                        $promotions[$itemId] = ['status' => 'No promotions'];
+                    } else {
+                        foreach ($promotionData as $index => $promo) {
+                            $promoId = $promo['id'] ?? $promo['ref_id'] ?? substr(md5($itemId . $index . json_encode($promo)), 0, 50);
+                            $offer = $promo['offers'][0] ?? null;
 
-                        // Si precio_original está vacío, usamos precio como original
-                        $originalPrice = $product->precio_original ?? $product->precio ?? null;
-                        // Si la promo tiene precio específico, lo usamos; sino, precio de articulos
-                        $newPrice = $offer['new_price'] ?? $promo['price'] ?? $product->precio ?? null;
+                            $originalPrice = $promo['original_price'] ?? $itemData['original_price'] ?? $itemData['price'] ?? $product->precio_original;
+                            $newPrice = $offer['new_price'] ?? $promo['price'] ?? $itemData['price'] ?? $product->precio;
 
-                        $startDate = isset($promo['start_date']) ? Carbon::parse($promo['start_date'])->toDateTimeString() : null;
-                        $finishDate = isset($promo['finish_date']) ? Carbon::parse($promo['finish_date'])->toDateTimeString() : null;
+                            $startDate = isset($promo['start_date']) ? Carbon::parse($promo['start_date'])->toDateTimeString() : null;
+                            $finishDate = isset($promo['finish_date']) ? Carbon::parse($promo['finish_date'])->toDateTimeString() : null;
 
-                        DB::table('item_promotions')->updateOrInsert(
-                            [
-                                'ml_product_id' => $itemId,
-                                'promotion_id' => $promoId,
-                            ],
-                            [
+                            DB::table('item_promotions')->updateOrInsert(
+                                [
+                                    'ml_product_id' => $itemId,
+                                    'promotion_id' => $promoId,
+                                ],
+                                [
+                                    'type' => $promo['type'] ?? null,
+                                    'status' => $promo['status'] ?? null,
+                                    'original_price' => $originalPrice,
+                                    'new_price' => $newPrice,
+                                    'start_date' => $startDate,
+                                    'finish_date' => $finishDate,
+                                    'name' => $promo['name'] ?? null,
+                                    'updated_at' => now(),
+                                ]
+                            );
+                            $promotions[$itemId][] = [
                                 'type' => $promo['type'] ?? null,
                                 'status' => $promo['status'] ?? null,
                                 'original_price' => $originalPrice,
@@ -62,23 +77,15 @@ class ItemPromotionsService
                                 'start_date' => $startDate,
                                 'finish_date' => $finishDate,
                                 'name' => $promo['name'] ?? null,
-                                'updated_at' => now(),
-                            ]
-                        );
-                        $promotions[$itemId][] = [
-                            'type' => $promo['type'] ?? null,
-                            'status' => $promo['status'] ?? null,
-                            'original_price' => $originalPrice,
-                            'new_price' => $newPrice,
-                            'start_date' => $startDate,
-                            'finish_date' => $finishDate,
-                            'name' => $promo['name'] ?? null,
-                        ];
+                            ];
+                        }
                     }
                 } else {
-                    Log::warning("Error API para {$itemId}: " . $responseBody);
-                    $promotions[$itemId] = ['error' => $responseBody];
+                    Log::warning("Error en promociones para {$itemId}: " . $promoResponse->body());
+                    $promotions[$itemId] = ['error' => $promoResponse->body()];
                 }
+
+                usleep(500000);
             }
 
             return $promotions;
