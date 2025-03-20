@@ -103,6 +103,7 @@
                         <td>{{ $articulo->updated_at ?? 'N/A' }}</td>
                     </tr>
                 @empty
+                    <tr><td colspan="26">No hay artículos para mostrar</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -120,6 +121,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/colreorder/1.5.6/js/dataTables.colReorder.min.js"></script> <!-- Para mover columnas -->
 <script>
 jQuery(document).ready(function () {
     // Inicializar DataTable y guardar la instancia en la variable 'table'
@@ -132,27 +134,39 @@ jQuery(document).ready(function () {
         info: true,
         autoWidth: false,
         responsive: true,
-        scrollX: true
+        scrollX: true,
+        colReorder: true, // Habilitar mover columnas
+        columnDefs: [
+            { targets: '_all', visible: true } // Asegurar que todas las columnas sean visibles inicialmente
+        ]
     });
 
     // Contenedor para los botones de restauración
     var restoreContainer = $('#restore-columns-listado-articulos');
 
     // Evento para ocultar columnas
-    $('th i.fas.fa-eye.toggle-visibility').click(function () {
+    $('th i.fas.fa-eye.toggle-visibility').click(function (e) {
+        e.preventDefault();
         var th = $(this).closest('th');
         var columnName = th.data('column-name');
-        var column = table.column(th.index()); // Usar el índice de la columna
-        column.visible(false);
+        var columnIdx = th.index(); // Índice de la columna
+        var column = table.column(columnIdx);
+
+        // Alternar visibilidad
+        column.visible(!column.visible());
         table.columns.adjust().draw(false);
-        addRestoreButton(th, columnName);
+
+        // Si se oculta, agregar botón de restauración
+        if (!column.visible()) {
+            addRestoreButton(columnIdx, columnName);
+        }
     });
 
     // Función para agregar botones de restauración
-    function addRestoreButton(th, columnName) {
+    function addRestoreButton(columnIdx, columnName) {
         var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
         button.on('click', function () {
-            table.column(th.index()).visible(true); // Usar el índice de la columna
+            table.column(columnIdx).visible(true);
             table.columns.adjust().draw(false);
             $(this).remove();
         });
