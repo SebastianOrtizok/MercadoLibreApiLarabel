@@ -20,6 +20,7 @@ class ItemPromotionsController extends Controller
 
     public function syncPromotions(Request $request)
     {
+        // Este método no necesita cambios para el filtro, ya que solo sincroniza promociones existentes
         try {
             $userId = auth()->user()->id;
 
@@ -63,7 +64,6 @@ class ItemPromotionsController extends Controller
         }
     }
 
-
     public function showPromotions(Request $request)
     {
         $userId = auth()->user()->id;
@@ -72,12 +72,14 @@ class ItemPromotionsController extends Controller
             ->where('user_id', $userId)
             ->pluck('ml_account_id');
 
-        $query = DB::table('item_promotions')
-            ->join('articulos', 'item_promotions.ml_product_id', '=', 'articulos.ml_product_id')
+        // Consulta base: ahora usamos LEFT JOIN para incluir artículos sin promociones
+        $query = DB::table('articulos')
+            ->leftJoin('item_promotions', 'articulos.ml_product_id', '=', 'item_promotions.ml_product_id')
             ->join('mercadolibre_tokens', 'articulos.user_id', '=', 'mercadolibre_tokens.ml_account_id')
             ->whereIn('articulos.user_id', $mlAccounts)
+            ->where('articulos.estado', 'active')
             ->select(
-                'item_promotions.ml_product_id',
+                'articulos.ml_product_id',
                 'item_promotions.promotion_id',
                 'item_promotions.type',
                 'item_promotions.status',
@@ -92,6 +94,15 @@ class ItemPromotionsController extends Controller
                 'mercadolibre_tokens.seller_name'
             );
 
+        // Aplicar filtro de promociones
+        $promotionFilter = $request->input('promotion_filter', 'with_promotions');
+        if ($promotionFilter === 'with_promotions') {
+            $query->whereNotNull('articulos.deal_ids');
+        } elseif ($promotionFilter === 'without_promotions') {
+            $query->whereNull('articulos.deal_ids');
+        } // 'all' no aplica filtro adicional
+
+        // Otros filtros existentes
         if ($request->filled('ml_account_id')) {
             $query->where('articulos.user_id', $request->ml_account_id);
         }
@@ -104,7 +115,7 @@ class ItemPromotionsController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('item_promotions.ml_product_id', 'like', "%$search%")
+                $q->where('articulos.ml_product_id', 'like', "%$search%")
                   ->orWhere('articulos.titulo', 'like', "%$search%");
             });
         }
@@ -132,4 +143,3 @@ class ItemPromotionsController extends Controller
         ]);
     }
 }
-

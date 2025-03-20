@@ -47,6 +47,15 @@
                                 <label>Buscar (ID/Título)</label>
                                 <input type="text" name="search" class="form-control" placeholder="Buscar por ID o título" value="{{ request('search') }}">
                             </div>
+                            <!-- Nuevo filtro para promociones -->
+                            <div class="col-md-3 mb-2">
+                                <label>Promociones</label>
+                                <select name="promotion_filter" class="form-control">
+                                    <option value="all" {{ request('promotion_filter', 'with_promotions') == 'all' ? 'selected' : '' }}>Todos</option>
+                                    <option value="with_promotions" {{ request('promotion_filter', 'with_promotions') == 'with_promotions' ? 'selected' : '' }}>Con Promociones</option>
+                                    <option value="without_promotions" {{ request('promotion_filter') == 'without_promotions' ? 'selected' : '' }}>Sin Promociones</option>
+                                </select>
+                            </div>
                             <div class="col-md-3 mb-2 d-flex align-items-end">
                                 <button type="submit" class="btn btn-primary w-100">
                                     <i class="fas fa-search"></i> Filtrar
@@ -67,7 +76,7 @@
                 <thead class="sticky">
                     <tr>
                         <th data-column-name="ID Promoción" data-sortable="true" data-column="promotion_id">
-                            <span>Imágen</span>
+                            <span>Imagen</span>
                             <i class="fas fa-eye toggle-visibility"></i>
                         </th>
                         <th data-column-name="Cuenta">
@@ -118,11 +127,10 @@
                             <td><img src="{{ $promo->imagen ?? '' }}" alt="Producto" style="max-width: 50px;"></td>
                             <td data-column="Cuenta">{{ $promo->seller_name }}</td>
                             <td data-column="ml_product_id">{{ $promo->titulo }}
-                            <span style="font-weight: bold;">
-                            {{ $promo->ml_product_id }} </span>
-                            <a href="{{ $promo->permalink ?? '#' }}" target="_blank">
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
+                                <span style="font-weight: bold;">{{ $promo->ml_product_id }}</span>
+                                <a href="{{ $promo->permalink ?? '#' }}" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
                             </td>
                             <td data-column="type">{{ $promo->type ?? 'N/A' }}</td>
                             <td data-column="status">{{ $promo->status ?? 'N/A' }}</td>
@@ -137,22 +145,24 @@
                             <td data-column="days_remaining" class="{{ $promo->days_remaining < 0 ? 'text-danger' : '' }}">
                                 {{ round($promo->days_remaining) ?? 'N/A' }}
                             </td>
-
                             <td data-column="name">{{ $promo->name ?? 'Sin nombre' }}</td>
                         </tr>
                     @empty
+                        <tr>
+                            <td colspan="11" class="text-center">No hay promociones para mostrar.</td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
         @include('layouts.pagination', [
-        'currentPage' => $currentPage,
-        'totalPages' => $totalPages,
-        'limit' => $limit
-    ])
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
+            'limit' => $limit
+        ])
         <a href="{{ route('sincronizacion.index') }}" class="btn btn-primary mt-3">Volver a Sincronización</a>
     </div>
-    @endsection
+@endsection
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
