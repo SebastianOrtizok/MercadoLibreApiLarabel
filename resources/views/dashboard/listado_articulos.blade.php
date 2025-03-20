@@ -83,10 +83,10 @@
                         <td>{{ $articulo->stock_actual ?? 'N/A' }}</td>
                         <td>{{ $articulo->stock_fulfillment ?? 'N/A' }}</td>
                         <td>{{ $articulo->stock_deposito ?? 'N/A' }}</td>
-                        <td>{{ $articulo->precio ? number_format($articulo->precio, 2) : 'N/A' }}</td>
-                        <td>{{ $articulo->precio_original ? number_format($articulo->precio_original, 2) : 'N/A' }}</td>
-                        <td>{{ $articulo->en_promocion ? ($articulo->en_promocion == 1 ? 'Sí' : 'No') : 'N/A' }}</td>
-                        <td>{{ $articulo->descuento_porcentaje ? number_format($articulo->descuento_porcentaje, 2) . '%' : 'N/A' }}</td>
+                        <td>{{ isset($articulo->precio) ? number_format($articulo->precio, 2) : 'N/A' }}</td>
+                        <td>{{ isset($articulo->precio_original) ? number_format($articulo->precio_original, 2) : 'N/A' }}</td>
+                        <td>{{ isset($articulo->en_promocion) ? ($articulo->en_promocion == 1 ? 'Sí' : 'No') : 'N/A' }}</td>
+                        <td>{{ isset($articulo->descuento_porcentaje) ? number_format($articulo->descuento_porcentaje, 2) . '%' : 'N/A' }}</td>
                         <td>{{ $articulo->deal_ids ?? 'N/A' }}</td>
                         <td>{{ $articulo->estado ?? 'N/A' }}</td>
                         <td><a href="{{ $articulo->permalink ?? '#' }}" target="_blank">Ver</a></td>
@@ -94,7 +94,7 @@
                         <td>{{ $articulo->sku ?? 'N/A' }}</td>
                         <td>{{ $articulo->sku_interno ?? 'N/A' }}</td>
                         <td>{{ $articulo->tipo_publicacion ?? 'N/A' }}</td>
-                        <td>{{ $articulo->en_catalogo ? ($articulo->en_catalogo == 1 ? 'Sí' : 'No') : 'N/A' }}</td>
+                        <td>{{ isset($articulo->en_catalogo) ? ($articulo->en_catalogo == 1 ? 'Sí' : 'No') : 'N/A' }}</td>
                         <td>{{ $articulo->category_id ?? 'N/A' }}</td>
                         <td>{{ $articulo->created_at ?? 'N/A' }}</td>
                         <td>{{ $articulo->updated_at ?? 'N/A' }}</td>
