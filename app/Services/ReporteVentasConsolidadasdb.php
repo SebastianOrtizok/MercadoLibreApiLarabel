@@ -9,6 +9,15 @@ class ReporteVentasConsolidadasDb
 {
     public function generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango, $filters = [], $consolidarPorSku = false, $stockType = 'stock_actual')
     {
+        Log::info('Iniciando generación de reporte', [
+            'fecha_inicio' => $fechaInicio,
+            'fecha_fin' => $fechaFin,
+            'dias_de_rango' => $diasDeRango,
+            'filters' => $filters,
+            'consolidar_por_sku' => $consolidarPorSku,
+            'stock_type' => $stockType, // Verificar qué valor llega
+        ]);
+
         if ($diasDeRango == 0) {
             return [
                 'total_ventas' => 0,
@@ -17,13 +26,10 @@ class ReporteVentasConsolidadasDb
         }
 
         $userId = auth()->id();
-        Log::info('User ID del usuario logueado', ['user_id' => $userId]);
-
         $tokens = DB::table('mercadolibre_tokens')
             ->where('user_id', $userId)
             ->pluck('ml_account_id')
             ->toArray();
-        Log::info('Tokens (seller_ids) obtenidos para el usuario', ['tokens' => $tokens]);
 
         if (empty($tokens)) {
             Log::warning('No se encontraron tokens para el usuario', ['user_id' => $userId]);
@@ -72,7 +78,7 @@ class ReporteVentasConsolidadasDb
                 DB::raw('SUM(o.cantidad) as cantidad_vendida'),
                 DB::raw('MAX(a.tipo_publicacion) as tipo_publicacion'),
                 DB::raw('MAX(a.imagen) as imagen'),
-                DB::raw("MAX(a.$stockType) as stock"), // Usar el stock seleccionado directamente
+                DB::raw("MAX(a.$stockType) as stock"), // Usar el tipo de stock seleccionado
                 DB::raw('MAX(a.estado) as estado'),
                 DB::raw('MAX(a.permalink) as url'),
                 DB::raw('MAX(o.fecha_venta) as fecha_ultima_venta'),
@@ -88,7 +94,7 @@ class ReporteVentasConsolidadasDb
                 DB::raw('SUM(o.cantidad) as cantidad_vendida'),
                 'a.tipo_publicacion',
                 'a.imagen',
-                "a.$stockType as stock", // Usar el stock seleccionado directamente
+                "a.$stockType as stock", // Usar el tipo de stock seleccionado
                 'a.estado',
                 'a.permalink as url',
                 DB::raw('MAX(o.fecha_venta) as fecha_ultima_venta'),
@@ -98,8 +104,10 @@ class ReporteVentasConsolidadasDb
             $groupByFields = ['o.ml_product_id', 'a.titulo', 'a.sku_interno', 'a.tipo_publicacion', 'a.imagen', "a.$stockType", 'a.estado', 'a.permalink', 'o.estado_orden', 'mt.seller_name'];
         }
 
-        $totalRegistros = $query->count();
-        Log::info('Total de registros antes de agrupar', ['count' => $totalRegistros]);
+        // Log de la consulta SQL generada para depurar
+        $sql = $query->toSql();
+        $bindings = $query->getBindings();
+        Log::info('Consulta SQL generada', ['sql' => $sql, 'bindings' => $bindings]);
 
         $ventasConsolidadas = $query->select($selectFields)
             ->groupBy($groupByFields)
@@ -112,11 +120,14 @@ class ReporteVentasConsolidadasDb
                 return (array) $venta;
             })->toArray();
 
+        // Log de los primeros resultados para inspeccionar
+        Log::info('Primeros resultados', ['sample' => array_slice($ventasConsolidadas, 0, 5)]);
+
         $totalVentas = array_sum(array_column($ventasConsolidadas, 'cantidad_vendida'));
         Log::info('Ventas consolidadas generadas', [
             'total_ventas' => $totalVentas,
             'count' => count($ventasConsolidadas),
-            'stock_type' => $stockType, // Log para depurar
+            'stock_type' => $stockType,
         ]);
 
         return [
