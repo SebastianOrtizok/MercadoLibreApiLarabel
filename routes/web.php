@@ -18,6 +18,7 @@ use App\Http\Controllers\SkuController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\ArticuloSyncController;
 use App\Http\Controllers\StockSyncController;
+use App\Http\Controllers\ListadoArticulosController;
 
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
 
@@ -26,6 +27,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/inventory', [AccountController::class, 'showInventory'])->name('dashboard.inventory');
     Route::get('/dashboard/account', [AccountController::class, 'showAccountInfo'])->name('dashboard.account');
+    Route::get('/dashboard/listado-articulos', [ListadoArticulosController::class, 'index'])->name('dashboard.listado_articulos');
     Route::get('/dashboard/order_report', [AccountController::class, 'ShowSales'])->name('dashboard.ventas');
     Route::get('/dashboard/order_report/{item_id?}/{fecha_inicio?}/{fecha_fin?}', [AccountController::class, 'venta_consolidada'])->name('dashboard.ventaid');
     Route::get('/dashboard/ventas_consolidadas/{fecha_inicio?}/{fecha_fin?}', [AccountController::class, 'ventas_consolidadas'])->name('dashboard.ventasconsolidadas');

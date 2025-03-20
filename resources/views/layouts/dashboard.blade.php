@@ -38,6 +38,11 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard.listado_articulos') }}">
+                                <i class="fas fa-list me-2"></i>Listado completo
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard.sku') }}">
                                 <span class="icon"><i class="fas fa-barcode"></i></span>
                                 <span class="text">SKU</span>
