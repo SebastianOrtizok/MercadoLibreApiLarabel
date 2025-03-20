@@ -121,10 +121,10 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.datatables.net/colreorder/1.5.6/js/dataTables.colReorder.min.js"></script> <!-- Para mover columnas -->
+<script src="https://cdn.datatables.net/colreorder/1.5.6/js/dataTables.colReorder.min.js"></script>
 <script>
 jQuery(document).ready(function () {
-    // Inicializar DataTable y guardar la instancia en la variable 'table'
+    // Inicializar DataTable
     if ($.fn.DataTable.isDataTable('#ListadoArticulosTable')) {
         $('#ListadoArticulosTable').DataTable().clear().destroy();
     }
@@ -136,42 +136,72 @@ jQuery(document).ready(function () {
         responsive: true,
         scrollX: true,
         colReorder: true, // Habilitar mover columnas
+        stateSave: true,  // Guardar estado de columnas
         columnDefs: [
-            { targets: '_all', visible: true } // Asegurar que todas las columnas sean visibles inicialmente
+            { targets: '_all', visible: true } // Todas las columnas visibles por defecto
         ]
     });
 
     // Contenedor para los botones de restauración
     var restoreContainer = $('#restore-columns-listado-articulos');
 
-    // Evento para ocultar columnas
-    $('th i.fas.fa-eye.toggle-visibility').click(function (e) {
+    // Evento para ocultar/mostrar columnas
+    $('th i.fas.fa-eye.toggle-visibility, th i.fas.fa-eye-slash.toggle-visibility').on('click', function (e) {
         e.preventDefault();
         var th = $(this).closest('th');
         var columnName = th.data('column-name');
-        var columnIdx = th.index(); // Índice de la columna
+
+        // Encontrar la columna por su nombre en lugar de índice
+        var columnIdx = -1;
+        table.columns().every(function (idx) {
+            if ($(this.header()).data('column-name') === columnName) {
+                columnIdx = idx;
+                return false; // Salir del bucle
+            }
+        });
+
+        if (columnIdx === -1) return; // No se encontró la columna
+
         var column = table.column(columnIdx);
+        var isVisible = column.visible();
 
         // Alternar visibilidad
-        column.visible(!column.visible());
-        table.columns.adjust().draw(false);
+        column.visible(!isVisible);
+        table.columns.adjust().draw();
 
-        // Si se oculta, agregar botón de restauración
-        if (!column.visible()) {
+        // Actualizar ícono y manejar botón de restauración
+        if (isVisible) { // Se oculta la columna
+            $(this).removeClass('fa-eye').addClass('fa-eye-slash');
             addRestoreButton(columnIdx, columnName);
+        } else { // Se muestra la columna
+            $(this).removeClass('fa-eye-slash').addClass('fa-eye');
+            restoreContainer.find(`button[data-column="${columnName}"]`).remove();
         }
     });
 
     // Función para agregar botones de restauración
     function addRestoreButton(columnIdx, columnName) {
-        var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
+        var button = $(`<button class="btn btn-outline-secondary btn-sm" data-column="${columnName}">${columnName} <i class="fas fa-eye"></i></button>`);
         button.on('click', function () {
-            table.column(columnIdx).visible(true);
-            table.columns.adjust().draw(false);
+            var column = table.column(columnIdx);
+            column.visible(true);
+            table.columns.adjust().draw();
             $(this).remove();
+            // Actualizar ícono en el encabezado
+            $(`th[data-column-name="${columnName}"] i`).removeClass('fa-eye-slash').addClass('fa-eye');
         });
         restoreContainer.append(button);
     }
+
+    // Restaurar estado inicial
+    table.columns().every(function () {
+        var th = $(this.header());
+        var icon = th.find('i.toggle-visibility');
+        if (!this.visible()) {
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            addRestoreButton(this.index(), th.data('column-name'));
+        }
+    });
 });
 
 // Script para el menú de filtros
