@@ -41,6 +41,10 @@ class StockSyncJob implements ShouldQueue
             }
 
             foreach ($articulos as $articulo) {
+                $stockFulfillment = 0;
+                $stockDeposito = 0;
+
+                // Siempre consultar la API si hay user_product_id
                 if ($articulo->user_product_id) {
                     $response = Http::withToken($this->accessToken)
                         ->get("https://api.mercadolibre.com/user-products/{$articulo->user_product_id}/stock");
@@ -49,9 +53,6 @@ class StockSyncJob implements ShouldQueue
                         $stockData = $response->json();
                         $locations = $stockData['locations'] ?? [];
 
-                        $stockFulfillment = 0;
-                        $stockDeposito = 0;
-
                         foreach ($locations as $loc) {
                             if (in_array($loc['type'], ['meli_facility', 'distribution_center'])) {
                                 $stockFulfillment += $loc['quantity'] ?? 0;
@@ -59,22 +60,13 @@ class StockSyncJob implements ShouldQueue
                                 $stockDeposito += $loc['quantity'] ?? 0;
                             }
                         }
-
-                        $articulo->update([
-                            'stock_fulfillment' => $stockFulfillment,
-                            'stock_deposito' => $stockDeposito,
-                        ]);
-
-                        Log::info("Stock actualizado para {$articulo->ml_product_id}", [
-                            'fulfillment' => $stockFulfillment,
-                            'deposito' => $stockDeposito
-                        ]);
                     } else {
                         Log::warning("Fallo al obtener stock para {$articulo->ml_product_id}", [
                             'status' => $response->status(),
                             'response' => $response->body()
                         ]);
 
+                        // Reintento con token renovado si es 401
                         if ($response->status() === 401) {
                             $this->accessToken = app(MercadoLibreService::class)->getAccessToken($this->userId, $this->mlAccountId);
                             $response = Http::withToken($this->accessToken)
@@ -84,9 +76,6 @@ class StockSyncJob implements ShouldQueue
                                 $stockData = $response->json();
                                 $locations = $stockData['locations'] ?? [];
 
-                                $stockFulfillment = 0;
-                                $stockDeposito = 0;
-
                                 foreach ($locations as $loc) {
                                     if (in_array($loc['type'], ['meli_facility', 'distribution_center'])) {
                                         $stockFulfillment += $loc['quantity'] ?? 0;
@@ -94,16 +83,6 @@ class StockSyncJob implements ShouldQueue
                                         $stockDeposito += $loc['quantity'] ?? 0;
                                     }
                                 }
-
-                                $articulo->update([
-                                    'stock_fulfillment' => $stockFulfillment,
-                                    'stock_deposito' => $stockDeposito,
-                                ]);
-
-                                Log::info("Stock actualizado tras reintento para {$articulo->ml_product_id}", [
-                                    'fulfillment' => $stockFulfillment,
-                                    'deposito' => $stockDeposito
-                                ]);
                             } else {
                                 Log::error("Fallo tras reintento para {$articulo->ml_product_id}", [
                                     'status' => $response->status(),
@@ -113,24 +92,25 @@ class StockSyncJob implements ShouldQueue
                         }
                     }
                 } else {
+                    // Si no hay user_product_id, usar stock_actual como fallback
                     if ($articulo->logistic_type === 'fulfillment') {
-                        $articulo->update([
-                            'stock_fulfillment' => $articulo->stock_actual,
-                            'stock_deposito' => 0,
-                        ]);
-                        Log::info("Stock fulfillment copiado desde stock_actual para {$articulo->ml_product_id}", [
-                            'stock' => $articulo->stock_fulfillment
-                        ]);
+                        $stockFulfillment = $articulo->stock_actual;
                     } else {
-                        $articulo->update([
-                            'stock_deposito' => $articulo->stock_actual,
-                            'stock_fulfillment' => 0,
-                        ]);
-                        Log::info("Stock deposito copiado desde stock_actual para {$articulo->ml_product_id}", [
-                            'stock' => $articulo->stock_deposito
-                        ]);
+                        $stockDeposito = $articulo->stock_actual;
                     }
                 }
+
+                // Actualizar el artículo con los valores calculados
+                $articulo->update([
+                    'stock_fulfillment' => $stockFulfillment,
+                    'stock_deposito' => $stockDeposito,
+                ]);
+
+                Log::info("Stock actualizado para {$articulo->ml_product_id}", [
+                    'fulfillment' => $stockFulfillment,
+                    'deposito' => $stockDeposito
+                ]);
+
                 usleep(500000); // Retraso de 0.5 segundos entre solicitudes
             }
         } catch (\Exception $e) {

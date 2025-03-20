@@ -19,6 +19,6 @@ class StockSyncController extends Controller
         $userId = auth()->id();
         $this->stockSyncService->syncStocks($userId);
 
-        return response()->json(['message' => 'Sincronización de stock iniciada'], 200);
+        return redirect()->back()->with('success', 'Sincronización de stock iniciada correctamente');
     }
 }
