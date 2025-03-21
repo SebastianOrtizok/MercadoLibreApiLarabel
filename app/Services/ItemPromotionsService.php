@@ -17,24 +17,20 @@ class ItemPromotionsService
             foreach ($products as $product) {
                 $itemId = $product->ml_product_id;
 
-                // Datos locales de articulos
                 $currentPrice = $product->precio;
                 $originalPrice = $product->precio_original ?? $currentPrice;
                 $currentDealIds = json_decode($product->deal_ids ?? '[]', true);
 
                 Log::info("Procesando {$itemId}: precio={$currentPrice}, precio_original={$originalPrice}, deal_ids=" . json_encode($currentDealIds));
 
-                // Consultar promociones
                 $promoResponse = Http::withToken($accessToken)->get("https://api.mercadolibre.com/seller-promotions/items/{$itemId}?app_version=v2");
                 $promotionData = $promoResponse->json();
                 Log::info("Promociones para {$itemId}: " . json_encode($promotionData));
 
                 if ($promoResponse->successful() && is_array($promotionData)) {
-                    // Limpiar registros previos
                     DB::table('item_promotions')->where('ml_product_id', $itemId)->delete();
 
                     if (empty($promotionData)) {
-                        // Sin promociones
                         DB::table('item_promotions')->insert([
                             'ml_product_id' => $itemId,
                             'promotion_id' => 'Sin Promoción',
@@ -71,7 +67,6 @@ class ItemPromotionsService
                         $newOriginalPrice = $originalPrice;
 
                         foreach ($promotionData as $index => $promo) {
-                            // Generar ID si no existe
                             $promoId = $promo['id'] ?? $promo['ref_id'] ?? 'promo_' . substr(md5($itemId . $index . json_encode($promo)), 0, 50);
                             $offer = $promo['offers'][0] ?? null;
 
@@ -105,7 +100,6 @@ class ItemPromotionsService
                                 'name' => $promo['name'] ?? 'N/A',
                             ];
 
-                            // Solo agregar deal_ids si existe explícitamente
                             if (isset($promo['id'])) {
                                 $dealIds[] = $promo['id'];
                             }
