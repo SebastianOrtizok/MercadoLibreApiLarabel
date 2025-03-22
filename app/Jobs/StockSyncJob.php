@@ -45,6 +45,7 @@ class StockSyncJob implements ShouldQueue
                 $stockDeposito = 0;
 
                 if ($articulo->user_product_id) {
+                    // Llamada a la API similar a getInventory
                     $response = Http::withToken($this->accessToken)
                         ->get("https://api.mercadolibre.com/user-products/{$articulo->user_product_id}/stock");
 
@@ -60,9 +61,10 @@ class StockSyncJob implements ShouldQueue
                         foreach ($locations as $loc) {
                             $type = $loc['type'] ?? 'unknown';
                             $quantity = $loc['quantity'] ?? 0;
+                            $availability = $loc['availability_type'] ?? 'unknown';
 
-                            // Solo sumar cantidades disponibles
-                            if ($loc['availability_type'] === 'available') {
+                            // Sumar solo si quantity > 0, replicando el comportamiento del modal
+                            if ($quantity > 0) {
                                 if (in_array($type, ['meli_facility', 'distribution_center'])) {
                                     $stockFulfillment += $quantity;
                                 } elseif (in_array($type, ['selling_address', 'warehouse', 'default'])) {
@@ -70,7 +72,8 @@ class StockSyncJob implements ShouldQueue
                                 } else {
                                     Log::info("Ubicación desconocida ignorada para {$articulo->ml_product_id}", [
                                         'type' => $type,
-                                        'quantity' => $quantity
+                                        'quantity' => $quantity,
+                                        'availability_type' => $availability
                                     ]);
                                 }
                             }
@@ -94,7 +97,7 @@ class StockSyncJob implements ShouldQueue
                                     $type = $loc['type'] ?? 'unknown';
                                     $quantity = $loc['quantity'] ?? 0;
 
-                                    if ($loc['availability_type'] === 'available') {
+                                    if ($quantity > 0) {
                                         if (in_array($type, ['meli_facility', 'distribution_center'])) {
                                             $stockFulfillment += $quantity;
                                         } elseif (in_array($type, ['selling_address', 'warehouse', 'default'])) {
@@ -106,7 +109,6 @@ class StockSyncJob implements ShouldQueue
                         }
                     }
                 } else {
-                    // Sin user_product_id, replicar stock_actual según logistic_type
                     $stockActual = $articulo->stock_actual ?? 0;
                     if ($articulo->logistic_type === 'fulfillment') {
                         $stockFulfillment = $stockActual;
@@ -119,7 +121,6 @@ class StockSyncJob implements ShouldQueue
                     ]);
                 }
 
-                // Actualizar solo stock_fulfillment y stock_deposito, stock_actual queda intacto
                 $articulo->update([
                     'stock_fulfillment' => $stockFulfillment,
                     'stock_deposito' => $stockDeposito,
@@ -128,10 +129,10 @@ class StockSyncJob implements ShouldQueue
                 Log::info("Stock actualizado para {$articulo->ml_product_id}", [
                     'fulfillment' => $stockFulfillment,
                     'deposito' => $stockDeposito,
-                    'stock_actual' => $articulo->stock_actual // Solo para referencia, no se modifica
+                    'stock_actual' => $articulo->stock_actual
                 ]);
 
-                usleep(500000); // Retraso de 0.5 segundos
+                usleep(500000);
             }
         } catch (\Exception $e) {
             Log::error("Error en StockSyncJob: " . $e->getMessage(), [
