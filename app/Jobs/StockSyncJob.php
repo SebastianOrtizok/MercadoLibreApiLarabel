@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
@@ -19,7 +20,7 @@ class StockSyncJob implements ShouldQueue
     protected $mlAccountId;
     protected $mercadoLibreService;
 
-    public $timeout = 10800;  // 3 horas
+    public $timeout = 10800;
 
     public function __construct($userId, $mlAccountId)
     {
@@ -32,12 +33,11 @@ class StockSyncJob implements ShouldQueue
     {
         Log::info("Iniciando StockSyncJob para ml_account_id {$this->mlAccountId}");
         try {
-            // Obtener token fresco al inicio
             $accessToken = $this->mercadoLibreService->getAccessToken($this->userId, $this->mlAccountId);
             Log::info("Token obtenido para ml_account_id {$this->mlAccountId}: {$accessToken}");
 
             $articulos = Articulo::where('user_id', $this->mlAccountId)
-                ->where('estado', 'active')  // Solo activos
+                ->where('estado', 'active')
                 ->get();
             Log::info("Artículos encontrados: " . $articulos->count());
 
@@ -116,7 +116,7 @@ class StockSyncJob implements ShouldQueue
                     $updated = $articulo->update([
                         'stock_fulfillment' => $stockFulfillment,
                         'stock_deposito' => $stockDeposito,
-                        'updated_at' => now(),  // Forzamos updated_at
+                        'updated_at' => now(),
                     ]);
                     Log::info("Stock actualizado para {$articulo->ml_product_id}", [
                         'success' => $updated,
@@ -128,7 +128,7 @@ class StockSyncJob implements ShouldQueue
                     Log::error("Error al guardar {$articulo->ml_product_id}: " . $e->getMessage());
                 }
 
-                usleep(100000);  // 0.1 segundos
+                usleep(100000);
             }
             Log::info("StockSyncJob terminado");
         } catch (\Exception $e) {
