@@ -18,7 +18,6 @@ class StockSyncJob implements ShouldQueue
 
     protected $userId;
     protected $mlAccountId;
-    protected $mercadoLibreService;
 
     public $timeout = 10800;
 
@@ -26,14 +25,13 @@ class StockSyncJob implements ShouldQueue
     {
         $this->userId = $userId;
         $this->mlAccountId = $mlAccountId;
-        $this->mercadoLibreService = new MercadoLibreService();
     }
 
-    public function handle()
+    public function handle(MercadoLibreService $mercadoLibreService)
     {
         Log::info("Iniciando StockSyncJob para ml_account_id {$this->mlAccountId}");
         try {
-            $accessToken = $this->mercadoLibreService->getAccessToken($this->userId, $this->mlAccountId);
+            $accessToken = $mercadoLibreService->getAccessToken($this->userId, $this->mlAccountId);
             Log::info("Token obtenido para ml_account_id {$this->mlAccountId}: {$accessToken}");
 
             $articulos = Articulo::where('user_id', $this->mlAccountId)
@@ -61,7 +59,7 @@ class StockSyncJob implements ShouldQueue
 
                         if ($response->status() === 401) {
                             Log::warning("Token vencido en artículo #$count, refrescando...");
-                            $accessToken = $this->mercadoLibreService->getAccessToken($this->userId, $this->mlAccountId);
+                            $accessToken = $mercadoLibreService->getAccessToken($this->userId, $this->mlAccountId);
                             $response = Http::withToken($accessToken)
                                 ->timeout(10)
                                 ->get("https://api.mercadolibre.com/user-products/{$articulo->user_product_id}/stock");
