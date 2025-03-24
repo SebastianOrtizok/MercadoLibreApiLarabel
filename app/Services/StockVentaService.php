@@ -19,7 +19,7 @@ class StockVentaService
     public function syncStockFromSales()
     {
         $ventas = DB::table('ordenes')
-            ->where('fecha_venta', '>=', now()->subDay())
+            ->where('fecha_venta', '>=', now()->subHour())
             ->select('ml_product_id', 'ml_account_id')
             ->distinct()
             ->get();

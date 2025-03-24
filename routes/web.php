@@ -20,6 +20,7 @@ use App\Http\Controllers\ArticuloSyncController;
 use App\Http\Controllers\StockSyncController;
 use App\Http\Controllers\StockVentaController;
 use App\Http\Controllers\ListadoArticulosController;
+use App\Http\Controllers\SyncVentasStockController;
 
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
 
@@ -48,6 +49,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Rutas de sincronización
     Route::get('/dashboard/stock/sync', [StockSyncController::class, 'sync'])->name('dashboard.stock.sync');
+    Route::get('/dashboard/sync-ventas-stock-now', [SyncVentasStockController::class, 'syncAllNow'])->name('dashboard.sync.ventas.stock');
     Route::get('/dashboard/stock/syncventas', [StockVentaController::class, 'sync'])->name('dashboard.stock.syncventas');
     Route::get('/articulos/sync', [ArticuloSyncController::class, 'sync'])->name('articulos.sync');
     Route::get('/sincronizacion', [AccountController::class, 'sincronizacion'])->name('sincronizacion.index');

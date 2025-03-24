@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -9,10 +8,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
-class SyncOrdersDaily extends Command
+class SyncOrdersHourly extends Command // Renombré para claridad
 {
-    protected $signature = 'orders:sync-daily';
-    protected $description = 'Sincroniza las órdenes de MercadoLibre diariamente para todas las cuentas';
+    protected $signature = 'orders:sync-hourly';
+    protected $description = 'Sincroniza las órdenes de MercadoLibre cada hora';
 
     protected $orderDbService;
     protected $mercadoLibreService;
@@ -27,7 +26,7 @@ class SyncOrdersDaily extends Command
     public function handle()
     {
         try {
-            Log::info("Iniciando sincronización diaria de órdenes");
+            Log::info("Iniciando sincronización horaria de órdenes");
 
             $mlAccounts = DB::table('mercadolibre_tokens')
                 ->select('user_id', 'ml_account_id')
@@ -39,8 +38,8 @@ class SyncOrdersDaily extends Command
                 return;
             }
 
-            $dateFrom = Carbon::today()->startOfDay()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
-            $dateTo = Carbon::today()->endOfDay()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
+            $dateFrom = Carbon::now()->subHour()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
+            $dateTo = Carbon::now()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
 
             $totalOrdersProcessed = 0;
             foreach ($mlAccounts as $account) {
@@ -48,9 +47,7 @@ class SyncOrdersDaily extends Command
                 Log::info("Sincronizando órdenes para la cuenta: {$account->ml_account_id}");
 
                 try {
-                    // Obtener el token renovado si está vencido
                     $accessToken = $this->mercadoLibreService->getAccessToken($account->user_id, $account->ml_account_id);
-
                     $result = $this->orderDbService->syncOrders($account->ml_account_id, $accessToken, $dateFrom, $dateTo);
                     $ordersProcessed = $result['orders_processed'];
                     $totalOrdersProcessed += $ordersProcessed;
@@ -63,11 +60,11 @@ class SyncOrdersDaily extends Command
                 }
             }
 
-            $this->info("Sincronización diaria completada. Total de órdenes procesadas: $totalOrdersProcessed");
-            Log::info("Sincronización diaria completada. Total de órdenes procesadas: $totalOrdersProcessed");
+            $this->info("Sincronización horaria completada. Total de órdenes procesadas: $totalOrdersProcessed");
+            Log::info("Sincronización horaria completada. Total de órdenes procesadas: $totalOrdersProcessed");
 
         } catch (\Exception $e) {
-            Log::error("Error general en la sincronización diaria: " . $e->getMessage());
+            Log::error("Error general en la sincronización horaria: " . $e->getMessage());
             $this->error("Error general: " . $e->getMessage());
         }
     }
