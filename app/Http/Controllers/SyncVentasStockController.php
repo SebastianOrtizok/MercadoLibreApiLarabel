@@ -35,21 +35,24 @@ class SyncVentasStockController extends Controller
                 return redirect()->back()->with('error', 'No hay cuentas asociadas.');
             }
 
-            $dateFrom = Carbon::now()->subHour()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
+            // Traer todo el día la primera vez
+            $dateFrom = Carbon::today()->startOfDay()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
             $dateTo = Carbon::now()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
 
-            // Encolar ventas
+            // Sincronizar ventas directamente
+            $totalOrdersProcessed = 0;
             foreach ($mlAccounts as $account) {
-                Log::info("Encolando sincronización manual de órdenes para cuenta: {$account->ml_account_id}");
-                \App\Jobs\SyncOrdersJob::dispatch($account->user_id, $account->ml_account_id, $dateFrom, $dateTo)
-                    ->onQueue('orders');
+                Log::info("Sincronizando manualmente órdenes para cuenta: {$account->ml_account_id}");
+                $accessToken = $this->mercadoLibreService->getAccessToken($account->user_id, $account->ml_account_id);
+                $result = $this->orderDbService->syncOrders($account->ml_account_id, $accessToken, $dateFrom, $dateTo);
+                $totalOrdersProcessed += $result['orders_processed'];
             }
 
             // Stock sincrónico
             Log::info("Iniciando sincronización manual de stock");
             $this->stockVentaService->syncStockFromSales();
 
-            return redirect()->back()->with('success', 'Sincronización de ventas y stock iniciada correctamente.');
+            return redirect()->back()->with('success', "Sincronización de ventas y stock completada. Órdenes procesadas: $totalOrdersProcessed");
         } catch (\Exception $e) {
             Log::error("Error al sincronizar manualmente: " . $e->getMessage());
             return redirect()->back()->with('error', 'Error al sincronizar: ' . $e->getMessage());

@@ -5,7 +5,7 @@ Artisan::command('orders:sync-hourly', function () {
     $this->comment('Ejecutando orders:sync-hourly');
     $this->call(\App\Console\Commands\SyncOrdersHourly::class);
 })->describe('Sincroniza las órdenes de MercadoLibre cada hora')
-  ->hourly(); // Corre cada hora (00:00, 01:00, etc.)
+  ->hourly();
 
   Artisan::command('stock:sync-hourly', function () {
     $this->comment('Ejecutando stock:sync-hourly');
