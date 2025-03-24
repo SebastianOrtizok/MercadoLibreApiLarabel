@@ -18,7 +18,6 @@ class StockVentaService
 
     public function syncStockFromSales()
     {
-        // Obtener ventas de las últimas 24 hs desde ordenes
         $ventas = DB::table('ordenes')
             ->where('fecha_venta', '>=', now()->subDay())
             ->select('ml_product_id', 'ml_account_id')
@@ -26,20 +25,26 @@ class StockVentaService
             ->get();
 
         Log::info("Artículos vendidos encontrados: " . $ventas->count());
+        Log::info("IDs de productos vendidos: " . $ventas->pluck('ml_product_id')->toJson());
 
         if ($ventas->isEmpty()) {
             Log::info("No hay ventas recientes para sincronizar.");
             return;
         }
 
-        // Cruzar con artículos
         $articulos = Articulo::whereIn('ml_product_id', $ventas->pluck('ml_product_id'))
-            ->whereNotNull('status')
+            ->where('estado', 'active') // Cambié status por estado como en StockSyncJob
             ->get();
 
         Log::info("Artículos a sincronizar: " . $articulos->count());
+        Log::info("Artículos encontrados: " . $articulos->pluck('ml_product_id')->toJson());
 
-        $userId = auth()->id(); // Igual que en StockSyncJob
+        if ($articulos->isEmpty()) {
+            Log::warning("No se encontraron artículos activos para los ml_product_id de ventas.");
+            return;
+        }
+
+        $userId = auth()->id();
 
         foreach ($articulos as $index => $articulo) {
             $mlAccountId = $ventas->firstWhere('ml_product_id', $articulo->ml_product_id)->ml_account_id;
@@ -131,7 +136,7 @@ class StockVentaService
                 Log::error("Error al guardar {$articulo->ml_product_id}: " . $e->getMessage());
             }
 
-            usleep(100000); // Igual que en StockSyncJob
+            usleep(100000);
         }
 
         Log::info("Sincronización de stock por ventas terminada");
