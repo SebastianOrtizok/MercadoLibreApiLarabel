@@ -122,7 +122,7 @@
     </div>
     <div class="card-body">
         <p class="text-muted">Sincroniza manualmente el stock de fulfillment y depósito:</p>
-        <a href="{{ route('dashboard.stock.sync') }}" class="text-decoration-none">
+        <a href="{{ route('dashboard.stock.syncventas') }}" class="text-decoration-none">
             <button class="btn btn-warning">
                 <i class="fas fa-sync-alt me-2"></i>Sincronizar Stock Ahora
             </button>

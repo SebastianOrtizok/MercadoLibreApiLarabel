@@ -18,6 +18,7 @@ use App\Http\Controllers\SkuController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\ArticuloSyncController;
 use App\Http\Controllers\StockSyncController;
+use App\Http\Controllers\StockVentaController;
 use App\Http\Controllers\ListadoArticulosController;
 
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
@@ -47,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Rutas de sincronización
     Route::get('/dashboard/stock/sync', [StockSyncController::class, 'sync'])->name('dashboard.stock.sync');
+    Route::get('/dashboard/stock/syncventas', [StockVentaController::class, 'sync'])->name('dashboard.stock.syncventas');
     Route::get('/articulos/sync', [ArticuloSyncController::class, 'sync'])->name('articulos.sync');
     Route::get('/sincronizacion', [AccountController::class, 'sincronizacion'])->name('sincronizacion.index');
     Route::get('/sincronizar/primera/{user_id}', [AccountController::class, 'primeraSincronizacionDB'])->name('sincronizacion.primera');
