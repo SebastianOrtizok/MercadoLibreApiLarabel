@@ -57,7 +57,6 @@ class StockVentaService
             $mlAccountId = $venta->ml_account_id;
             Log::info("Procesando artículo #" . ($index + 1) . ": {$articulo->ml_product_id} con ml_account_id: {$mlAccountId}");
 
-            // Buscar el user_id asociado al ml_account_id en mercadolibre_tokens
             $tokenRecord = DB::table('mercadolibre_tokens')
                 ->where('ml_account_id', $mlAccountId)
                 ->first();
@@ -68,7 +67,7 @@ class StockVentaService
             }
 
             $userId = $tokenRecord->user_id;
-            $accessToken = $this->getMercadoLibreToken($userId, $mlAccountId);
+            $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
             $stockFulfillment = 0;
             $stockDeposito = 0;
 
