@@ -16,15 +16,16 @@ class StockVentaService
         $this->mercadoLibreService = $mercadoLibreService;
     }
 
-    public function syncStockFromSales()
+    public function syncStockFromSales($fullDay = false)
     {
+        $dateFrom = $fullDay ? Carbon::today()->startOfDay() : Carbon::now()->subHour();
         $ventas = DB::table('ordenes')
-            ->where('fecha_venta', '>=', now()->subDay())
+            ->where('fecha_venta', '>=', $dateFrom)
             ->select('ml_product_id', 'ml_account_id')
             ->distinct()
             ->get();
 
-        Log::info("Artículos vendidos encontrados: " . $ventas->count());
+        Log::info("Artículos vendidos encontrados desde " . $dateFrom->toDateTimeString() . ": " . $ventas->count());
         Log::info("IDs de productos vendidos: " . $ventas->pluck('ml_product_id')->toJson());
 
         if ($ventas->isEmpty()) {

@@ -22,7 +22,7 @@ class SyncStockHourly extends Command
     {
         try {
             Log::info("Iniciando sincronización horaria de stock");
-            $this->stockVentaService->syncStockFromSales();
+            $this->stockVentaService->syncStockFromSales(false);
             $this->info("Sincronización horaria de stock completada");
             Log::info("Sincronización horaria de stock completada");
         } catch (\Exception $e) {
