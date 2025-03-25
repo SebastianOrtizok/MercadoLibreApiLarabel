@@ -38,8 +38,10 @@ class SyncOrdersHourly extends Command
                 return;
             }
 
-            $dateFrom = Carbon::now()->subHour()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
-            $dateTo = Carbon::now()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
+            $dateFrom = Carbon::now()->startOfHour()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
+            $dateTo = Carbon::now()->endOfHour()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
+
+            Log::info("Rango de sincronización: desde {$dateFrom} hasta {$dateTo}");
 
             $totalOrdersProcessed = 0;
             foreach ($mlAccounts as $account) {
