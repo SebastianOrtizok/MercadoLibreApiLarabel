@@ -21,7 +21,7 @@ class StockVentaService
     {
         $dateFrom = $hourly ? now()->subHour()->startOfHour() : now()->subDay()->startOfDay();
         $dateTo = $hourly ? now()->subHour()->endOfHour() : now()->subDay()->endOfDay();
-       
+
         Log::info("Buscando ventas desde: {$dateFrom} hasta: {$dateTo}");
 
         $ventas = DB::table('ordenes')
@@ -52,12 +52,22 @@ class StockVentaService
             return;
         }
 
-        $userId = auth()->id();
-
         foreach ($articulos as $index => $articulo) {
-            $mlAccountId = $ventas->firstWhere('ml_product_id', $articulo->ml_product_id)->ml_account_id;
-            Log::info("Procesando artículo #" . ($index + 1) . ": {$articulo->ml_product_id}");
+            $venta = $ventas->firstWhere('ml_product_id', $articulo->ml_product_id);
+            $mlAccountId = $venta->ml_account_id;
+            Log::info("Procesando artículo #" . ($index + 1) . ": {$articulo->ml_product_id} con ml_account_id: {$mlAccountId}");
 
+            // Buscar el user_id asociado al ml_account_id en mercadolibre_tokens
+            $tokenRecord = DB::table('mercadolibre_tokens')
+                ->where('ml_account_id', $mlAccountId)
+                ->first();
+
+            if (!$tokenRecord) {
+                Log::error("No hay token registrado para ml_account_id: {$mlAccountId}");
+                continue;
+            }
+
+            $userId = $tokenRecord->user_id;
             $accessToken = $this->getMercadoLibreToken($userId, $mlAccountId);
             $stockFulfillment = 0;
             $stockDeposito = 0;
@@ -138,10 +148,5 @@ class StockVentaService
         }
 
         Log::info("Sincronización de stock por ventas terminada");
-    }
-
-    private function getMercadoLibreToken($userId, $mlAccountId)
-    {
-        return $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
     }
 }
