@@ -19,12 +19,19 @@ class StockVentaService
 
     public function syncStockFromSales($hourly = false)
     {
-        $dateFrom = $hourly ? now()->subHour() : now()->subDay();
+        $dateFrom = $hourly ? now()->subHour()->startOfMinute() : now()->subDay()->startOfMinute();
+        $dateTo = now()->startOfMinute();
+
+        Log::info("Buscando ventas desde: {$dateFrom} hasta: {$dateTo}");
+
         $ventas = DB::table('ordenes')
             ->where('fecha_venta', '>=', $dateFrom)
+            ->where('fecha_venta', '<=', $dateTo)
+            ->where('estado_orden', 'paid')
             ->select('ml_product_id', 'ml_account_id')
             ->distinct()
             ->get();
+
         Log::info("Artículos vendidos encontrados (" . ($hourly ? 'hora' : 'día') . "): " . $ventas->count());
         Log::info("IDs de productos vendidos: " . $ventas->pluck('ml_product_id')->toJson());
 
@@ -109,16 +116,7 @@ class StockVentaService
                     continue;
                 }
             } else {
-                $stockActual = $articulo->stock_actual ?? 0;
-                if ($articulo->logistic_type === 'fulfillment') {
-                    $stockFulfillment = $stockActual;
-                } else {
-                    $stockDeposito = $stockActual;
-                }
-                Log::info("Sin user_product_id, replicando stock_actual para {$articulo->ml_product_id}", [
-                    'stock_actual' => $stockActual,
-                    'logistic_type' => $articulo->logistic_type
-                ]);
+                Log::info("Sin user_product_id, dejando stock en 0 para {$articulo->ml_product_id}");
             }
 
             try {
@@ -131,7 +129,6 @@ class StockVentaService
                     'success' => $updated,
                     'fulfillment' => $stockFulfillment,
                     'deposito' => $stockDeposito,
-                    'stock_actual' => $articulo->stock_actual
                 ]);
             } catch (\Exception $e) {
                 Log::error("Error al guardar {$articulo->ml_product_id}: " . $e->getMessage());
