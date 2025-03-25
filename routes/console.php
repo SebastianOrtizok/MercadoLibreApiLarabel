@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Artisan;
 
 Artisan::command('orders:sync-hourly', function () {
+    Log::info('Ejecutando orders:sync-hourly en: ' . Carbon::now());
     $this->comment('Ejecutando orders:sync-hourly');
     $this->call(\App\Console\Commands\SyncOrdersHourly::class);
 })->describe('Sincroniza las órdenes de MercadoLibre cada hora')

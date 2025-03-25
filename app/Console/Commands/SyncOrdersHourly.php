@@ -41,7 +41,7 @@ class SyncOrdersHourly extends Command
             $dateFrom = Carbon::now()->startOfHour()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
             $dateTo = Carbon::now()->endOfHour()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
 
-            Log::info("Rango de sincronización: desde {$dateFrom} hasta {$dateTo}");
+            Log::info("Rango calculado para la API: desde {$dateFrom} hasta {$dateTo}");
 
             $totalOrdersProcessed = 0;
             foreach ($mlAccounts as $account) {
@@ -50,6 +50,7 @@ class SyncOrdersHourly extends Command
 
                 try {
                     $accessToken = $this->mercadoLibreService->getAccessToken($account->user_id, $account->ml_account_id);
+                    Log::info("Llamando a syncOrders con ml_account_id: {$account->ml_account_id}, dateFrom: {$dateFrom}, dateTo: {$dateTo}");
                     $result = $this->orderDbService->syncOrders($account->ml_account_id, $accessToken, $dateFrom, $dateTo);
                     $ordersProcessed = $result['orders_processed'];
                     $totalOrdersProcessed += $ordersProcessed;
