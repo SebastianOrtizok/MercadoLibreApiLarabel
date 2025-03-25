@@ -7,9 +7,8 @@ use Illuminate\Support\Facades\Log;
 
 class SyncStockHourly extends Command
 {
-    protected $signature = 'stock:sync-hourly';
-    protected $description = 'Sincroniza el stock de ventas cada hora';
-
+    protected $signature = 'sync:stock-hourly';
+    protected $description = 'Sincroniza el stock cada hora';
     protected $stockVentaService;
 
     public function __construct(StockVentaService $stockVentaService)
@@ -22,7 +21,7 @@ class SyncStockHourly extends Command
     {
         try {
             Log::info("Iniciando sincronización horaria de stock");
-            $this->stockVentaService->syncStockFromSales(false);
+            $this->stockVentaService->syncStockFromSales(true); // subHour()
             $this->info("Sincronización horaria de stock completada");
             Log::info("Sincronización horaria de stock completada");
         } catch (\Exception $e) {

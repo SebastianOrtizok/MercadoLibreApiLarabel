@@ -17,16 +17,15 @@ class StockVentaService
         $this->mercadoLibreService = $mercadoLibreService;
     }
 
-    public function syncStockFromSales($fullDay = false)
+    public function syncStockFromSales($hourly = false)
     {
-        $dateFrom = $fullDay ? Carbon::today()->startOfDay() : Carbon::now()->subHour();
+        $dateFrom = $hourly ? now()->subHour() : now()->subDay();
         $ventas = DB::table('ordenes')
             ->where('fecha_venta', '>=', $dateFrom)
             ->select('ml_product_id', 'ml_account_id')
             ->distinct()
             ->get();
-
-        Log::info("Artículos vendidos encontrados desde " . $dateFrom->toDateTimeString() . ": " . $ventas->count());
+        Log::info("Artículos vendidos encontrados (" . ($hourly ? 'hora' : 'día') . "): " . $ventas->count());
         Log::info("IDs de productos vendidos: " . $ventas->pluck('ml_product_id')->toJson());
 
         if ($ventas->isEmpty()) {
@@ -35,7 +34,7 @@ class StockVentaService
         }
 
         $articulos = Articulo::whereIn('ml_product_id', $ventas->pluck('ml_product_id'))
-            ->where('estado', 'active') // Cambié status por estado como en StockSyncJob
+            ->where('estado', 'active')
             ->get();
 
         Log::info("Artículos a sincronizar: " . $articulos->count());

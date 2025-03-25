@@ -40,18 +40,18 @@ class SyncVentasStockController extends Controller
 
             $totalOrdersProcessed = 0;
             foreach ($mlAccounts as $account) {
-                Log::info("Sincronizando manualmente órdenes para cuenta: {$account->ml_account_id}");
+                Log::info("Sincronizando órdenes para cuenta: {$account->ml_account_id}");
                 $accessToken = $this->mercadoLibreService->getAccessToken($account->user_id, $account->ml_account_id);
                 $result = $this->orderDbService->syncOrders($account->ml_account_id, $accessToken, $dateFrom, $dateTo);
                 $totalOrdersProcessed += $result['orders_processed'];
             }
 
             Log::info("Iniciando sincronización manual de stock");
-            $this->stockVentaService->syncStockFromSales(true); // Todo el día
+            $this->stockVentaService->syncStockFromSales(); // subDay()
 
             return redirect()->back()->with('success', "Sincronización completada. Órdenes procesadas: $totalOrdersProcessed");
         } catch (\Exception $e) {
-            Log::error("Error al sincronizar manualmente: " . $e->getMessage());
+            Log::error("Error al sincronizar: " . $e->getMessage());
             return redirect()->back()->with('error', 'Error al sincronizar: ' . $e->getMessage());
         }
     }

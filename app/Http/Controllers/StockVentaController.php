@@ -9,7 +9,7 @@ class StockVentaController extends Controller
     public function sync(Request $request, StockVentaService $service)
     {
         try {
-            $service->syncStockFromSales();
+            $service->syncStockFromSales(); // subDay()
             return redirect()->route('dashboard')->with('success', 'Stock de ventas sincronizado correctamente.');
         } catch (\Exception $e) {
             return redirect()->route('dashboard')->with('error', 'Error al sincronizar stock: ' . $e->getMessage());
