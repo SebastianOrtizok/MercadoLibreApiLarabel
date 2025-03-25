@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use App\Models\Articulo;
 use App\Services\MercadoLibreService;
+use Carbon\Carbon;
 
 class StockVentaService
 {
