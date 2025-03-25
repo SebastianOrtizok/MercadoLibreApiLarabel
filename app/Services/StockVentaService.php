@@ -19,8 +19,9 @@ class StockVentaService
 
     public function syncStockFromSales($hourly = false)
     {
-        $dateFrom = $hourly ? now()->subHour()->startOfHour() : now()->subDay()->startOfDay();
-        $dateTo = $hourly ? now()->subHour()->endOfHour() : now()->subDay()->endOfDay();
+        $dateFrom = $hourly ? now()->subHours(2)->startOfHour() : now()->subDay()->startOfDay();
+        $dateTo = $hourly ? now()->subHours(2)->endOfHour() : now()->subDay()->endOfDay();
+
 
         Log::info("Buscando ventas desde: {$dateFrom} hasta: {$dateTo}");
 
