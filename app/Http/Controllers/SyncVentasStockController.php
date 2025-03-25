@@ -35,7 +35,7 @@ class SyncVentasStockController extends Controller
                 return redirect()->back()->with('error', 'No hay cuentas asociadas.');
             }
 
-            $dateFrom = Carbon::today()->startOfDay()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
+            $dateFrom = Carbon::now()->subHour()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
             $dateTo = Carbon::now()->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
 
             $totalOrdersProcessed = 0;
@@ -47,7 +47,7 @@ class SyncVentasStockController extends Controller
             }
 
             Log::info("Iniciando sincronización manual de stock");
-            $this->stockVentaService->syncStockFromSales(); // subDay()
+            $this->stockVentaService->syncStockFromSales(true); // subHour()
 
             return redirect()->back()->with('success', "Sincronización completada. Órdenes procesadas: $totalOrdersProcessed");
         } catch (\Exception $e) {
