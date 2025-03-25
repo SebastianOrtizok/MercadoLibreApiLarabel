@@ -46,13 +46,18 @@ class SyncOrdersHourly extends Command
                 $this->info("Sincronizando órdenes para la cuenta: {$account->ml_account_id}");
                 Log::info("Sincronizando órdenes para la cuenta: {$account->ml_account_id}");
 
-                $accessToken = $this->mercadoLibreService->getAccessToken($account->user_id, $account->ml_account_id);
-                $result = $this->orderDbService->syncOrders($account->ml_account_id, $accessToken, $dateFrom, $dateTo);
-                $ordersProcessed = $result['orders_processed'];
-                $totalOrdersProcessed += $ordersProcessed;
+                try {
+                    $accessToken = $this->mercadoLibreService->getAccessToken($account->user_id, $account->ml_account_id);
+                    $result = $this->orderDbService->syncOrders($account->ml_account_id, $accessToken, $dateFrom, $dateTo);
+                    $ordersProcessed = $result['orders_processed'];
+                    $totalOrdersProcessed += $ordersProcessed;
 
-                $this->info("Órdenes procesadas para {$account->ml_account_id}: $ordersProcessed");
-                Log::info("Órdenes procesadas para {$account->ml_account_id}: $ordersProcessed");
+                    $this->info("Órdenes procesadas para {$account->ml_account_id}: $ordersProcessed");
+                    Log::info("Órdenes procesadas para {$account->ml_account_id}: $ordersProcessed");
+                } catch (\Exception $e) {
+                    Log::error("Error al sincronizar órdenes para {$account->ml_account_id}: " . $e->getMessage());
+                    $this->error("Error en cuenta {$account->ml_account_id}: " . $e->getMessage());
+                }
             }
 
             $this->info("Sincronización horaria completada. Total de órdenes procesadas: $totalOrdersProcessed");
