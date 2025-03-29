@@ -141,7 +141,10 @@ jQuery(document).ready(function () {
         width: '95%',
         columnDefs: [
             { targets: '_all', className: 'shrink-text dt-center' },
-            { targets: [4], width: '20%' } // Título
+            { targets: [4], width: '20%' }, // Título
+            { targets: [3], type: 'num' },  // SKU (índice 3)
+            { targets: [5], type: 'num' },  // Ventas (índice 5)
+            { targets: [7], type: 'num' }   // Stock (índice 7)
         ]
     });
 

@@ -197,6 +197,7 @@ jQuery(document).ready(function () {
     if ($.fn.DataTable.isDataTable('#orderTable')) {
         $('#orderTable').DataTable().clear().destroy();
     }
+
     var table = $('#orderTable').DataTable({
         paging: false,
         searching: false,
@@ -210,8 +211,39 @@ jQuery(document).ready(function () {
         width: '95%',
         columnDefs: [
             { targets: '_all', className: 'shrink-text dt-center' },
-            { targets: [4], width: '20%' } // Título
-        ]
+            { targets: [4], width: '20%' }, // Título
+            // Definir tipos numéricos para las columnas específicas
+            {
+                targets: [3], // SKU (índice basado en 0)
+                type: 'num',
+                render: function(data, type, row) {
+                    return type === 'sort' ? (parseFloat(data) || 0) : data;
+                }
+            },
+            {
+                targets: [5], // Ventas
+                type: 'num',
+                render: function(data, type, row) {
+                    return type === 'sort' ? (parseInt(data) || 0) : data;
+                }
+            },
+            {
+                targets: [7], // Stock
+                type: 'num',
+                render: function(data, type, row) {
+                    return type === 'sort' ? (parseInt(data) || 0) : data;
+                }
+            },
+            {
+                targets: [8], // Días de Stock
+                type: 'num',
+                render: function(data, type, row) {
+                    return type === 'sort' ? (parseFloat(data) || 0) : data;
+                }
+            }
+        ],
+        // Opcional: especificar el orden inicial
+        order: [[5, 'desc']] // Ordenar por Ventas descendente por defecto
     });
 
     var restoreContainer = $('#restore-columns-order');

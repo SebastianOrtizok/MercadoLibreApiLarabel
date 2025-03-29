@@ -26,7 +26,7 @@ class SinVentasService
         // Aplicar filtros
         if (!empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
-                $q->where('a.sku', 'like', "%{$filters['search']}%")
+                $q->where('a.sku_interno', 'like', "%{$filters['search']}%") // Cambiar a sku_interno aquí también si quieres buscar por ese campo
                   ->orWhere('a.titulo', 'like', "%{$filters['search']}%");
             });
         }
@@ -47,12 +47,12 @@ class SinVentasService
                 'a.permalink',
                 'a.imagen',
                 'a.stock_actual',
-                'a.sku',
+                'a.sku_interno as sku', // Cambiar a sku_interno y asignarlo como "sku" para mantener compatibilidad
                 'a.tipo_publicacion',
                 'a.estado',
                 DB::raw('COALESCE(SUM(o.cantidad), 0) as cantidad_vendida')
             )
-            ->groupBy('a.ml_product_id', 'mt.seller_name', 'a.titulo', 'a.permalink', 'a.imagen', 'a.stock_actual', 'a.sku', 'a.tipo_publicacion', 'a.estado')
+            ->groupBy('a.ml_product_id', 'mt.seller_name', 'a.titulo', 'a.permalink', 'a.imagen', 'a.stock_actual', 'a.sku_interno', 'a.tipo_publicacion', 'a.estado')
             ->orderBy('cantidad_vendida', 'asc')
             ->get()
             ->map(function ($producto) use ($fechaInicio, $fechaFin) {
