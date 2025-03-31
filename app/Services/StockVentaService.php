@@ -22,7 +22,6 @@ class StockVentaService
         $dateFrom = $hourly ? now()->subHours(2)->startOfHour() : now()->subDay()->startOfDay();
         $dateTo = $hourly ? now()->subHours(2)->endOfHour() : now()->subDay()->endOfDay();
 
-
         Log::info("Buscando ventas desde: {$dateFrom} hasta: {$dateTo}");
 
         $ventas = DB::table('ordenes')
@@ -53,6 +52,59 @@ class StockVentaService
             return;
         }
 
+        // Paso 1: Actualizar stock_actual desde el endpoint items/search
+        $mlAccountIds = $ventas->pluck('ml_account_id')->unique()->all();
+        foreach ($mlAccountIds as $mlAccountId) {
+            $tokenRecord = DB::table('mercadolibre_tokens')
+                ->where('ml_account_id', $mlAccountId)
+                ->first();
+
+            if (!$tokenRecord) {
+                Log::error("No hay token registrado para ml_account_id: {$mlAccountId}");
+                continue;
+            }
+
+            $userId = $tokenRecord->user_id;
+            $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
+
+            // Obtener los ml_product_id para esta cuenta
+            $productIds = $ventas->where('ml_account_id', $mlAccountId)->pluck('ml_product_id')->all();
+            $idsString = implode(',', $productIds); // Ej: "MLA123,MLA456"
+
+            try {
+                $response = Http::withToken($accessToken)
+                    ->timeout(10)
+                    ->get("https://api.mercadolibre.com/users/{$mlAccountId}/items/search", [
+                        'ids' => $idsString,
+                        'attributes' => 'available_quantity' // Solo pedimos lo necesario
+                    ]);
+
+                if ($response->successful()) {
+                    $itemsData = $response->json('results');
+                    Log::info("Respuesta de items/search para ml_account_id {$mlAccountId}", ['data' => $itemsData]);
+
+                    foreach ($itemsData as $item) {
+                        $mlProductId = $item['id'];
+                        $stockActual = $item['available_quantity'] ?? 0;
+
+                        $articulo = $articulos->firstWhere('ml_product_id', $mlProductId);
+                        if ($articulo) {
+                            $articulo->update(['stock_actual' => $stockActual]);
+                            Log::info("Stock actualizado para {$mlProductId}: stock_actual = {$stockActual}");
+                        }
+                    }
+                } else {
+                    Log::warning("Fallo al consultar items/search para {$mlAccountId}", [
+                        'status' => $response->status(),
+                        'response' => $response->body()
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error("Error al consultar items/search para {$mlAccountId}: " . $e->getMessage());
+            }
+        }
+
+        // Paso 2: Continuar con el proceso actual de stock_fulfillment y stock_deposito
         foreach ($articulos as $index => $articulo) {
             $venta = $ventas->firstWhere('ml_product_id', $articulo->ml_product_id);
             $mlAccountId = $venta->ml_account_id;
@@ -139,12 +191,13 @@ class StockVentaService
                     'success' => $updated,
                     'fulfillment' => $stockFulfillment,
                     'deposito' => $stockDeposito,
+                    'stock_actual' => $articulo->stock_actual
                 ]);
             } catch (\Exception $e) {
                 Log::error("Error al guardar {$articulo->ml_product_id}: " . $e->getMessage());
             }
 
-            usleep(100000);
+            usleep(100000); // Pausa para evitar saturar la API
         }
 
         Log::info("Sincronización de stock por ventas terminada");
