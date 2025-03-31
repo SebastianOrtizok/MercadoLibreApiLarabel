@@ -52,7 +52,7 @@ class StockVentaService
             return;
         }
 
-        // Paso 1: Actualizar stock_actual desde el endpoint items/search
+     // Paso 1: Actualizar stock_actual desde el endpoint /items
         $mlAccountIds = $ventas->pluck('ml_account_id')->unique()->all();
         foreach ($mlAccountIds as $mlAccountId) {
             $tokenRecord = DB::table('mercadolibre_tokens')
@@ -69,38 +69,49 @@ class StockVentaService
 
             // Obtener los ml_product_id para esta cuenta
             $productIds = $ventas->where('ml_account_id', $mlAccountId)->pluck('ml_product_id')->all();
-            $idsString = implode(',', $productIds); // Ej: "MLA123,MLA456"
+            if (empty($productIds)) {
+                Log::info("No hay productos para sincronizar en ml_account_id: {$mlAccountId}");
+                continue;
+            }
+            $idsString = implode(',', $productIds);
 
             try {
                 $response = Http::withToken($accessToken)
                     ->timeout(10)
-                    ->get("https://api.mercadolibre.com/users/{$mlAccountId}/items/search", [
-                        'ids' => $idsString,
-                        'attributes' => 'available_quantity' // Solo pedimos lo necesario
+                    ->get("https://api.mercadolibre.com/items", [
+                        'ids' => $idsString
                     ]);
 
+                Log::info("Respuesta de /items para ml_account_id {$mlAccountId}", [
+                    'ids' => $idsString,
+                    'response' => $response->json()
+                ]);
+
                 if ($response->successful()) {
-                    $itemsData = $response->json('results');
-                    Log::info("Respuesta de items/search para ml_account_id {$mlAccountId}", ['data' => $itemsData]);
-
+                    $itemsData = $response->json();
+                    if (!is_array($itemsData)) {
+                        Log::warning("Respuesta de /items no es un array para {$mlAccountId}", ['response' => $response->body()]);
+                        continue;
+                    }
                     foreach ($itemsData as $item) {
-                        $mlProductId = $item['id'];
-                        $stockActual = $item['available_quantity'] ?? 0;
-
-                        $articulo = $articulos->firstWhere('ml_product_id', $mlProductId);
-                        if ($articulo) {
-                            $articulo->update(['stock_actual' => $stockActual]);
-                            Log::info("Stock actualizado para {$mlProductId}: stock_actual = {$stockActual}");
+                        if (isset($item['status']) && $item['status'] == 200) {
+                            $mlProductId = $item['id'];
+                            $stockActual = $item['body']['available_quantity'] ?? 0;
+                            $articulo = $articulos->firstWhere('ml_product_id', $mlProductId);
+                            if ($articulo) {
+                                $articulo->update(['stock_actual' => $stockActual]);
+                                Log::info("Stock actualizado para {$mlProductId}: stock_actual = {$stockActual}");
+                            }
                         }
                     }
                 } else {
-                    Log::warning("Fallo al consultar items/search para {$mlAccountId}", [
+                    Log::warning("Fallo al consultar /items para {$mlAccountId}", [
                         'status' => $response->status(),
                         'response' => $response->body()
                     ]);
                 }
             } catch (\Exception $e) {
-                Log::error("Error al consultar items/search para {$mlAccountId}: " . $e->getMessage());
+                Log::error("Error al consultar /items para {$mlAccountId}: " . $e->getMessage());
             }
         }
 
