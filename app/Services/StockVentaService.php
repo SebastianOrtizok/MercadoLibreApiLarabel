@@ -53,67 +53,76 @@ class StockVentaService
         }
 
      // Paso 1: Actualizar stock_actual desde el endpoint /items
-        $mlAccountIds = $ventas->pluck('ml_account_id')->unique()->all();
-        foreach ($mlAccountIds as $mlAccountId) {
-            $tokenRecord = DB::table('mercadolibre_tokens')
-                ->where('ml_account_id', $mlAccountId)
-                ->first();
+     $mlAccountIds = $ventas->pluck('ml_account_id')->unique()->all();
+     Log::info("Cuentas a procesar: " . json_encode($mlAccountIds));
+     foreach ($mlAccountIds as $mlAccountId) {
+         $tokenRecord = DB::table('mercadolibre_tokens')
+             ->where('ml_account_id', $mlAccountId)
+             ->first();
 
-            if (!$tokenRecord) {
-                Log::error("No hay token registrado para ml_account_id: {$mlAccountId}");
-                continue;
-            }
+         if (!$tokenRecord) {
+             Log::error("No hay token registrado para ml_account_id: {$mlAccountId}");
+             continue;
+         }
 
-            $userId = $tokenRecord->user_id;
-            $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
+         $userId = $tokenRecord->user_id;
+         $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
 
-            // Obtener los ml_product_id para esta cuenta
-            $productIds = $ventas->where('ml_account_id', $mlAccountId)->pluck('ml_product_id')->all();
-            if (empty($productIds)) {
-                Log::info("No hay productos para sincronizar en ml_account_id: {$mlAccountId}");
-                continue;
-            }
-            $idsString = implode(',', $productIds);
+         $productIds = $ventas->where('ml_account_id', $mlAccountId)->pluck('ml_product_id')->all();
+         if (empty($productIds)) {
+             Log::info("No hay productos para sincronizar en ml_account_id: {$mlAccountId}");
+             continue;
+         }
 
-            try {
-                $response = Http::withToken($accessToken)
-                    ->timeout(10)
-                    ->get("https://api.mercadolibre.com/items", [
-                        'ids' => $idsString
-                    ]);
+         // Dividir en lotes de 20
+         $chunks = array_chunk($productIds, 20);
+         foreach ($chunks as $chunk) {
+             $idsString = implode(',', $chunk);
+             Log::info("Consultando /items para ml_account_id {$mlAccountId} con IDs: {$idsString}");
 
-                Log::info("Respuesta de /items para ml_account_id {$mlAccountId}", [
-                    'ids' => $idsString,
-                    'response' => $response->json()
-                ]);
+             try {
+                 $response = Http::withToken($accessToken)
+                     ->timeout(10)
+                     ->get("https://api.mercadolibre.com/items", [
+                         'ids' => $idsString
+                     ]);
 
-                if ($response->successful()) {
-                    $itemsData = $response->json();
-                    if (!is_array($itemsData)) {
-                        Log::warning("Respuesta de /items no es un array para {$mlAccountId}", ['response' => $response->body()]);
-                        continue;
-                    }
-                    foreach ($itemsData as $item) {
-                        if (isset($item['status']) && $item['status'] == 200) {
-                            $mlProductId = $item['id'];
-                            $stockActual = $item['body']['available_quantity'] ?? 0;
-                            $articulo = $articulos->firstWhere('ml_product_id', $mlProductId);
-                            if ($articulo) {
-                                $articulo->update(['stock_actual' => $stockActual]);
-                                Log::info("Stock actualizado para {$mlProductId}: stock_actual = {$stockActual}");
-                            }
-                        }
-                    }
-                } else {
-                    Log::warning("Fallo al consultar /items para {$mlAccountId}", [
-                        'status' => $response->status(),
-                        'response' => $response->body()
-                    ]);
-                }
-            } catch (\Exception $e) {
-                Log::error("Error al consultar /items para {$mlAccountId}: " . $e->getMessage());
-            }
-        }
+                 Log::info("Respuesta de /items para ml_account_id {$mlAccountId}", [
+                     'ids' => $idsString,
+                     'status' => $response->status(),
+                     'response' => $response->json()
+                 ]);
+
+                 if ($response->successful()) {
+                     $itemsData = $response->json();
+                     if (!is_array($itemsData)) {
+                         Log::warning("Respuesta de /items no es un array para {$mlAccountId}", ['response' => $response->body()]);
+                         continue;
+                     }
+                     foreach ($itemsData as $item) {
+                         if (isset($item['status']) && $item['status'] == 200) {
+                             $mlProductId = $item['id'];
+                             $stockActual = $item['body']['available_quantity'] ?? 0;
+                             $articulo = $articulos->firstWhere('ml_product_id', $mlProductId);
+                             if ($articulo) {
+                                 $articulo->update(['stock_actual' => $stockActual]);
+                                 Log::info("Stock actualizado para {$mlProductId}: stock_actual = {$stockActual}");
+                             } else {
+                                 Log::warning("Artículo no encontrado en la base para {$mlProductId}");
+                             }
+                         }
+                     }
+                 } else {
+                     Log::warning("Fallo al consultar /items para {$mlAccountId}", [
+                         'status' => $response->status(),
+                         'response' => $response->body()
+                     ]);
+                 }
+             } catch (\Exception $e) {
+                 Log::error("Error al consultar /items para {$mlAccountId}: " . $e->getMessage());
+             }
+         }
+     }
 
         // Paso 2: Continuar con el proceso actual de stock_fulfillment y stock_deposito
         foreach ($articulos as $index => $articulo) {
