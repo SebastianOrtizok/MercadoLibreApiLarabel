@@ -133,7 +133,7 @@ class ReporteVentasConsolidadasDb
                 $query->orderBy($orderExpression, $sortDirection);
             }
         } else {
-            $query->orderByRaw("SUM(o.cantidad) DESC"); // Orden por defecto si no es un campo ordenable o es dias_stock
+            $query->orderByRaw("SUM(o.cantidad) DESC"); // Orden por defecto
         }
 
         // Ejecutar la consulta
@@ -145,13 +145,13 @@ class ReporteVentasConsolidadasDb
                 $venta->dias_stock = ($ventasDiariasPromedio > 0 && $venta->stock > 0)
                     ? round($venta->stock / $ventasDiariasPromedio, 2)
                     : null;
-                return $venta;
+                return (array) $venta; // Convertimos cada objeto a array aquí
             });
 
         // Ordenar por 'dias_stock' en PHP si es necesario
         if ($sortColumn === 'dias_stock') {
             $ventasConsolidadas = $ventasConsolidadas->sortBy(function ($venta) {
-                return $venta->dias_stock ?? INF; // Usar INF para manejar nulos (irán al final)
+                return $venta['dias_stock'] ?? INF; // Usamos array aquí
             }, SORT_REGULAR, $sortDirection === 'desc');
         }
 
