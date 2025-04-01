@@ -160,9 +160,7 @@
                         <span>Stock ({{ request('stock_type', 'stock_actual') }})</span><i class="fas fa-sort {{ $sortColumn == 'stock' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
                     </th>
                     <th data-column-name="Días de Stock" data-sortable="true" data-column="dias_stock">
-                        <span>Días de Stock</span>
-                        <i class="fas fa-sort {{ $sortColumn == 'dias_stock' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i>
-                        <i class="fas fa-eye toggle-visibility"></i>
+                        <span>Días de Stock</span><i class="fas fa-sort {{ $sortColumn == 'dias_stock' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
                     </th>
                     <th data-column-name="Estado de la Orden"><span>Estado Orden</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Estado de la Publicación"><span>Estado Pub.</span><i class="fas fa-eye toggle-visibility"></i></th>
@@ -206,10 +204,38 @@
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script>
 $(document).ready(function () {
-    // Manejar clics en las columnas ordenables
-    $('th[data-sortable="true"]').on('click', function () {
+    // Inicializar DataTables con las funcionalidades deseadas
+    var table = $('#orderTable').DataTable({
+        paging: false, // Desactivamos la paginación de DataTables porque usamos la del backend
+        searching: false, // Desactivamos la búsqueda de DataTables
+        info: false, // Ocultamos la info de "Showing 1 to 10 of X entries"
+        colReorder: true, // Permitir mover columnas
+        autoWidth: false, // Desactivar ajuste automático de ancho
+        responsive: true, // Habilitar responsive (desplazamiento en móviles)
+        scrollX: true, // Habilitar desplazamiento horizontal
+        stateSave: false, // No guardar estado
+        processing: true, // Mostrar "Processing" si hay demora
+        columnDefs: [
+            { targets: '_all', className: 'shrink-text dt-center' }, // Centrar texto
+            { targets: 4, width: '20%' }, // Ajustar ancho de "Título"
+            // Definir tipos numéricos para ordenamiento correcto en frontend (aunque no lo usamos mucho)
+            { targets: 3, type: 'num' }, // SKU
+            { targets: 5, type: 'num' }, // Ventas
+            { targets: 7, type: 'num' }, // Stock
+            { targets: 8, type: 'num' }  // Días de Stock
+        ],
+        order: [] // Sin ordenamiento inicial por DataTables, lo maneja el backend
+    });
+
+    // Manejar clics en las columnas ordenables (backend)
+    $('th[data-sortable="true"]').on('click', function (e) {
+        e.stopPropagation(); // Evitar que DataTables interfiera
         var column = $(this).data('column');
         var currentSortColumn = '{{ $sortColumn }}';
         var currentSortDirection = '{{ $sortDirection }}';
@@ -226,18 +252,27 @@ $(document).ready(function () {
     // Manejar visibilidad de columnas
     var restoreContainer = $('#restore-columns-order');
     $('th i.fas.fa-eye.toggle-visibility').click(function (e) {
-        e.stopPropagation(); // Evitar que el clic en el ojo dispare el ordenamiento
+        e.stopPropagation(); // Evitar que el clic dispare el ordenamiento
         var th = $(this).closest('th');
+        var columnIndex = table.column(th).index();
+        var column = table.column(columnIndex);
         var columnName = th.data('column-name');
-        var columnCells = $('td[data-column="' + columnName + '"], th[data-column-name="' + columnName + '"]');
-        columnCells.toggle();
-        addRestoreButton(th, columnName);
+
+        // Alternar visibilidad
+        column.visible(!column.visible());
+        table.columns.adjust().draw(false);
+
+        // Agregar botón para restaurar
+        if (!column.visible()) {
+            addRestoreButton(columnIndex, columnName);
+        }
     });
 
-    function addRestoreButton(th, columnName) {
+    function addRestoreButton(columnIndex, columnName) {
         var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
         button.on('click', function () {
-            $('td[data-column="' + columnName + '"], th[data-column-name="' + columnName + '"]').show();
+            table.column(columnIndex).visible(true);
+            table.columns.adjust().draw(false);
             $(this).remove();
         });
         restoreContainer.append(button);
