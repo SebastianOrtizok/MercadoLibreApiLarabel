@@ -159,8 +159,8 @@
                     <th data-column-name="Stock" data-sortable="true" data-column="stock">
                         <span>Stock ({{ request('stock_type', 'stock_actual') }})</span><i class="fas fa-sort {{ $sortColumn == 'stock' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
                     </th>
-                    <th data-column-name="Días de Stock" data-sortable="true" data-column="dias_stock">
-                        <span>Días de Stock</span><i class="fas fa-sort {{ $sortColumn == 'dias_stock' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
+                    <th data-column-name="Días de Stock" data-column="dias_stock">
+                        <span>Días de Stock</span><i class="fas fa-eye toggle-visibility"></i> <!-- Sin ordenamiento -->
                     </th>
                     <th data-column-name="Estado de la Orden"><span>Estado Orden</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Estado de la Publicación"><span>Estado Pub.</span><i class="fas fa-eye toggle-visibility"></i></th>

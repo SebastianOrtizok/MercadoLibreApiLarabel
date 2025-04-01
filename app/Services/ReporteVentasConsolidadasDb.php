@@ -114,25 +114,22 @@ class ReporteVentasConsolidadasDb
             $groupByFields = ['o.ml_product_id', 'a.titulo', 'a.sku_interno', 'a.tipo_publicacion', 'a.imagen', "a.$stockType", 'a.estado', 'a.permalink', 'o.estado_orden', 'mt.seller_name'];
         }
 
-        // Definir columnas ordenables
+        // Definir columnas ordenables (sin dias_stock)
         $sortableColumns = [
             'producto' => $consolidarPorSku ? 'a.sku_interno' : 'o.ml_product_id',
             'titulo' => 'titulo',
             'sku' => 'a.sku_interno',
             'cantidad_vendida' => 'SUM(o.cantidad)',
             'stock' => "MAX(a.$stockType)",
-            'dias_stock' => 'SUM(o.cantidad) / ' . $diasDeRango, // Aproximación para días de stock
             'fecha_ultima_venta' => 'MAX(o.fecha_venta)',
         ];
 
         // Aplicar ordenamiento
         if (array_key_exists($sortColumn, $sortableColumns)) {
             $orderExpression = $sortableColumns[$sortColumn];
-            // Si la expresión ya está envuelta en una función SQL (como SUM o MAX), usar orderByRaw directamente
-            if (preg_match('/^(SUM|MAX|GROUP_CONCAT)\(.+\)$/', $orderExpression) || strpos($orderExpression, '/') !== false) {
+            if (preg_match('/^(SUM|MAX|GROUP_CONCAT)\(.+\)$/', $orderExpression)) {
                 $query->orderByRaw("{$orderExpression} {$sortDirection}");
             } else {
-                // Para columnas simples, usar orderBy
                 $query->orderBy($orderExpression, $sortDirection);
             }
         } else {
