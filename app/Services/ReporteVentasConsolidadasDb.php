@@ -7,15 +7,25 @@ use Illuminate\Support\Facades\Log;
 
 class ReporteVentasConsolidadasDb
 {
-    public function generarReporteVentasConsolidadas($fechaInicio, $fechaFin, $diasDeRango, $filters = [], $consolidarPorSku = false, $stockType = 'stock_actual')
-    {
+    public function generarReporteVentasConsolidadas(
+        $fechaInicio,
+        $fechaFin,
+        $diasDeRango,
+        $filters = [],
+        $consolidarPorSku = false,
+        $stockType = 'stock_actual',
+        $sortColumn = 'cantidad_vendida',
+        $sortDirection = 'desc'
+    ) {
         Log::info('Iniciando generación de reporte', [
             'fecha_inicio' => $fechaInicio,
             'fecha_fin' => $fechaFin,
             'dias_de_rango' => $diasDeRango,
             'filters' => $filters,
             'consolidar_por_sku' => $consolidarPorSku,
-            'stock_type' => $stockType, // Verificar qué valor llega
+            'stock_type' => $stockType,
+            'sort_column' => $sortColumn,
+            'sort_direction' => $sortDirection,
         ]);
 
         if ($diasDeRango == 0) {
@@ -78,7 +88,7 @@ class ReporteVentasConsolidadasDb
                 DB::raw('SUM(o.cantidad) as cantidad_vendida'),
                 DB::raw('MAX(a.tipo_publicacion) as tipo_publicacion'),
                 DB::raw('MAX(a.imagen) as imagen'),
-                DB::raw("MAX(a.$stockType) as stock"), // Usar el tipo de stock seleccionado
+                DB::raw("MAX(a.$stockType) as stock"),
                 DB::raw('MAX(a.estado) as estado'),
                 DB::raw('MAX(a.permalink) as url'),
                 DB::raw('MAX(o.fecha_venta) as fecha_ultima_venta'),
@@ -94,7 +104,7 @@ class ReporteVentasConsolidadasDb
                 DB::raw('SUM(o.cantidad) as cantidad_vendida'),
                 'a.tipo_publicacion',
                 'a.imagen',
-                "a.$stockType as stock", // Usar el tipo de stock seleccionado
+                "a.$stockType as stock",
                 'a.estado',
                 'a.permalink as url',
                 DB::raw('MAX(o.fecha_venta) as fecha_ultima_venta'),
@@ -104,7 +114,32 @@ class ReporteVentasConsolidadasDb
             $groupByFields = ['o.ml_product_id', 'a.titulo', 'a.sku_interno', 'a.tipo_publicacion', 'a.imagen', "a.$stockType", 'a.estado', 'a.permalink', 'o.estado_orden', 'mt.seller_name'];
         }
 
-        // Log de la consulta SQL generada para depurar
+        // Definir columnas ordenables
+        $sortableColumns = [
+            'producto' => $consolidarPorSku ? 'a.sku_interno' : 'o.ml_product_id',
+            'titulo' => 'titulo',
+            'sku' => 'a.sku_interno',
+            'cantidad_vendida' => 'SUM(o.cantidad)',
+            'stock' => "MAX(a.$stockType)",
+            'dias_stock' => 'SUM(o.cantidad) / ' . $diasDeRango, // Aproximación para días de stock
+            'fecha_ultima_venta' => 'MAX(o.fecha_venta)',
+        ];
+
+        // Aplicar ordenamiento
+        if (array_key_exists($sortColumn, $sortableColumns)) {
+            $orderExpression = $sortableColumns[$sortColumn];
+            // Si la expresión ya está envuelta en una función SQL (como SUM o MAX), usar orderByRaw directamente
+            if (preg_match('/^(SUM|MAX|GROUP_CONCAT)\(.+\)$/', $orderExpression) || strpos($orderExpression, '/') !== false) {
+                $query->orderByRaw("{$orderExpression} {$sortDirection}");
+            } else {
+                // Para columnas simples, usar orderBy
+                $query->orderBy($orderExpression, $sortDirection);
+            }
+        } else {
+            $query->orderByRaw("SUM(o.cantidad) DESC"); // Orden por defecto
+        }
+
+        // Log de la consulta SQL generada
         $sql = $query->toSql();
         $bindings = $query->getBindings();
         Log::info('Consulta SQL generada', ['sql' => $sql, 'bindings' => $bindings]);
@@ -120,7 +155,7 @@ class ReporteVentasConsolidadasDb
                 return (array) $venta;
             })->toArray();
 
-        // Log de los primeros resultados para inspeccionar
+        // Log de los primeros resultados
         Log::info('Primeros resultados', ['sample' => array_slice($ventasConsolidadas, 0, 5)]);
 
         $totalVentas = array_sum(array_column($ventasConsolidadas, 'cantidad_vendida'));

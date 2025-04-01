@@ -109,27 +109,27 @@
             </a>
         </div>
         <div class="card-body">
-        @if(isset($resumenPorCuenta) && !empty($resumenPorCuenta))
-            <div class="d-flex flex-wrap gap-3">
-                @foreach($resumenPorCuenta as $cuenta => $total)
-                    <div class="progress-container" style="width: 100%; max-width: 400px;">
-                        <div class="progress-label d-flex justify-content-between align-items-center mb-1">
-                            <span>{{ $cuenta }}</span>
-                            <span class="fw-bold">{{ $total }} ventas</span>
-                        </div>
-                        <div class="progress modern-progress">
-                            <div class="progress-bar"
-                                role="progressbar"
-                                style="width: {{ log($total + 1) / log($maxVentasTotal + 1) * 100 }}%;"
-                                aria-valuenow="{{ $total }}"
-                                aria-valuemin="0"
-                                aria-valuemax="{{ $maxVentasTotal }}">
+            @if(isset($resumenPorCuenta) && !empty($resumenPorCuenta))
+                <div class="d-flex flex-wrap gap-3">
+                    @foreach($resumenPorCuenta as $cuenta => $total)
+                        <div class="progress-container" style="width: 100%; max-width: 400px;">
+                            <div class="progress-label d-flex justify-content-between align-items-center mb-1">
+                                <span>{{ $cuenta }}</span>
+                                <span class="fw-bold">{{ $total }} ventas</span>
+                            </div>
+                            <div class="progress modern-progress">
+                                <div class="progress-bar"
+                                    role="progressbar"
+                                    style="width: {{ log($total + 1) / log($maxVentasTotal + 1) * 100 }}%;"
+                                    aria-valuenow="{{ $total }}"
+                                    aria-valuemin="0"
+                                    aria-valuemax="{{ $maxVentasTotal }}">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
-        @else
+                    @endforeach
+                </div>
+            @else
                 <p class="text-muted text-center">No hay datos de ventas para mostrar en este período.</p>
             @endif
             <div id="restore-columns-order" class="mt-3 d-flex flex-wrap gap-2"></div>
@@ -143,16 +143,30 @@
                 <tr>
                     <th data-column-name="Cuenta"><span>Cuenta</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Imagen"><span>Imagen</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Producto" data-sortable="true" data-column="producto"><span>Producto</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="SKU" data-sortable="true" data-column="sku"><span>SKU</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Título" data-sortable="true" data-column="titulo"><span>Título</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Ventas" data-sortable="true" data-column="ventas_diarias"><span>Ventas</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Producto" data-sortable="true" data-column="producto">
+                        <span>Producto</span><i class="fas fa-sort {{ $sortColumn == 'producto' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
+                    </th>
+                    <th data-column-name="SKU" data-sortable="true" data-column="sku">
+                        <span>SKU</span><i class="fas fa-sort {{ $sortColumn == 'sku' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
+                    </th>
+                    <th data-column-name="Título" data-sortable="true" data-column="titulo">
+                        <span>Título</span><i class="fas fa-sort {{ $sortColumn == 'titulo' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
+                    </th>
+                    <th data-column-name="Ventas" data-sortable="true" data-column="cantidad_vendida">
+                        <span>Ventas</span><i class="fas fa-sort {{ $sortColumn == 'cantidad_vendida' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
+                    </th>
                     <th data-column-name="Publicación"><span>Publicación</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Stock" data-sortable="true" data-column="stock"><span>Stock ({{ request('stock_type', 'stock_actual') }})</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Días de Stock" data-sortable="true" data-column="dias_stock"><span>Días de Stock</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Stock" data-sortable="true" data-column="stock">
+                        <span>Stock ({{ request('stock_type', 'stock_actual') }})</span><i class="fas fa-sort {{ $sortColumn == 'stock' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
+                    </th>
+                    <th data-column-name="Días de Stock" data-sortable="true" data-column="dias_stock">
+                        <span>Días de Stock</span><i class="fas fa-sort {{ $sortColumn == 'dias_stock' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
+                    </th>
                     <th data-column-name="Estado de la Orden"><span>Estado Orden</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Estado de la Publicación"><span>Estado Pub.</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Fecha de Última Venta"><span>Última Venta</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Fecha de Última Venta" data-sortable="true" data-column="fecha_ultima_venta">
+                        <span>Última Venta</span><i class="fas fa-sort {{ $sortColumn == 'fecha_ultima_venta' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
+                    </th>
                 </tr>
             </thead>
             <tbody id="table-body">
@@ -166,7 +180,7 @@
                         </td>
                         <td data-column="sku">{{ $item['sku'] ?? 'N/A' }}</td>
                         <td data-column="titulo">{{ $item['titulo'] }}</td>
-                        <td data-column="ventas_diarias">{{ $item['cantidad_vendida'] }}</td>
+                        <td data-column="cantidad_vendida">{{ $item['cantidad_vendida'] }}</td>
                         <td>{{ $item['tipo_publicacion'] ?? 'N/A' }}</td>
                         <td data-column="stock">{{ $item['stock'] ?? 'Sin stock' }}</td>
                         <td data-column="dias_stock" class="highlight">{{ $item['dias_stock'] ?? 'N/A' }}</td>
@@ -190,78 +204,38 @@
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script>
-jQuery(document).ready(function () {
-    if ($.fn.DataTable.isDataTable('#orderTable')) {
-        $('#orderTable').DataTable().clear().destroy();
-    }
+$(document).ready(function () {
+    // Manejar clics en las columnas ordenables
+    $('th[data-sortable="true"]').on('click', function () {
+        var column = $(this).data('column');
+        var currentSortColumn = '{{ $sortColumn }}';
+        var currentSortDirection = '{{ $sortDirection }}';
+        var newDirection = (column === currentSortColumn && currentSortDirection === 'asc') ? 'desc' : 'asc';
 
-    var table = $('#orderTable').DataTable({
-        paging: false,
-        searching: false,
-        info: true,
-        colReorder: true,
-        autoWidth: false,
-        responsive: true,
-        scrollX: true,
-        stateSave: false,
-        processing: true,
-        width: '95%',
-        columnDefs: [
-            { targets: '_all', className: 'shrink-text dt-center' },
-            { targets: [4], width: '20%' }, // Título
-            // Definir tipos numéricos para las columnas específicas
-            {
-                targets: [3], // SKU (índice basado en 0)
-                type: 'num',
-                render: function(data, type, row) {
-                    return type === 'sort' ? (parseFloat(data) || 0) : data;
-                }
-            },
-            {
-                targets: [5], // Ventas
-                type: 'num',
-                render: function(data, type, row) {
-                    return type === 'sort' ? (parseInt(data) || 0) : data;
-                }
-            },
-            {
-                targets: [7], // Stock
-                type: 'num',
-                render: function(data, type, row) {
-                    return type === 'sort' ? (parseInt(data) || 0) : data;
-                }
-            },
-            {
-                targets: [8], // Días de Stock
-                type: 'num',
-                render: function(data, type, row) {
-                    return type === 'sort' ? (parseFloat(data) || 0) : data;
-                }
-            }
-        ],
-        // Opcional: especificar el orden inicial
-        order: [[5, 'desc']] // Ordenar por Ventas descendente por defecto
+        // Construir la URL con los parámetros actuales y los nuevos de ordenamiento
+        var url = new URL(window.location.href);
+        url.searchParams.set('sort_column', column);
+        url.searchParams.set('sort_direction', newDirection);
+        url.searchParams.set('page', 1); // Resetear a la primera página al ordenar
+        window.location.href = url.toString();
     });
 
+    // Manejar visibilidad de columnas
     var restoreContainer = $('#restore-columns-order');
-
-    $('th i.fas.fa-eye.toggle-visibility').click(function () {
+    $('th i.fas.fa-eye.toggle-visibility').click(function (e) {
+        e.stopPropagation(); // Evitar que el clic en el ojo dispare el ordenamiento
         var th = $(this).closest('th');
         var columnName = th.data('column-name');
-        var column = table.column(th);
-        column.visible(false);
-        table.columns.adjust().draw(false);
+        var columnCells = $('td[data-column="' + columnName + '"], th[data-column-name="' + columnName + '"]');
+        columnCells.toggle();
         addRestoreButton(th, columnName);
     });
 
     function addRestoreButton(th, columnName) {
         var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
         button.on('click', function () {
-            table.column(th).visible(true);
-            table.columns.adjust().draw(false);
+            $('td[data-column="' + columnName + '"], th[data-column-name="' + columnName + '"]').show();
             $(this).remove();
         });
         restoreContainer.append(button);
