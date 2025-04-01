@@ -114,7 +114,7 @@ class ReporteVentasConsolidadasDb
             $groupByFields = ['o.ml_product_id', 'a.titulo', 'a.sku_interno', 'a.tipo_publicacion', 'a.imagen', "a.$stockType", 'a.estado', 'a.permalink', 'o.estado_orden', 'mt.seller_name'];
         }
 
-        // Definir columnas ordenables (sin dias_stock)
+        // Definir columnas ordenables (excluyendo dias_stock por ahora)
         $sortableColumns = [
             'producto' => $consolidarPorSku ? 'a.sku_interno' : 'o.ml_product_id',
             'titulo' => 'titulo',
@@ -124,8 +124,8 @@ class ReporteVentasConsolidadasDb
             'fecha_ultima_venta' => 'MAX(o.fecha_venta)',
         ];
 
-        // Aplicar ordenamiento
-        if (array_key_exists($sortColumn, $sortableColumns)) {
+        // Aplicar ordenamiento SQL solo si no es 'dias_stock'
+        if ($sortColumn !== 'dias_stock' && array_key_exists($sortColumn, $sortableColumns)) {
             $orderExpression = $sortableColumns[$sortColumn];
             if (preg_match('/^(SUM|MAX|GROUP_CONCAT)\(.+\)$/', $orderExpression)) {
                 $query->orderByRaw("{$orderExpression} {$sortDirection}");
@@ -133,14 +133,10 @@ class ReporteVentasConsolidadasDb
                 $query->orderBy($orderExpression, $sortDirection);
             }
         } else {
-            $query->orderByRaw("SUM(o.cantidad) DESC"); // Orden por defecto
+            $query->orderByRaw("SUM(o.cantidad) DESC"); // Orden por defecto si no es un campo ordenable o es dias_stock
         }
 
-        // Log de la consulta SQL generada
-        $sql = $query->toSql();
-        $bindings = $query->getBindings();
-        Log::info('Consulta SQL generada', ['sql' => $sql, 'bindings' => $bindings]);
-
+        // Ejecutar la consulta
         $ventasConsolidadas = $query->select($selectFields)
             ->groupBy($groupByFields)
             ->get()
@@ -149,22 +145,28 @@ class ReporteVentasConsolidadasDb
                 $venta->dias_stock = ($ventasDiariasPromedio > 0 && $venta->stock > 0)
                     ? round($venta->stock / $ventasDiariasPromedio, 2)
                     : null;
-                return (array) $venta;
-            })->toArray();
+                return $venta;
+            });
 
-        // Log de los primeros resultados
-        Log::info('Primeros resultados', ['sample' => array_slice($ventasConsolidadas, 0, 5)]);
+        // Ordenar por 'dias_stock' en PHP si es necesario
+        if ($sortColumn === 'dias_stock') {
+            $ventasConsolidadas = $ventasConsolidadas->sortBy(function ($venta) {
+                return $venta->dias_stock ?? INF; // Usar INF para manejar nulos (irán al final)
+            }, SORT_REGULAR, $sortDirection === 'desc');
+        }
 
-        $totalVentas = array_sum(array_column($ventasConsolidadas, 'cantidad_vendida'));
+        $ventasArray = $ventasConsolidadas->values()->toArray();
+        $totalVentas = array_sum(array_column($ventasArray, 'cantidad_vendida'));
+
         Log::info('Ventas consolidadas generadas', [
             'total_ventas' => $totalVentas,
-            'count' => count($ventasConsolidadas),
+            'count' => count($ventasArray),
             'stock_type' => $stockType,
         ]);
 
         return [
             'total_ventas' => $totalVentas,
-            'ventas' => $ventasConsolidadas,
+            'ventas' => $ventasArray,
         ];
     }
 }
