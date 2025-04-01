@@ -138,15 +138,18 @@ class ReporteVentasConsolidadasDb
 
         // Ejecutar la consulta
         $ventasConsolidadas = $query->select($selectFields)
-            ->groupBy($groupByFields)
-            ->get()
-            ->map(function ($venta) use ($diasDeRango) {
-                $ventasDiariasPromedio = $venta->cantidad_vendida / $diasDeRango;
-                $venta->dias_stock = ($ventasDiariasPromedio > 0 && $venta->stock > 0)
-                    ? round($venta->stock / $ventasDiariasPromedio, 2)
-                    : null;
-                return (array) $venta; // Convertimos cada objeto a array aquí
-            });
+        ->groupBy($groupByFields)
+        ->get()
+        ->map(function ($venta) use ($diasDeRango) {
+            $ventasDiariasPromedio = $venta->cantidad_vendida / $diasDeRango;
+            $venta->dias_stock = ($ventasDiariasPromedio > 0)
+                ? round($venta->stock / $ventasDiariasPromedio, 2)
+                : 0; // Si no hay ventas promedio, días de stock es 0
+            if ($venta->stock == 0) {
+                $venta->dias_stock = 0; // Si stock es 0, días de stock es 0
+            }
+            return (array) $venta;
+        });
 
         // Ordenar por 'dias_stock' en PHP si es necesario
         if ($sortColumn === 'dias_stock') {

@@ -183,7 +183,7 @@
                         <td data-column="cantidad_vendida">{{ $item['cantidad_vendida'] }}</td>
                         <td>{{ $item['tipo_publicacion'] ?? 'N/A' }}</td>
                         <td data-column="stock">{{ $item['stock'] ?? 'Sin stock' }}</td>
-                        <td data-column="dias_stock" class="highlight">{{ $item['dias_stock'] ?? 'N/A' }}</td>
+                        <td data-column="dias_stock" class="highlight">{{ $item['dias_stock'] }}</td>
                         <td>{{ $item['order_status'] ?? 'N/A' }}</td>
                         <td>{{ $item['estado'] ?? 'Desconocido' }}</td>
                         <td>{{ $item['fecha_ultima_venta'] ? \Carbon\Carbon::parse($item['fecha_ultima_venta'])->format('d/m/Y H:i') : 'N/A' }}</td>
@@ -206,15 +206,13 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script>
 $(document).ready(function () {
     // Inicializar DataTables con las funcionalidades deseadas
     var table = $('#orderTable').DataTable({
         paging: false, // Desactivamos la paginación de DataTables porque usamos la del backend
         searching: false, // Desactivamos la búsqueda de DataTables
-        info: false, // Ocultamos la info de "Showing 1 to 10 of X entries"
+        info: true,
         colReorder: true, // Permitir mover columnas
         autoWidth: false, // Desactivar ajuste automático de ancho
         responsive: true, // Habilitar responsive (desplazamiento en móviles)
