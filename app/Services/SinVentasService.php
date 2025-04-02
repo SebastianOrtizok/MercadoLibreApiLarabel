@@ -20,7 +20,7 @@ class SinVentasService
                 $join->on('a.ml_product_id', '=', 'o.ml_product_id')
                      ->whereBetween('o.fecha_venta', [$fechaInicio, $fechaFin]);
             })
-            ->join('mercadolibre_tokens as mt', 'a.ml_account_id', '=', 'mt.ml_account_id')
+            ->leftJoin('mercadolibre_tokens as mt', 'a.ml_account_id', '=', 'mt.ml_account_id') // Cambié a leftJoin para no excluir artículos
             ->whereIn('a.ml_account_id', $tokens);
 
         // Aplicar filtros
@@ -43,12 +43,12 @@ class SinVentasService
         if ($consolidarPorSku) {
             // Agrupar por sku_interno
             $query->select([
-                'a.sku_interno as ml_product_id', // Usamos SKU como identificador principal
+                'a.sku_interno as ml_product_id',
                 DB::raw('GROUP_CONCAT(DISTINCT mt.seller_name SEPARATOR ", ") as seller_name'),
                 DB::raw('MAX(a.titulo) as titulo'),
                 DB::raw('GROUP_CONCAT(DISTINCT a.permalink SEPARATOR ", ") as permalink'),
                 DB::raw('MAX(a.imagen) as imagen'),
-                DB::raw('MAX(a.stock_actual) as stock_actual'), // Cambiamos SUM por MAX
+                DB::raw('MAX(a.stock_actual) as stock_actual'),
                 'a.sku_interno as sku',
                 DB::raw('MAX(a.tipo_publicacion) as tipo_publicacion'),
                 DB::raw('MAX(a.estado) as estado'),
@@ -71,20 +71,27 @@ class SinVentasService
                 'a.estado',
                 DB::raw('COALESCE(SUM(o.cantidad), 0) as cantidad_vendida'),
             ])
-            ->groupBy('a.ml_product_id', 'mt.seller_name', 'a.titulo', 'a.permalink', 'a.imagen', 'a.stock_actual', 'a.sku_interno', 'a.tipo_publicacion', 'a.estado');
+            ->groupBy('a.ml_product_id'); // Simplifiqué el groupBy para evitar problemas
         }
 
-        return $query->get()
-            ->map(function ($producto) use ($fechaInicio, $fechaFin) {
-                $diasDeRango = $fechaInicio->diffInDays($fechaFin) ?: 1;
-                $ventasDiariasPromedio = $producto->cantidad_vendida / $diasDeRango;
-                $producto->dias_stock = ($ventasDiariasPromedio > 0)
-                    ? round($producto->stock_actual / $ventasDiariasPromedio, 2)
-                    : 0;
-                if ($producto->stock_actual == 0) {
-                    $producto->dias_stock = 0;
-                }
-                return $producto;
-            });
+        $result = $query->get();
+
+        \Log::info('Resultados de la consulta', [
+            'count' => $result->count(),
+            'sample' => $result->take(5)->toArray(),
+            'consolidarPorSku' => $consolidarPorSku,
+        ]);
+
+        return $result->map(function ($producto) use ($fechaInicio, $fechaFin) {
+            $diasDeRango = $fechaInicio->diffInDays($fechaFin) ?: 1;
+            $ventasDiariasPromedio = $producto->cantidad_vendida / $diasDeRango;
+            $producto->dias_stock = ($ventasDiariasPromedio > 0)
+                ? round($producto->stock_actual / $ventasDiariasPromedio, 2)
+                : 0;
+            if ($producto->stock_actual == 0) {
+                $producto->dias_stock = 0;
+            }
+            return $producto;
+        });
     }
 }
