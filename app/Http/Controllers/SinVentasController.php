@@ -25,8 +25,8 @@ class SinVentasController extends Controller
                 'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
             ]);
 
-            $limit = $request->input('limit', 50); // Cantidad por página
-            $currentPage = (int) $request->input('page', 1); // Página actual
+            $limit = $request->input('limit', 50);
+            $currentPage = (int) $request->input('page', 1);
             $consolidarPorSku = $request->input('consolidar_por_sku', false) === 'true'; // Nuevo parámetro
 
             $filters = [

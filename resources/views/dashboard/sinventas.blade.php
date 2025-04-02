@@ -61,6 +61,13 @@
                                 <option value="under_review" {{ request('estado_publicacion') == 'under_review' ? 'selected' : '' }}>En revisión</option>
                             </select>
                         </div>
+                        <div class="col-md-3 mb-2">
+                            <label>Consolidar por SKU</label>
+                            <div class="form-check">
+                                <input type="checkbox" name="consolidar_por_sku" value="true" class="form-check-input" {{ request('consolidar_por_sku') === 'true' ? 'checked' : '' }}>
+                                <label class="form-check-label">Agrupar por SKU Interno</label>
+                            </div>
+                        </div>
                         <div class="col-md-3 mb-2 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="fas fa-search"></i> Filtrar
@@ -94,8 +101,12 @@
                         <td data-column="Cuenta">{{ $producto->seller_name ?? 'N/A' }}</td>
                         <td><img src="{{ $producto->imagen ?? asset('images/default.png') }}" alt="{{ $producto->titulo ?? 'Sin título' }}" class="table-img"></td>
                         <td data-column="ml_product_id">
-                            <a href="{{ $producto->permalink }}" target="_blank" class="table-link">{{ $producto->ml_product_id }}</a>
-                            <a href="{{ $producto->permalink }}" target="_blank" class="table-icon-link"><i class="fas fa-external-link-alt"></i></a>
+                            @if ($consolidarPorSku)
+                                {{ $producto->ml_product_id }} <!-- SKU consolidado -->
+                            @else
+                                <a href="{{ $producto->permalink }}" target="_blank" class="table-link">{{ $producto->ml_product_id }}</a>
+                                <a href="{{ $producto->permalink }}" target="_blank" class="table-icon-link"><i class="fas fa-external-link-alt"></i></a>
+                            @endif
                         </td>
                         <td data-column="sku">{{ $producto->sku ?? 'N/A' }}</td>
                         <td data-column="titulo">{{ $producto->titulo }}</td>
@@ -118,6 +129,48 @@
         'limit' => $limit
     ])
 </div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+$(document).ready(function () {
+    // Manejar visibilidad de columnas
+    var restoreContainer = $('#restore-columns-order');
+    $('th i.fas.fa-eye.toggle-visibility').click(function (e) {
+        e.stopPropagation();
+        var th = $(this).closest('th');
+        var columnName = th.data('column-name');
+        var columnCells = $('td[data-column="' + columnName + '"], th[data-column-name="' + columnName + '"]');
+        columnCells.toggle();
+        addRestoreButton(th, columnName);
+    });
+
+    function addRestoreButton(th, columnName) {
+        var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
+        button.on('click', function () {
+            $('td[data-column="' + columnName + '"], th[data-column-name="' + columnName + '"]').show();
+            $(this).remove();
+        });
+        restoreContainer.append(button);
+    }
+
+    // Script para el menú de filtros
+    const toggleBtn = document.querySelector('[data-bs-target="#filtrosCollapse"]');
+    const toggleText = toggleBtn ? toggleBtn.querySelector('#toggleText') : null;
+    const collapseElement = document.getElementById('filtrosCollapse');
+
+    if (toggleBtn && toggleText && collapseElement) {
+        toggleText.textContent = collapseElement.classList.contains('show') ? 'Ocultar Filtros' : 'Mostrar Filtros';
+
+        collapseElement.addEventListener('shown.bs.collapse', function () {
+            toggleText.textContent = 'Ocultar Filtros';
+        });
+        collapseElement.addEventListener('hidden.bs.collapse', function () {
+            toggleText.textContent = 'Mostrar Filtros';
+        });
+    }
+});
+</script>
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

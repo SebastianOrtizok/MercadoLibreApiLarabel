@@ -20,8 +20,8 @@ class SinVentasService
                 $join->on('a.ml_product_id', '=', 'o.ml_product_id')
                      ->whereBetween('o.fecha_venta', [$fechaInicio, $fechaFin]);
             })
-            ->leftJoin('mercadolibre_tokens as mt', 'a.ml_account_id', '=', 'mt.ml_account_id') // Cambié a leftJoin para no excluir artículos
-            ->whereIn('a.ml_account_id', $tokens);
+            ->join('mercadolibre_tokens as mt', 'a.user_id', '=', 'mt.ml_account_id')
+            ->whereIn('a.user_id', $tokens);
 
         // Aplicar filtros
         if (!empty($filters['search'])) {
@@ -31,7 +31,7 @@ class SinVentasService
             });
         }
         if (!empty($filters['ml_account_id'])) {
-            $query->where('a.ml_account_id', $filters['ml_account_id']);
+            $query->where('a.user_id', $filters['ml_account_id']);
         }
         if (!empty($filters['tipo_publicacion'])) {
             $query->where('a.tipo_publicacion', $filters['tipo_publicacion']);
@@ -43,12 +43,12 @@ class SinVentasService
         if ($consolidarPorSku) {
             // Agrupar por sku_interno
             $query->select([
-                'a.sku_interno as ml_product_id',
+                'a.sku_interno as ml_product_id', // Usamos SKU como identificador principal
                 DB::raw('GROUP_CONCAT(DISTINCT mt.seller_name SEPARATOR ", ") as seller_name'),
                 DB::raw('MAX(a.titulo) as titulo'),
                 DB::raw('GROUP_CONCAT(DISTINCT a.permalink SEPARATOR ", ") as permalink'),
                 DB::raw('MAX(a.imagen) as imagen'),
-                DB::raw('MAX(a.stock_actual) as stock_actual'),
+                DB::raw('MAX(a.stock_actual) as stock_actual'), // Usamos MAX como en ventas consolidadas
                 'a.sku_interno as sku',
                 DB::raw('MAX(a.tipo_publicacion) as tipo_publicacion'),
                 DB::raw('MAX(a.estado) as estado'),
@@ -58,7 +58,7 @@ class SinVentasService
             ->whereNotNull('a.sku_interno')
             ->where('a.sku_interno', '!=', '');
         } else {
-            // Sin agrupar, por ml_product_id
+            // Sin agrupar, mantener el original
             $query->select([
                 'a.ml_product_id',
                 'mt.seller_name',
@@ -71,27 +71,18 @@ class SinVentasService
                 'a.estado',
                 DB::raw('COALESCE(SUM(o.cantidad), 0) as cantidad_vendida'),
             ])
-            ->groupBy('a.ml_product_id'); // Simplifiqué el groupBy para evitar problemas
+            ->groupBy('a.ml_product_id', 'mt.seller_name', 'a.titulo', 'a.permalink', 'a.imagen', 'a.stock_actual', 'a.sku_interno', 'a.tipo_publicacion', 'a.estado');
         }
 
-        $result = $query->get();
-
-        \Log::info('Resultados de la consulta', [
-            'count' => $result->count(),
-            'sample' => $result->take(5)->toArray(),
-            'consolidarPorSku' => $consolidarPorSku,
-        ]);
-
-        return $result->map(function ($producto) use ($fechaInicio, $fechaFin) {
-            $diasDeRango = $fechaInicio->diffInDays($fechaFin) ?: 1;
-            $ventasDiariasPromedio = $producto->cantidad_vendida / $diasDeRango;
-            $producto->dias_stock = ($ventasDiariasPromedio > 0)
-                ? round($producto->stock_actual / $ventasDiariasPromedio, 2)
-                : 0;
-            if ($producto->stock_actual == 0) {
-                $producto->dias_stock = 0;
-            }
-            return $producto;
-        });
+        return $query->orderBy('cantidad_vendida', 'asc')
+            ->get()
+            ->map(function ($producto) use ($fechaInicio, $fechaFin) {
+                $diasDeRango = $fechaInicio->diffInDays($fechaFin) ?: 1;
+                $ventasDiariasPromedio = $producto->cantidad_vendida / $diasDeRango;
+                $producto->dias_stock = ($ventasDiariasPromedio > 0 && $producto->stock_actual > 0)
+                    ? round($producto->stock_actual / $ventasDiariasPromedio, 2)
+                    : null;
+                return $producto;
+            });
     }
 }
