@@ -27,6 +27,7 @@ class SinVentasController extends Controller
 
             $limit = $request->input('limit', 50); // Cantidad por página
             $currentPage = (int) $request->input('page', 1); // Página actual
+            $consolidarPorSku = $request->input('consolidar_por_sku', false) === 'true'; // Nuevo parámetro
 
             $filters = [
                 'search' => $request->input('search'),
@@ -35,8 +36,8 @@ class SinVentasController extends Controller
                 'estado_publicacion' => $request->input('estado_publicacion'),
             ];
 
-            // Obtener todos los productos sin ventas
-            $productosSinVentas = $this->sinVentasService->getProductosOrdenadosPorVentas($fechaInicio, $fechaFin, $filters)
+            // Obtener productos sin ventas, con opción de consolidar por SKU
+            $productosSinVentas = $this->sinVentasService->getProductosOrdenadosPorVentas($fechaInicio, $fechaFin, $filters, $consolidarPorSku)
                 ->filter(function ($producto) {
                     return $producto->cantidad_vendida == 0;
                 });
@@ -51,7 +52,8 @@ class SinVentasController extends Controller
                 'current_page' => $currentPage,
                 'limit' => $limit,
                 'total_pages' => $totalPages,
-                'paginados_count' => $productosPaginados->count()
+                'paginados_count' => $productosPaginados->count(),
+                'consolidar_por_sku' => $consolidarPorSku
             ]);
 
             return view('dashboard.sinventas', [
@@ -61,6 +63,7 @@ class SinVentasController extends Controller
                 'currentPage' => $currentPage,
                 'totalPages' => $totalPages,
                 'limit' => $limit,
+                'consolidarPorSku' => $consolidarPorSku, // Pasamos esto a la vista
             ]);
         } catch (\Exception $e) {
             \Log::error('Error en SinVentasController: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
@@ -71,6 +74,7 @@ class SinVentasController extends Controller
                 'currentPage' => 1,
                 'totalPages' => 1,
                 'limit' => 50,
+                'consolidarPorSku' => false,
             ])->with('error', $e->getMessage());
         }
     }
