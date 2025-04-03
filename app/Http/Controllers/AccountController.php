@@ -84,18 +84,33 @@ public function showOwnPublications(Request $request)
         $publications = $this->consultaService->getOwnPublications($userId, $limit, $offset, $search, $status, $mlaId);
         $totalPublications = $publications['total'] ?? 0;
         $totalPages = ceil($totalPublications / $limit);
+
+        // Mensaje si no se encontraron publicaciones
+        $message = null;
+        if (empty($publications['items']) && $mlaId) {
+            $message = "No se encontró ninguna publicación con el ID '$mlaId'. Verifica que el ID sea correcto y que pertenezca a tus cuentas vinculadas.";
+        } elseif (empty($publications['items'])) {
+            $message = "No se encontraron publicaciones que coincidan con los filtros aplicados.";
+        }
+
         return view('dashboard.publications', [
             'publications' => $publications['items'],
             'totalPages' => $totalPages,
             'currentPage' => $page,
             'limit' => $limit,
             'totalPublications' => $totalPublications,
+            'message' => $message, // Pasar el mensaje a la vista
         ]);
     } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => $e->getMessage(),
-        ], 500);
+        // En caso de un error general, mostrar un mensaje genérico
+        return view('dashboard.publications', [
+            'publications' => [],
+            'totalPages' => 0,
+            'currentPage' => 1,
+            'limit' => $limit,
+            'totalPublications' => 0,
+            'message' => "Ocurrió un error al cargar las publicaciones. Por favor, intenta de nuevo más tarde.",
+        ]);
     }
 }
 

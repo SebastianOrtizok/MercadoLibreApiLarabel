@@ -143,59 +143,63 @@ public function getOwnPublications($userId, $limit = 50, $offset = 0, $search = 
         // Log para verificar si se proporciona mla_id
         \Log::info("getOwnPublications llamado con mla_id: " . ($mlaId ?? 'No proporcionado'));
 
-        // Si se proporciona un mla_id, buscar solo ese ítem y devolverlo
+        // Si se proporciona un mla_id, buscar solo ese ítem
         if ($mlaId) {
-            \Log::info("Buscando ítem específico con ID: {$mlaId}");
+            // Normalizar el mla_id a mayúsculas para consistencia
+            $mlaId = strtoupper($mlaId);
+            \Log::info("Buscando ítem específico con ID normalizado: {$mlaId}");
+
             foreach ($tokens as $token) {
                 $mlAccountId = $token->ml_account_id;
                 $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
 
-                $response = $this->client->get("items/{$mlaId}", [
-                    'headers' => [
-                        'Authorization' => "Bearer {$accessToken}"
-                    ],
-                    'query' => [
-                        'include_attributes' => 'all',
-                    ]
-                ]);
-
-                $item = json_decode($response->getBody(), true);
-
-                // Verificar que el ítem existe y pertenece al usuario autenticado
-                if ($response->getStatusCode() === 200 && !empty($item) && $item['seller_id'] == $mlAccountId) {
-                    \Log::info("Ítem encontrado: {$mlaId} pertenece a ml_account_id: {$mlAccountId}");
-                    $processedItems[] = [
-                        'id' => $item['id'] ?? null,
-                        'titulo' => $item['title'] ?? 'Sin título',
-                        'imagen' => $item['thumbnail'] ?? null,
-                        'stockActual' => $item['available_quantity'] ?? 0,
-                        'precio' => $item['price'] ?? null,
-                        'precio_original' => $item['original_price'] ?? null,
-                        'deal_ids' => $item['deal_ids'] ?? [],
-                        'tags' => $item['tags'] ?? [],
-                        'estado' => $item['status'] ?? 'Desconocido',
-                        'permalink' => $item['permalink'] ?? '#',
-                        'condicion' => $item['condition'] ?? 'Desconocido',
-                        'sku' => $item['user_product_id'] ?? null,
-                        'tipoPublicacion' => $item['listing_type_id'] ?? null,
-                        'enCatalogo' => $item['catalog_listing'] ?? null,
-                        'categoryid' => $item['category_id'] ?? null,
-                        'ml_account_id' => $item['seller_id'] ?? null,
-                        'logistic_type' => $item['shipping']['logistic_type'] ?? '',
-                        'inventory_id' => $item['inventory_id'] ?? '',
-                        'user_product_id' => $item['user_product_id'] ?? '',
-                    ];
-                    $total = 1;
-                    \Log::info("Devolviendo solo el ítem {$mlaId}");
-                    return [
-                        'items' => $processedItems,
-                        'total' => $total
-                    ];
-                } else {
-                    \Log::warning("Ítem {$mlaId} no encontrado o no pertenece a ml_account_id: {$mlAccountId}", [
-                        'status' => $response->getStatusCode(),
-                        'response' => $item
+                try {
+                    $response = $this->client->get("items/{$mlaId}", [
+                        'headers' => [
+                            'Authorization' => "Bearer {$accessToken}"
+                        ],
+                        'query' => [
+                            'include_attributes' => 'all',
+                        ]
                     ]);
+
+                    $item = json_decode($response->getBody(), true);
+
+                    // Verificar que el ítem existe y pertenece al usuario autenticado
+                    if ($response->getStatusCode() === 200 && !empty($item) && $item['seller_id'] == $mlAccountId) {
+                        \Log::info("Ítem encontrado: {$mlaId} pertenece a ml_account_id: {$mlAccountId}");
+                        $processedItems[] = [
+                            'id' => $item['id'] ?? null,
+                            'titulo' => $item['title'] ?? 'Sin título',
+                            'imagen' => $item['thumbnail'] ?? null,
+                            'stockActual' => $item['available_quantity'] ?? 0,
+                            'precio' => $item['price'] ?? null,
+                            'precio_original' => $item['original_price'] ?? null,
+                            'deal_ids' => $item['deal_ids'] ?? [],
+                            'tags' => $item['tags'] ?? [],
+                            'estado' => $item['status'] ?? 'Desconocido',
+                            'permalink' => $item['permalink'] ?? '#',
+                            'condicion' => $item['condition'] ?? 'Desconocido',
+                            'sku' => $item['user_product_id'] ?? null,
+                            'tipoPublicacion' => $item['listing_type_id'] ?? null,
+                            'enCatalogo' => $item['catalog_listing'] ?? null,
+                            'categoryid' => $item['category_id'] ?? null,
+                            'ml_account_id' => $item['seller_id'] ?? null,
+                            'logistic_type' => $item['shipping']['logistic_type'] ?? '',
+                            'inventory_id' => $item['inventory_id'] ?? '',
+                            'user_product_id' => $item['user_product_id'] ?? '',
+                        ];
+                        $total = 1;
+                        \Log::info("Devolviendo solo el ítem {$mlaId}");
+                        return [
+                            'items' => $processedItems,
+                            'total' => $total
+                        ];
+                    }
+                } catch (RequestException $e) {
+                    // Capturar errores específicos de la API (como 400 Bad Request)
+                    \Log::warning("Error al buscar ítem {$mlaId}: " . $e->getMessage());
+                    continue; // Continuar con la siguiente cuenta si falla
                 }
             }
 
