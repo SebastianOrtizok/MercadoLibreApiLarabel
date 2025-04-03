@@ -32,7 +32,6 @@ class ReporteVentasConsolidadasDb
             return [
                 'total_ventas' => 0,
                 'ventas' => [],
-                'resumen_por_cuenta_monto' => [],
             ];
         }
 
@@ -87,8 +86,6 @@ class ReporteVentasConsolidadasDb
                 DB::raw('MAX(a.titulo) as titulo'),
                 'a.sku_interno as sku',
                 DB::raw('SUM(o.cantidad) as cantidad_vendida'),
-                DB::raw('AVG(o.precio_unitario) as precio_unitario'), // Promedio del precio unitario por SKU
-                DB::raw('SUM(o.cantidad * o.precio_unitario) as monto_total'), // Monto total por SKU
                 DB::raw('MAX(a.tipo_publicacion) as tipo_publicacion'),
                 DB::raw('MAX(a.imagen) as imagen'),
                 DB::raw("MAX(a.$stockType) as stock"),
@@ -105,8 +102,6 @@ class ReporteVentasConsolidadasDb
                 'a.titulo',
                 'a.sku_interno as sku',
                 DB::raw('SUM(o.cantidad) as cantidad_vendida'),
-                'o.precio_unitario', // Precio unitario por orden
-                DB::raw('SUM(o.cantidad * o.precio_unitario) as monto_total'), // Monto total por artículo
                 'a.tipo_publicacion',
                 'a.imagen',
                 "a.$stockType as stock",
@@ -116,25 +111,23 @@ class ReporteVentasConsolidadasDb
                 'o.estado_orden as order_status',
                 'mt.seller_name',
             ];
-            $groupByFields = ['o.ml_product_id', 'a.titulo', 'a.sku_interno', 'o.precio_unitario', 'a.tipo_publicacion', 'a.imagen', "a.$stockType", 'a.estado', 'a.permalink', 'o.estado_orden', 'mt.seller_name'];
+            $groupByFields = ['o.ml_product_id', 'a.titulo', 'a.sku_interno', 'a.tipo_publicacion', 'a.imagen', "a.$stockType", 'a.estado', 'a.permalink', 'o.estado_orden', 'mt.seller_name'];
         }
 
-        // Definir columnas ordenables
+        // Definir columnas ordenables (excluyendo dias_stock por ahora)
         $sortableColumns = [
             'producto' => $consolidarPorSku ? 'a.sku_interno' : 'o.ml_product_id',
             'titulo' => 'titulo',
             'sku' => 'a.sku_interno',
             'cantidad_vendida' => 'SUM(o.cantidad)',
-            'precio_unitario' => $consolidarPorSku ? 'AVG(o.precio_unitario)' : 'o.precio_unitario',
-            'monto_total' => 'SUM(o.cantidad * o.precio_unitario)',
             'stock' => "MAX(a.$stockType)",
             'fecha_ultima_venta' => 'MAX(o.fecha_venta)',
         ];
 
-        // Aplicar ordenamiento SQL
-        if (array_key_exists($sortColumn, $sortableColumns)) {
+        // Aplicar ordenamiento SQL solo si no es 'dias_stock'
+        if ($sortColumn !== 'dias_stock' && array_key_exists($sortColumn, $sortableColumns)) {
             $orderExpression = $sortableColumns[$sortColumn];
-            if (preg_match('/^(SUM|MAX|AVG|GROUP_CONCAT)\(.+\)$/', $orderExpression)) {
+            if (preg_match('/^(SUM|MAX|GROUP_CONCAT)\(.+\)$/', $orderExpression)) {
                 $query->orderByRaw("{$orderExpression} {$sortDirection}");
             } else {
                 $query->orderBy($orderExpression, $sortDirection);
@@ -145,41 +138,31 @@ class ReporteVentasConsolidadasDb
 
         // Ejecutar la consulta
         $ventasConsolidadas = $query->select($selectFields)
-            ->groupBy($groupByFields)
-            ->get()
-            ->map(function ($venta) use ($diasDeRango) {
-                $ventasDiariasPromedio = $venta->cantidad_vendida / $diasDeRango;
-                $venta->dias_stock = ($ventasDiariasPromedio > 0)
-                    ? round($venta->stock / $ventasDiariasPromedio, 2)
-                    : 0;
-                if ($venta->stock == 0) {
-                    $venta->dias_stock = 0;
-                }
-                return (array) $venta;
-            });
+        ->groupBy($groupByFields)
+        ->get()
+        ->map(function ($venta) use ($diasDeRango) {
+            $ventasDiariasPromedio = $venta->cantidad_vendida / $diasDeRango;
+            $venta->dias_stock = ($ventasDiariasPromedio > 0)
+                ? round($venta->stock / $ventasDiariasPromedio, 2)
+                : 0; // Si no hay ventas promedio, días de stock es 0
+            if ($venta->stock == 0) {
+                $venta->dias_stock = 0; // Si stock es 0, días de stock es 0
+            }
+            return (array) $venta;
+        });
 
         // Ordenar por 'dias_stock' en PHP si es necesario
         if ($sortColumn === 'dias_stock') {
             $ventasConsolidadas = $ventasConsolidadas->sortBy(function ($venta) {
-                return $venta['dias_stock'] ?? INF;
+                return $venta['dias_stock'] ?? INF; // Usamos array aquí
             }, SORT_REGULAR, $sortDirection === 'desc');
         }
 
         $ventasArray = $ventasConsolidadas->values()->toArray();
         $totalVentas = array_sum(array_column($ventasArray, 'cantidad_vendida'));
-        $totalMonto = array_sum(array_column($ventasArray, 'monto_total'));
-
-        // Resumen por cuenta con monto facturado
-        $resumenPorCuentaMonto = collect($ventasArray)->groupBy('seller_name')->map(function ($group) {
-            return [
-                'cantidad_vendida' => array_sum(array_column($group->toArray(), 'cantidad_vendida')),
-                'monto_total' => array_sum(array_column($group->toArray(), 'monto_total')),
-            ];
-        })->toArray();
 
         Log::info('Ventas consolidadas generadas', [
             'total_ventas' => $totalVentas,
-            'total_monto' => $totalMonto,
             'count' => count($ventasArray),
             'stock_type' => $stockType,
         ]);
@@ -187,7 +170,6 @@ class ReporteVentasConsolidadasDb
         return [
             'total_ventas' => $totalVentas,
             'ventas' => $ventasArray,
-            'resumen_por_cuenta_monto' => $resumenPorCuentaMonto,
         ];
     }
 }

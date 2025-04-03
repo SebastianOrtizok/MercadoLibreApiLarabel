@@ -26,8 +26,9 @@ class VentasConsolidadasControllerDB extends Controller
             $consolidarPorSku = $request->input('consolidar_por_sku', false) === 'true';
             $stockType = $request->input('stock_type', 'stock_actual');
 
-            $sortColumn = $request->input('sort_column', 'cantidad_vendida');
-            $sortDirection = $request->input('sort_direction', 'desc');
+            // Parámetros de ordenamiento
+            $sortColumn = $request->input('sort_column', 'cantidad_vendida'); // Columna por defecto
+            $sortDirection = $request->input('sort_direction', 'desc'); // Dirección por defecto
 
             $fechaInicio = Carbon::parse($fecha_inicio ?? $request->input('fecha_inicio', Carbon::now()->subDays(30)->format('Y-m-d')));
             $fechaFin = Carbon::parse($fecha_fin ?? $request->input('fecha_fin', Carbon::now()->format('Y-m-d')));
@@ -43,6 +44,7 @@ class VentasConsolidadasControllerDB extends Controller
             ];
             \Log::info('Filtros aplicados:', $filters);
 
+            // Pasamos los parámetros de ordenamiento al servicio
             $ventasData = $this->reporteVentasConsolidadasDb->generarReporteVentasConsolidadas(
                 $fechaInicio,
                 $fechaFin,
@@ -58,8 +60,8 @@ class VentasConsolidadasControllerDB extends Controller
             $ventasCollection = collect($ventasData['ventas'] ?? []);
             $dataToShow = $ventasCollection->forPage($page, $limit)->values();
             $totalItems = $ventasCollection->count();
-            $resumenPorCuenta = $ventasData['resumen_por_cuenta_monto'] ?? [];
-            $maxVentasTotal = !empty($resumenPorCuenta) ? max(array_column($resumenPorCuenta, 'cantidad_vendida')) : 1;
+            $resumenPorCuenta = $ventasCollection->groupBy('seller_name')->map->sum('cantidad_vendida')->all();
+            $maxVentasTotal = !empty($resumenPorCuenta) ? max($resumenPorCuenta) : 1;
             $totalPages = ceil($totalItems / $limit);
 
             session(['ventas_consolidadas' => $ventasCollection->toArray() ?? []]);
@@ -77,12 +79,12 @@ class VentasConsolidadasControllerDB extends Controller
                 'currentPage' => $page,
                 'limit' => $limit,
                 'totalVentas' => $totalItems,
-                'resumenPorCuenta' => $resumenPorCuenta,
+                'resumenPorCuenta' => $resumenPorCuenta ?? [],
                 'maxVentasTotal' => $maxVentasTotal,
                 'consolidarPorSku' => $consolidarPorSku,
                 'stockType' => $stockType,
-                'sortColumn' => $sortColumn,
-                'sortDirection' => $sortDirection,
+                'sortColumn' => $sortColumn, // Pasamos la columna ordenada a la vista
+                'sortDirection' => $sortDirection, // Pasamos la dirección a la vista
             ]);
         } catch (\Exception $e) {
             \Log::error('Error en VentasConsolidadasControllerDB: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);

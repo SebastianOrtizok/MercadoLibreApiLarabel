@@ -111,17 +111,17 @@
         <div class="card-body">
             @if(isset($resumenPorCuenta) && !empty($resumenPorCuenta))
                 <div class="d-flex flex-wrap gap-3">
-                    @foreach($resumenPorCuenta as $cuenta => $datos)
+                    @foreach($resumenPorCuenta as $cuenta => $total)
                         <div class="progress-container" style="width: 100%; max-width: 400px;">
                             <div class="progress-label d-flex justify-content-between align-items-center mb-1">
                                 <span>{{ $cuenta }}</span>
-                                <span class="fw-bold">{{ $datos['cantidad_vendida'] }} ventas | ${{ number_format($datos['monto_total'], 2) }}</span>
+                                <span class="fw-bold">{{ $total }} ventas</span>
                             </div>
                             <div class="progress modern-progress">
                                 <div class="progress-bar"
                                     role="progressbar"
-                                    style="width: {{ log($datos['cantidad_vendida'] + 1) / log($maxVentasTotal + 1) * 100 }}%;"
-                                    aria-valuenow="{{ $datos['cantidad_vendida'] }}"
+                                    style="width: {{ log($total + 1) / log($maxVentasTotal + 1) * 100 }}%;"
+                                    aria-valuenow="{{ $total }}"
                                     aria-valuemin="0"
                                     aria-valuemax="{{ $maxVentasTotal }}">
                                 </div>
@@ -155,12 +155,6 @@
                     <th data-column-name="Ventas" data-sortable="true" data-column="cantidad_vendida">
                         <span>Ventas</span><i class="fas fa-sort {{ $sortColumn == 'cantidad_vendida' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
                     </th>
-                    <th data-column-name="Precio Unitario" data-sortable="true" data-column="precio_unitario">
-                        <span>Precio Unitario</span><i class="fas fa-sort {{ $sortColumn == 'precio_unitario' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
-                    </th>
-                    <th data-column-name="Monto Total" data-sortable="true" data-column="monto_total">
-                        <span>Monto Total</span><i class="fas fa-sort {{ $sortColumn == 'monto_total' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
-                    </th>
                     <th data-column-name="Publicación"><span>Publicación</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Stock" data-sortable="true" data-column="stock">
                         <span>Stock ({{ request('stock_type', 'stock_actual') }})</span><i class="fas fa-sort {{ $sortColumn == 'stock' ? ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i><i class="fas fa-eye toggle-visibility"></i>
@@ -187,8 +181,6 @@
                         <td data-column="sku">{{ $item['sku'] ?? 'N/A' }}</td>
                         <td data-column="titulo">{{ $item['titulo'] }}</td>
                         <td data-column="cantidad_vendida">{{ $item['cantidad_vendida'] }}</td>
-                        <td data-column="precio_unitario">${{ number_format($item['precio_unitario'], 2) }}</td>
-                        <td data-column="monto_total">${{ number_format($item['monto_total'], 2) }}</td>
                         <td>{{ $item['tipo_publicacion'] ?? 'N/A' }}</td>
                         <td data-column="stock">{{ $item['stock'] ?? 'Sin stock' }}</td>
                         <td data-column="dias_stock" class="highlight">{{ $item['dias_stock'] }}</td>
@@ -209,6 +201,7 @@
         'limit' => $limit
     ])
 </div>
+
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
