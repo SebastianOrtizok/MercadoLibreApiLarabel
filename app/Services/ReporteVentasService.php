@@ -78,9 +78,10 @@ class ReporteVentasService
                             'order_status' => $venta['status'] ?? 'unknown',
                             'seller_nickname' => $venta['seller']['nickname'] ?? 'unknown',
                             'fecha_ultima_venta' => $venta['date_closed'] ?? null,
-                            'descuento' => $venta['payments'][0]['coupon_id'] ?? null,  // Acceder al coupon_id del primer pago
-                            'descuento_detalle' => $venta['payments'][0]['coupon_amount'] ?? 0,  // Acceder al coupon_amount del primer pago
-
+                            'descuento' => $venta['payments'][0]['coupon_id'] ?? null,
+                            'descuento_detalle' => $venta['payments'][0]['coupon_amount'] ?? 0,
+                            'precio_unitario' => $item['unit_price'] ?? 0, // Agregar precio unitario
+                            'precio_total' => ($item['unit_price'] ?? 0) * ($item['quantity'] ?? 0), // Precio total (unitario * cantidad)
                         ];
                     }
                 }

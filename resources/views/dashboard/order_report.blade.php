@@ -58,44 +58,48 @@
     <!-- Tabla de resultados -->
     <div class="table-responsive">
         <table id="orderTable" class="table table-hover modern-table">
-            <thead>
+        <thead>
+            <tr>
+                <th data-column-name="Cuenta"><span>Cuenta</span><i class="fas fa-eye toggle-visibility"></i></th>
+                <th data-column-name="Imagen"><span>Imagen</span><i class="fas fa-eye toggle-visibility"></i></th>
+                <th data-column-name="Producto" data-sortable="true" data-column="producto"><span>Producto</span><i class="fas fa-eye toggle-visibility"></i></th>
+                <th data-column-name="SKU" data-sortable="true" data-column="sku"><span>SKU</span><i class="fas fa-eye toggle-visibility"></i></th>
+                <th data-column-name="Título" data-sortable="true" data-column="titulo"><span>Título</span><i class="fas fa-eye toggle-visibility"></i></th>
+                <th data-column-name="Ventas" data-sortable="true" data-column="ventas_diarias"><span>Ventas</span><i class="fas fa-eye toggle-visibility"></i></th>
+                <th data-column-name="Publicación"><span>Publicación</span><i class="fas fa-eye toggle-visibility"></i></th>
+                <th data-column-name="Stock" data-sortable="true" data-column="stock"><span>Stock</span><i class="fas fa-eye toggle-visibility"></i></th>
+                <th data-column-name="Días de Stock" data-sortable="true" data-column="dias_stock"><span>Días de Stock</span><i class="fas fa-eye toggle-visibility"></i></th>
+                <th data-column-name="Estado de la Orden"><span>Estado Orden</span><i class="fas fa-eye toggle-visibility"></i></th>
+                <th data-column-name="Estado de la Publicación"><span>Estado Pub.</span><i class="fas fa-eye toggle-visibility"></i></th>
+                <th data-column-name="Fecha de Última Venta"><span>Última Venta</span><i class="fas fa-eye toggle-visibility"></i></th>
+                <th data-column-name="Precio Unitario" data-sortable="true" data-column="precio_unitario"><span>Precio Unit.</span><i class="fas fa-eye toggle-visibility"></i></th>
+                <th data-column-name="Precio Total" data-sortable="true" data-column="precio_total"><span>Precio Total</span><i class="fas fa-eye toggle-visibility"></i></th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            @forelse($ventas['ventas'] as $venta)
                 <tr>
-                    <th data-column-name="Cuenta"><span>Cuenta</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Imagen"><span>Imagen</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Producto" data-sortable="true" data-column="producto"><span>Producto</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="SKU" data-sortable="true" data-column="sku"><span>SKU</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Título" data-sortable="true" data-column="titulo"><span>Título</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Ventas" data-sortable="true" data-column="ventas_diarias"><span>Ventas</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Publicación"><span>Publicación</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Stock" data-sortable="true" data-column="stock"><span>Stock</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Días de Stock" data-sortable="true" data-column="dias_stock"><span>Días de Stock</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Estado de la Orden"><span>Estado Orden</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Estado de la Publicación"><span>Estado Pub.</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Fecha de Última Venta"><span>Última Venta</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <td data-column="Cuenta">{{ $venta['seller_nickname'] }}</td>
+                    <td><img src="{{ $venta['imagen'] }}" alt="{{ $venta['titulo'] }}" class="table-img"></td>
+                    <td data-column="producto">
+                        <a href="{{ route('dashboard.ventaid', ['item_id' => $venta['producto'], 'fecha_inicio' => request('fecha_inicio', now()->format('Y-m-d')), 'fecha_fin' => request('fecha_fin', now()->format('Y-m-d'))]) }}" class="table-link">{{ $venta['producto'] }}</a>
+                        <a href="{{ $venta['url'] }}" target="_blank" class="table-icon-link"><i class="fas fa-external-link-alt"></i></a>
+                    </td>
+                    <td data-column="sku">{{ $venta['sku'] }}</td>
+                    <td data-column="titulo">{{ $venta['titulo'] }}</td>
+                    <td data-column="ventas_diarias">{{ $venta['cantidad_vendida'] }}</td>
+                    <td>{{ $venta['tipo_publicacion'] }}</td>
+                    <td data-column="stock">{{ $venta['stock'] }}</td>
+                    <td data-column="dias_stock">{{ $venta['dias_stock'] }}</td>
+                    <td>{{ $venta['order_status'] }}</td>
+                    <td>{{ $venta['estado'] }}</td>
+                    <td>{{ \Carbon\Carbon::parse($venta['fecha_ultima_venta'])->format('d/m/Y H:i') }}</td>
+                    <td data-column="precio_unitario">{{ number_format($venta['precio_unitario'], 2, ',', '.') }}</td>
+                    <td data-column="precio_total">{{ number_format($venta['precio_total'], 2, ',', '.') }}</td>
                 </tr>
-            </thead>
-            <tbody id="table-body">
-                @forelse($ventas['ventas'] as $venta)
-                    <tr>
-                        <td data-column="Cuenta">{{ $venta['seller_nickname'] }}</td>
-                        <td><img src="{{ $venta['imagen'] }}" alt="{{ $venta['titulo'] }}" class="table-img"></td>
-                        <td data-column="producto">
-                            <a href="{{ route('dashboard.ventaid', ['item_id' => $venta['producto'], 'fecha_inicio' => request('fecha_inicio', now()->format('Y-m-d')), 'fecha_fin' => request('fecha_fin', now()->format('Y-m-d'))]) }}" class="table-link">{{ $venta['producto'] }}</a>
-                            <a href="{{ $venta['url'] }}" target="_blank" class="table-icon-link"><i class="fas fa-external-link-alt"></i></a>
-                        </td>
-                        <td data-column="sku">{{ $venta['sku'] }}</td>
-                        <td data-column="titulo">{{ $venta['titulo'] }}</td>
-                        <td data-column="ventas_diarias">{{ $venta['cantidad_vendida'] }}</td>
-                        <td>{{ $venta['tipo_publicacion'] }}</td>
-                        <td data-column="stock">{{ $venta['stock'] }}</td>
-                        <td data-column="dias_stock">{{ $venta['dias_stock'] }}</td>
-                        <td>{{ $venta['order_status'] }}</td>
-                        <td>{{ $venta['estado'] }}</td>
-                        <td>{{ \Carbon\Carbon::parse($venta['fecha_ultima_venta'])->format('d/m/Y H:i') }}</td>
-                    </tr>
-                @empty
-                @endforelse
-            </tbody>
+            @empty
+            @endforelse
+        </tbody>
         </table>
     </div>
 
