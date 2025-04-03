@@ -112,66 +112,74 @@
 </div>
 
 <!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
 jQuery(document).ready(function ($) {
+    // Destruir DataTable si ya existe
     if ($.fn.DataTable.isDataTable('#orderTable')) {
         $('#orderTable').DataTable().destroy();
     }
 
+    // Inicializar DataTables
     var table = $('#orderTable').DataTable({
-        paging: false,
-        searching: false,
+        paging: false, // Paginación manejada por el backend
+        searching: false, // Búsqueda manejada manualmente
         info: true,
-        colReorder: true, // Habilitar arrastrar columnas
+        colReorder: true, // Permitir reordenar columnas
         autoWidth: false,
         responsive: true,
         scrollX: true,
         stateSave: false,
         processing: true,
         columnDefs: [
-            { targets: '_all', className: 'shrink-text dt-center' },
-            { targets: 4, width: '20%' } // Título
-        ]
+            { targets: '_all', className: 'shrink-text dt-center' }, // Centrar texto
+            { targets: 4, width: '20%' }, // Ajustar ancho de "Título"
+            // Definir tipos numéricos para ordenamiento correcto
+            { targets: [5, 7, 8, 12, 13], type: 'num' } // Ventas, Stock, Días de Stock, Precio Unitario, Precio Total
+        ],
+        order: [] // Sin ordenamiento inicial por DataTables
     });
 
+    // Manejar visibilidad de columnas
     var restoreContainer = $('#restore-columns-order');
-
-    $('th i.fas.fa-eye.toggle-visibility').on('click', function () {
+    $('th i.fas.fa-eye.toggle-visibility').on('click', function (e) {
+        e.stopPropagation(); // Evitar interferencia con otros eventos
         var th = $(this).closest('th');
+        var columnIndex = table.column(th).index(); // Obtener índice real de la columna
+        var column = table.column(columnIndex);
         var columnName = th.data('column-name');
-        var column = table.column(th.index());
+
+        // Alternar visibilidad
         column.visible(!column.visible());
         table.columns.adjust().draw(false);
 
+        // Agregar botón para restaurar si se oculta
         if (!column.visible()) {
-            addRestoreButton(th, columnName);
+            addRestoreButton(columnIndex, columnName);
         }
     });
 
-    function addRestoreButton(th, columnName) {
+    // Función para agregar botones de restauración
+    function addRestoreButton(columnIndex, columnName) {
         var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
         button.on('click', function () {
-            table.column(th.index()).visible(true);
+            table.column(columnIndex).visible(true);
             table.columns.adjust().draw(false);
             $(this).remove();
         });
         restoreContainer.append(button);
     }
-});
-</script>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
+    // Ordenamiento manual para columnas con data-sortable="true"
     const headers = document.querySelectorAll('th[data-sortable="true"]');
     const tableBody = document.getElementById('table-body');
 
     headers.forEach(header => {
-        header.addEventListener('click', () => {
+        header.addEventListener('click', (e) => {
+            e.stopPropagation(); // Evitar que DataTables interfiera
             const column = header.getAttribute('data-column');
             const rows = Array.from(tableBody.querySelectorAll('tr'));
             const isAscending = header.classList.contains('ascending');
@@ -192,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Filtros manuales
     const searchInput = document.getElementById('searchInput');
     const estadoPublicacionFilter = document.getElementById('estadoPublicacionFilter');
     const rows = Array.from(tableBody.querySelectorAll('tr'));
