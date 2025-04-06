@@ -40,17 +40,16 @@ class StockVentaService
         }
 
         $articulos = Articulo::whereIn('ml_product_id', $ventas->pluck('ml_product_id'))
-            ->where('estado', 'active')
             ->get();
 
         Log::info("Artículos a sincronizar: " . $articulos->count());
 
         if ($articulos->isEmpty()) {
-            Log::warning("No se encontraron artículos activos para los ml_product_id de ventas.");
+            Log::warning("No se encontraron artículos para los ml_product_id de ventas.");
             return;
         }
 
-        // Paso 1: Actualizar stock_actual en lotes de 20 desde /items
+        // Paso 1: Actualizar stock_actual, estado, precio y precio_original en lotes de 20 desde /items
         $mlAccountIds = $ventas->pluck('ml_account_id')->unique()->all();
         Log::info("Cuentas a procesar: " . json_encode($mlAccountIds));
 
@@ -96,10 +95,20 @@ class StockVentaService
                             if (isset($item['code']) && $item['code'] == 200) {
                                 $mlProductId = $item['body']['id'];
                                 $stockActual = $item['body']['available_quantity'] ?? 0;
+                                $estado = $item['body']['status'] ?? 'unknown';
+                                $precio = $item['body']['price'] ?? 0; // Precio actual
+                                $precioOriginal = $item['body']['original_price'] ?? null; // Precio original (puede ser null si no hay descuento)
+
                                 $articulo = $articulos->firstWhere('ml_product_id', $mlProductId);
                                 if ($articulo) {
-                                    $articulo->update(['stock_actual' => $stockActual]);
-                                    Log::info("Stock actual consultado y actualizado para {$mlProductId}: stock_actual = {$stockActual}");
+                                    $articulo->update([
+                                        'stock_actual' => $stockActual,
+                                        'estado' => $estado,
+                                        'precio' => $precio,
+                                        'precio_original' => $precioOriginal, // Puede ser null
+                                        'updated_at' => now(),
+                                    ]);
+                                    Log::info("Stock, estado y precios actualizados para {$mlProductId}: stock_actual = {$stockActual}, estado = {$estado}, precio = {$precio}, precio_original = " . ($precioOriginal ?? 'null'));
                                 } else {
                                     Log::warning("Artículo no encontrado en la base para {$mlProductId}");
                                 }
@@ -180,7 +189,10 @@ class StockVentaService
                             'success' => $updated,
                             'stock_actual' => $articulo->stock_actual,
                             'fulfillment' => $stockFulfillment,
-                            'deposito' => $stockDeposito
+                            'deposito' => $stockDeposito,
+                            'estado' => $articulo->estado,
+                            'precio' => $articulo->precio,
+                            'precio_original' => $articulo->precio_original
                         ]);
                     } else {
                         Log::warning("Fallo API para {$articulo->ml_product_id}", [
@@ -197,6 +209,6 @@ class StockVentaService
             usleep(100000); // Pausa para evitar saturar la API
         }
 
-        Log::info("Sincronización de stock por ventas terminada");
+        Log::info("Sincronización de stock, estado y precios por ventas terminada");
     }
 }

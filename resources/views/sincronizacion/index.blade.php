@@ -46,14 +46,14 @@
                     </form>
                 </div>
                 @endforeach
-            </div>
+            <!-- </div>
 
             <a href="{{ route('articulos.sync') }}" class="text-decoration-none">
                 <button class="btn btn-warning w-100">
                     <i class="fas fa-sync-alt me-2"></i>Actualizar Todos los Artículos
                 </button>
             </a>
-        </div>
+        </div> -->
     </div>
 
     <!-- Sección de sincronización de órdenes -->
