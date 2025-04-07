@@ -54,8 +54,8 @@
         </div>
     </div>
 
-    <!-- Scripts para Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Incluir Chart.js desde CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
     <script>
         // Stock por Tipo
         const stockCtx = document.getElementById('stockChart').getContext('2d');
