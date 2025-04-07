@@ -71,4 +71,47 @@ class EstadisticasService
 
         return $query->get();
     }
+
+    public function getVentasPorPeriodo($mlAccountIds = [], $fechaInicio, $fechaFin)
+    {
+        $query = DB::table('ordenes')
+            ->select(
+                DB::raw('DATE(fecha_venta) as fecha'),
+                DB::raw('SUM(cantidad) as total_vendido'),
+                DB::raw('SUM(cantidad * precio_unitario) as total_facturado')
+            )
+            ->whereBetween('fecha_venta', [$fechaInicio, $fechaFin])
+            ->groupBy(DB::raw('DATE(fecha_venta)'));
+
+        if (!empty($mlAccountIds)) {
+            $query->whereIn('ml_account_id', $mlAccountIds);
+        }
+
+        return $query->get();
+    }
+
+    public function getVentasPorDiaSemana($mlAccountIds = [])
+    {
+        $query = DB::table('ordenes')
+            ->select(
+                DB::raw('DAYNAME(fecha_venta) as dia_semana'),
+                DB::raw('SUM(cantidad) as total_vendido')
+            )
+            ->groupBy(DB::raw('DAYNAME(fecha_venta)'));
+
+        if (!empty($mlAccountIds)) {
+            $query->whereIn('ml_account_id', $mlAccountIds);
+        }
+
+        $result = $query->get();
+
+        // Ordenar los días de la semana (Lunes a Domingo)
+        $diasOrdenados = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        $ventasPorDia = collect($diasOrdenados)->mapWithKeys(function ($dia) use ($result) {
+            $venta = $result->firstWhere('dia_semana', $dia);
+            return [$dia => $venta ? $venta->total_vendido : 0];
+        })->all();
+
+        return $ventasPorDia;
+    }
 }
