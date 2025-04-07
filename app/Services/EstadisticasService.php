@@ -61,11 +61,11 @@ class EstadisticasService
         $query = DB::table('articulos')
             ->where('estado', 'active') // Solo publicaciones activas
             ->where(function ($q) {
-                $q->where('stock_actual', '<', 5)
-                  ->orWhere('stock_fulfillment', '<', 5);
+                $q->where('stock_fulfillment', '<', 5)
+                  ->orWhere('stock_deposito', '<', 5);
             })
-            ->select('titulo', 'stock_actual', 'stock_fulfillment')
-            ->orderByRaw('LEAST(stock_actual, stock_fulfillment) ASC'); // Ordenar por el menor stock primero
+            ->select('titulo', 'stock_fulfillment', 'stock_deposito') // Cambiamos stock_actual por stock_deposito
+            ->orderByRaw('LEAST(stock_fulfillment, stock_deposito) ASC'); // Ordenar por el menor stock primero
 
         if (!empty($mlAccountIds)) {
             $query->whereIn('user_id', $mlAccountIds);

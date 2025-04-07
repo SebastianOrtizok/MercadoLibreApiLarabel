@@ -104,13 +104,13 @@
         <!-- Stock Crítico -->
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Stock Crítico</h5>
+                <h5 class="card-title">Stock Crítico (Stock Fulfillment o depósito menor a 5)</h5>
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>Producto</th>
-                                <th>Stock Actual</th>
+                                <th>Stock Depósito</th>
                                 <th>Stock Fulfillment</th>
                             </tr>
                         </thead>
@@ -118,7 +118,7 @@
                             @forelse ($stockCritico as $item)
                                 <tr>
                                     <td>{{ $item->titulo }}</td>
-                                    <td>{{ $item->stock_actual }}</td>
+                                    <td>{{ $item->stock_deposito }}</td>
                                     <td>{{ $item->stock_fulfillment }}</td>
                                 </tr>
                             @empty
