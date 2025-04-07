@@ -134,33 +134,63 @@
     </div>
 
     <script>
-        const charts = {};
+    // Función para inicializar/destruir gráficos
+    function initializeCharts() {
+        // Destruir gráficos existentes si los hay
+        Object.keys(charts).forEach(chartId => {
+            if (charts[chartId]) {
+                charts[chartId].destroy();
+            }
+        });
 
+        // Inicializar nuevos gráficos
         charts.stockChart = new Chart(document.getElementById('stockChart').getContext('2d'), {
             type: 'doughnut',
             data: {
                 labels: ['Stock Actual', 'Stock Fulfillment', 'Stock Depósito'],
-                datasets: [{ data: [{{ $stockPorTipo['stock_actual'] }}, {{ $stockPorTipo['stock_fulfillment'] }}, {{ $stockPorTipo['stock_deposito'] }}], backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56'] }]
+                datasets: [{
+                    data: [{{ $stockPorTipo['stock_actual'] }}, {{ $stockPorTipo['stock_fulfillment'] }}, {{ $stockPorTipo['stock_deposito'] }}],
+                    backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56']
+                }]
             },
-            options: { plugins: { legend: { position: 'top' } }, responsive: true, maintainAspectRatio: false }
+            options: {
+                plugins: { legend: { position: 'top' } },
+                responsive: true,
+                maintainAspectRatio: false
+            }
         });
 
         charts.promocionesChart = new Chart(document.getElementById('promocionesChart').getContext('2d'), {
             type: 'bar',
             data: {
                 labels: @json($productosEnPromocion->pluck('titulo')),
-                datasets: [{ label: 'Descuento (%)', data: @json($productosEnPromocion->pluck('descuento_porcentaje')), backgroundColor: 'rgba(75, 192, 192, 0.6)' }]
+                datasets: [{
+                    label: 'Descuento (%)',
+                    data: @json($productosEnPromocion->pluck('descuento_porcentaje')),
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                }]
             },
-            options: { scales: { y: { beginAtZero: true } }, responsive: true, maintainAspectRatio: false }
+            options: {
+                scales: { y: { beginAtZero: true } },
+                responsive: true,
+                maintainAspectRatio: false
+            }
         });
 
         charts.estadoChart = new Chart(document.getElementById('estadoChart').getContext('2d'), {
             type: 'doughnut',
             data: {
                 labels: @json($productosPorEstado->pluck('estado')),
-                datasets: [{ data: @json($productosPorEstado->pluck('total')), backgroundColor: ['#4BC0C0', '#FF6384', '#36A2EB', '#FFCE56'] }]
+                datasets: [{
+                    data: @json($productosPorEstado->pluck('total')),
+                    backgroundColor: ['#4BC0C0', '#FF6384', '#36A2EB', '#FFCE56']
+                }]
             },
-            options: { plugins: { legend: { position: 'top' } }, responsive: true, maintainAspectRatio: false }
+            options: {
+                plugins: { legend: { position: 'top' } },
+                responsive: true,
+                maintainAspectRatio: false
+            }
         });
 
         charts.ventasPeriodoChart = new Chart(document.getElementById('ventasPeriodoChart').getContext('2d'), {
@@ -168,14 +198,34 @@
             data: {
                 labels: @json($ventasPorPeriodo->pluck('fecha')),
                 datasets: [
-                    { label: 'Artículos Vendidos', data: @json($ventasPorPeriodo->pluck('total_vendido')), borderColor: '#36A2EB', yAxisID: 'y1', fill: false },
-                    { label: 'Total Facturado', data: @json($ventasPorPeriodo->pluck('total_facturado')), borderColor: '#FF6384', yAxisID: 'y2', fill: false }
+                    {
+                        label: 'Artículos Vendidos',
+                        data: @json($ventasPorPeriodo->pluck('total_vendido')),
+                        borderColor: '#36A2EB',
+                        yAxisID: 'y1',
+                        fill: false
+                    },
+                    {
+                        label: 'Total Facturado',
+                        data: @json($ventasPorPeriodo->pluck('total_facturado')),
+                        borderColor: '#FF6384',
+                        yAxisID: 'y2',
+                        fill: false
+                    }
                 ]
             },
             options: {
                 scales: {
-                    y1: { position: 'left', beginAtZero: true, title: { display: true, text: 'Artículos Vendidos' } },
-                    y2: { position: 'right', beginAtZero: true, title: { display: true, text: 'Facturado ($)' } }
+                    y1: {
+                        position: 'left',
+                        beginAtZero: true,
+                        title: { display: true, text: 'Artículos Vendidos' }
+                    },
+                    y2: {
+                        position: 'right',
+                        beginAtZero: true,
+                        title: { display: true, text: 'Facturado ($)' }
+                    }
                 },
                 responsive: true,
                 maintainAspectRatio: false
@@ -186,49 +236,64 @@
             type: 'bar',
             data: {
                 labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
-                datasets: [{ label: 'Artículos Vendidos', data: @json(array_values($ventasPorDiaSemana)), backgroundColor: 'rgba(54, 162, 235, 0.6)' }]
+                datasets: [{
+                    label: 'Artículos Vendidos',
+                    data: @json(array_values($ventasPorDiaSemana)),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                }]
             },
-            options: { scales: { y: { beginAtZero: true } }, responsive: true, maintainAspectRatio: false }
+            options: {
+                scales: { y: { beginAtZero: true } },
+                responsive: true,
+                maintainAspectRatio: false
+            }
         });
+    }
 
-        // Pantalla Completa con Bootstrap Modal
-        const modal = $('#fullscreenModal');
-        const modalTitle = $('#modalTitle');
-        const fullscreenChartCanvas = document.getElementById('fullscreenChart');
-        let fullscreenChart = null;
+    const charts = {};
+    initializeCharts(); // Inicializar al cargar la página
 
-        $('canvas').on('click', function() {
-            const chartId = $(this).attr('id');
-            const chartConfig = charts[chartId].config;
-            modalTitle.text($(this).closest('.card').find('.card-title').text());
-            if (fullscreenChart) fullscreenChart.destroy();
-            fullscreenChart = new Chart(fullscreenChartCanvas.getContext('2d'), chartConfig);
-            modal.modal('show');
-        });
+    // Modal para pantalla completa
+    const modal = $('#fullscreenModal');
+    const modalTitle = $('#modalTitle');
+    const fullscreenChartCanvas = document.getElementById('fullscreenChart');
+    let fullscreenChart = null;
 
-        $('#closeModal').on('click', function() {
-            modal.modal('hide');
-            if (fullscreenChart) fullscreenChart.destroy();
-        });
+    $('canvas').on('click', function() {
+        const chartId = $(this).attr('id');
+        const chartConfig = charts[chartId].config;
+        modalTitle.text($(this).closest('.card').find('.card-title').text());
+        if (fullscreenChart) fullscreenChart.destroy();
+        fullscreenChart = new Chart(fullscreenChartCanvas.getContext('2d'), chartConfig);
+        modal.modal('show');
+    });
 
-        // Filtro de Fechas Dinámico
-        $('#dateFilterForm').on('submit', function(e) {
-            e.preventDefault();
-            const fechaInicio = $('#fecha_inicio').val();
-            const fechaFin = $('#fecha_fin').val();
+    $('#closeModal').on('click', function() {
+        modal.modal('hide');
+        if (fullscreenChart) fullscreenChart.destroy();
+    });
 
-            fetch('/dashboard/estadisticas?' + new URLSearchParams({ fecha_inicio: fechaInicio, fecha_fin: fechaFin }), {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(response => response.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const newContent = doc.querySelector('.container');
-                document.querySelector('.container').replaceWith(newContent);
-                eval(doc.querySelector('script').textContent); // Re-inicializar gráficos
-            })
-            .catch(error => console.error('Error al actualizar gráficos:', error));
-        });
-    </script>
+    // Filtro de fechas dinámico
+    $('#dateFilterForm').on('submit', function(e) {
+        e.preventDefault();
+        const fechaInicio = $('#fecha_inicio').val();
+        const fechaFin = $('#fecha_fin').val();
+
+        fetch('/dashboard/estadisticas?' + new URLSearchParams({
+            fecha_inicio: fechaInicio,
+            fecha_fin: fechaFin
+        }), {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newContent = doc.querySelector('.container');
+            document.querySelector('.container').replaceWith(newContent);
+            initializeCharts(); // Reinicializar gráficos después de actualizar contenido
+        })
+        .catch(error => console.error('Error al actualizar gráficos:', error));
+    });
+</script>
 @endsection

@@ -59,11 +59,13 @@ class EstadisticasService
     public function getStockCritico($mlAccountIds = [])
     {
         $query = DB::table('articulos')
+            ->where('estado', 'active') // Solo publicaciones activas
             ->where(function ($q) {
                 $q->where('stock_actual', '<', 5)
                   ->orWhere('stock_fulfillment', '<', 5);
             })
-            ->select('titulo', 'stock_actual', 'stock_fulfillment');
+            ->select('titulo', 'stock_actual', 'stock_fulfillment')
+            ->orderByRaw('LEAST(stock_actual, stock_fulfillment) ASC'); // Ordenar por el menor stock primero
 
         if (!empty($mlAccountIds)) {
             $query->whereIn('user_id', $mlAccountIds);
