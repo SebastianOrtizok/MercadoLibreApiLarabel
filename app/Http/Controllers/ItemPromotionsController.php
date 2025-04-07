@@ -18,6 +18,7 @@ class ItemPromotionsController extends Controller
         $this->itemPromotionsService = $itemPromotionsService;
     }
 
+    // Sincronización manual completa (tu versión original con ajustes mínimos)
     public function syncPromotions(Request $request)
     {
         try {
@@ -42,7 +43,7 @@ class ItemPromotionsController extends Controller
                 return redirect()->back()->with('error', 'No se encontraron productos activos.');
             }
 
-            Log::info("Iniciando sincronización de " . $products->count() . " productos activos");
+            Log::info("Iniciando sincronización manual de " . $products->count() . " productos activos");
 
             foreach ($mlAccounts as $account) {
                 $accountProducts = $products->where('user_id', $account->ml_account_id);
@@ -55,13 +56,71 @@ class ItemPromotionsController extends Controller
                 }
             }
 
-            return redirect()->back()->with('success', 'Sincronización iniciada para ' . $products->count() . ' productos activos.');
+            return redirect()->back()->with('success', 'Sincronización manual iniciada para ' . $products->count() . ' productos activos.');
         } catch (\Exception $e) {
-            Log::error("Error al iniciar sincronización: " . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al iniciar sincronización: ' . $e->getMessage());
+            Log::error("Error al iniciar sincronización manual: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al iniciar sincronización manual: ' . $e->getMessage());
         }
     }
 
+    // Nueva sincronización automática (incremental)
+    public function syncPromotionsAutomatic()
+    {
+        try {
+            $userId = auth()->user()->id;
+
+            $mlAccounts = DB::table('mercadolibre_tokens')
+                ->where('user_id', $userId)
+                ->select('ml_account_id', 'access_token')
+                ->get();
+
+            if ($mlAccounts->isEmpty()) {
+                Log::info("Sincronización automática: No hay cuentas asociadas.");
+                return ['status' => 'No accounts'];
+            }
+
+            $products = DB::table('articulos')
+                ->where('estado', 'active')
+                ->whereIn('user_id', $mlAccounts->pluck('ml_account_id'))
+                ->where(function ($query) {
+                    $query->where('updated_at', '>=', now()->subWeek())
+                          ->orWhereExists(function ($subQuery) {
+                              $subQuery->select(DB::raw(1))
+                                       ->from('item_promotions')
+                                       ->whereColumn('item_promotions.ml_product_id', 'articulos.ml_product_id')
+                                       ->where('finish_date', '<=', now()->addDays(7));
+                          });
+                })
+                ->select('ml_product_id', 'user_id', 'precio', 'precio_original', 'deal_ids', 'updated_at')
+                ->get();
+
+            if ($products->isEmpty()) {
+                Log::info("Sincronización automática: No se encontraron productos relevantes.");
+                return ['status' => 'No relevant products'];
+            }
+
+            Log::info("Iniciando sincronización automática de " . $products->count() . " productos relevantes");
+
+            foreach ($mlAccounts as $account) {
+                $accountProducts = $products->where('user_id', $account->ml_account_id);
+                if ($accountProducts->isEmpty()) {
+                    continue;
+                }
+
+                foreach ($accountProducts->chunk(50) as $chunk) {
+                    SyncItemPromotionsJob::dispatch($chunk, $account->access_token, $account->ml_account_id)
+                        ->onQueue('automatic_promotions');
+                }
+            }
+
+            return ['status' => 'Sincronización automática iniciada para ' . $products->count() . ' productos'];
+        } catch (\Exception $e) {
+            Log::error("Error al iniciar sincronización automática: " . $e->getMessage());
+            return ['error' => $e->getMessage()];
+        }
+    }
+
+    // Vista de promociones (tu versión original sin cambios)
     public function showPromotions(Request $request)
     {
         $userId = auth()->user()->id;
@@ -141,5 +200,54 @@ class ItemPromotionsController extends Controller
             'totalPages' => $promotions->lastPage(),
             'limit' => $limit,
         ]);
+    }
+
+    // Renovación de promociones (nueva funcionalidad)
+    public function renewPromotion(Request $request, $promotionId)
+    {
+        try {
+            $mlProductId = $request->input('ml_product_id');
+            $userId = auth()->user()->id;
+
+            $token = DB::table('mercadolibre_tokens')
+                ->where('user_id', $userId)
+                ->whereExists(function ($query) use ($mlProductId) {
+                    $query->select(DB::raw(1))
+                          ->from('articulos')
+                          ->whereColumn('articulos.user_id', 'mercadolibre_tokens.ml_account_id')
+                          ->where('articulos.ml_product_id', $mlProductId);
+                })
+                ->first();
+
+            if (!$token) {
+                return redirect()->back()->with('error', 'No se encontró una cuenta asociada para este producto.');
+            }
+
+            $promotion = DB::table('item_promotions')
+                ->where('ml_product_id', $mlProductId)
+                ->where('promotion_id', $promotionId)
+                ->first();
+
+            if (!$promotion || $promotion->type !== 'PRICE_DISCOUNT') {
+                return redirect()->back()->with('error', 'Promoción no válida o no es de tipo PRICE_DISCOUNT.');
+            }
+
+            $response = $this->itemPromotionsService->renewPriceDiscountPromotion(
+                $mlProductId,
+                $promotionId,
+                $promotion->original_price,
+                $promotion->new_price,
+                $token->access_token
+            );
+
+            if (isset($response['error'])) {
+                return redirect()->back()->with('error', 'Error al renovar promoción: ' . $response['error']);
+            }
+
+            return redirect()->back()->with('success', 'Promoción renovada exitosamente.');
+        } catch (\Exception $e) {
+            Log::error("Error al renovar promoción {$promotionId}: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al renovar promoción: ' . $e->getMessage());
+        }
     }
 }

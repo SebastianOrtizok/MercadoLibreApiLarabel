@@ -122,29 +122,38 @@
                     </tr>
                 </thead>
                 <tbody id="table-body">
-                    @forelse ($promotions as $promo)
-                        <tr>
-                            <td><img src="{{ $promo->imagen ?? '' }}" alt="Producto" style="max-width: 50px;"></td>
-                            <td data-column="Cuenta">{{ $promo->seller_name }}</td>
-                            <td data-column="ml_product_id">{{ $promo->titulo }}
-                                <span style="font-weight: bold;">{{ $promo->ml_product_id }}</span>
-                                <a href="{{ $promo->permalink ?? '#' }}" target="_blank">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                            </td>
-                            <td data-column="type">{{ $promo->type ?? 'N/A' }}</td>
-                            <td data-column="status">{{ $promo->status ?? 'N/A' }}</td>
-                            <td data-column="original_price">{{ $promo->original_price ?? 'N/A' }}</td>
-                            <td data-column="new_price">{{ $promo->new_price ?? 'N/A' }}</td>
-                            <td data-column="start_date">{{ $promo->start_date ?? 'N/A' }}</td>
-                            <td data-column="finish_date">{{ $promo->finish_date ?? 'N/A' }}</td>
-                            <td data-column="days_remaining" class="{{ $promo->days_remaining < 0 && $promo->days_remaining !== 'Sin Promoción' ? 'text-danger' : '' }}">
-                                {{ $promo->days_remaining ?? 'N/A' }}
-                            </td>
-                            <td data-column="name">{{ $promo->name ?? 'N/A' }}</td>
-                        </tr>
-                    @empty
-                    @endforelse
+                @forelse ($promotions as $promo)
+                    <tr>
+                        <td><img src="{{ $promo->imagen ?? '' }}" alt="Producto" style="max-width: 50px;"></td>
+                        <td data-column="Cuenta">{{ $promo->seller_name }}</td>
+                        <td data-column="ml_product_id">{{ $promo->titulo }}
+                            <span style="font-weight: bold;">{{ $promo->ml_product_id }}</span>
+                            <a href="{{ $promo->permalink ?? '#' }}" target="_blank">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </td>
+                        <td data-column="type">{{ $promo->type ?? 'N/A' }}</td>
+                        <td data-column="status">{{ $promo->status ?? 'N/A' }}</td>
+                        <td data-column="original_price">{{ $promo->original_price ?? 'N/A' }}</td>
+                        <td data-column="new_price">{{ $promo->new_price ?? 'N/A' }}</td>
+                        <td data-column="start_date">{{ $promo->start_date ?? 'N/A' }}</td>
+                        <td data-column="finish_date">{{ $promo->finish_date ?? 'N/A' }}</td>
+                        <td data-column="days_remaining" class="{{ $promo->days_remaining < 0 && $promo->days_remaining !== 'Sin Promoción' ? 'text-danger' : '' }}">
+                            {{ $promo->days_remaining ?? 'N/A' }}
+                            <!-- @if ($promo->type === 'PRICE_DISCOUNT' && $promo->days_remaining <= 0 && $promo->promotion_id !== 'Sin Promoción')
+                                <form action="{{ route('promotions.renew', $promo->promotion_id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    <input type="hidden" name="ml_product_id" value="{{ $promo->ml_product_id }}">
+                                    <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('¿Renovar esta promoción?')">
+                                        <i class="fas fa-sync"></i> Renovar
+                                    </button>
+                                </form>
+                            @endif -->
+                        </td>
+                        <td data-column="name">{{ $promo->name ?? 'N/A' }}</td>
+                    </tr>
+                @empty
+                @endforelse
                 </tbody>
             </table>
         </div>

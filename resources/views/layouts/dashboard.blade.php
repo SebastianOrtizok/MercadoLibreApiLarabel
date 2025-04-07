@@ -150,6 +150,12 @@
                     <span class="text">Catálogo</span>
                     </a>
                 </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.estadisticas') }}">
+                    <span class="icon"><i class="fas fa-tags"></i></span>
+                    <span class="text">Estadísticas</span>
+                    </a>
+                </li> -->
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('sincronizacion.index') }}">
                         <span class="icon"><i class="fas fa-database"></i></span>

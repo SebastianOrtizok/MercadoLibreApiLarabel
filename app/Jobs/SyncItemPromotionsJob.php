@@ -26,8 +26,16 @@ class SyncItemPromotionsJob implements ShouldQueue
 
     public function handle(ItemPromotionsService $service)
     {
-        Log::info("Procesando lote de " . $this->products->count() . " productos para cuenta {$this->mlAccountId}");
-        $result = $service->syncItemPromotions($this->products, $this->accessToken);
-        Log::info("Resultado para cuenta {$this->mlAccountId}: " . json_encode($result));
+        $syncType = $this->queue === 'automatic_promotions' ? 'automática' : 'manual';
+        Log::info("Procesando lote de " . $this->products->count() . " productos para cuenta {$this->mlAccountId} (sincronización {$syncType})");
+
+        // Elegir la función del servicio según la cola
+        if ($this->queue === 'automatic_promotions') {
+            $result = $service->syncItemPromotionsAutomatic($this->products, $this->accessToken);
+        } else {
+            $result = $service->syncItemPromotions($this->products, $this->accessToken);
+        }
+
+        Log::info("Resultado para cuenta {$this->mlAccountId} (sincronización {$syncType}): " . json_encode($result));
     }
 }

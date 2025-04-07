@@ -21,6 +21,7 @@ use App\Http\Controllers\StockSyncController;
 use App\Http\Controllers\StockVentaController;
 use App\Http\Controllers\ListadoArticulosController;
 use App\Http\Controllers\SyncVentasStockController;
+use App\Http\Controllers\EstadisticasController;
 
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
 
@@ -44,9 +45,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/catalogo/competencia/{mlProductId}', [CatalogoController::class, 'competencia'])->name('dashboard.catalogo.competencia');
     // Viejo PromotionsController (dejamos como está)
     Route::get('/dashboard/promotions', [PromotionsController::class, 'promotions'])->name('dashboard.promociones');
+    Route::post('/promotions/renew/{promotion_id}', [ItemPromotionsController::class, 'renewPromotion'])->name('promotions.renew');
     Route::get('/sync-promotions-db', [ItemPromotionsController::class, 'syncPromotions'])->name('sync.promotions.db'); // Sincronizar
     Route::get('/dashboard/item_promotions', [ItemPromotionsController::class, 'showPromotions'])->name('dashboard.item_promotions'); // Mostrar
-
+    // Rutas de estadísticas
+    Route::get('/dashboard/estadisticas', [EstadisticasController::class, 'index'])->name('dashboard.estadisticas');
     // Rutas de sincronización
     Route::get('/dashboard/stock/sync', [StockSyncController::class, 'sync'])->name('dashboard.stock.sync');
     Route::get('/dashboard/sync-ventas-stock-now', [SyncVentasStockController::class, 'syncAllNow'])->name('dashboard.sync.ventas.stock');
