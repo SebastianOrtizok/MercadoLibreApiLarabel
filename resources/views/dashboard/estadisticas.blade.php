@@ -1,13 +1,4 @@
 @extends('layouts.dashboard')
-3. Vista (resources/views/dashboard/estadisticas.blade.php) con Bootstrap
-html
-
-Contraer
-
-Ajuste
-
-Copiar
-@extends('layouts.app')
 
 @section('content')
     <div class="container py-4">
@@ -142,10 +133,6 @@ Copiar
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         const charts = {};
 

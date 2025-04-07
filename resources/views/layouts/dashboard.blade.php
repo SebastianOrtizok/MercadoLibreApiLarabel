@@ -15,6 +15,7 @@
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+
     <title>Dashboard</title>
 </head>
 <body>
