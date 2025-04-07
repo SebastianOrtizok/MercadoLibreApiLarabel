@@ -41,23 +41,29 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($stockCritico as $item)
+                        @forelse ($stockCritico as $item)
                             <tr>
                                 <td>{{ $item->titulo }}</td>
                                 <td>{{ $item->stock_actual }}</td>
                                 <td>{{ $item->stock_fulfillment }}</td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="3">No hay productos con stock crítico.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- Incluir Chart.js desde CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
     <script>
-        // Stock por Tipo
+        console.log('Stock por Tipo:', @json($stockPorTipo));
+        console.log('Productos en Promoción:', @json($productosEnPromocion));
+        console.log('Productos por Estado:', @json($productosPorEstado));
+
         const stockCtx = document.getElementById('stockChart').getContext('2d');
         new Chart(stockCtx, {
             type: 'doughnut',
@@ -71,10 +77,14 @@
                     ],
                     backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56']
                 }]
+            },
+            options: {
+                plugins: {
+                    legend: { position: 'top' }
+                }
             }
         });
 
-        // Productos en Promoción
         const promocionesCtx = document.getElementById('promocionesChart').getContext('2d');
         new Chart(promocionesCtx, {
             type: 'bar',
@@ -85,10 +95,14 @@
                     data: @json($productosEnPromocion->pluck('descuento_porcentaje')),
                     backgroundColor: 'rgba(75, 192, 192, 0.6)'
                 }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
             }
         });
 
-        // Productos por Estado
         const estadoCtx = document.getElementById('estadoChart').getContext('2d');
         new Chart(estadoCtx, {
             type: 'doughnut',
@@ -98,6 +112,11 @@
                     data: @json($productosPorEstado->pluck('total')),
                     backgroundColor: ['#4BC0C0', '#FF6384', '#36A2EB', '#FFCE56']
                 }]
+            },
+            options: {
+                plugins: {
+                    legend: { position: 'top' }
+                }
             }
         });
     </script>

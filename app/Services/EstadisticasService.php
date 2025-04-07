@@ -1,24 +1,23 @@
 <?php
 namespace App\Services;
 
-use App\Models\Articulo;
 use Illuminate\Support\Facades\DB;
 
 class EstadisticasService
 {
-    public function getStockPorTipo($userId = null)
+    public function getStockPorTipo($mlAccountIds = [])
     {
-        $query = Articulo::select(
+        $query = DB::table('articulos');
+
+        if (!empty($mlAccountIds)) {
+            $query->whereIn('user_id', $mlAccountIds);
+        }
+
+        $result = $query->select(
             DB::raw('SUM(stock_actual) as stock_actual'),
             DB::raw('SUM(stock_fulfillment) as stock_fulfillment'),
             DB::raw('SUM(stock_deposito) as stock_deposito')
-        );
-
-        if ($userId) {
-            $query->where('user_id', $userId);
-        }
-
-        $result = $query->first();
+        )->first();
 
         return [
             'stock_actual' => $result->stock_actual ?? 0,
@@ -27,48 +26,47 @@ class EstadisticasService
         ];
     }
 
-    public function getProductosEnPromocion($userId = null)
+    public function getProductosEnPromocion($mlAccountIds = [])
     {
-        $query = Articulo::where('en_promocion', 1)
-            ->select(
-                'titulo',
-                'descuento_porcentaje'
-            )
+        $query = DB::table('articulos')
+            ->where('en_promocion', 1)
+            ->select('titulo', 'descuento_porcentaje')
             ->orderBy('descuento_porcentaje', 'desc')
             ->limit(5);
 
-        if ($userId) {
-            $query->where('user_id', $userId);
+        if (!empty($mlAccountIds)) {
+            $query->whereIn('user_id', $mlAccountIds);
         }
 
-        return $query->get();
+        $result = $query->get();
+        return $result->isEmpty() ? collect([['titulo' => 'Sin promociones', 'descuento_porcentaje' => 0]]) : $result;
     }
 
-    public function getProductosPorEstado($userId = null)
+    public function getProductosPorEstado($mlAccountIds = [])
     {
-        $query = Articulo::select(
-            'estado',
-            DB::raw('COUNT(*) as total')
-        )
-        ->groupBy('estado');
+        $query = DB::table('articulos')
+            ->select('estado', DB::raw('COUNT(*) as total'))
+            ->groupBy('estado');
 
-        if ($userId) {
-            $query->where('user_id', $userId);
+        if (!empty($mlAccountIds)) {
+            $query->whereIn('user_id', $mlAccountIds);
         }
 
-        return $query->get();
+        $result = $query->get();
+        return $result->isEmpty() ? collect([['estado' => 'Sin datos', 'total' => 0]]) : $result;
     }
 
-    public function getStockCritico($userId = null)
+    public function getStockCritico($mlAccountIds = [])
     {
-        $query = Articulo::where(function ($q) {
-            $q->where('stock_actual', '<', 5)
-              ->orWhere('stock_fulfillment', '<', 5);
-        })
-        ->select('titulo', 'stock_actual', 'stock_fulfillment');
+        $query = DB::table('articulos')
+            ->where(function ($q) {
+                $q->where('stock_actual', '<', 5)
+                  ->orWhere('stock_fulfillment', '<', 5);
+            })
+            ->select('titulo', 'stock_actual', 'stock_fulfillment');
 
-        if ($userId) {
-            $query->where('user_id', $userId);
+        if (!empty($mlAccountIds)) {
+            $query->whereIn('user_id', $mlAccountIds);
         }
 
         return $query->get();
