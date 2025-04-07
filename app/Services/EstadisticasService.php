@@ -94,6 +94,18 @@ class EstadisticasService
 
         return $query->get();
     }
+    public function getTotalFacturado($mlAccountIds = [], $fechaInicio, $fechaFin)
+    {
+        $query = DB::table('ordenes')
+            ->select(DB::raw('SUM(cantidad * precio_unitario) as total_facturado'))
+            ->whereBetween('fecha_venta', [$fechaInicio, $fechaFin]);
+
+        if (!empty($mlAccountIds)) {
+            $query->whereIn('ml_account_id', $mlAccountIds);
+        }
+
+        return $query->value('total_facturado') ?? 0; // Devuelve 0 si no hay resultados
+    }
 
     public function getVentasPorPeriodo($mlAccountIds = [], $fechaInicio, $fechaFin)
     {

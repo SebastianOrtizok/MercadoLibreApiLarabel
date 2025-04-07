@@ -23,7 +23,6 @@ class EstadisticasController extends Controller
             ->pluck('ml_account_id')
             ->toArray();
 
-        // Fechas desde el request o por defecto (últimos 30 días)
         $fechaInicio = $request->input('fecha_inicio')
             ? Carbon::parse($request->input('fecha_inicio'))->startOfDay()
             : Carbon::now()->subDays(30)->startOfDay();
@@ -37,7 +36,8 @@ class EstadisticasController extends Controller
         $stockCritico = $this->estadisticasService->getStockCritico($mlAccountIds);
         $ventasPorPeriodo = $this->estadisticasService->getVentasPorPeriodo($mlAccountIds, $fechaInicio, $fechaFin);
         $ventasPorDiaSemana = $this->estadisticasService->getVentasPorDiaSemana($mlAccountIds);
-        $topProductosVendidos = $this->estadisticasService->getTopProductosVendidos($mlAccountIds, $fechaInicio, $fechaFin); // Nuevo
+        $topProductosVendidos = $this->estadisticasService->getTopProductosVendidos($mlAccountIds, $fechaInicio, $fechaFin);
+        $totalFacturado = $this->estadisticasService->getTotalFacturado($mlAccountIds, $fechaInicio, $fechaFin); // Nuevo
 
         return view('dashboard.estadisticas', compact(
             'stockPorTipo',
@@ -46,7 +46,8 @@ class EstadisticasController extends Controller
             'stockCritico',
             'ventasPorPeriodo',
             'ventasPorDiaSemana',
-            'topProductosVendidos', // Nuevo
+            'topProductosVendidos',
+            'totalFacturado', // Nuevo
             'fechaInicio',
             'fechaFin'
         ));
