@@ -84,6 +84,22 @@
             </div>
         </div>
 
+
+        <!-- Top 10 Productos Más Vendidos -->
+        <div class="col-md-4 col-lg-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Top 10 Productos Vendidos</h5>
+                    <div style="height: 200px;">
+                        <canvas id="topProductosChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
         <!-- Modal para Pantalla Completa -->
         <div class="modal fade" id="fullscreenModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
             <div class="modal-dialog modal-xl" role="document">
@@ -244,6 +260,43 @@
             },
             options: {
                 scales: { y: { beginAtZero: true } },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        charts.topProductosChart = new Chart(document.getElementById('topProductosChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: @json($topProductosVendidos->pluck('titulo')),
+                datasets: [
+                    {
+                        label: 'Cantidad Vendida',
+                        data: @json($topProductosVendidos->pluck('total_vendido')),
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'Total Facturado ($)',
+                        data: @json($topProductosVendidos->pluck('total_facturado')),
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        yAxisID: 'y2'
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y1: {
+                        position: 'left',
+                        beginAtZero: true,
+                        title: { display: true, text: 'Cantidad Vendida' }
+                    },
+                    y2: {
+                        position: 'right',
+                        beginAtZero: true,
+                        title: { display: true, text: 'Facturado ($)' }
+                    }
+                },
                 responsive: true,
                 maintainAspectRatio: false
             }

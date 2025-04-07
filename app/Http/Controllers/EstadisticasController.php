@@ -23,9 +23,6 @@ class EstadisticasController extends Controller
             ->pluck('ml_account_id')
             ->toArray();
 
-        \Log::info('User ID autenticado:', ['user_id' => $userId]);
-        \Log::info('Cuentas de MercadoLibre asociadas:', ['ml_account_ids' => $mlAccountIds]);
-
         // Fechas desde el request o por defecto (últimos 30 días)
         $fechaInicio = $request->input('fecha_inicio')
             ? Carbon::parse($request->input('fecha_inicio'))->startOfDay()
@@ -34,28 +31,13 @@ class EstadisticasController extends Controller
             ? Carbon::parse($request->input('fecha_fin'))->endOfDay()
             : Carbon::now()->endOfDay();
 
-        \Log::info('Fechas recibidas:', [
-            'fecha_inicio_raw' => $request->input('fecha_inicio'),
-            'fecha_fin_raw' => $request->input('fecha_fin'),
-            'fecha_inicio_parsed' => $fechaInicio->toDateTimeString(),
-            'fecha_fin_parsed' => $fechaFin->toDateTimeString()
-        ]);
-
         $stockPorTipo = $this->estadisticasService->getStockPorTipo($mlAccountIds);
         $productosEnPromocion = $this->estadisticasService->getProductosEnPromocion($mlAccountIds);
         $productosPorEstado = $this->estadisticasService->getProductosPorEstado($mlAccountIds);
         $stockCritico = $this->estadisticasService->getStockCritico($mlAccountIds);
         $ventasPorPeriodo = $this->estadisticasService->getVentasPorPeriodo($mlAccountIds, $fechaInicio, $fechaFin);
         $ventasPorDiaSemana = $this->estadisticasService->getVentasPorDiaSemana($mlAccountIds);
-
-        \Log::info('Datos para la vista:', [
-            'stockPorTipo' => $stockPorTipo,
-            'productosEnPromocion' => $productosEnPromocion->toArray(),
-            'productosPorEstado' => $productosPorEstado->toArray(),
-            'stockCritico' => $stockCritico->toArray(),
-            'ventasPorPeriodo' => $ventasPorPeriodo->toArray(),
-            'ventasPorDiaSemana' => $ventasPorDiaSemana
-        ]);
+        $topProductosVendidos = $this->estadisticasService->getTopProductosVendidos($mlAccountIds, $fechaInicio, $fechaFin); // Nuevo
 
         return view('dashboard.estadisticas', compact(
             'stockPorTipo',
@@ -64,6 +46,7 @@ class EstadisticasController extends Controller
             'stockCritico',
             'ventasPorPeriodo',
             'ventasPorDiaSemana',
+            'topProductosVendidos', // Nuevo
             'fechaInicio',
             'fechaFin'
         ));

@@ -26,6 +26,27 @@ class EstadisticasService
         ];
     }
 
+    public function getTopProductosVendidos($mlAccountIds = [], $fechaInicio, $fechaFin)
+{
+    $query = DB::table('ordenes')
+        ->join('articulos', 'ordenes.ml_product_id', '=', 'articulos.ml_product_id') // Unimos por ml_product_id
+        ->select(
+            'articulos.titulo',
+            DB::raw('SUM(ordenes.cantidad) as total_vendido'),
+            DB::raw('SUM(ordenes.cantidad * ordenes.precio_unitario) as total_facturado')
+        )
+        ->whereBetween('ordenes.fecha_venta', [$fechaInicio, $fechaFin])
+        ->groupBy('articulos.titulo') // Agrupamos por título
+        ->orderBy('total_vendido', 'desc')
+        ->limit(10);
+
+    if (!empty($mlAccountIds)) {
+        $query->whereIn('ordenes.ml_account_id', $mlAccountIds);
+    }
+
+    return $query->get();
+}
+
     public function getProductosEnPromocion($mlAccountIds = [])
     {
         $query = DB::table('articulos')
