@@ -264,7 +264,9 @@
         charts.topProductosChart = new Chart(document.getElementById('topProductosChart').getContext('2d'), {
             type: 'bar',
             data: {
-                labels: @json($topProductosVendidos->pluck('titulo')->map(fn($titulo) => $titulo.length > 15 ? substr($titulo, 0, 15) . '...' : $titulo)),
+                labels: @json($topProductosVendidos->pluck('titulo')->map(function($titulo) {
+                    return strlen($titulo) > 15 ? substr($titulo, 0, 15) . '...' : $titulo;
+                })),
                 datasets: [
                     {
                         label: 'Cantidad Vendida',
