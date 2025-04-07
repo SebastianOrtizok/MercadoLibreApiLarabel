@@ -149,7 +149,6 @@
     </div>
 
     <script>
-    // Función para inicializar/destruir gráficos
     function initializeCharts() {
         Object.keys(charts).forEach(chartId => {
             if (charts[chartId]) {
@@ -265,7 +264,7 @@
         charts.topProductosChart = new Chart(document.getElementById('topProductosChart').getContext('2d'), {
             type: 'bar',
             data: {
-                labels: @json($topProductosVendidos->pluck('titulo')),
+                labels: @json($topProductosVendidos->pluck('titulo')->map(fn($titulo) => $titulo.length > 15 ? substr($titulo, 0, 15) . '...' : $titulo)),
                 datasets: [
                     {
                         label: 'Cantidad Vendida',
@@ -292,6 +291,22 @@
                         position: 'right',
                         beginAtZero: true,
                         title: { display: true, text: 'Facturado ($)' }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 90,
+                            minRotation: 90,
+                            font: { size: 10 }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return @json($topProductosVendidos->pluck('titulo'))[context[0].dataIndex];
+                            }
+                        }
                     }
                 },
                 responsive: true,
@@ -301,15 +316,13 @@
     }
 
     const charts = {};
-    initializeCharts(); // Inicializar al cargar la página
+    initializeCharts();
 
-    // Modal para pantalla completa
     const modal = $('#fullscreenModal');
     const modalTitle = $('#modalTitle');
     const fullscreenChartCanvas = document.getElementById('fullscreenChart');
     let fullscreenChart = null;
 
-    // Usar delegación de eventos
     $('.container').on('click', 'canvas', function() {
         const chartId = $(this).attr('id');
         const chartConfig = charts[chartId].config;
@@ -324,7 +337,6 @@
         if (fullscreenChart) fullscreenChart.destroy();
     });
 
-    // Filtro de fechas dinámico
     $('#dateFilterForm').on('submit', function(e) {
         e.preventDefault();
         const fechaInicio = $('#fecha_inicio').val();
@@ -342,7 +354,7 @@
             const doc = parser.parseFromString(html, 'text/html');
             const newContent = doc.querySelector('.container');
             document.querySelector('.container').replaceWith(newContent);
-            initializeCharts(); // Reinicializar gráficos después de actualizar contenido
+            initializeCharts();
         })
         .catch(error => console.error('Error al actualizar gráficos:', error));
     });
