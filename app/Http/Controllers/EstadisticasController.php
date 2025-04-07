@@ -26,9 +26,13 @@ class EstadisticasController extends Controller
         \Log::info('User ID autenticado:', ['user_id' => $userId]);
         \Log::info('Cuentas de MercadoLibre asociadas:', ['ml_account_ids' => $mlAccountIds]);
 
-        // Fechas por defecto: últimos 30 días
-        $fechaInicio = Carbon::now()->subDays(30)->startOfDay();
-        $fechaFin = Carbon::now()->endOfDay();
+        // Fechas desde el request o por defecto (últimos 30 días)
+        $fechaInicio = $request->input('fecha_inicio')
+            ? Carbon::parse($request->input('fecha_inicio'))->startOfDay()
+            : Carbon::now()->subDays(30)->startOfDay();
+        $fechaFin = $request->input('fecha_fin')
+            ? Carbon::parse($request->input('fecha_fin'))->endOfDay()
+            : Carbon::now()->endOfDay();
 
         $stockPorTipo = $this->estadisticasService->getStockPorTipo($mlAccountIds);
         $productosEnPromocion = $this->estadisticasService->getProductosEnPromocion($mlAccountIds);
