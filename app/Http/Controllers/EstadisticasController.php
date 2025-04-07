@@ -34,6 +34,13 @@ class EstadisticasController extends Controller
             ? Carbon::parse($request->input('fecha_fin'))->endOfDay()
             : Carbon::now()->endOfDay();
 
+        \Log::info('Fechas recibidas:', [
+            'fecha_inicio_raw' => $request->input('fecha_inicio'),
+            'fecha_fin_raw' => $request->input('fecha_fin'),
+            'fecha_inicio_parsed' => $fechaInicio->toDateTimeString(),
+            'fecha_fin_parsed' => $fechaFin->toDateTimeString()
+        ]);
+
         $stockPorTipo = $this->estadisticasService->getStockPorTipo($mlAccountIds);
         $productosEnPromocion = $this->estadisticasService->getProductosEnPromocion($mlAccountIds);
         $productosPorEstado = $this->estadisticasService->getProductosPorEstado($mlAccountIds);
@@ -46,7 +53,7 @@ class EstadisticasController extends Controller
             'productosEnPromocion' => $productosEnPromocion->toArray(),
             'productosPorEstado' => $productosPorEstado->toArray(),
             'stockCritico' => $stockCritico->toArray(),
-            'ventasPorPeriodo' => $ventasPorPeriodo,
+            'ventasPorPeriodo' => $ventasPorPeriodo->toArray(),
             'ventasPorDiaSemana' => $ventasPorDiaSemana
         ]);
 
