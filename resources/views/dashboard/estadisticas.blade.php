@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <!-- Cuadrícula de Gráficos -->
+     <!-- Cuadrícula de Gráficos -->
         <div class="row">
             <!-- Stock por Tipo -->
             <div class="col-md-4 col-lg-3 mb-4">
@@ -82,16 +82,15 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-
-        <!-- Top 10 Productos Más Vendidos -->
-        <div class="col-md-4 col-lg-3 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Top 10 Productos Vendidos</h5>
-                    <div style="height: 200px;">
-                        <canvas id="topProductosChart"></canvas>
+            <!-- Top 10 Productos Más Vendidos -->
+            <div class="col-md-4 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Top 10 Productos Vendidos</h5>
+                        <div style="height: 200px;">
+                            <canvas id="topProductosChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -152,14 +151,12 @@
     <script>
     // Función para inicializar/destruir gráficos
     function initializeCharts() {
-        // Destruir gráficos existentes si los hay
         Object.keys(charts).forEach(chartId => {
             if (charts[chartId]) {
                 charts[chartId].destroy();
             }
         });
 
-        // Inicializar nuevos gráficos
         charts.stockChart = new Chart(document.getElementById('stockChart').getContext('2d'), {
             type: 'doughnut',
             data: {
@@ -312,7 +309,8 @@
     const fullscreenChartCanvas = document.getElementById('fullscreenChart');
     let fullscreenChart = null;
 
-    $('canvas').on('click', function() {
+    // Usar delegación de eventos
+    $('.container').on('click', 'canvas', function() {
         const chartId = $(this).attr('id');
         const chartConfig = charts[chartId].config;
         modalTitle.text($(this).closest('.card').find('.card-title').text());
