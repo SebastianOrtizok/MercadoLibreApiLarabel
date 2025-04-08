@@ -39,10 +39,7 @@ class EstadisticasController extends Controller
         $ventasPorDiaSemana = $this->estadisticasService->getVentasPorDiaSemana($mlAccountIds);
         $topProductosVendidos = $this->estadisticasService->getTopProductosVendidos($mlAccountIds, $fechaInicio, $fechaFin);
         $totalFacturado = $this->estadisticasService->getTotalFacturado($mlAccountIds, $fechaInicio, $fechaFin);
-        $tasaConversion = $this->estadisticasService->getTasaConversionPorProducto($mlAccountIds, $fechaInicio, $fechaFin);
-
-        $topVentasPorCuenta = $tasaConversion['top_ventas'];
-        $bottomVentasPorCuenta = $tasaConversion['bottom_ventas'];
+        $topVentasPorCuenta = $this->estadisticasService->getTasaConversionPorProducto($mlAccountIds, $fechaInicio, $fechaFin);
 
         return view('dashboard.estadisticas', compact(
             'stockPorTipo',
@@ -53,8 +50,7 @@ class EstadisticasController extends Controller
             'ventasPorDiaSemana',
             'topProductosVendidos',
             'totalFacturado',
-            'topVentasPorCuenta',
-            'bottomVentasPorCuenta',
+            'topVentasPorCuenta', // Solo pasamos los top 20 por cuenta
             'fechaInicio',
             'fechaFin'
         ));

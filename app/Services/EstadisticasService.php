@@ -174,7 +174,6 @@ class EstadisticasService
         $dateTo = $fechaFin->lessThanOrEqualTo($now) ? $fechaFin : $now;
 
         $topVentasPorCuenta = [];
-        $bottomVentasPorCuenta = [];
 
         foreach ($mlAccountIds as $mlAccountId) {
             // Obtener los 20 más vendidos por cuenta
@@ -188,12 +187,14 @@ class EstadisticasService
                 ->limit(20)
                 ->get();
 
-            Log::info("Ventas por producto para cuenta $mlAccountId", ['count' => $ventasPorProducto->count(), 'data' => $ventasPorProducto->toArray()]);
+            Log::info("Ventas por producto para cuenta $mlAccountId", [
+                'count' => $ventasPorProducto->count(),
+                'data' => $ventasPorProducto->toArray()
+            ]);
 
             if ($ventasPorProducto->isEmpty()) {
                 Log::warning("No se encontraron ventas para cuenta $mlAccountId en el rango de fechas");
                 $topVentasPorCuenta[$mlAccountId] = collect();
-                $bottomVentasPorCuenta[$mlAccountId] = collect();
                 continue;
             }
 
@@ -218,18 +219,13 @@ class EstadisticasService
             });
 
             $topVentasPorCuenta[$mlAccountId] = $topResultados;
-            $bottomVentasPorCuenta[$mlAccountId] = collect(); // Por ahora solo top 20 por cuenta
         }
 
         Log::info('Resultados finales', [
-            'top_ventas' => array_map(fn($col) => $col->toArray(), $topVentasPorCuenta),
-            'bottom_ventas' => array_map(fn($col) => $col->toArray(), $bottomVentasPorCuenta)
+            'top_ventas' => array_map(fn($col) => $col->toArray(), $topVentasPorCuenta)
         ]);
 
-        return [
-            'top_ventas' => $topVentasPorCuenta,
-            'bottom_ventas' => $bottomVentasPorCuenta,
-        ];
+        return $topVentasPorCuenta; // Solo devolvemos top_ventas por cuenta
     }
 
     protected function getVisitasMultiplesProductos($userId, $mlAccountIds, $productIds, $fechaInicio, $fechaFin)
@@ -246,8 +242,6 @@ class EstadisticasService
         $dateTo = $fechaFin->lessThanOrEqualTo($now) ? $fechaFin : $now;
 
         Log::info('Fechas ajustadas para API', [
-            'original_date_from' => $fechaInicio->toDateString(),
-            'original_date_to' => $fechaFin->toDateString(),
             'adjusted_date_from' => $dateFrom->toIso8601ZuluString(),
             'adjusted_date_to' => $dateTo->toIso8601ZuluString()
         ]);
@@ -255,8 +249,6 @@ class EstadisticasService
         $chunks = array_chunk($productIds, 20);
         $mlAccountId = $mlAccountIds[0]; // Solo una cuenta por llamada
         $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
-
-        Log::info('Access Token', ['ml_account_id' => $mlAccountId, 'token' => substr($accessToken, 0, 10) . '...']);
 
         foreach ($chunks as $chunk) {
             $idsString = implode(',', $chunk);
