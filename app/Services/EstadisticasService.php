@@ -231,62 +231,64 @@ class EstadisticasService
     protected function getVisitasMultiplesProductos($userId, $mlAccountIds, $productIds, $fechaInicio, $fechaFin)
     {
         $visitasPorProducto = [];
+
         if (empty($productIds)) {
             Log::warning('No hay product IDs para consultar visitas');
             return $visitasPorProducto;
         }
 
-        $now = Carbon::now()->subHours(48); // 48 horas atrás por el retraso
+        $now = Carbon::now()->subHours(48); // 48 horas atrás por retraso
         $maxDateFrom = $now->copy()->subDays(149)->startOfDay();
 
-        // Ajustamos las fechas y aseguramos que dateFrom <= dateTo
         $dateFrom = $fechaInicio->greaterThan($maxDateFrom) ? $fechaInicio->copy()->startOfDay() : $maxDateFrom;
         $dateTo = $fechaFin->lessThanOrEqualTo($now) ? $fechaFin->copy()->startOfDay() : $now->copy()->startOfDay();
 
         if ($dateFrom->greaterThan($dateTo)) {
-            [$dateFrom, $dateTo] = [$dateTo, $dateFrom]; // Invertimos si es necesario
+            [$dateFrom, $dateTo] = [$dateTo, $dateFrom];
         }
-
-        $daysDiff = $dateTo->diffInDays($dateFrom) + 1; // +1 para incluir el día final
-
-        Log::info('Fechas ajustadas para API', [
-            'adjusted_date_from' => $dateFrom->toDateString(),
-            'adjusted_date_to' => $dateTo->toDateString(),
-            'days_diff' => $daysDiff
-        ]);
 
         $mlAccountId = $mlAccountIds[0];
         $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
 
-        foreach ($productIds as $itemId) {
-            Log::info('Consultando visitas para item', [
-                'item_id' => $itemId,
-                'last' => min($daysDiff, 150),
-                'ending' => $dateTo->toDateString()
+        // Convertimos los product IDs a string separados por coma (máximo 50 por request)
+        $chunks = array_chunk($productIds, 50); // si son más de 50, partimos en grupos
+
+        foreach ($chunks as $chunk) {
+            $ids = implode(',', $chunk);
+
+            Log::info('Consultando visitas con endpoint múltiple', [
+                'ids' => $ids,
+                'date_from' => $dateFrom->toDateString(),
+                'date_to' => $dateTo->toDateString()
             ]);
 
             $response = Http::withHeaders([
                 'Authorization' => "Bearer {$accessToken}"
-            ])->get("https://api.mercadolibre.com/items/{$itemId}/visits/time_window", [
-                'last' => min($daysDiff, 150), // Días en el rango, máximo 150
-                'unit' => 'day',
-                'ending' => $dateTo->toDateString(), // Ej: 2025-04-05
+            ])->get('https://api.mercadolibre.com/items/visits', [
+                'ids' => $ids,
+                'date_from' => $dateFrom->toDateString(),
+                'date_to' => $dateTo->toDateString(),
             ]);
 
-            Log::info('Respuesta de la API', [
+            Log::info('Respuesta del endpoint múltiple', [
                 'status' => $response->status(),
                 'body' => $response->body()
             ]);
 
             if ($response->successful()) {
                 $data = $response->json();
-                $totalVisits = array_sum(array_column($data['results'], 'total'));
-                $visitasPorProducto[$itemId] = $totalVisits;
+
+                foreach ($data as $item) {
+                    if (isset($item['item_id'])) {
+                        $visitasPorProducto[$item['item_id']] = $item['total_visits'] ?? 0;
+                    }
+                }
             } else {
-                Log::error('Error al consultar visitas', ['response' => $response->body()]);
+                Log::error('Error en endpoint múltiple', ['response' => $response->body()]);
             }
         }
 
         return $visitasPorProducto;
     }
+
 }
