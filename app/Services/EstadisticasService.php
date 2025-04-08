@@ -267,8 +267,8 @@ class EstadisticasService
         Log::info('Fechas ajustadas para API', [
             'original_date_from' => $fechaInicio->toDateString(),
             'original_date_to' => $fechaFin->toDateString(),
-            'adjusted_date_from' => $dateFrom->toDateString(),
-            'adjusted_date_to' => $dateTo->toDateString()
+            'adjusted_date_from' => $dateFrom->toIso8601ZuluString(),
+            'adjusted_date_to' => $dateTo->toIso8601ZuluString()
         ]);
 
         $chunks = array_chunk($productIds, 20);
@@ -283,8 +283,8 @@ class EstadisticasService
 
                 Log::info('Consultando visitas a la API', [
                     'ids' => $idsString,
-                    'date_from' => $dateFrom->toDateString(),
-                    'date_to' => $dateTo->toDateString(),
+                    'date_from' => $dateFrom->toIso8601ZuluString(),
+                    'date_to' => $dateTo->toIso8601ZuluString(),
                     'ml_account_id' => $mlAccountId
                 ]);
 
@@ -292,8 +292,8 @@ class EstadisticasService
                     'Authorization' => "Bearer {$accessToken}"
                 ])->get("https://api.mercadolibre.com/items/visits", [
                     'ids' => $idsString,
-                    'date_from' => $dateFrom->toDateString(),
-                    'date_to' => $dateTo->toDateString(),
+                    'date_from' => $dateFrom->toIso8601ZuluString(), // Ej. 2025-03-08T00:00:00Z
+                    'date_to' => $dateTo->toIso8601ZuluString(),     // Ej. 2025-04-07T23:59:59Z
                 ]);
 
                 Log::info('Respuesta de la API', [
