@@ -246,7 +246,7 @@ class EstadisticasService
             [$dateFrom, $dateTo] = [$dateTo, $dateFrom]; // Invertimos si es necesario
         }
 
-        $daysDiff = $dateTo->diffInDays($dateFrom); // Siempre positivo
+        $daysDiff = $dateTo->diffInDays($dateFrom) + 1; // +1 para incluir el día final
 
         Log::info('Fechas ajustadas para API', [
             'adjusted_date_from' => $dateFrom->toDateString(),
