@@ -251,7 +251,8 @@ class EstadisticasService
         $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
 
         // Convertimos los product IDs a string separados por coma (máximo 50 por request)
-        $chunks = array_chunk($productIds, 50); // si son más de 50, partimos en grupos
+        $chunks = array_chunk($productIds, 20); // límite real del endpoint es 20
+
 
         foreach ($chunks as $chunk) {
             $ids = implode(',', $chunk);
