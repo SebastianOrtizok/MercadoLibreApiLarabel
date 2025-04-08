@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Services\EstadisticasService;
 use App\Services\MercadoLibreService;
 use Illuminate\Http\Request;
