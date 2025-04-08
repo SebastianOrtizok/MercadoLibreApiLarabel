@@ -27,10 +27,10 @@ class EstadisticasController extends Controller
         $fechaInicio = $request->input('fecha_inicio')
             ? Carbon::parse($request->input('fecha_inicio'))->startOfDay()
             : Carbon::now()->subDays(30)->startOfDay();
-        $fechaFin = $request->input('fecha_fin')
-            ? Carbon::parse($request->input('fecha_fin'))->endOfDay()
+            $fechaFin = $request->input('fecha_fin')
+            ? Carbon::parse($request->input('fecha_fin'))->endOfDay()->min(Carbon::now()) // Limitar al presente
             : Carbon::now()->endOfDay();
-
+            
         $stockPorTipo = $this->estadisticasService->getStockPorTipo($mlAccountIds);
         $productosEnPromocion = $this->estadisticasService->getProductosEnPromocion($mlAccountIds);
         $productosPorEstado = $this->estadisticasService->getProductosPorEstado($mlAccountIds);

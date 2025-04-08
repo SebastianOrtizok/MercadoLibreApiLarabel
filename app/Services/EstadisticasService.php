@@ -265,14 +265,22 @@ class EstadisticasService
 
             foreach ($chunks as $chunk) {
                 $idsString = implode(',', $chunk);
-                Log::info('Consultando visitas a la API', ['ids' => $idsString]);
+                $dateFrom = $fechaInicio->toDateString();
+                $dateTo = $fechaFin->toDateString();
+
+                Log::info('Consultando visitas a la API', [
+                    'ids' => $idsString,
+                    'date_from' => $dateFrom,
+                    'date_to' => $dateTo,
+                    'ml_account_id' => $mlAccountId
+                ]);
 
                 $response = Http::withHeaders([
                     'Authorization' => "Bearer {$accessToken}"
                 ])->get("https://api.mercadolibre.com/items/visits", [
                     'ids' => $idsString,
-                    'date_from' => $fechaInicio->toDateString(),
-                    'date_to' => $fechaFin->toDateString(),
+                    'date_from' => $dateFrom,
+                    'date_to' => $dateTo,
                 ]);
 
                 Log::info('Respuesta de la API', [
@@ -283,7 +291,6 @@ class EstadisticasService
                 if ($response->successful()) {
                     $data = $response->json();
                     foreach ($data as $item) {
-                        // Sumar visitas si el producto ya existe (para múltiples cuentas)
                         $visitasPorProducto[$item['id']] = ($visitasPorProducto[$item['id']] ?? 0) + $item['total_visits'];
                     }
                 } else {
