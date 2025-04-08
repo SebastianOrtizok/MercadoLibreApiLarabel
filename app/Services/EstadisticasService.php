@@ -236,36 +236,28 @@ class EstadisticasService
             return $visitasPorProducto;
         }
 
-        $now = Carbon::now()->subHours(48); // 48 horas atrás por el retraso de la API
+        $now = Carbon::now()->subHours(48); // 48 horas atrás por el retraso
         $maxDateFrom = $now->copy()->subDays(149)->startOfDay();
         $dateFrom = $fechaInicio->greaterThan($maxDateFrom) ? $fechaInicio : $maxDateFrom;
         $dateTo = $fechaFin->lessThanOrEqualTo($now) ? $fechaFin : $now;
+        $daysDiff = $dateTo->diffInDays($dateFrom);
 
-        Log::info('Fechas ajustadas para API', [
-            'adjusted_date_from' => $dateFrom->toDateString(), // YYYY-MM-DD
-            'adjusted_date_to' => $dateTo->toDateString()     // YYYY-MM-DD
-        ]);
-
-        $chunks = array_chunk($productIds, 20);
         $mlAccountId = $mlAccountIds[0];
         $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
 
-        foreach ($chunks as $chunk) {
-            $idsString = implode(',', $chunk);
-
-            Log::info('Consultando visitas a la API', [
-                'ids' => $idsString,
-                'date_from' => $dateFrom->toDateString(),
-                'date_to' => $dateTo->toDateString(),
-                'ml_account_id' => $mlAccountId
+        foreach ($productIds as $itemId) {
+            Log::info('Consultando visitas para item', [
+                'item_id' => $itemId,
+                'last' => min($daysDiff, 150),
+                'ending' => $dateTo->toDateString()
             ]);
 
             $response = Http::withHeaders([
                 'Authorization' => "Bearer {$accessToken}"
-            ])->get("https://api.mercadolibre.com/items/visits", [
-                'ids' => $idsString,
-                'date_from' => $dateFrom->toDateString(), // Ej: 2025-03-08
-                'date_to' => $dateTo->toDateString(),     // Ej: 2025-04-05
+            ])->get("https://api.mercadolibre.com/items/{$itemId}/visits/time_window", [
+                'last' => min($daysDiff, 150), // Días en el rango, máximo 150
+                'unit' => 'day',
+                'ending' => $dateTo->toDateString(), // Ej: 2025-04-05
             ]);
 
             Log::info('Respuesta de la API', [
@@ -275,9 +267,8 @@ class EstadisticasService
 
             if ($response->successful()) {
                 $data = $response->json();
-                foreach ($data as $item) {
-                    $visitasPorProducto[$item['item_id']] = $item['total_visits'];
-                }
+                $totalVisits = array_sum(array_column($data['results'], 'total'));
+                $visitasPorProducto[$itemId] = $totalVisits;
             } else {
                 Log::error('Error al consultar visitas', ['response' => $response->body()]);
             }
