@@ -236,14 +236,14 @@ class EstadisticasService
             return $visitasPorProducto;
         }
 
-        $now = Carbon::now()->subHours(48); // Ajustamos 48 horas atrás por el retraso de la API
-        $maxDateFrom = $now->copy()->subDays(149)->startOfDay(); // Máximo 150 días atrás
+        $now = Carbon::now()->subHours(48); // 48 horas atrás por el retraso de la API
+        $maxDateFrom = $now->copy()->subDays(149)->startOfDay();
         $dateFrom = $fechaInicio->greaterThan($maxDateFrom) ? $fechaInicio : $maxDateFrom;
         $dateTo = $fechaFin->lessThanOrEqualTo($now) ? $fechaFin : $now;
 
         Log::info('Fechas ajustadas para API', [
-            'adjusted_date_from' => $dateFrom->toIso8601ZuluString(),
-            'adjusted_date_to' => $dateTo->toIso8601ZuluString()
+            'adjusted_date_from' => $dateFrom->toDateString(), // YYYY-MM-DD
+            'adjusted_date_to' => $dateTo->toDateString()     // YYYY-MM-DD
         ]);
 
         $chunks = array_chunk($productIds, 20);
@@ -255,8 +255,8 @@ class EstadisticasService
 
             Log::info('Consultando visitas a la API', [
                 'ids' => $idsString,
-                'date_from' => $dateFrom->toIso8601ZuluString(),
-                'date_to' => $dateTo->toIso8601ZuluString(),
+                'date_from' => $dateFrom->toDateString(),
+                'date_to' => $dateTo->toDateString(),
                 'ml_account_id' => $mlAccountId
             ]);
 
@@ -264,8 +264,8 @@ class EstadisticasService
                 'Authorization' => "Bearer {$accessToken}"
             ])->get("https://api.mercadolibre.com/items/visits", [
                 'ids' => $idsString,
-                'date_from' => $dateFrom->toIso8601ZuluString(),
-                'date_to' => $dateTo->toIso8601ZuluString(),
+                'date_from' => $dateFrom->toDateString(), // Ej: 2025-03-08
+                'date_to' => $dateTo->toDateString(),     // Ej: 2025-04-05
             ]);
 
             Log::info('Respuesta de la API', [
