@@ -240,7 +240,19 @@ class EstadisticasService
         $maxDateFrom = $now->copy()->subDays(149)->startOfDay();
         $dateFrom = $fechaInicio->greaterThan($maxDateFrom) ? $fechaInicio : $maxDateFrom;
         $dateTo = $fechaFin->lessThanOrEqualTo($now) ? $fechaFin : $now;
-        $daysDiff = $dateTo->diffInDays($dateFrom);
+
+        // Aseguramos que dateFrom sea menor o igual a dateTo
+        if ($dateFrom->greaterThan($dateTo)) {
+            [$dateFrom, $dateTo] = [$dateTo, $dateFrom]; // Invertimos si es necesario
+        }
+
+        $daysDiff = $dateTo->diffInDays($dateFrom); // Siempre positivo
+
+        Log::info('Fechas ajustadas para API', [
+            'adjusted_date_from' => $dateFrom->toDateString(),
+            'adjusted_date_to' => $dateTo->toDateString(),
+            'days_diff' => $daysDiff
+        ]);
 
         $mlAccountId = $mlAccountIds[0];
         $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
