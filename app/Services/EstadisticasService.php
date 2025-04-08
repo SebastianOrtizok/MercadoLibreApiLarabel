@@ -184,7 +184,7 @@ class EstadisticasService
                 ->whereNotNull('ml_product_id')
                 ->groupBy('ml_product_id')
                 ->orderBy('total_vendido', 'desc')
-                ->limit(20)
+                ->limit(1)
                 ->get();
 
             Log::info("Ventas por producto para cuenta $mlAccountId", [
@@ -251,8 +251,8 @@ class EstadisticasService
         $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
 
         // Convertimos los product IDs a string separados por coma (máximo 50 por request)
-        $chunks = [ [ $productIds[0] ] ]; // fuerza solo 1 producto
-        // no funca asi $chunks = array_chunk($productIds, 5);
+        // $chunks = [ [ $productIds[0] ] ]; // fuerza solo 1 producto
+        $chunks = array_chunk($productIds, 5);
 
         foreach ($chunks as $chunk) {
             $ids = implode(',', $chunk);
