@@ -257,21 +257,33 @@ class EstadisticasService
             return $visitasPorProducto;
         }
 
-        // Dividir en bloques de 20
+        // Asegurar que el rango no exceda 150 días y no sea futuro
+        $now = Carbon::now();
+        $maxDateFrom = $now->copy()->subDays(149)->startOfDay();
+        $dateFrom = $fechaInicio->greaterThan($maxDateFrom) ? $fechaInicio : $maxDateFrom;
+        $dateTo = $fechaFin->lessThanOrEqualTo($now) ? $fechaFin : $now;
+
+        Log::info('Fechas ajustadas para API', [
+            'original_date_from' => $fechaInicio->toDateString(),
+            'original_date_to' => $fechaFin->toDateString(),
+            'adjusted_date_from' => $dateFrom->toDateString(),
+            'adjusted_date_to' => $dateTo->toDateString()
+        ]);
+
         $chunks = array_chunk($productIds, 20);
 
         foreach ($mlAccountIds as $mlAccountId) {
             $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
 
+            Log::info('Access Token', ['ml_account_id' => $mlAccountId, 'token' => substr($accessToken, 0, 10) . '...']);
+
             foreach ($chunks as $chunk) {
                 $idsString = implode(',', $chunk);
-                $dateFrom = $fechaInicio->toDateString();
-                $dateTo = $fechaFin->toDateString();
 
                 Log::info('Consultando visitas a la API', [
                     'ids' => $idsString,
-                    'date_from' => $dateFrom,
-                    'date_to' => $dateTo,
+                    'date_from' => $dateFrom->toDateString(),
+                    'date_to' => $dateTo->toDateString(),
                     'ml_account_id' => $mlAccountId
                 ]);
 
@@ -279,8 +291,8 @@ class EstadisticasService
                     'Authorization' => "Bearer {$accessToken}"
                 ])->get("https://api.mercadolibre.com/items/visits", [
                     'ids' => $idsString,
-                    'date_from' => $dateFrom,
-                    'date_to' => $dateTo,
+                    'date_from' => $dateFrom->toDateString(),
+                    'date_to' => $dateTo->toDateString(),
                 ]);
 
                 Log::info('Respuesta de la API', [
@@ -291,7 +303,7 @@ class EstadisticasService
                 if ($response->successful()) {
                     $data = $response->json();
                     foreach ($data as $item) {
-                        $visitasPorProducto[$item['id']] = ($visitasPorProducto[$item['id']] ?? 0) + $item['total_visits'];
+                        $visitasPorProducto[$item['item_id']] = $item['total_visits'];
                     }
                 } else {
                     Log::error('Error al consultar visitas', ['response' => $response->body()]);
