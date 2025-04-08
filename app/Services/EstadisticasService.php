@@ -250,7 +250,9 @@ class EstadisticasService
         $mlAccountId = $mlAccountIds[0];
         $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
 
-        $chunks = array_chunk($productIds, 10);
+        // Convertimos los product IDs a string separados por coma (máximo 50 por request)
+        //$chunks = [ [ $productIds[0] ] ]; // fuerza solo 1 producto
+        $chunks = array_chunk($productIds, 5);
 
         foreach ($chunks as $chunk) {
             $ids = implode(',', $chunk);
@@ -289,6 +291,5 @@ class EstadisticasService
 
         return $visitasPorProducto;
     }
-
 
 }
