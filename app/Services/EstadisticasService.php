@@ -238,10 +238,11 @@ class EstadisticasService
 
         $now = Carbon::now()->subHours(48); // 48 horas atrás por el retraso
         $maxDateFrom = $now->copy()->subDays(149)->startOfDay();
-        $dateFrom = $fechaInicio->greaterThan($maxDateFrom) ? $fechaInicio : $maxDateFrom;
-        $dateTo = $fechaFin->lessThanOrEqualTo($now) ? $fechaFin : $now;
 
-        // Aseguramos que dateFrom sea menor o igual a dateTo
+        // Ajustamos las fechas y aseguramos que dateFrom <= dateTo
+        $dateFrom = $fechaInicio->greaterThan($maxDateFrom) ? $fechaInicio->copy()->startOfDay() : $maxDateFrom;
+        $dateTo = $fechaFin->lessThanOrEqualTo($now) ? $fechaFin->copy()->startOfDay() : $now->copy()->startOfDay();
+
         if ($dateFrom->greaterThan($dateTo)) {
             [$dateFrom, $dateTo] = [$dateTo, $dateFrom]; // Invertimos si es necesario
         }
