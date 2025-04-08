@@ -236,8 +236,8 @@ class EstadisticasService
             return $visitasPorProducto;
         }
 
-        $now = Carbon::now();
-        $maxDateFrom = $now->copy()->subDays(149)->startOfDay();
+        $now = Carbon::now()->subHours(48); // Ajustamos 48 horas atrás por el retraso de la API
+        $maxDateFrom = $now->copy()->subDays(149)->startOfDay(); // Máximo 150 días atrás
         $dateFrom = $fechaInicio->greaterThan($maxDateFrom) ? $fechaInicio : $maxDateFrom;
         $dateTo = $fechaFin->lessThanOrEqualTo($now) ? $fechaFin : $now;
 
@@ -247,7 +247,7 @@ class EstadisticasService
         ]);
 
         $chunks = array_chunk($productIds, 20);
-        $mlAccountId = $mlAccountIds[0]; // Solo una cuenta por llamada
+        $mlAccountId = $mlAccountIds[0];
         $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
 
         foreach ($chunks as $chunk) {
