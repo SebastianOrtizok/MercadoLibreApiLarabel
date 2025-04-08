@@ -1,18 +1,20 @@
 <?php
-namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+namespace App\Http\Controllers\Dashboard;
+
+use App\Http\Controllers\Controller;
 use App\Services\EstadisticasService;
+use App\Services\MercadoLibreService;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class EstadisticasController extends Controller
 {
     protected $estadisticasService;
 
-    public function __construct(EstadisticasService $estadisticasService)
+    public function __construct(EstadisticasService $estadisticasService, MercadoLibreService $mercadoLibreService)
     {
-        $this->estadisticasService = $estadisticasService;
-        // $this->middleware('auth'); // Descomenta cuando configures autenticación
+        $this->estadisticasService = new EstadisticasService($mercadoLibreService);
     }
 
     public function index(Request $request)
@@ -37,7 +39,11 @@ class EstadisticasController extends Controller
         $ventasPorPeriodo = $this->estadisticasService->getVentasPorPeriodo($mlAccountIds, $fechaInicio, $fechaFin);
         $ventasPorDiaSemana = $this->estadisticasService->getVentasPorDiaSemana($mlAccountIds);
         $topProductosVendidos = $this->estadisticasService->getTopProductosVendidos($mlAccountIds, $fechaInicio, $fechaFin);
-        $totalFacturado = $this->estadisticasService->getTotalFacturado($mlAccountIds, $fechaInicio, $fechaFin); // Nuevo
+        $totalFacturado = $this->estadisticasService->getTotalFacturado($mlAccountIds, $fechaInicio, $fechaFin);
+        $tasaConversion = $this->estadisticasService->getTasaConversionPorProducto($mlAccountIds, $fechaInicio, $fechaFin);
+
+        $topVentas = $tasaConversion['top_ventas'];
+        $bottomVentas = $tasaConversion['bottom_ventas'];
 
         return view('dashboard.estadisticas', compact(
             'stockPorTipo',
@@ -47,7 +53,9 @@ class EstadisticasController extends Controller
             'ventasPorPeriodo',
             'ventasPorDiaSemana',
             'topProductosVendidos',
-            'totalFacturado', // Nuevo
+            'totalFacturado',
+            'topVentas',
+            'bottomVentas',
             'fechaInicio',
             'fechaFin'
         ));

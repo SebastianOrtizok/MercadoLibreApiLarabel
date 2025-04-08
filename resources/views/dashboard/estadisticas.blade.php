@@ -1,4 +1,5 @@
 @extends('layouts.dashboard')
+
 @section('content')
     <div class="container py-4">
         <h1 class="mb-4">Estadísticas</h1>
@@ -99,6 +100,30 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Top 20 Productos con Más Ventas -->
+            <div class="col-md-4 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Top 20 Más Vendidos</h5>
+                        <div style="height: 200px;">
+                            <canvas id="topVentasChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom 20 Productos con Menos Ventas -->
+            <div class="col-md-4 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Bottom 20 Menos Vendidos</h5>
+                        <div style="height: 200px;">
+                            <canvas id="bottomVentasChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Modal para Pantalla Completa -->
@@ -168,7 +193,7 @@
                     }]
                 },
                 options: {
-                    plugins: { legend: { position: ' de arriba' } },
+                    plugins: { legend: { position: 'top' } },
                     responsive: true,
                     maintainAspectRatio: false
                 }
@@ -309,6 +334,102 @@
                             callbacks: {
                                 title: function(context) {
                                     return @json($topProductosVendidos->pluck('titulo'))[context[0].dataIndex];
+                                }
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            charts.topVentasChart = new Chart(document.getElementById('topVentasChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: @json($topVentas->pluck('titulo')->map(function($titulo) {
+                        return strlen($titulo) > 15 ? substr($titulo, 0, 15) . '...' : $titulo;
+                    })),
+                    datasets: [{
+                        label: 'Tasa de Conversión (%)',
+                        data: @json($topVentas->pluck('tasa_conversion')),
+                        backgroundColor: 'rgba(153, 102, 255, 0.6)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Tasa de Conversión (%)' }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 90,
+                                minRotation: 90,
+                                font: { size: 10 }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return @json($topVentas->pluck('titulo'))[context[0].dataIndex];
+                                },
+                                label: function(context) {
+                                    const item = @json($topVentas)[context.dataIndex];
+                                    return [
+                                        `Ventas: ${item.total_vendido}`,
+                                        `Visitas: ${item.visitas}`,
+                                        `Tasa: ${item.tasa_conversion}%`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            charts.bottomVentasChart = new Chart(document.getElementById('bottomVentasChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: @json($bottomVentas->pluck('titulo')->map(function($titulo) {
+                        return strlen($titulo) > 15 ? substr($titulo, 0, 15) . '...' : $titulo;
+                    })),
+                    datasets: [{
+                        label: 'Tasa de Conversión (%)',
+                        data: @json($bottomVentas->pluck('tasa_conversion')),
+                        backgroundColor: 'rgba(255, 159, 64, 0.6)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Tasa de Conversión (%)' }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 90,
+                                minRotation: 90,
+                                font: { size: 10 }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return @json($bottomVentas->pluck('titulo'))[context[0].dataIndex];
+                                },
+                                label: function(context) {
+                                    const item = @json($bottomVentas)[context.dataIndex];
+                                    return [
+                                        `Ventas: ${item.total_vendido}`,
+                                        `Visitas: ${item.visitas}`,
+                                        `Tasa: ${item.tasa_conversion}%`
+                                    ];
                                 }
                             }
                         }
