@@ -161,6 +161,12 @@ class EstadisticasService
 
     public function getTasaConversionPorProducto($mlAccountIds = [], $fechaInicio, $fechaFin)
     {
+        Log::info('getTasaConversionPorProducto iniciado', [
+            'mlAccountIds' => $mlAccountIds,
+            'fechaInicio' => $fechaInicio->toDateTimeString(),
+            'fechaFin' => $fechaFin->toDateTimeString()
+        ]);
+
         // Obtener productos vendidos ordenados por ventas (descendente)
         $ventasPorProducto = DB::table('ordenes')
             ->select('ml_product_id', DB::raw('SUM(cantidad) as total_vendido'))
@@ -171,19 +177,32 @@ class EstadisticasService
             ->orderBy('total_vendido', 'desc')
             ->get();
 
+        Log::info('Ventas por producto', ['count' => $ventasPorProducto->count(), 'data' => $ventasPorProducto->toArray()]);
+
+        if ($ventasPorProducto->isEmpty()) {
+            Log::warning('No se encontraron ventas en el rango de fechas');
+            return ['top_ventas' => collect(), 'bottom_ventas' => collect()];
+        }
+
         // Tomar los 20 con más ventas y los 20 con menos ventas
         $top20Ventas = $ventasPorProducto->take(20);
         $bottom20Ventas = $ventasPorProducto->slice(-20);
+
+        Log::info('Top 20 ventas', ['data' => $top20Ventas->toArray()]);
+        Log::info('Bottom 20 ventas', ['data' => $bottom20Ventas->toArray()]);
 
         // Combinar los ml_product_id de ambos grupos (máximo 40 ítems)
         $productIds = $top20Ventas->pluck('ml_product_id')
             ->merge($bottom20Ventas->pluck('ml_product_id'))
             ->unique()
-            ->take(50) // Límite seguro según la API
             ->toArray();
+
+        Log::info('Product IDs para consultar visitas', ['productIds' => $productIds]);
 
         $userId = auth()->id();
         $visitasPorProducto = $this->getVisitasMultiplesProductos($userId, $mlAccountIds, $productIds, $fechaInicio, $fechaFin);
+
+        Log::info('Visitas por producto', ['data' => $visitasPorProducto]);
 
         // Procesar top 20
         $topResultados = $top20Ventas->map(function ($producto) use ($visitasPorProducto) {
@@ -219,6 +238,11 @@ class EstadisticasService
             ];
         });
 
+        Log::info('Resultados finales', [
+            'top_ventas' => $topResultados->toArray(),
+            'bottom_ventas' => $bottomResultados->toArray()
+        ]);
+
         return [
             'top_ventas' => $topResultados,
             'bottom_ventas' => $bottomResultados,
@@ -229,25 +253,41 @@ class EstadisticasService
     {
         $visitasPorProducto = [];
         if (empty($productIds)) {
+            Log::warning('No hay product IDs para consultar visitas');
             return $visitasPorProducto;
         }
 
-        // Hacer una sola consulta con hasta 50 ítems
-        $idsString = implode(',', array_slice($productIds, 0, 50)); // Asegurar máximo 50
+        // Dividir en bloques de 20
+        $chunks = array_chunk($productIds, 20);
+
         foreach ($mlAccountIds as $mlAccountId) {
             $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
-            $response = Http::withHeaders([
-                'Authorization' => "Bearer {$accessToken}"
-            ])->get("https://api.mercadolibre.com/items/visits", [
-                'ids' => $idsString,
-                'date_from' => $fechaInicio->toDateString(),
-                'date_to' => $fechaFin->toDateString(),
-            ]);
 
-            if ($response->successful()) {
-                $data = $response->json();
-                foreach ($data as $item) {
-                    $visitasPorProducto[$item['id']] = $item['total_visits'];
+            foreach ($chunks as $chunk) {
+                $idsString = implode(',', $chunk);
+                Log::info('Consultando visitas a la API', ['ids' => $idsString]);
+
+                $response = Http::withHeaders([
+                    'Authorization' => "Bearer {$accessToken}"
+                ])->get("https://api.mercadolibre.com/items/visits", [
+                    'ids' => $idsString,
+                    'date_from' => $fechaInicio->toDateString(),
+                    'date_to' => $fechaFin->toDateString(),
+                ]);
+
+                Log::info('Respuesta de la API', [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+
+                if ($response->successful()) {
+                    $data = $response->json();
+                    foreach ($data as $item) {
+                        // Sumar visitas si el producto ya existe (para múltiples cuentas)
+                        $visitasPorProducto[$item['id']] = ($visitasPorProducto[$item['id']] ?? 0) + $item['total_visits'];
+                    }
+                } else {
+                    Log::error('Error al consultar visitas', ['response' => $response->body()]);
                 }
             }
         }
