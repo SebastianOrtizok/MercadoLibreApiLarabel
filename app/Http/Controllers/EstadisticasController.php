@@ -27,10 +27,10 @@ class EstadisticasController extends Controller
         $fechaInicio = $request->input('fecha_inicio')
             ? Carbon::parse($request->input('fecha_inicio'))->startOfDay()
             : Carbon::now()->subDays(30)->startOfDay();
-            $fechaFin = $request->input('fecha_fin')
-            ? Carbon::parse($request->input('fecha_fin'))->endOfDay()->min(Carbon::now()) // Limitar al presente
+        $fechaFin = $request->input('fecha_fin')
+            ? Carbon::parse($request->input('fecha_fin'))->endOfDay()->min(Carbon::now())
             : Carbon::now()->endOfDay();
-            
+
         $stockPorTipo = $this->estadisticasService->getStockPorTipo($mlAccountIds);
         $productosEnPromocion = $this->estadisticasService->getProductosEnPromocion($mlAccountIds);
         $productosPorEstado = $this->estadisticasService->getProductosPorEstado($mlAccountIds);
@@ -41,8 +41,8 @@ class EstadisticasController extends Controller
         $totalFacturado = $this->estadisticasService->getTotalFacturado($mlAccountIds, $fechaInicio, $fechaFin);
         $tasaConversion = $this->estadisticasService->getTasaConversionPorProducto($mlAccountIds, $fechaInicio, $fechaFin);
 
-        $topVentas = $tasaConversion['top_ventas'];
-        $bottomVentas = $tasaConversion['bottom_ventas'];
+        $topVentasPorCuenta = $tasaConversion['top_ventas'];
+        $bottomVentasPorCuenta = $tasaConversion['bottom_ventas'];
 
         return view('dashboard.estadisticas', compact(
             'stockPorTipo',
@@ -53,8 +53,8 @@ class EstadisticasController extends Controller
             'ventasPorDiaSemana',
             'topProductosVendidos',
             'totalFacturado',
-            'topVentas',
-            'bottomVentas',
+            'topVentasPorCuenta',
+            'bottomVentasPorCuenta',
             'fechaInicio',
             'fechaFin'
         ));

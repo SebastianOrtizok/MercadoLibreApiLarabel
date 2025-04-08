@@ -168,85 +168,67 @@ class EstadisticasService
             'fechaFin' => $fechaFin->toDateTimeString()
         ]);
 
-        // Obtener productos vendidos ordenados por ventas (descendente)
-        $ventasPorProducto = DB::table('ordenes')
-            ->select('ml_product_id', DB::raw('SUM(cantidad) as total_vendido'))
-            ->whereBetween('fecha_venta', [$fechaInicio, $fechaFin])
-            ->whereNotNull('ml_product_id')
-            ->when(!empty($mlAccountIds), fn($query) => $query->whereIn('ml_account_id', $mlAccountIds))
-            ->groupBy('ml_product_id')
-            ->orderBy('total_vendido', 'desc')
-            ->get();
+        $now = Carbon::now();
+        $maxDateFrom = $now->copy()->subDays(149)->startOfDay();
+        $dateFrom = $fechaInicio->greaterThan($maxDateFrom) ? $fechaInicio : $maxDateFrom;
+        $dateTo = $fechaFin->lessThanOrEqualTo($now) ? $fechaFin : $now;
 
-        Log::info('Ventas por producto', ['count' => $ventasPorProducto->count(), 'data' => $ventasPorProducto->toArray()]);
+        $topVentasPorCuenta = [];
+        $bottomVentasPorCuenta = [];
 
-        if ($ventasPorProducto->isEmpty()) {
-            Log::warning('No se encontraron ventas en el rango de fechas');
-            return ['top_ventas' => collect(), 'bottom_ventas' => collect()];
+        foreach ($mlAccountIds as $mlAccountId) {
+            // Obtener los 20 más vendidos por cuenta
+            $ventasPorProducto = DB::table('ordenes')
+                ->select('ml_product_id', DB::raw('SUM(cantidad) as total_vendido'))
+                ->whereBetween('fecha_venta', [$dateFrom, $dateTo])
+                ->where('ml_account_id', $mlAccountId)
+                ->whereNotNull('ml_product_id')
+                ->groupBy('ml_product_id')
+                ->orderBy('total_vendido', 'desc')
+                ->limit(20)
+                ->get();
+
+            Log::info("Ventas por producto para cuenta $mlAccountId", ['count' => $ventasPorProducto->count(), 'data' => $ventasPorProducto->toArray()]);
+
+            if ($ventasPorProducto->isEmpty()) {
+                Log::warning("No se encontraron ventas para cuenta $mlAccountId en el rango de fechas");
+                $topVentasPorCuenta[$mlAccountId] = collect();
+                $bottomVentasPorCuenta[$mlAccountId] = collect();
+                continue;
+            }
+
+            $productIds = $ventasPorProducto->pluck('ml_product_id')->toArray();
+            $userId = auth()->id();
+            $visitasPorProducto = $this->getVisitasMultiplesProductos($userId, [$mlAccountId], $productIds, $dateFrom, $dateTo);
+
+            $topResultados = $ventasPorProducto->map(function ($producto) use ($visitasPorProducto) {
+                $visitas = $visitasPorProducto[$producto->ml_product_id] ?? 0;
+                $titulo = DB::table('articulos')
+                    ->where('ml_product_id', $producto->ml_product_id)
+                    ->value('titulo') ?? 'Producto Desconocido';
+                $tasaConversion = $visitas > 0 ? ($producto->total_vendido / $visitas) * 100 : 0;
+
+                return (object) [
+                    'ml_product_id' => $producto->ml_product_id,
+                    'titulo' => $titulo,
+                    'total_vendido' => $producto->total_vendido,
+                    'visitas' => $visitas,
+                    'tasa_conversion' => round($tasaConversion, 2),
+                ];
+            });
+
+            $topVentasPorCuenta[$mlAccountId] = $topResultados;
+            $bottomVentasPorCuenta[$mlAccountId] = collect(); // Por ahora solo top 20 por cuenta
         }
 
-        // Tomar los 20 con más ventas y los 20 con menos ventas
-        $top20Ventas = $ventasPorProducto->take(20);
-        $bottom20Ventas = $ventasPorProducto->slice(-20);
-
-        Log::info('Top 20 ventas', ['data' => $top20Ventas->toArray()]);
-        Log::info('Bottom 20 ventas', ['data' => $bottom20Ventas->toArray()]);
-
-        // Combinar los ml_product_id de ambos grupos (máximo 40 ítems)
-        $productIds = $top20Ventas->pluck('ml_product_id')
-            ->merge($bottom20Ventas->pluck('ml_product_id'))
-            ->unique()
-            ->toArray();
-
-        Log::info('Product IDs para consultar visitas', ['productIds' => $productIds]);
-
-        $userId = auth()->id();
-        $visitasPorProducto = $this->getVisitasMultiplesProductos($userId, $mlAccountIds, $productIds, $fechaInicio, $fechaFin);
-
-        Log::info('Visitas por producto', ['data' => $visitasPorProducto]);
-
-        // Procesar top 20
-        $topResultados = $top20Ventas->map(function ($producto) use ($visitasPorProducto) {
-            $visitas = $visitasPorProducto[$producto->ml_product_id] ?? 0;
-            $titulo = DB::table('articulos')
-                ->where('ml_product_id', $producto->ml_product_id)
-                ->value('titulo') ?? 'Producto Desconocido';
-            $tasaConversion = $visitas > 0 ? ($producto->total_vendido / $visitas) * 100 : 0;
-
-            return (object) [
-                'ml_product_id' => $producto->ml_product_id,
-                'titulo' => $titulo,
-                'total_vendido' => $producto->total_vendido,
-                'visitas' => $visitas,
-                'tasa_conversion' => round($tasaConversion, 2),
-            ];
-        });
-
-        // Procesar bottom 20
-        $bottomResultados = $bottom20Ventas->map(function ($producto) use ($visitasPorProducto) {
-            $visitas = $visitasPorProducto[$producto->ml_product_id] ?? 0;
-            $titulo = DB::table('articulos')
-                ->where('ml_product_id', $producto->ml_product_id)
-                ->value('titulo') ?? 'Producto Desconocido';
-            $tasaConversion = $visitas > 0 ? ($producto->total_vendido / $visitas) * 100 : 0;
-
-            return (object) [
-                'ml_product_id' => $producto->ml_product_id,
-                'titulo' => $titulo,
-                'total_vendido' => $producto->total_vendido,
-                'visitas' => $visitas,
-                'tasa_conversion' => round($tasaConversion, 2),
-            ];
-        });
-
         Log::info('Resultados finales', [
-            'top_ventas' => $topResultados->toArray(),
-            'bottom_ventas' => $bottomResultados->toArray()
+            'top_ventas' => array_map(fn($col) => $col->toArray(), $topVentasPorCuenta),
+            'bottom_ventas' => array_map(fn($col) => $col->toArray(), $bottomVentasPorCuenta)
         ]);
 
         return [
-            'top_ventas' => $topResultados,
-            'bottom_ventas' => $bottomResultados,
+            'top_ventas' => $topVentasPorCuenta,
+            'bottom_ventas' => $bottomVentasPorCuenta,
         ];
     }
 
@@ -258,7 +240,6 @@ class EstadisticasService
             return $visitasPorProducto;
         }
 
-        // Asegurar que el rango no exceda 150 días y no sea futuro
         $now = Carbon::now();
         $maxDateFrom = $now->copy()->subDays(149)->startOfDay();
         $dateFrom = $fechaInicio->greaterThan($maxDateFrom) ? $fechaInicio : $maxDateFrom;
@@ -272,43 +253,41 @@ class EstadisticasService
         ]);
 
         $chunks = array_chunk($productIds, 20);
+        $mlAccountId = $mlAccountIds[0]; // Solo una cuenta por llamada
+        $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
 
-        foreach ($mlAccountIds as $mlAccountId) {
-            $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
+        Log::info('Access Token', ['ml_account_id' => $mlAccountId, 'token' => substr($accessToken, 0, 10) . '...']);
 
-            Log::info('Access Token', ['ml_account_id' => $mlAccountId, 'token' => substr($accessToken, 0, 10) . '...']);
+        foreach ($chunks as $chunk) {
+            $idsString = implode(',', $chunk);
 
-            foreach ($chunks as $chunk) {
-                $idsString = implode(',', $chunk);
+            Log::info('Consultando visitas a la API', [
+                'ids' => $idsString,
+                'date_from' => $dateFrom->toIso8601ZuluString(),
+                'date_to' => $dateTo->toIso8601ZuluString(),
+                'ml_account_id' => $mlAccountId
+            ]);
 
-                Log::info('Consultando visitas a la API', [
-                    'ids' => $idsString,
-                    'date_from' => $dateFrom->toIso8601ZuluString(),
-                    'date_to' => $dateTo->toIso8601ZuluString(),
-                    'ml_account_id' => $mlAccountId
-                ]);
+            $response = Http::withHeaders([
+                'Authorization' => "Bearer {$accessToken}"
+            ])->get("https://api.mercadolibre.com/items/visits", [
+                'ids' => $idsString,
+                'date_from' => $dateFrom->toIso8601ZuluString(),
+                'date_to' => $dateTo->toIso8601ZuluString(),
+            ]);
 
-                $response = Http::withHeaders([
-                    'Authorization' => "Bearer {$accessToken}"
-                ])->get("https://api.mercadolibre.com/items/visits", [
-                    'ids' => $idsString,
-                    'date_from' => $dateFrom->toIso8601ZuluString(), // Ej. 2025-03-08T00:00:00Z
-                    'date_to' => $dateTo->toIso8601ZuluString(),     // Ej. 2025-04-07T23:59:59Z
-                ]);
+            Log::info('Respuesta de la API', [
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
 
-                Log::info('Respuesta de la API', [
-                    'status' => $response->status(),
-                    'body' => $response->body()
-                ]);
-
-                if ($response->successful()) {
-                    $data = $response->json();
-                    foreach ($data as $item) {
-                        $visitasPorProducto[$item['item_id']] = $item['total_visits'];
-                    }
-                } else {
-                    Log::error('Error al consultar visitas', ['response' => $response->body()]);
+            if ($response->successful()) {
+                $data = $response->json();
+                foreach ($data as $item) {
+                    $visitasPorProducto[$item['item_id']] = $item['total_visits'];
                 }
+            } else {
+                Log::error('Error al consultar visitas', ['response' => $response->body()]);
             }
         }
 

@@ -101,31 +101,33 @@
                 </div>
             </div>
 
-            <!-- Top 20 Productos con Más Ventas -->
-            <div class="col-md-4 col-lg-3 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Top 20 Más Vendidos</h5>
-                        <div style="height: 200px;">
-                            <canvas id="topVentasChart"></canvas>
+        <!-- Top 20 Productos con Más Ventas -->
+        <div class="row">
+            @foreach($topVentasPorCuenta as $mlAccountId => $topVentas)
+                <div class="col-md-6 col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Top 20 Más Vendidos - Cuenta {{ $mlAccountId }}</h5>
+                            <div style="height: 300px;">
+                                <canvas id="topVentasChart_{{ $mlAccountId }}"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endforeach
 
-            <!-- Bottom 20 Productos con Menos Ventas -->
-            <div class="col-md-4 col-lg-3 mb-4">
+            <!-- Bottom 20 Productos con Menos Ventas (vacío por ahora) -->
+            <div class="col-md-6 col-lg-6 mb-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">Bottom 20 Menos Vendidos</h5>
-                        <div style="height: 200px;">
+                        <div style="height: 300px;">
                             <canvas id="bottomVentasChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <!-- Modal para Pantalla Completa -->
         <div class="modal fade" id="fullscreenModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
             <div class="modal-dialog modal-xl" role="document">
@@ -175,6 +177,71 @@
         </div>
     </div>
 
+
+    <script>
+        @foreach($topVentasPorCuenta as $mlAccountId => $topVentas)
+            const topVentasData_{{ $mlAccountId }} = {
+                labels: [@foreach($topVentas as $producto)'{{ Str::limit($producto->titulo, 30) }}', @endforeach],
+                datasets: [{
+                    label: 'Tasa de Conversión (%)',
+                    data: [@foreach($topVentas as $producto){{ $producto->tasa_conversion }}, @endforeach],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            const topVentasConfig_{{ $mlAccountId }} = {
+                type: 'bar',
+                data: topVentasData_{{ $mlAccountId }},
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Tasa de Conversión (%)' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Tasa: ${context.raw}% (Ventas: {{ $topVentas->pluck('total_vendido')->toArray()[context.dataIndex] }}, Visitas: {{ $topVentas->pluck('visitas')->toArray()[context.dataIndex] }})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            new Chart(document.getElementById('topVentasChart_{{ $mlAccountId }}'), topVentasConfig_{{ $mlAccountId }});
+        @endforeach
+
+        // Bottom Ventas (vacío por ahora)
+        const bottomVentasData = {
+            labels: [],
+            datasets: [{
+                label: 'Tasa de Conversión (%)',
+                data: [],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        const bottomVentasConfig = {
+            type: 'bar',
+            data: bottomVentasData,
+            options: {
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'Tasa de Conversión (%)' } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        };
+
+        new Chart(document.getElementById('bottomVentasChart'), bottomVentasConfig);
+    </script>
     <script>
         function initializeCharts() {
             Object.keys(charts).forEach(chartId => {
