@@ -12,7 +12,8 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        '/login', // Excluye la ruta del login temporalmente.
+        '/login',
+        '/register', // Excluye temporalmente para probar
     ];
 
 }
