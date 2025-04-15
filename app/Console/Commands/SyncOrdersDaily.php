@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
-class SyncOrdersHourly extends Command // Renombré para claridad
+class SyncOrdersDaily extends Command // Renombré para claridad
 {
-    protected $signature = 'orders:sync-hourly';
+    protected $signature = 'orders:sync-daily';
     protected $description = 'Sincroniza las órdenes de MercadoLibre cada hora';
 
     protected $orderDbService;
