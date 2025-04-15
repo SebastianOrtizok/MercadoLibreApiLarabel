@@ -116,9 +116,6 @@
                         <td>{{ $producto->estado ?? 'Desconocido' }}</td>
                     </tr>
                 @empty
-                    <tr>
-                        <td colspan="9" class="text-center text-muted">No hay artículos sin ventas en el período seleccionado.</td>
-                    </tr>
                 @endforelse
             </tbody>
         </table>

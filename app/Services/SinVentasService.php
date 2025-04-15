@@ -1,14 +1,21 @@
 <?php
+
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Helpers\UserHelper; // Agregamos el helper
 
 class SinVentasService
 {
+    /**
+     * Obtiene productos ordenados por ventas, permitiendo al administrador usar el usuario seleccionado
+     */
     public function getProductosOrdenadosPorVentas(Carbon $fechaInicio, Carbon $fechaFin, array $filters = [], $consolidarPorSku = false)
     {
-        $userId = auth()->id();
+        // Usar el usuario efectivo en lugar de auth()->id()
+        $user = UserHelper::getEffectiveUser();
+        $userId = $user->id;
         $tokens = DB::table('mercadolibre_tokens')->where('user_id', $userId)->pluck('ml_account_id')->toArray();
 
         if (empty($tokens)) {

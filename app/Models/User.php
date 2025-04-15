@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -21,6 +19,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
     ];
 
     /**
@@ -46,11 +45,28 @@ class User extends Authenticatable
         ];
     }
 
-
+    // Relación con Articulo (ya estaba)
     public function articulos()
     {
         return $this->hasMany(Articulo::class, 'user_id');
     }
 
+    // Relación con MercadoLibreToken (nueva)
+    public function mercadolibreTokens()
+    {
+        return $this->hasMany(MercadoLibreToken::class, 'user_id');
+    }
+
+    // Relación con suscripciones
+    public function suscripciones()
+    {
+        return $this->hasMany(Suscripcion::class, 'usuario_id');
+    }
+
+    // Relación con pagos
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class, 'usuario_id');
+    }
 
 }

@@ -14,7 +14,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.11/css/jquery.dataTables.min.css">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <script
+    src="https://www.paypal.com/sdk/js?client-id=BAALYLUmqvjd-Wzz1IJHFFalfEM-MjIeCdSPEhNYTdQqKeiQF6JC4ml2XVNFFJDNFS-NvHTFQjyvkWTdN4&components=hosted-buttons&disable-funding=venmo&currency=USD">
+    </script>
 
     <title>Dashboard</title>
 </head>
@@ -77,10 +79,30 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard.estadisticas') }}">
+                            <span class="icon"><i class="fas fa-chart-line"></i></span>
+                            <span class="text">Estadísticas</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('competidores.index') }}">
+                            <span class="icon"><i class="fas fa-user-secret"></i></span>
+                            <span class="text">Competencia</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('sincronizacion.index') }}">
                                 <i class="fas fa-database me-2"></i> Sincronización
                             </a>
                         </li>
+                        <!-- Enlace al panel de administración (solo para administradores) -->
+                        @if (Auth::check() && Auth::user()->is_admin)
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                                    <i class="fas fa-user-shield me-2"></i> Admin
+                                </a>
+                            </li>
+                        @endif
                         <li class="nav-item">
                             <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link">
                                 <i class="fas fa-sign-out-alt me-2"></i> Logout
@@ -151,18 +173,34 @@
                     <span class="text">Catálogo</span>
                     </a>
                 </li>
-                <!-- <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.estadisticas') }}">
-                    <span class="icon"><i class="fas fa-tags"></i></span>
+                    <span class="icon"><i class="fas fa-chart-line"></i></span>
                     <span class="text">Estadísticas</span>
                     </a>
-                </li> -->
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('competidores.index') }}">
+                    <span class="icon"><i class="fas fa-user-secret"></i></span>
+                    <span class="text">Competencia</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('sincronizacion.index') }}">
                         <span class="icon"><i class="fas fa-database"></i></span>
                         <span class="text">Sincronización</span>
                     </a>
                 </li>
+
+                <!-- Enlace al panel de administración (solo para administradores) -->
+                @if (Auth::check() && Auth::user()->is_admin)
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                                    <i class="fas fa-user-shield me-2"></i> Admin
+                                </a>
+                            </li>
+                        @endif
+
                 <li class="nav-item">
                     <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link logout-button">
                         <span class="icon"><i class="fas fa-sign-out-alt"></i></span>

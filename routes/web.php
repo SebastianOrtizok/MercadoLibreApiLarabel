@@ -22,11 +22,33 @@ use App\Http\Controllers\StockVentaController;
 use App\Http\Controllers\ListadoArticulosController;
 use App\Http\Controllers\SyncVentasStockController;
 use App\Http\Controllers\EstadisticasController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CompetidorController;
+use App\Http\Controllers\PaymentController;
 
+Route::post('/payment/ipn', [PaymentController::class, 'ipn'])->name('payment.ipn'); // IPN no necesita auth
+Route::group(['middleware' => ['auth', \App\Http\Middleware\AdminMiddleware::class]], function () {
+
+// URL PLANES
+    Route::get('/plans', [PaymentController::class, 'showPlans'])->name('plans');
+    Route::post('/payment', [PaymentController::class, 'createPayment'])->name('payment.create');
+    Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+    Route::get('/payment/failure', [PaymentController::class, 'failure'])->name('payment.failure');
+    Route::get('/payment/pending', [PaymentController::class, 'pending'])->name('payment.pending');
+
+
+    //Rutas de admin
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/create-user', [AdminController::class, 'createUser'])->name('admin.create-user');
+    Route::post('/admin/store-user', [AdminController::class, 'storeUser'])->name('admin.store-user');
+    Route::get('/admin/user/{id}', [AdminController::class, 'showUser'])->name('admin.user-details');
+    Route::post('/admin/select-user', [AdminController::class, 'selectUser'])->name('admin.select-user');
+    Route::get('/admin/clear-selection', [AdminController::class, 'clearSelection'])->name('admin.clear-selection');
+    Route::post('/admin/add-initial-token', [AdminController::class, 'addInitialToken'])->name('admin.add-initial-token');
+});
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/inventory', [AccountController::class, 'showInventory'])->name('dashboard.inventory');
     Route::get('/dashboard/account', [AccountController::class, 'showAccountInfo'])->name('dashboard.account');
@@ -61,45 +83,22 @@ Route::middleware(['auth'])->group(function () {
     //Route::get('/sincronizacion/actualizar', [AccountController::class, 'actualizarArticulosDB'])->name('sincronizacion.actualizar');
     Route::get('/sync-orders-db', [OrderDbController::class, 'syncOrders'])->name('sync.orders.db');
 
+    Route::get('/competidores', [CompetidorController::class, 'index'])->name('competidores.index');
+    Route::post('/competidores', [CompetidorController::class, 'store'])->name('competidores.store');
+    Route::post('/competidores/actualizar', [CompetidorController::class, 'actualizar'])->name('competidores.actualizar');
+    Route::delete('/competidores', [CompetidorController::class, 'destroy'])->name('competidores.destroy');
+
+
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/exportar-ventas', function () {
         $ventas = session('ventas_consolidadas', []);
         return Excel::download(new ConsolidadoVentasExport($ventas), 'ventas_consolidadas.xlsx');
     })->name('exportar.ventas');
 });
-
+Route::get('/', [HomeController::class, 'index'])->name('home');
+// Rutas de autenticación
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-
-
-Route::get('/add-initial-token', function () {
-    return view('add-token');
-});
-
-Route::post('/add-initial-token', function () {
-    $userId = request('user_id');
-    $mlAccountId = request('ml_account_id');
-    $accessToken = request('access_token');
-    $refreshToken = request('refresh_token');
-    $expiresIn = request('expires_in', 21600); // Usamos 21600 por defecto
-
-    // Validar los datos
-    if (!$userId || !$mlAccountId || !$accessToken || !$refreshToken) {
-        return response()->json(['error' => 'Faltan parámetros.'], 400);
-    }
-
-    // Guardar o actualizar en la tabla
-    App\Models\MercadoLibreToken::updateOrCreate(
-        [
-            'user_id' => $userId,
-            'ml_account_id' => $mlAccountId,
-        ],
-        [
-            'access_token' => $accessToken,
-            'refresh_token' => $refreshToken,
-            'expires_at' => now()->addSeconds((int)$expiresIn), // Si necesitas la fecha
-        ]
-    );
-
-    return response()->json(['message' => 'Token guardado correctamente.'], 200);
-});
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);

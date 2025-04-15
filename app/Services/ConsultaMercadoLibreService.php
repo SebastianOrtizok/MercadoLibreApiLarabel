@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use App\Helpers\UserHelper;
 use App\Models\Articulo;
 use App\Models\SyncTimestamp;
 use Carbon\Carbon;
@@ -31,7 +32,13 @@ class ConsultaMercadoLibreService
             }
 
             // Obtener el userId del usuario autenticado
-            $userId = Auth::id();
+            $user = UserHelper::getEffectiveUser(); // Usar el helper aquí
+            return [
+                'userId' => $user->id,
+                // Puedes agregar más datos si los necesitas, como:
+                'name' => $user->name,
+                'tokens' => $user->mercadolibre_tokens,
+            ];
 
             // Consultar el ml_account_id desde la tabla 'mercadolibre_tokens' usando el user_id
             $mercadoLibreToken = \App\Models\MercadoLibreToken::where('user_id', $userId)->first(); // Asumiendo que el modelo es MercadoLibreToken y tiene la relación adecuada
@@ -94,6 +101,7 @@ class ConsultaMercadoLibreService
     try {
         $userData = $this->getUserId();
         $userId = $userData['userId'];
+
 
         // Obtener todos los tokens asociados al usuario
         $tokens = \App\Models\MercadoLibreToken::where('user_id', $userId)->get();

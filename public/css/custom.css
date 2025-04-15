@@ -13,6 +13,151 @@
     --color-lupa-active: #0056b3; /* Color de la lupa en active */
 }
 
+/* HOME*/
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+}
+.hero-section {
+    background: url('/images/hero.jpg') no-repeat center center;
+    background-size: cover;
+    color: #f5f5f5; /* Blanco suave para mejor contraste */
+    padding: 150px 0; /* Más espacio vertical */
+    text-align: center;
+    position: relative;
+    min-height: 600px; /* Altura mínima para que se vea bien */
+}
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7); /* Overlay más oscuro */
+}
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px; /* Contenido más ancho y centrado */
+    margin: 0 auto;
+}
+.hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombra para legibilidad */
+    animation: fadeInUp 1s ease-out forwards;
+}
+.hero-section p {
+    font-size: 1.3rem;
+    font-weight: 300;
+    max-width: 600px;
+    margin: 0 auto 30px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); /* Sombra más suave */
+    animation: fadeInUp 1.2s ease-out forwards;
+}
+.btn-hero {
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 12px 40px;
+    margin: 10px;
+    border-radius: 50px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    animation: fadeInUp 1.4s ease-out forwards;
+}
+.btn-hero:hover {
+    transform: scale(1.05); /* Efecto de agrandar al pasar el mouse */
+}
+.btn-primary.btn-hero:hover {
+    background-color: #0056b3; /* Azul más oscuro al hover */
+}
+.btn-outline-light.btn-hero:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Fondo leve al hover */
+}
+/* Animación de entrada */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Resto del CSS sin cambios */
+.features-section {
+    padding: 80px 0;
+    background-color: #fff;
+}
+.feature-card {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
+}
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.feature-card i {
+    font-size: 3rem;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+.feature-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+.cta-section {
+    background: linear-gradient(135deg, #007bff, #00ddeb);
+    color: white;
+    padding: 60px 0;
+    text-align: center;
+}
+.cta-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+.pricing-section {
+    padding: 80px 0;
+    background-color: #f4f6f9;
+}
+.pricing-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+.pricing-card:hover {
+    transform: translateY(-10px);
+}
+.pricing-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+footer {
+    background: #212529;
+    color: white;
+    padding: 40px 0;
+}
+footer a {
+    color: #00ddeb;
+    text-decoration: none;
+}
+footer a:hover {
+    text-decoration: underline;
+}
+
+
+
+
+
 /* Dashboard panel derecho*/
 
 .dashboard-container {
