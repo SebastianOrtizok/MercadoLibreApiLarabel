@@ -33,8 +33,11 @@ RUN chown -R www-data:www-data /app \
 RUN chmod -R 775 storage
 RUN chown -R www-data:www-data storage
 
+# Da permisos de ejecución al script de entrada
+RUN chmod +x entrypoint.sh
+
 # Expone el puerto
 EXPOSE 8000
 
-# Comando para iniciar
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Usa el script de entrada
+CMD ["./entrypoint.sh"]
