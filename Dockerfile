@@ -26,12 +26,13 @@ COPY . .
 
 # Instala dependencias de Composer
 RUN composer install --optimize-autoloader --no-dev
-
 RUN php scripts/run-migrations.php
+
 # Configura permisos
 RUN chown -R www-data:www-data /app \
     && chmod -R 755 /app/storage
-
+RUN chmod -R 775 storage
+RUN chown -R www-data:www-data storage
 
 # Expone el puerto
 EXPOSE 8000
