@@ -35,9 +35,8 @@
                 </ul>
             </div>
         @endif
-        <form action="{{ route('register') }}" method="POST">
+        <form method="POST" action="{{ route('register') }}">
             @csrf
-            @method('POST')
             <div class="mb-3">
                 <label for="name" class="form-label">Nombre</label>
                 <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}" required>
