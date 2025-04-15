@@ -26,7 +26,6 @@ COPY . .
 
 # Instala dependencias de Composer
 RUN composer install --optimize-autoloader --no-dev
-RUN php scripts/run-migrations.php
 
 # Configura permisos
 RUN chown -R www-data:www-data /app \
