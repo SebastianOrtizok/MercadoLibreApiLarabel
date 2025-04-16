@@ -25,14 +25,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Configura el directorio de trabajo
 WORKDIR /app
 
-# Copia composer.json, composer.lock y artisan primero
-COPY composer.json composer.lock artisan ./
-
-# Instala dependencias de Composer (usará caché si composer.json y composer.lock no cambian)
-RUN composer install --optimize-autoloader --no-dev
-
-# Copia el resto del proyecto
+# Copia el proyecto
 COPY . .
+
+# Instala dependencias de Composer
+RUN composer install --optimize-autoloader --no-dev
 
 # Configura permisos
 RUN chown -R www-data:www-data /app \
@@ -45,6 +42,3 @@ RUN chmod +x entrypoint.sh
 
 # Expone el puerto
 EXPOSE 8000
-
-# Usa el script de entrada
-CMD ["./entrypoint.sh"]
