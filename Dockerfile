@@ -42,3 +42,6 @@ RUN chmod +x entrypoint.sh
 
 # Expone el puerto
 EXPOSE 8000
+
+# Usa el script de entrada
+CMD ["./entrypoint.sh"]
