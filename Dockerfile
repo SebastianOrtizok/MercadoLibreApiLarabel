@@ -25,11 +25,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Configura el directorio de trabajo
 WORKDIR /app
 
-# Copia el proyecto
-COPY . .
+# Copia composer.json y composer.lock primero
+COPY composer.json composer.lock ./
 
-# Instala dependencias de Composer
+# Instala dependencias de Composer (usará caché si composer.json y composer.lock no cambian)
 RUN composer install --optimize-autoloader --no-dev
+
+# Copia el resto del proyecto
+COPY . .
 
 # Configura permisos
 RUN chown -R www-data:www-data /app \
