@@ -137,12 +137,14 @@ class EstadisticasService
 
     public function getVentasPorDiaSemana($mlAccountIds = [])
     {
+        $isPostgres = config('database.default') === 'pgsql';
+
         $query = DB::table('ordenes')
             ->select(
-                DB::raw('DAYNAME(fecha_venta) as dia_semana'),
+                DB::raw($isPostgres ? "TO_CHAR(fecha_venta, 'Day') as dia_semana" : "DAYNAME(fecha_venta) as dia_semana"),
                 DB::raw('SUM(cantidad) as total_vendido')
             )
-            ->groupBy(DB::raw('DAYNAME(fecha_venta)'));
+            ->groupBy(DB::raw($isPostgres ? "TO_CHAR(fecha_venta, 'Day')" : "DAYNAME(fecha_venta)"));
 
         if (!empty($mlAccountIds)) {
             $query->whereIn('ml_account_id', $mlAccountIds);
@@ -150,11 +152,22 @@ class EstadisticasService
 
         $result = $query->get();
 
-        // Ordenar los días de la semana (Lunes a Domingo)
+        // Definimos los días en español
+        $diasEnEspañol = [
+            'Monday' => 'Lunes',
+            'Tuesday' => 'Martes',
+            'Wednesday' => 'Miércoles',
+            'Thursday' => 'Jueves',
+            'Friday' => 'Viernes',
+            'Saturday' => 'Sábado',
+            'Sunday' => 'Domingo',
+        ];
+
         $diasOrdenados = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        $ventasPorDia = collect($diasOrdenados)->mapWithKeys(function ($dia) use ($result) {
-            $venta = $result->firstWhere('dia_semana', $dia);
-            return [$dia => $venta ? $venta->total_vendido : 0];
+        $ventasPorDia = collect($diasOrdenados)->mapWithKeys(function ($dia) use ($result, $diasEnEspañol) {
+            $venta = $result->firstWhere('dia_semana', fn($value) => trim($value) === $dia);
+            $diaEspañol = $diasEnEspañol[$dia] ?? $dia;
+            return [$diaEspañol => $venta ? $venta->total_vendido : 0];
         })->all();
 
         return $ventasPorDia;
