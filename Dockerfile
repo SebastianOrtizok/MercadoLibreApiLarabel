@@ -1,8 +1,7 @@
 FROM php:8.2-fpm
 
-# Instala dependencias del sistema con un espejo más rápido
-RUN sed -i 's/deb.debian.org/mirrors.kernel.org/' /etc/apt/sources.list && \
-    apt-get update && apt-get install -y \
+# Instala dependencias del sistema
+RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
@@ -30,8 +29,7 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 
 # Instala dependencias de Composer
-RUN composer config -g repo.packagist composer https://repo.packagist.com/cloudsmith && \
-    composer install --optimize-autoloader --no-dev --no-plugins --no-scripts
+RUN composer install --optimize-autoloader --no-dev --no-plugins --no-scripts
 
 # Copia el resto del proyecto
 COPY . .
