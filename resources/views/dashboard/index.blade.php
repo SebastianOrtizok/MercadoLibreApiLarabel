@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="wrap">
-    <h1>Dashboard Mercadolibre</h1>
+    <h1 class="home">Dashboard Mercadolibre</h1>
 
     <!-- Dashboard de accesos rápidos -->
     <div class="dashboard-container">

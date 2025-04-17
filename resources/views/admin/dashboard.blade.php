@@ -9,7 +9,7 @@
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+                <span aria-hidden="true">×</span>
             </button>
         </div>
     @endif
@@ -17,7 +17,7 @@
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             {{ session('error') }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+                <span aria-hidden="true">×</span>
             </button>
         </div>
     @endif
@@ -160,36 +160,89 @@
             <h5 class="mb-0">Lista de Usuarios</h5>
         </div>
         <div class="card-body">
-            <table class="table table-striped table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Email</th>
-                        <th>Cuentas ML</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($users as $user)
+            <!-- Contenedor para botones de restaurar columnas -->
+            <div id="restore-columns-users" class="mt-3 d-flex flex-wrap gap-2"></div>
+            <div class="table-responsive">
+                <table id="usersTable" class="table table-hover modern-table">
+                    <thead>
                         <tr>
-                            <td>{{ $user->id }}</td>
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ $user->mercadolibreTokens->count() }}</td>
-                            <td>
-                                <a href="{{ route('admin.user-details', $user->id) }}" class="btn btn-sm btn-info">Ver Detalles</a>
-                            </td>
+                            <th data-column-name="ID" data-sortable="true" data-column="id"><span>ID</span><i class="fas fa-eye toggle-visibility"></i></th>
+                            <th data-column-name="Nombre" data-sortable="true" data-column="name"><span>Nombre</span><i class="fas fa-eye toggle-visibility"></i></th>
+                            <th data-column-name="Email" data-sortable="true" data-column="email"><span>Email</span><i class="fas fa-eye toggle-visibility"></i></th>
+                            <th data-column-name="Cuentas ML" data-sortable="true" data-column="cuentas_ml"><span>Cuentas ML</span><i class="fas fa-eye toggle-visibility"></i></th>
+                            <th data-column-name="Acciones"><span>Acciones</span><i class="fas fa-eye toggle-visibility"></i></th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center">No hay usuarios registrados.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody id="table-body">
+                        @forelse ($users as $user)
+                            <tr>
+                                <td data-column="id">{{ $user->id }}</td>
+                                <td data-column="name">{{ $user->name }}</td>
+                                <td data-column="email">{{ $user->email }}</td>
+                                <td data-column="cuentas_ml">{{ $user->mercadolibreTokens->count() }}</td>
+                                <td>
+                                    <a href="{{ route('admin.user-details', $user->id) }}" class="btn btn-sm btn-info">Ver Detalles</a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center">No hay usuarios registrados.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/colreorder/1.5.4/js/dataTables.colReorder.min.js"></script>
+    <script>
+        jQuery(document).ready(function () {
+            if ($.fn.DataTable.isDataTable('#usersTable')) {
+                $('#usersTable').DataTable().clear().destroy();
+            }
+            var table = $('#usersTable').DataTable({
+                paging: false,
+                searching: false,
+                info: true,
+                colReorder: true,
+                autoWidth: false,
+                responsive: true,
+                scrollX: true,
+                stateSave: false,
+                processing: true,
+                width: '95%',
+                columnDefs: [
+                    { targets: '_all', className: 'shrink-text dt-center' },
+                    { targets: [2], width: '20%' } // Columna Email
+                ]
+            });
+
+            var restoreContainer = $('#restore-columns-users');
+
+            $('th i.fas.fa-eye.toggle-visibility').click(function () {
+                var th = $(this).closest('th');
+                var columnName = th.data('column-name');
+                var column = table.column(th);
+                column.visible(false);
+                table.columns.adjust().draw(false);
+                addRestoreButton(th, columnName);
+            });
+
+            function addRestoreButton(th, columnName) {
+                var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
+                button.on('click', function () {
+                    table.column(th).visible(true);
+                    table.columns.adjust().draw(false);
+                    $(this).remove();
+                });
+                restoreContainer.append(button);
+            }
+        });
+    </script>
+</div>
 @endsection

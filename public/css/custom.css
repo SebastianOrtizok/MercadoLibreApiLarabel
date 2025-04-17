@@ -15,11 +15,11 @@
 
 /* HOME*/
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     background-color: #f8f9fa;
 }
 .hero-section {
-    background: url('/images/hero.jpg') no-repeat center center;
+    background: url("/images/hero.jpg") no-repeat center center;
     background-size: cover;
     color: #f5f5f5; /* Blanco suave para mejor contraste */
     padding: 150px 0; /* Más espacio vertical */
@@ -28,7 +28,7 @@ body {
     min-height: 600px; /* Altura mínima para que se vea bien */
 }
 .hero-section::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -153,10 +153,6 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
-
-
-
-
 
 /* Dashboard panel derecho*/
 
@@ -296,13 +292,13 @@ footer a:hover {
 .sidebar ul {
     padding-left: 0;
     list-style: none;
-    margin-top: 20px;
+    margin-top: 5px;
 }
 
 .sidebar ul li {
     display: flex;
     align-items: center;
-    padding: 0px 10px 10px 10px;
+    padding: 0px 10px 1px 10px;
 }
 
 .sidebar.collapsed ul li {
@@ -312,12 +308,12 @@ footer a:hover {
 .sidebar ul li a {
     text-decoration: none;
     color: var(--color-text);
-    font-size: 16px;
+    font-size: 12px;
     transition: opacity 0.3s;
 }
 
 .sidebar ul li a .icon {
-    font-size: 20px;
+    font-size: 16px;
     margin-right: 10px;
 }
 
@@ -327,6 +323,10 @@ footer a:hover {
 
 .sidebar.collapsed ul li a .icon {
     margin-right: 0;
+}
+
+.home {
+    margin-top: 4rem;
 }
 
 /* Main Content */
