@@ -23,27 +23,14 @@ class ActualizarItemsCompetidor
         dump("Seller ID del competidor: " . $this->competidor->seller_id);
         dump("User ID asociado: " . $this->competidor->user_id);
 
-        $user = $this->competidor->user;
-        if (!$user) {
-            dump("No se encontró el usuario asociado al competidor.");
-            return "Fin del Job - Sin usuario";
-        }
-
-        $tokenModel = $user->mercadolibreTokens()->first();
-        if (!$tokenModel) {
-            dump("No se encontró un token de acceso para el usuario ID: " . $user->id);
-            return "Fin del Job - Sin token";
-        }
-        $token = $tokenModel->access_token;
-        dump("Usando token de ml_account_id: " . $tokenModel->ml_account_id);
-        dump("Token: " . substr($token, 0, 20) . "...");
-
         $offset = 0;
         $limit = 50;
         $totalProcessedItems = 0;
 
         do {
-            $response = Http::withToken($token)->get("https://api.mercadolibre.com/users/{$this->competidor->seller_id}/items/search", [
+            // Usa el endpoint público para buscar ítems del competidor
+            $response = Http::get("https://api.mercadolibre.com/sites/MLA/search", [
+                'seller_id' => $this->competidor->seller_id,
                 'status' => 'active',
                 'limit' => $limit,
                 'offset' => $offset,
@@ -57,46 +44,38 @@ class ActualizarItemsCompetidor
             }
 
             $data = $response->json();
-            $itemIds = $data['results'] ?? [];
-            dump("Cantidad de ítems recibidos en esta página: " . count($itemIds));
+            $items = $data['results'] ?? [];
+            dump("Cantidad de ítems recibidos en esta página: " . count($items));
 
-            if (empty($itemIds)) {
+            if (empty($items)) {
                 dump("No hay más ítems para procesar.");
                 break;
             }
 
-            foreach ($itemIds as $itemId) {
-                $itemResponse = Http::withToken($token)->get("https://api.mercadolibre.com/items/{$itemId}", [
-                    'include_attributes' => 'all',
-                ]);
-
-                if ($itemResponse->successful()) {
-                    $itemData = $itemResponse->json();
-                    if ($itemData['seller_id'] == $this->competidor->seller_id) {
-                        ItemCompetidor::updateOrCreate(
-                            [
-                                'competidor_id' => $this->competidor->id,
-                                'item_id' => $itemData['id'],
-                            ],
-                            [
-                                'titulo' => $itemData['title'] ?? 'Sin título',
-                                'precio' => $itemData['price'] ?? null,
-                                'cantidad_disponible' => $itemData['available_quantity'] ?? 0,
-                                'cantidad_vendida' => $itemData['sold_quantity'] ?? 0,
-                                'envio_gratis' => $itemData['shipping']['free_shipping'] ?? false,
-                                'ultima_actualizacion' => now(),
-                            ]
-                        );
-                        $totalProcessedItems++;
-                        dump("Ítem procesado: " . $itemData['id']);
-                    }
-                }
+            foreach ($items as $itemData) {
+                // No necesitas una segunda llamada a la API porque el endpoint /search ya devuelve los datos básicos
+                ItemCompetidor::updateOrCreate(
+                    [
+                        'competidor_id' => $this->competidor->id,
+                        'item_id' => $itemData['id'],
+                    ],
+                    [
+                        'titulo' => $itemData['title'] ?? 'Sin título',
+                        'precio' => $itemData['price'] ?? null,
+                        'cantidad_disponible' => $itemData['available_quantity'] ?? 0,
+                        'cantidad_vendida' => $itemData['sold_quantity'] ?? 0,
+                        'envio_gratis' => $itemData['shipping']['free_shipping'] ?? false,
+                        'ultima_actualizacion' => now(),
+                    ]
+                );
+                $totalProcessedItems++;
+                dump("Ítem procesado: " . $itemData['id']);
             }
 
             $offset += $limit;
             dump("Ítems procesados hasta ahora: " . $totalProcessedItems);
 
-        } while (count($itemIds) == $limit);
+        } while (count($items) == $limit);
 
         dump("Total de ítems procesados para seller_id " . $this->competidor->seller_id . ": " . $totalProcessedItems);
         return "Fin del Job";
