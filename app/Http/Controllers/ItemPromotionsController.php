@@ -133,7 +133,9 @@ class ItemPromotionsController extends Controller
 
         $query = DB::table('articulos')
             ->leftJoin('item_promotions', 'articulos.ml_product_id', '=', 'item_promotions.ml_product_id')
-            ->join('mercadolibre_tokens', 'articulos.user_id', '=', 'mercadolibre_tokens.ml_account_id')
+            ->join('mercadolibre_tokens', function ($join) {
+                $join->on('articulos.user_id', '=', DB::raw('CAST(mercadolibre_tokens.ml_account_id AS BIGINT)'));
+            })
             ->whereIn('articulos.user_id', $mlAccounts)
             ->where('articulos.estado', 'active')
             ->select(
