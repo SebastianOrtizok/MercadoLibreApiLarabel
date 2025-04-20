@@ -11,7 +11,6 @@ class ListadoArticulosController extends Controller
 
     public function __construct(ListadoArticulosService $listadoArticulosService)
     {
-        $this->middleware('auth'); // Asegurar que el usuario esté autenticado
         $this->listadoArticulosService = $listadoArticulosService;
     }
 
