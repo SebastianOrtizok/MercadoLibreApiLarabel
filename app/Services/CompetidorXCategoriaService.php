@@ -7,25 +7,24 @@ use GuzzleHttp\Exception\RequestException;
 class CompetidorXCategoriaService
 {
     protected $client;
+    protected $mercadoLibreService;
 
-    public function __construct()
+    public function __construct(MercadoLibreService $mercadoLibreService)
     {
         $this->client = new Client(['base_uri' => 'https://api.mercadolibre.com/']);
+        $this->mercadoLibreService = $mercadoLibreService;
     }
 
     public function analyzeCompetitors($userId, $mlAccountId, $categoryId, $limit = 50)
     {
         try {
             $region = 'MLA';
+            $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
             $response = $this->client->get("sites/{$region}/search", [
                 'headers' => [
-                    'Authorization' => "Bearer {$this->getAccessToken($userId, $mlAccountId)}"
+                    'Authorization' => "Bearer {$accessToken}",
                 ],
-                'query' => [
-                    'category' => $categoryId,
-                    'limit' => $limit,
-                    'sort' => 'sold_quantity_desc'
-                ]
+
             ]);
 
             $data = json_decode($response->getBody(), true);
@@ -99,19 +98,5 @@ class CompetidorXCategoriaService
             \Log::error("Error al obtener categorías: " . $e->getMessage());
             throw $e;
         }
-    }
-
-    protected function getAccessToken($userId, $mlAccountId)
-    {
-        // Ajusta con tu lógica para obtener el token desde mercadolibre_tokens
-        $user = \App\Models\User::find($userId);
-        if (!$user) {
-            throw new \Exception('Usuario no encontrado');
-        }
-        $tokenModel = $user->mercadolibreTokens()->first();
-        if (!$tokenModel) {
-            throw new \Exception('Token no encontrado');
-        }
-        return $tokenModel->access_token;
     }
 }

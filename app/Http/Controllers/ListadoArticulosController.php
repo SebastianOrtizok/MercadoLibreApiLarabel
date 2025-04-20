@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\ListadoArticulosService;
+use Illuminate\Support\Facades\Auth;
 
 class ListadoArticulosController extends Controller
 {
@@ -22,9 +23,10 @@ class ListadoArticulosController extends Controller
             $filters = [
                 'search' => $request->input('search'),
                 'estado' => $request->input('estado'),
+                'user_id' => Auth::id(), // Agregar el ID del usuario logueado
             ];
 
-            // Obtener todos los artículos desde el servicio
+            // Obtener artículos filtrados por usuario desde el servicio
             $articulos = $this->listadoArticulosService->getArticulos($filters);
 
             // Calcular paginación
@@ -37,6 +39,7 @@ class ListadoArticulosController extends Controller
                 'current_page' => $currentPage,
                 'limit' => $limit,
                 'total_pages' => $totalPages,
+                'user_id' => $filters['user_id'],
             ]);
 
             return view('dashboard.listado_articulos', [

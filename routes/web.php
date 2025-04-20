@@ -25,6 +25,7 @@ use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CompetidorController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\CompetidorXCategoriaController;
 
 Route::post('/payment/ipn', [PaymentController::class, 'ipn'])->name('payment.ipn'); // IPN no necesita auth
 Route::group(['middleware' => ['auth', \App\Http\Middleware\AdminMiddleware::class]], function () {
@@ -83,6 +84,8 @@ Route::middleware(['auth'])->group(function () {
     //Route::get('/sincronizacion/actualizar', [AccountController::class, 'actualizarArticulosDB'])->name('sincronizacion.actualizar');
     Route::get('/sync-orders-db', [OrderDbController::class, 'syncOrders'])->name('sync.orders.db');
 
+    Route::get('/competidores/category', [CompetidorXCategoriaController::class, 'index'])->name('competidores.category');
+Route::post('/competidores/category', [CompetidorXCategoriaController::class, 'index'])->name('competidores.category.analyze');
     Route::get('/competidores', [CompetidorController::class, 'index'])->name('competidores.index');
     Route::post('/competidores', [CompetidorController::class, 'store'])->name('competidores.store');
     Route::post('/competidores/actualizar', [CompetidorController::class, 'actualizar'])->name('competidores.actualizar');
