@@ -11,6 +11,7 @@ class ListadoArticulosController extends Controller
 
     public function __construct(ListadoArticulosService $listadoArticulosService)
     {
+        $this->middleware('auth'); // Asegurar que el usuario esté autenticado
         $this->listadoArticulosService = $listadoArticulosService;
     }
 
@@ -23,7 +24,7 @@ class ListadoArticulosController extends Controller
             $filters = [
                 'search' => $request->input('search'),
                 'estado' => $request->input('estado'),
-                'user_id' => Auth::id(), // Agregar el ID del usuario logueado
+                'user_id' => Auth::id(), // ID del usuario logueado
             ];
 
             // Obtener artículos filtrados por usuario desde el servicio
