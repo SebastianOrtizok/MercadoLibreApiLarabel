@@ -1,11 +1,11 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Services\EstadisticasService;
 use App\Services\MercadoLibreService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class EstadisticasController extends Controller
 {
@@ -23,6 +23,30 @@ class EstadisticasController extends Controller
             ->where('user_id', $userId)
             ->pluck('ml_account_id')
             ->toArray();
+
+        // Log para depurar ml_account_ids
+        Log::info('ml_account_ids obtenidos para el usuario', [
+            'user_id' => $userId,
+            'ml_account_ids' => $mlAccountIds,
+        ]);
+
+        // Si no hay ml_account_ids, retornar datos vacíos
+        if (empty($mlAccountIds)) {
+            Log::warning('No se encontraron ml_account_ids para el usuario', ['user_id' => $userId]);
+            return view('dashboard.estadisticas', [
+                'stockPorTipo' => ['stock_actual' => 0, 'stock_fulfillment' => 0, 'stock_deposito' => 0],
+                'productosEnPromocion' => collect([['titulo' => 'Sin promociones', 'descuento_porcentaje' => 0]]),
+                'productosPorEstado' => collect([['estado' => 'Sin datos', 'total' => 0]]),
+                'stockCritico' => collect([]),
+                'ventasPorPeriodo' => collect([]),
+                'ventasPorDiaSemana' => array_fill_keys(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'], 0),
+                'topProductosVendidos' => collect([]),
+                'totalFacturado' => 0,
+                'topVentasPorCuenta' => [],
+                'fechaInicio' => Carbon::now()->subDays(30)->startOfDay(),
+                'fechaFin' => Carbon::now()->endOfDay(),
+            ]);
+        }
 
         $fechaInicio = $request->input('fecha_inicio')
             ? Carbon::parse($request->input('fecha_inicio'))->startOfDay()
@@ -50,7 +74,7 @@ class EstadisticasController extends Controller
             'ventasPorDiaSemana',
             'topProductosVendidos',
             'totalFacturado',
-            'topVentasPorCuenta', // Solo pasamos los top 20 por cuenta
+            'topVentasPorCuenta',
             'fechaInicio',
             'fechaFin'
         ));
