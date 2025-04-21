@@ -20,7 +20,7 @@
             <h1>Potenciá tus Ventas en Mercado Libre</h1>
             <p class="lead">La plataforma definitiva para gestionar multicuentas, analizar competidores, optimizar stock y maximizar tus ganancias.</p>
             <div class="hero-buttons">
-                <a href="{{ route('register') }}" class="btn btn-primary btn-hero">¡Empezá Gratis!</a>
+                <a href="{{ route('register') }}" class="btn btn-primary btn-hero">¡Registrate Gratis!</a>
                 <a href="{{ route('login') }}" class="btn btn-outline-light btn-hero">Iniciar Sesión</a>
             </div>
         </div>
@@ -105,14 +105,14 @@
             <div class="row">
                 <div class="col-md-4 mb-4">
                     <div class="pricing-card">
-                        <h3>Gratis</h3>
-                        <p class="lead">$0/mes</p>
+                        <h3>Mensual</h3>
+                        <p class="lead">U$S20/mes</p>
                         <ul class="list-unstyled">
-                            <li><i class="fas fa-check text-success me-2"></i>1 cuenta de Mercado Libre</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Análisis básico de ventas</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Multicuentas ilimitadas</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Estadísticas avanzadas</li>
                             <li><i class="fas fa-check text-success me-2"></i>Seguimiento de 1 competidor</li>
                         </ul>
-                        <a href="{{ route('register') }}" class="btn btn-outline-primary">Empezar Gratis</a>
+                        <a href="{{ route('register') }}" class="btn btn-outline-primary">Comprar</a>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">

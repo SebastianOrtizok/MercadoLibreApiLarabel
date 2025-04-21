@@ -105,11 +105,20 @@
     </div>
 
     <!-- Sección 3: Agregar cuenta de MercadoLibre -->
+
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-info text-white">
             <h5 class="mb-0">Agregar Cuenta de MercadoLibre</h5>
         </div>
         <div class="card-body">
+            <!-- Enlace para autorizar en MercadoLibre -->
+            <div class="mb-3">
+                <a href="https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id=6303623679865521&redirect_uri=https://sebastianortizok.github.io/MercadoLibreAuthPage/"
+                class="btn btn-primary"
+                target="_blank">
+                    Autorizar Cuenta de MercadoLibre
+                </a>
+            </div>
             <form action="{{ route('admin.add-initial-token') }}" method="POST">
                 @csrf
                 <div class="row">
@@ -154,7 +163,17 @@
         </div>
     </div>
 
-    <!-- Sección 4: Lista de usuarios -->
+    <!-- Sección 4: Gestionar Suscripciones -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-warning text-white">
+            <h5 class="mb-0">Gestionar Suscripciones</h5>
+        </div>
+        <div class="card-body">
+            <a href="{{ route('admin.suscripciones.index') }}" class="btn btn-warning">Administrar Suscripciones</a>
+        </div>
+    </div>
+
+    <!-- Sección 5: Lista de usuarios -->
     <div class="card shadow-sm">
         <div class="card-header bg-secondary text-white">
             <h5 class="mb-0">Lista de Usuarios</h5>

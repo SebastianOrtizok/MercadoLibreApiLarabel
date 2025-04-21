@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\SuscripcionesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\PromotionsController;
@@ -27,17 +27,16 @@ use App\Http\Controllers\CompetidorController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CompetidorXCategoriaController;
 
+// Ruta para login de prueba
+Route::get('/plans', [PaymentController::class, 'showPlans'])->name('plans');
 Route::post('/payment/ipn', [PaymentController::class, 'ipn'])->name('payment.ipn'); // IPN no necesita auth
-Route::group(['middleware' => ['auth', \App\Http\Middleware\AdminMiddleware::class]], function () {
-
 // URL PLANES
-    Route::get('/plans', [PaymentController::class, 'showPlans'])->name('plans');
     Route::post('/payment', [PaymentController::class, 'createPayment'])->name('payment.create');
     Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
     Route::get('/payment/failure', [PaymentController::class, 'failure'])->name('payment.failure');
     Route::get('/payment/pending', [PaymentController::class, 'pending'])->name('payment.pending');
 
-
+    Route::group(['middleware' => ['auth', \App\Http\Middleware\AdminMiddleware::class]], function () {
     //Rutas de admin
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/create-user', [AdminController::class, 'createUser'])->name('admin.create-user');
@@ -46,6 +45,11 @@ Route::group(['middleware' => ['auth', \App\Http\Middleware\AdminMiddleware::cla
     Route::post('/admin/select-user', [AdminController::class, 'selectUser'])->name('admin.select-user');
     Route::get('/admin/clear-selection', [AdminController::class, 'clearSelection'])->name('admin.clear-selection');
     Route::post('/admin/add-initial-token', [AdminController::class, 'addInitialToken'])->name('admin.add-initial-token');
+    Route::get('/admin/suscripciones', [SuscripcionesController::class, 'index'])->name('admin.suscripciones.index');
+    Route::get('/admin/suscripciones/create', [SuscripcionesController::class, 'create'])->name('admin.suscripciones.create');
+    Route::post('/admin/suscripciones', [SuscripcionesController::class, 'store'])->name('admin.suscripciones.store');
+    Route::get('/admin/suscripciones/{id}/edit', [SuscripcionesController::class, 'edit'])->name('admin.suscripciones.edit');
+    Route::put('/admin/suscripciones/{id}', [SuscripcionesController::class, 'update'])->name('admin.suscripciones.update');
 });
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
 
@@ -100,6 +104,7 @@ Route::post('/competidores/category', [CompetidorXCategoriaController::class, 'i
     })->name('exportar.ventas');
 });
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
 // Rutas de autenticación
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
