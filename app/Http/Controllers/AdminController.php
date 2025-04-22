@@ -1,11 +1,11 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\MercadoLibreToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -94,6 +94,49 @@ class AdminController extends Controller
             return redirect()->route('admin.dashboard')->with('success', 'Token guardado correctamente.');
         } catch (\Exception $e) {
             return redirect()->route('admin.dashboard')->with('error', 'Error al guardar el token: ' . $e->getMessage());
+        }
+    }
+
+    public function editToken(User $user, MercadoLibreToken $token)
+    {
+        return view('admin.edit-mercadolibre-token', compact('user', 'token'));
+    }
+
+    public function updateToken(Request $request, User $user, MercadoLibreToken $token)
+    {
+        $validated = $request->validate([
+            'ml_account_id' => 'nullable|string|max:255',
+            'seller_name' => 'nullable|string|max:255',
+            'access_token' => 'required|string|max:255',
+            'refresh_token' => 'required|string|max:255',
+            'expires_in' => 'nullable|integer|min:0',
+        ]);
+
+        try {
+            $expiresIn = $validated['expires_in'] ?? 21600; // Default 6 horas
+            $token->update([
+                'ml_account_id' => $validated['ml_account_id'],
+                'seller_name' => $validated['seller_name'],
+                'access_token' => $validated['access_token'],
+                'refresh_token' => $validated['refresh_token'],
+                'expires_at' => now()->addSeconds((int)$expiresIn),
+            ]);
+
+            return redirect()->route('admin.user-details', $user->id)->with('success', 'Token actualizado exitosamente.');
+        } catch (\Exception $e) {
+            Log::error('Error al actualizar token', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'Error al actualizar el token: ' . $e->getMessage());
+        }
+    }
+
+    public function destroyToken(User $user, MercadoLibreToken $token)
+    {
+        try {
+            $token->delete();
+            return redirect()->route('admin.user-details', $user->id)->with('success', 'Token eliminado exitosamente.');
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar token', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'Error al eliminar el token: ' . $e->getMessage());
         }
     }
 }

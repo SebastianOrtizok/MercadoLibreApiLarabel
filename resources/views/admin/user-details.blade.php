@@ -32,6 +32,7 @@
                                 <th data-column-name="Access Token" data-sortable="true" data-column="access_token"><span>Access Token</span><i class="fas fa-eye toggle-visibility"></i></th>
                                 <th data-column-name="Refresh Token" data-sortable="true" data-column="refresh_token"><span>Refresh Token</span><i class="fas fa-eye toggle-visibility"></i></th>
                                 <th data-column-name="Expira en" data-sortable="true" data-column="expires_at"><span>Expira en</span><i class="fas fa-eye toggle-visibility"></i></th>
+                                <th data-column-name="Acciones" data-sortable="false">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">
@@ -41,7 +42,15 @@
                                     <td data-column="seller_name">{{ $token->seller_name ?? 'No disponible' }}</td>
                                     <td data-column="access_token">{{ Str::limit($token->access_token, 20) }}</td>
                                     <td data-column="refresh_token">{{ Str::limit($token->refresh_token, 20) }}</td>
-                                    <td data-column="expires_at">{{ $token->expires_at }}</td>
+                                    <td data-column="expires_at">{{ $token->expires_at ? $token->expires_at->format('d/m/Y H:i') : 'N/A' }}</td>
+                                    <td>
+                                        <a href="{{ route('admin.mercadolibre-tokens.edit', ['user' => $user->id, 'token' => $token->id]) }}" class="btn btn-sm btn-warning">Editar</a>
+                                        <form action="{{ route('admin.mercadolibre-tokens.destroy', ['user' => $user->id, 'token' => $token->id]) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este token?')">Eliminar</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -76,7 +85,8 @@
                     width: '95%',
                     columnDefs: [
                         { targets: '_all', className: 'shrink-text dt-center' },
-                        { targets: [2], width: '20%' } // Columna Access Token
+                        { targets: [2], width: '20%' }, // Columna Access Token
+                        { targets: -1, orderable: false } // Columna Acciones
                     ]
                 });
 

@@ -36,12 +36,18 @@ Route::post('/payment/ipn', [PaymentController::class, 'ipn'])->name('payment.ip
     Route::get('/payment/failure', [PaymentController::class, 'failure'])->name('payment.failure');
     Route::get('/payment/pending', [PaymentController::class, 'pending'])->name('payment.pending');
 
+
     Route::group(['middleware' => ['auth', \App\Http\Middleware\AdminMiddleware::class]], function () {
-    //Rutas de admin
+
+//Rutas de admin
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/create-user', [AdminController::class, 'createUser'])->name('admin.create-user');
     Route::post('/admin/store-user', [AdminController::class, 'storeUser'])->name('admin.store-user');
     Route::get('/admin/user/{id}', [AdminController::class, 'showUser'])->name('admin.user-details');
+   // Route::get('/admin/users/{user}', [AdminController::class, 'show'])->name('admin.users.show');
+    Route::get('/admin/users/{user}/mercadolibre-tokens/{token}/edit', [AdminController::class, 'editToken'])->name('admin.mercadolibre-tokens.edit');
+    Route::put('/admin/users/{user}/mercadolibre-tokens/{token}', [AdminController::class, 'updateToken'])->name('admin.mercadolibre-tokens.update');
+    Route::delete('/admin/users/{user}/mercadolibre-tokens/{token}', [AdminController::class, 'destroyToken'])->name('admin.mercadolibre-tokens.destroy');
     Route::post('/admin/select-user', [AdminController::class, 'selectUser'])->name('admin.select-user');
     Route::get('/admin/clear-selection', [AdminController::class, 'clearSelection'])->name('admin.clear-selection');
     Route::post('/admin/add-initial-token', [AdminController::class, 'addInitialToken'])->name('admin.add-initial-token');
