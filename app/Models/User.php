@@ -58,9 +58,9 @@ class User extends Authenticatable
     }
 
     // Relación con suscripciones
-    public function suscripciones()
+    public function suscripcion()
     {
-        return $this->hasMany(Suscripcion::class, 'usuario_id');
+        return $this->hasOne(Suscripcion::class, 'usuario_id', 'id');
     }
 
     // Relación con pagos

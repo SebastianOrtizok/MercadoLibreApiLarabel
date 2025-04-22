@@ -103,7 +103,6 @@
                         <td>{{ $articulo->updated_at ?? 'N/A' }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="26">No hay artículos para mostrar</td></tr>
                 @endforelse
             </tbody>
         </table>

@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.11/js/jquery.dataTables.min.js"></script>
@@ -15,9 +14,8 @@
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script
-    src="https://www.paypal.com/sdk/js?client-id=BAALYLUmqvjd-Wzz1IJHFFalfEM-MjIeCdSPEhNYTdQqKeiQF6JC4ml2XVNFFJDNFS-NvHTFQjyvkWTdN4&components=hosted-buttons&disable-funding=venmo&currency=USD">
+        src="https://www.paypal.com/sdk/js?client-id=BAALYLUmqvjd-Wzz1IJHFFalfEM-MjIeCdSPEhNYTdQqKeiQF6JC4ml2XVNFFJDNFS-NvHTFQjyvkWTdN4&components=hosted-buttons&disable-funding=venmo¤cy=USD">
     </script>
-
     <title>Dashboard</title>
 </head>
 <body>
@@ -28,6 +26,29 @@
                 <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#mobileNav" aria-controls="mobileNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <!-- Mostrar nombre de usuario y días restantes -->
+                <div class="navbar-text ms-auto">
+                    @if (Auth::check())
+                        Hola, {{ Auth::user()->name }}!
+                        @if (!Auth::user()->suscripcion)
+                        <span class="text">No hay suscripción asociada.</span>
+                        @elseif (in_array(Auth::user()->suscripcion->plan, ['test', 'prueba_gratuita']))
+                        <span class="text">Plan: {{ Auth::user()->suscripcion->plan }} (sin vencimiento).</span>
+                        @elseif (Auth::user()->suscripcion->estado !== 'activo')
+                        <p><span class="text">Estado: {{ Auth::user()->suscripcion->estado }} (no activo).</span></p>
+                        @else
+                            @php
+                                $expirationDate = Auth::user()->suscripcion->fecha_fin;
+                                $daysLeft = ceil(\Carbon\Carbon::now()->diffInDays($expirationDate, false));
+                            @endphp
+                            @if ($daysLeft >= 0)
+                            <span class="text">Te quedan {{ $daysLeft }} {{ $daysLeft == 1 ? 'día' : 'días' }}.</span>
+                            @else
+                            <span class="text">Suscripción vencida.</span>
+                            @endif
+                        @endif
+                    @endif
+                </div>
                 <div class="collapse navbar-collapse" id="mobileNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
@@ -37,12 +58,12 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard.publications') }}">
-                                <i class="fas fa-list me-2"></i>Publicaciones
+                                <i class="fas fa-list me-2"></i> Publicaciones
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard.listado_articulos') }}">
-                                <i class="fas fa-list me-2"></i>Listado completo
+                                <i class="fas fa-list me-2"></i> Listado completo
                             </a>
                         </li>
                         <li class="nav-item">
@@ -66,7 +87,6 @@
                                 <i class="fas fa-boxes me-2"></i> Promociones de ML
                             </a>
                         </li>
-
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard.item_promotions') }}">
                                 <i class="fas fa-ticket-alt"></i> Items en Promoción
@@ -74,20 +94,20 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard.catalogo') }}">
-                            <span class="icon"><i class="fas fa-tags"></i></span>
-                            <span class="text">Catálogo</span>
+                                <span class="icon"><i class="fas fa-tags"></i></span>
+                                <span class="text">Catálogo</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard.estadisticas') }}">
-                            <span class="icon"><i class="fas fa-chart-line"></i></span>
-                            <span class="text">Estadísticas</span>
+                                <span class="icon"><i class="fas fa-chart-line"></i></span>
+                                <span class="text">Estadísticas</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('competidores.index') }}">
-                            <span class="icon"><i class="fas fa-user-secret"></i></span>
-                            <span class="text">Competencia</span>
+                                <span class="icon"><i class="fas fa-user-secret"></i></span>
+                                <span class="text">Competencia</span>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -95,7 +115,6 @@
                                 <i class="fas fa-database me-2"></i> Sincronización
                             </a>
                         </li>
-                        <!-- Enlace al panel de administración (solo para administradores) -->
                         @if (Auth::check() && Auth::user()->is_admin)
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.dashboard') }}">
@@ -118,7 +137,31 @@
 
         <!-- Sidebar para escritorio -->
         <div id="sidebar" class="sidebar d-none d-lg-block">
+            <!-- Mostrar nombre de usuario y días restantes -->
+
             <h3 class="sidebar-title">Menu</h3>
+            <div class="sidebar-header">
+                @if (Auth::check())
+                    <h5><span class="userlog">Hola, {{ Auth::user()->name }}!</span></h5>
+                    @if (!Auth::user()->suscripcion)
+                    <span class="userlog">No hay suscripción asociada.</span>
+                    @elseif (in_array(Auth::user()->suscripcion->plan, ['test', 'prueba_gratuita']))
+                    <span class="userlog">Plan: {{ Auth::user()->suscripcion->plan }} (sin vencimiento).</span>
+                    @elseif (Auth::user()->suscripcion->estado !== 'activo')
+                    <span class="userlog">Estado: {{ Auth::user()->suscripcion->estado }} (no activo).</span>
+                    @else
+                        @php
+                            $expirationDate = Auth::user()->suscripcion->fecha_fin;
+                            $daysLeft = ceil(\Carbon\Carbon::now()->diffInDays($expirationDate, false));
+                        @endphp
+                        @if ($daysLeft >= 0)
+                        <span class="userlog">Te quedan {{ $daysLeft }} {{ $daysLeft == 1 ? 'día' : 'días' }}.</span>
+                        @else
+                        <span class="userlog">Suscripción vencida.</span>
+                        @endif
+                    @endif
+                @endif
+            </div>
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.account') }}">
@@ -134,7 +177,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.listado_articulos') }}">
-                        <i class="fas fa-list me-2"></i>Listado completo
+                        <i class="fas fa-list me-2"></i><span class="text">Listado completo</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -163,26 +206,26 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.item_promotions') }}">
-                    <span class="icon"><i class="fas fa-ticket-alt"></i></span>
-                    <span class="text">Items Promo</span>
+                        <span class="icon"><i class="fas fa-ticket-alt"></i></span>
+                        <span class="text">Items Promo</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.catalogo') }}">
-                    <span class="icon"><i class="fas fa-tags"></i></span>
-                    <span class="text">Catálogo</span>
+                        <span class="icon"><i class="fas fa-tags"></i></span>
+                        <span class="text">Catálogo</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.estadisticas') }}">
-                    <span class="icon"><i class="fas fa-chart-line"></i></span>
-                    <span class="text">Estadísticas</span>
+                        <span class="icon"><i class="fas fa-chart-line"></i></span>
+                        <span class="text">Estadísticas</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('competidores.index') }}">
-                    <span class="icon"><i class="fas fa-user-secret"></i></span>
-                    <span class="text">Competencia</span>
+                        <span class="icon"><i class="fas fa-user-secret"></i></span>
+                        <span class="text">Competencia</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -191,16 +234,13 @@
                         <span class="text">Sincronización</span>
                     </a>
                 </li>
-
-                <!-- Enlace al panel de administración (solo para administradores) -->
                 @if (Auth::check() && Auth::user()->is_admin)
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                                    <i class="fas fa-user-shield me-2"></i> Admin
-                                </a>
-                            </li>
-                        @endif
-
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                            <i class="fas fa-user-shield me-2"></i> Admin
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item">
                     <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link logout-button">
                         <span class="icon"><i class="fas fa-sign-out-alt"></i></span>
@@ -231,7 +271,6 @@
             sidebar.classList.toggle('collapsed');
         });
     </script>
-
 
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>

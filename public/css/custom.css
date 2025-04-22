@@ -227,7 +227,22 @@ footer a:hover {
     display: flex;
 }
 
+
+
 /* Sidebar */
+
+.navbar-text, .sidebar-header {
+    font-size: 0.9rem;
+    color: #333;
+}
+.sidebar-header h5 {
+    margin: 0.6rem;
+}
+.sidebar-header p {
+    margin: 0.6rem;
+    color: #555;
+}
+
 #sidebar {
     position: sticky !important;
     top: 0 !important;
@@ -318,6 +333,10 @@ footer a:hover {
 }
 
 .sidebar.collapsed ul li a .text {
+    display: none;
+}
+
+.sidebar.collapsed .userlog {
     display: none;
 }
 

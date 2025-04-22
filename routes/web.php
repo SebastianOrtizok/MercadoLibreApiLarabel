@@ -29,22 +29,18 @@ use App\Http\Controllers\CompetidorXCategoriaController;
 
 // Ruta para login de prueba
 Route::get('/plans', [PaymentController::class, 'showPlans'])->name('plans');
-Route::post('/payment/ipn', [PaymentController::class, 'ipn'])->name('payment.ipn'); // IPN no necesita auth
-// URL PLANES
-    Route::post('/payment', [PaymentController::class, 'createPayment'])->name('payment.create');
-    Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
-    Route::get('/payment/failure', [PaymentController::class, 'failure'])->name('payment.failure');
-    Route::get('/payment/pending', [PaymentController::class, 'pending'])->name('payment.pending');
+Route::post('/payment/ipn', [PaymentController::class, 'ipn'])->name('payment.ipn');
+Route::post('/payment', [PaymentController::class, 'createPayment'])->name('payment.create');
+Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('/payment/failure', [PaymentController::class, 'failure'])->name('payment.failure');
+Route::get('/payment/pending', [PaymentController::class, 'pending'])->name('payment.pending');
 
-
-    Route::group(['middleware' => ['auth', \App\Http\Middleware\AdminMiddleware::class]], function () {
-
-//Rutas de admin
+// Rutas de admin
+Route::group(['middleware' => ['auth', \App\Http\Middleware\AdminMiddleware::class]], function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/create-user', [AdminController::class, 'createUser'])->name('admin.create-user');
     Route::post('/admin/store-user', [AdminController::class, 'storeUser'])->name('admin.store-user');
     Route::get('/admin/user/{id}', [AdminController::class, 'showUser'])->name('admin.user-details');
-   // Route::get('/admin/users/{user}', [AdminController::class, 'show'])->name('admin.users.show');
     Route::get('/admin/users/{user}/mercadolibre-tokens/{token}/edit', [AdminController::class, 'editToken'])->name('admin.mercadolibre-tokens.edit');
     Route::put('/admin/users/{user}/mercadolibre-tokens/{token}', [AdminController::class, 'updateToken'])->name('admin.mercadolibre-tokens.update');
     Route::delete('/admin/users/{user}/mercadolibre-tokens/{token}', [AdminController::class, 'destroyToken'])->name('admin.mercadolibre-tokens.destroy');
@@ -57,9 +53,11 @@ Route::post('/payment/ipn', [PaymentController::class, 'ipn'])->name('payment.ip
     Route::get('/admin/suscripciones/{id}/edit', [SuscripcionesController::class, 'edit'])->name('admin.suscripciones.edit');
     Route::put('/admin/suscripciones/{id}', [SuscripcionesController::class, 'update'])->name('admin.suscripciones.update');
 });
+
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
 
-Route::middleware(['auth'])->group(function () {
+// Rutas protegidas del dashboard
+Route::middleware(['auth', \App\Http\Middleware\CheckSubscription::class])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/inventory', [AccountController::class, 'showInventory'])->name('dashboard.inventory');
     Route::get('/dashboard/account', [AccountController::class, 'showAccountInfo'])->name('dashboard.account');
@@ -76,14 +74,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/item_venta', [ItemVenta::class, 'item_venta'])->name('dashboard.itemVenta');
     Route::get('/dashboard/catalogo', [CatalogoController::class, 'index'])->name('dashboard.catalogo');
     Route::get('/dashboard/catalogo/competencia/{mlProductId}', [CatalogoController::class, 'competencia'])->name('dashboard.catalogo.competencia');
-    // Viejo PromotionsController (dejamos como está)
     Route::get('/dashboard/promotions', [PromotionsController::class, 'promotions'])->name('dashboard.promociones');
     Route::post('/promotions/renew/{promotion_id}', [ItemPromotionsController::class, 'renewPromotion'])->name('promotions.renew');
-    Route::get('/sync-promotions-db', [ItemPromotionsController::class, 'syncPromotions'])->name('sync.promotions.db'); // Sincronizar
-    Route::get('/dashboard/item_promotions', [ItemPromotionsController::class, 'showPromotions'])->name('dashboard.item_promotions'); // Mostrar
-    // Rutas de estadísticas
+    Route::get('/sync-promotions-db', [ItemPromotionsController::class, 'syncPromotions'])->name('sync.promotions.db');
+    Route::get('/dashboard/item_promotions', [ItemPromotionsController::class, 'showPromotions'])->name('dashboard.item_promotions');
     Route::get('/dashboard/estadisticas', [EstadisticasController::class, 'index'])->name('dashboard.estadisticas');
-    // Rutas de sincronización
     Route::get('/dashboard/stock/sync', [StockSyncController::class, 'sync'])->name('dashboard.stock.sync');
     Route::get('/dashboard/sync-ventas-stock-now', [SyncVentasStockController::class, 'syncAllNow'])->name('dashboard.sync.ventas.stock');
     Route::get('/dashboard/stock/syncventas', [StockVentaController::class, 'sync'])->name('dashboard.stock.syncventas');
@@ -91,25 +86,28 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sincronizacion', [AccountController::class, 'sincronizacion'])->name('sincronizacion.index');
     Route::get('/sincronizar/primera/{user_id}', [AccountController::class, 'primeraSincronizacionDB'])->name('sincronizacion.primera');
     Route::post('/missing-articles/sync/{mlAccountId}', [App\Http\Controllers\MissingArticlesController::class, 'sync'])->name('missing.articles.sync');
-    //Route::get('/sincronizacion/actualizar', [AccountController::class, 'actualizarArticulosDB'])->name('sincronizacion.actualizar');
     Route::get('/sync-orders-db', [OrderDbController::class, 'syncOrders'])->name('sync.orders.db');
-
     Route::get('/competidores/category', [CompetidorXCategoriaController::class, 'index'])->name('competidores.category');
-Route::post('/competidores/category', [CompetidorXCategoriaController::class, 'index'])->name('competidores.category.analyze');
+    Route::post('/competidores/category', [CompetidorXCategoriaController::class, 'index'])->name('competidores.category.analyze');
     Route::get('/competidores', [CompetidorController::class, 'index'])->name('competidores.index');
     Route::post('/competidores', [CompetidorController::class, 'store'])->name('competidores.store');
     Route::post('/competidores/actualizar', [CompetidorController::class, 'actualizar'])->name('competidores.actualizar');
     Route::delete('/competidores', [CompetidorController::class, 'destroy'])->name('competidores.destroy');
-
-
-
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/exportar-ventas', function () {
         $ventas = session('ventas_consolidadas', []);
         return Excel::download(new ConsolidadoVentasExport($ventas), 'ventas_consolidadas.xlsx');
     })->name('exportar.ventas');
 });
+
+// Ruta de logout (solo con auth)
+Route::middleware(['auth'])->post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Ruta para suscripción vencida
+Route::get('/subscription/expired', function () {
+    return view('subscription.expired');
+})->name('subscription.expired');
 
 // Rutas de autenticación
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
