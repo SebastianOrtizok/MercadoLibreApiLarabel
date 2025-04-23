@@ -39,4 +39,10 @@ return [
         'access_token' => env('MERCADOPAGO_ACCESS_TOKEN'),
     ],
 
+    'mercadolibre' => [
+        'client_id' => env('MERCADOLIBRE_CLIENT_ID'),
+        'client_secret' => env('MERCADOLIBRE_CLIENT_SECRET'),
+        'redirect_uri' => env('MERCADOLIBRE_REDIRECT_URI'),
+    ],
+
 ];

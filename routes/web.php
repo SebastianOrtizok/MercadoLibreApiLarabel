@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\TokenController;
 use App\Http\Controllers\SuscripcionesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AccountController;
@@ -58,6 +60,8 @@ Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.in
 
 // Rutas protegidas del dashboard
 Route::middleware(['auth', \App\Http\Middleware\CheckSubscription::class])->group(function () {
+    Route::get('/tokens/create', [TokenController::class, 'create'])->name('tokens.create');
+    Route::get('/tokens/callback', [TokenController::class, 'callback'])->name('tokens.callback');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/inventory', [AccountController::class, 'showInventory'])->name('dashboard.inventory');
     Route::get('/dashboard/account', [AccountController::class, 'showAccountInfo'])->name('dashboard.account');
