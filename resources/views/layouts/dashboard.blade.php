@@ -31,9 +31,9 @@
                     @if (Auth::check())
                         Hola, {{ Auth::user()->name }}!
                         @if (!Auth::user()->suscripcion)
-                        <span class="text">No hay suscripción asociada.</span>
+                        <p><span class="text">No hay suscripción asociada.</span></p>
                         @elseif (in_array(Auth::user()->suscripcion->plan, ['test', 'prueba_gratuita']))
-                        <span class="text">Plan: {{ Auth::user()->suscripcion->plan }} (sin vencimiento).</span>
+                        <p><span class="text">Plan: {{ Auth::user()->suscripcion->plan }} (sin vencimiento).</span></p>
                         @elseif (Auth::user()->suscripcion->estado !== 'activo')
                         <p><span class="text">Estado: {{ Auth::user()->suscripcion->estado }} (no activo).</span></p>
                         @else
@@ -42,9 +42,9 @@
                                 $daysLeft = ceil(\Carbon\Carbon::now()->diffInDays($expirationDate, false));
                             @endphp
                             @if ($daysLeft >= 0)
-                            <span class="text">Te quedan {{ $daysLeft }} {{ $daysLeft == 1 ? 'día' : 'días' }}.</span>
+                            <p><span class="text">Te quedan {{ $daysLeft }} {{ $daysLeft == 1 ? 'día' : 'días' }}.</span></p>
                             @else
-                            <span class="text">Suscripción vencida.</span>
+                            <p><span class="text">Suscripción vencida.</span></p>
                             @endif
                         @endif
                     @endif
@@ -144,20 +144,20 @@
                 @if (Auth::check())
                     <h5><span class="userlog">Hola, {{ Auth::user()->name }}!</span></h5>
                     @if (!Auth::user()->suscripcion)
-                    <span class="userlog">No hay suscripción asociada.</span>
+                    <p><span class="userlog">No hay suscripción asociada.</span></p>
                     @elseif (in_array(Auth::user()->suscripcion->plan, ['test', 'prueba_gratuita']))
-                    <span class="userlog">Plan: {{ Auth::user()->suscripcion->plan }} (sin vencimiento).</span>
+                    <p><span class="userlog">Plan: {{ Auth::user()->suscripcion->plan }} (sin vencimiento).</span></p>
                     @elseif (Auth::user()->suscripcion->estado !== 'activo')
-                    <span class="userlog">Estado: {{ Auth::user()->suscripcion->estado }} (no activo).</span>
+                    <p><span class="userlog">Estado: {{ Auth::user()->suscripcion->estado }} (no activo).</span></p>
                     @else
                         @php
                             $expirationDate = Auth::user()->suscripcion->fecha_fin;
                             $daysLeft = ceil(\Carbon\Carbon::now()->diffInDays($expirationDate, false));
                         @endphp
                         @if ($daysLeft >= 0)
-                        <span class="userlog">Te quedan {{ $daysLeft }} {{ $daysLeft == 1 ? 'día' : 'días' }}.</span>
+                        <p><span class="userlog">Te quedan {{ $daysLeft }} {{ $daysLeft == 1 ? 'día' : 'días' }}.</span></p>
                         @else
-                        <span class="userlog">Suscripción vencida.</span>
+                        <p><span class="userlog">Suscripción vencida.</span></p>
                         @endif
                     @endif
                 @endif

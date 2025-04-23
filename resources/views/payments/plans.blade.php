@@ -4,6 +4,16 @@
 <div class="container mt-5">
     <h2 class="mb-4 text-primary fw-bold">Elige tu Plan</h2>
 
+    @if (session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if (session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
+    @if (session('info'))
+        <div class="alert alert-info">{{ session('info') }}</div>
+    @endif
+
     <div class="row">
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm text-center">
@@ -11,22 +21,33 @@
                     <h3>Mensual</h3>
                 </div>
                 <div class="card-body">
-                    <h4>$20</h4>
+                    <h4>$100 ARS</h4>
                     <p>Por mes</p>
-                    <div id="paypal-container-MENSUAL"></div>
+                    <form action="{{ route('payment.create') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="plan" value="mensual">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-shopping-cart me-2"></i> Suscribirme
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-        <!-- Espacio para trimestral y anual -->
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm text-center">
                 <div class="card-header bg-primary text-white">
                     <h3>Trimestral</h3>
                 </div>
                 <div class="card-body">
-                    <h4>$54</h4>
+                    <h4>$270 ARS</h4>
                     <p>Cada 3 meses</p>
-                    <p>(Generá otro botón en PayPal para probar)</p>
+                    <form action="{{ route('payment.create') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="plan" value="trimestral">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-shopping-cart me-2"></i> Suscribirme
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -36,21 +57,18 @@
                     <h3>Anual</h3>
                 </div>
                 <div class="card-body">
-                    <h4>$192</h4>
+                    <h4>$960 ARS</h4>
                     <p>Por año</p>
-                    <p>(Generá otro botón en PayPal para probar)</p>
+                    <form action="{{ route('payment.create') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="plan" value="anual">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-shopping-cart me-2"></i> Suscribirme
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Script de PayPal -->
-<script src="https://www.paypal.com/sdk/js?client-id=BAALYLUmqvjd-Wzz1IJHFFalfEM-MjIeCdSPEhNYTdQqKeiQF6JC4ml2XVNFFJDNFS-NvHTFQjyvkWTdN4&components=hosted-buttons&disable-funding=venmo¤cy=USD"></script>
-<script>
-    paypal.HostedButtons({
-        hostedButtonId: "SENP7WVTGT344",
-        returnUrl: "{{ route('payment.success') }}?user_id={{ auth()->id() }}&plan=mensual" // Redirección con datos
-    }).render("#paypal-container-MENSUAL");
-</script>
 @endsection
