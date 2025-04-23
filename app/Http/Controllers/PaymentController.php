@@ -8,13 +8,18 @@ use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Exceptions\MPApiException;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class PaymentController extends Controller
 {
     public function __construct()
     {
-        // Configurar el Access Token
-        MercadoPagoConfig::setAccessToken(config('services.mercadopago.access_token'));
+        $accessToken = config('services.mercadopago.access_token');
+        if (is_null($accessToken)) {
+            Log::error('Access Token de Mercado Pago no está configurado en .env');
+            throw new \Exception('Access Token de Mercado Pago no configurado. Por favor, verifica el archivo .env.');
+        }
+        MercadoPagoConfig::setAccessToken($accessToken);
     }
 
     public function showPlans()
@@ -42,11 +47,8 @@ class PaymentController extends Controller
         $amount = $amounts[$plan] ?? 100;
 
         try {
-            // Crear el cliente de preferencias
             $client = new PreferenceClient();
-
-            // Crear la preferencia
-            $preference = $client->create([
+            $preferenceData = [
                 'items' => [
                     [
                         'title' => "Suscripción $plan",
@@ -63,9 +65,16 @@ class PaymentController extends Controller
                     'failure' => route('payment.failure'),
                     'pending' => route('payment.pending'),
                 ],
-                'auto_return' => 'approved',
+                'auto_return' => 'approved', // Reintroducimos auto_return para Render
                 'external_reference' => auth()->id() . '|' . $plan,
+            ];
+
+            Log::info('Datos enviados a Mercado Pago para crear preferencia', [
+                'preference_data' => $preferenceData,
+                'user_id' => auth()->id(),
             ]);
+
+            $preference = $client->create($preferenceData);
 
             Log::info('Preferencia Mercado Pago creada', [
                 'preference_id' => $preference->id,
@@ -74,13 +83,14 @@ class PaymentController extends Controller
                 'amount' => $amount,
             ]);
 
-            // Redirigir al checkout de producción
             return redirect($preference->init_point);
         } catch (MPApiException $e) {
             Log::error('Error al crear la preferencia de Mercado Pago', [
                 'error' => $e->getMessage(),
-                'status' => $e->getApiResponse()->status,
-                'content' => $e->getApiResponse()->content,
+                'response' => $e->getApiResponse() ? [
+                    'status' => method_exists($e->getApiResponse(), 'getStatusCode') ? $e->getApiResponse()->getStatusCode() : null,
+                    'content' => method_exists($e->getApiResponse(), 'getContent') ? $e->getApiResponse()->getContent() : null,
+                ] : 'No response available',
             ]);
             return redirect()->route('plans')->with('error', 'Error al generar el pago. Intenta nuevamente.');
         }
@@ -100,31 +110,45 @@ class PaymentController extends Controller
 
         if ($userId && $plan && in_array($plan, ['mensual', 'trimestral', 'anual'])) {
             $amount = $plan === 'mensual' ? 100 : ($plan === 'trimestral' ? 270 : 960);
-            $duracion = $plan === 'mensual' ? 'month' : ($plan === 'trimestral' ? '3 months' : 'year');
+            $daysToAdd = $plan === 'mensual' ? 30 : ($plan === 'trimestral' ? 90 : 360);
 
-            $suscripcion = Suscripcion::create([
-                'usuario_id' => $userId,
-                'plan' => $plan,
-                'monto' => $amount,
-                'fecha_fin' => now()->add($duracion),
-                'estado' => 'activo',
-            ]);
+            try {
+                $fechaInicio = now();
+                $fechaFin = $fechaInicio->copy()->addDays($daysToAdd);
 
-            Pago::create([
-                'usuario_id' => $userId,
-                'suscripcion_id' => $suscripcion->id,
-                'monto' => $amount,
-                'metodo_pago' => 'mercadopago',
-                'id_transaccion' => $paymentId,
-                'estado' => 'completado',
-            ]);
+                $suscripcion = Suscripcion::create([
+                    'usuario_id' => $userId,
+                    'plan' => $plan,
+                    'monto' => $amount,
+                    'fecha_inicio' => $fechaInicio,
+                    'fecha_fin' => $fechaFin,
+                    'estado' => 'activo',
+                ]);
 
-            return redirect()->route('dashboard')->with('success', '¡Pago realizado con éxito! Tu suscripción está activa.');
+                Pago::create([
+                    'usuario_id' => $userId,
+                    'suscripcion_id' => $suscripcion->id,
+                    'monto' => $amount,
+                    'metodo_pago' => 'mercadopago',
+                    'id_transaccion' => $paymentId,
+                    'estado' => 'completado',
+                ]);
+
+                return redirect()->route('dashboard')->with('success', '¡Pago realizado con éxito! Tu suscripción está activa.');
+            } catch (\Exception $e) {
+                Log::error('Error al guardar suscripción o pago', [
+                    'error' => $e->getMessage(),
+                    'user_id' => $userId,
+                    'plan' => $plan,
+                    'payment_id' => $paymentId,
+                ]);
+                return redirect()->route('plans')->with('error', 'Error al procesar el pago: ' . $e->getMessage());
+            }
         }
 
         return redirect()->route('plans')->with('error', 'Error al procesar el pago. Intenta nuevamente.');
     }
-    
+
     public function failure(Request $request)
     {
         Log::warning('Pago Mercado Pago fallido', $request->all());
@@ -133,7 +157,29 @@ class PaymentController extends Controller
 
     public function pending(Request $request)
     {
-        Log::info('Pago Mercado Pago pendiente', $request->all());
+        $userId = $request->query('user_id');
+        $plan = $request->query('plan');
+        $paymentId = $request->query('payment_id', 'MP_TEST_' . now()->timestamp);
+
+        Log::info('Pago Mercado Pago pendiente', [
+            'user_id' => $userId,
+            'plan' => $plan,
+            'payment_id' => $paymentId,
+        ]);
+
+        if ($userId && $plan && in_array($plan, ['mensual', 'trimestral', 'anual'])) {
+            $amount = $plan === 'mensual' ? 100 : ($plan === 'trimestral' ? 270 : 960);
+
+            Pago::create([
+                'usuario_id' => $userId,
+                'suscripcion_id' => null,
+                'monto' => $amount,
+                'metodo_pago' => 'mercadopago',
+                'id_transaccion' => $paymentId,
+                'estado' => 'pendiente',
+            ]);
+        }
+
         return redirect()->route('plans')->with('info', 'El pago está pendiente. Te notificaremos cuando se complete.');
     }
 }
