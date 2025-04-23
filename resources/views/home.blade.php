@@ -99,49 +99,62 @@
     </section>
 
     <!-- Pricing Section -->
-    <section class="pricing-section py-5">
-        <div class="container">
-            <h2 class="text-center mb-5">Planes para todos los vendedores</h2>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="pricing-card">
-                        <h3>Mensual</h3>
-                        <p class="lead">U$S20/mes</p>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check text-success me-2"></i>Multicuentas ilimitadas</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Estadísticas avanzadas</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Seguimiento de 1 competidor</li>
-                        </ul>
-                        <a href="{{ route('register') }}" class="btn btn-outline-primary">Comprar</a>
+<section class="pricing-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Comienza a gestionar tu cuenta de Mercado Libre</h2>
+        <div class="row">
+            <!-- Opción 1: Usuario Test -->
+            <div class="col-md-4 mb-4">
+                <div class="pricing-card" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; text-align: center;">
+                    <h3 style="font-size: 1.5rem; color: #333;">Prueba con usuario test</h3>
+                    <p class="lead" style="font-size: 1.2rem; color: #666;">Recorre el programa gratis</p>
+                    <p style="font-size: 1rem; color: #666; margin-bottom: 20px;">
+                        Ingresá con las siguientes credenciales para explorar las funcionalidades básicas:
+                    </p>
+                    <div style="background-color: #f8f9fa; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                        <p style="margin: 0; font-weight: bold; color: #333;">Usuario: test@test.com</p>
+                        <p style="margin: 0; font-weight: bold; color: #333;">Contraseña: test1234</p>
                     </div>
+                    <a href="{{ route('login') }}" class="btn btn-outline-primary" style="padding: 10px 20px; font-weight: bold;">Iniciar Sesión</a>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="pricing-card">
-                        <h3>Pro</h3>
-                        <p class="lead">Consultar precio</p>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check text-success me-2"></i>Multicuentas ilimitadas</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Estadísticas avanzadas</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Seguimiento de competidores ilimitado</li>
-                        </ul>
-                        <a href="{{ route('register') }}" class="btn btn-primary">Probar Ahora</a>
-                    </div>
+            </div>
+
+            <!-- Opción 2: Regístrate y Navega Gratis -->
+            <div class="col-md-4 mb-4">
+                <div class="pricing-card" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; text-align: center;">
+                    <h3 style="font-size: 1.5rem; color: #333;">Regístrate y navega gratis</h3>
+                    <p class="lead" style="font-size: 1.2rem; color: #666;">Prueba gratuita de 7 días</p>
+                    <p style="font-size: 1rem; color: #666; margin-bottom: 20px;">
+                        Gestioná tu token y accedé a todas las funcionalidades sin cargo durante 7 días.
+                    </p>
+                    <ul class="list-unstyled" style="margin-bottom: 20px;">
+                        <li><i class="fas fa-check text-success me-2"></i>Multicuentas ilimitadas</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Estadísticas avanzadas</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Seguimiento de competidores</li>
+                    </ul>
+                    <a href="https://mercadolibreapi.onrender.com/register" class="btn btn-primary" style="padding: 10px 20px; font-weight: bold;">Registrarme</a>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="pricing-card">
-                        <h3>Enterprise</h3>
-                        <p class="lead">Consultar precio</p>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check text-success me-2"></i>Soporte prioritario</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Informes personalizados</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Integraciones avanzadas</li>
-                        </ul>
-                        <a href="{{ route('register') }}" class="btn btn-outline-primary">Contactar</a>
-                    </div>
+            </div>
+
+            <!-- Opción 3: Adquirí un Plan -->
+            <div class="col-md-4 mb-4">
+                <div class="pricing-card" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; text-align: center;">
+                    <h3 style="font-size: 1.5rem; color: #333;">Adquirí uno de nuestros planes</h3>
+                    <p class="lead" style="font-size: 1.2rem; color: #666;">Acceso completo y soporte</p>
+                    <p style="font-size: 1rem; color: #666; margin-bottom: 20px;">
+                        Elegí el plan que mejor se adapte a tus necesidades y comenzá a optimizar tus ventas.
+                    </p>
+                    <ul class="list-unstyled" style="margin-bottom: 20px;">
+                        <li><i class="fas fa-check text-success me-2"></i>Soporte prioritario</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Informes personalizados</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Integraciones avanzadas</li>
+                    </ul>
+                    <a href="https://mercadolibreapi.onrender.com/plans" class="btn btn-outline-primary" style="padding: 10px 20px; font-weight: bold;">Ver Planes</a>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- CTA Section -->
     <section class="cta-section py-5">

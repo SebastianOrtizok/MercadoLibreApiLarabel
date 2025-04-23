@@ -54,6 +54,8 @@ Route::group(['middleware' => ['auth', \App\Http\Middleware\AdminMiddleware::cla
     Route::post('/admin/suscripciones', [SuscripcionesController::class, 'store'])->name('admin.suscripciones.store');
     Route::get('/admin/suscripciones/{id}/edit', [SuscripcionesController::class, 'edit'])->name('admin.suscripciones.edit');
     Route::put('/admin/suscripciones/{id}', [SuscripcionesController::class, 'update'])->name('admin.suscripciones.update');
+    Route::post('/admin/export-database', [AdminController::class, 'exportDatabase'])->name('admin.export-database');
+    Route::post('/admin/import-database', [AdminController::class, 'importDatabase'])->name('admin.import-database');
 });
 
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');

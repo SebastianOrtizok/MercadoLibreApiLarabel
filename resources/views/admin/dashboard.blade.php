@@ -105,7 +105,6 @@
     </div>
 
     <!-- Sección 3: Agregar cuenta de MercadoLibre -->
-
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-info text-white">
             <h5 class="mb-0">Agregar Cuenta de MercadoLibre</h5>
@@ -172,6 +171,98 @@
             <a href="{{ route('admin.suscripciones.index') }}" class="btn btn-warning">Administrar Suscripciones</a>
         </div>
     </div>
+
+  <!-- Nueva Sección: Importar/Exportar Base de Datos -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">Importar/Exportar Base de Datos</h5>
+    </div>
+    <div class="card-body">
+        <!-- Exportar Base de Datos -->
+        <div class="mb-4">
+            <h6 class="font-weight-bold">Exportar Base de Datos</h6>
+            <form action="{{ route('admin.export-database') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label class="font-weight-bold">Seleccionar tablas para exportar:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="users" id="export-users">
+                        <label class="form-check-label" for="export-users">Usuarios</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="suscripciones" id="export-suscripciones">
+                        <label class="form-check-label" for="export-suscripciones">Suscripciones</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="pagos" id="export-pagos">
+                        <label class="form-check-label" for="export-pagos">Pagos</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="mercadolibre_tokens" id="export-mercadolibre-tokens">
+                        <label class="form-check-label" for="export-mercadolibre-tokens">Tokens de MercadoLibre</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="articulos" id="export-articulos">
+                        <label class="form-check-label" for="export-articulos">Artículos</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="ordenes" id="export-ordenes">
+                        <label class="form-check-label" for="export-ordenes">Órdenes</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="item_promotions" id="export-item-promotions">
+                        <label class="form-check-label" for="export-item-promotions">Promociones de Ítems</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-dark">Exportar</button>
+            </form>
+        </div>
+
+        <!-- Importar Base de Datos -->
+        <div>
+            <h6 class="font-weight-bold">Importar Base de Datos</h6>
+            <form action="{{ route('admin.import-database') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="form-group">
+                    <label for="file" class="font-weight-bold">Seleccionar archivo JSON:</label>
+                    <input type="file" name="file" id="file" class="form-control" accept=".json" required>
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-bold">Seleccionar tablas para importar:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="users" id="import-users">
+                        <label class="form-check-label" for="import-users">Usuarios</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="suscripciones" id="import-suscripciones~$">
+                        <label class="form-check-label" for="import-suscripciones">Suscripciones</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="pagos" id="import-pagos">
+                        <label class="form-check-label" for="import-pagos">Pagos</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="mercadolibre_tokens" id="import-mercadolibre-tokens">
+                        <label class="form-check-label" for="import-mercadolibre-tokens">Tokens de MercadoLibre</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="articulos" id="import-articulos">
+                        <label class="form-check-label" for="import-articulos">Artículos</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="ordenes" id="import-ordenes">
+                        <label class="form-check-label" for="import-ordenes">Órdenes</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tables[]" value="item_promotions" id="import-item-promotions">
+                        <label class="form-check-label" for="import-item-promotions">Promociones de Ítems</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-dark">Importar</button>
+            </form>
+        </div>
+    </div>
+</div>
 
     <!-- Sección 5: Lista de usuarios -->
     <div class="card shadow-sm">

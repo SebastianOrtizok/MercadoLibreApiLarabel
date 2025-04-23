@@ -10,7 +10,7 @@
 
         @if (!$hasToken)
             <!-- Mensaje para generar token -->
-            <div class="token-message-container" style="background-color: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center;">
+            <div class="token-message-container" style="background-color: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin: 20px 10px; text-align: center;">
                 <h2 style="font-size: 1.5rem; color: #333; margin-bottom: 10px;">Configura tu Token de Mercado Libre</h2>
                 <p style="font-size: 1rem; color: #666; margin-bottom: 20px; line-height: 1.5;">
                     Para comenzar a gestionar tus cuentas, publicaciones y ventas en Mercado Libre, necesitas generar un token de acceso. Este token permitirá que nuestra plataforma se conecte de forma segura a tu cuenta de Mercado Libre y sincronice tus datos automáticamente.
