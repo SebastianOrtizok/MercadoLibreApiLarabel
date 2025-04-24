@@ -75,16 +75,16 @@ class AdminController extends Controller
     public function selectUser(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'selected_user_id' => 'required|exists:users,id',
         ]);
 
-        $request->session()->put('selected_user', $request->user_id);
+        $request->session()->put('selected_user_id', $request->selected_user_id);
         return redirect()->route('admin.dashboard')->with('success', 'Usuario seleccionado exitosamente.');
     }
 
     public function clearSelection(Request $request)
     {
-        $request->session()->forget('selected_user');
+        $request->session()->forget('selected_user_id');
         return redirect()->route('admin.dashboard')->with('success', 'Selección de usuario eliminada.');
     }
 

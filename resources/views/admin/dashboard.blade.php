@@ -22,8 +22,8 @@
         </div>
     @endif
 
-    <!-- Sección 1: Seleccionar usuario -->
-    <div class="card shadow-sm mb-4">
+  <!-- Sección 1: Seleccionar usuario -->
+  <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">Seleccionar Usuario</h5>
         </div>
@@ -52,7 +52,6 @@
             @endif
         </div>
     </div>
-
     <!-- Sección 2: Crear usuario -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-success text-white">
