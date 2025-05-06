@@ -13,7 +13,7 @@ class TokenController extends Controller
     public function create()
     {
         $clientId = config('services.mercadolibre.client_id');
-        $redirectUri = route('tokens.callback');
+        $redirectUri = config('services.mercadolibre.redirect_uri', 'https://mercadolibreapi.onrender.com/tokens/callback');
 
         if (!$clientId) {
             Log::error('Client ID de Mercado Libre no está configurado en .env');
@@ -21,6 +21,8 @@ class TokenController extends Controller
         }
 
         $authUrl = "https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id={$clientId}&redirect_uri=" . urlencode($redirectUri);
+
+        Log::info('Generando URL de autorización de Mercado Libre', ['auth_url' => $authUrl]);
 
         return redirect($authUrl);
     }
@@ -30,11 +32,11 @@ class TokenController extends Controller
         $code = $request->query('code');
         $clientId = config('services.mercadolibre.client_id');
         $clientSecret = config('services.mercadolibre.client_secret');
-        $redirectUri = route('tokens.callback');
+        $redirectUri = config('services.mercadolibre.redirect_uri', 'https://mercadolibreapi.onrender.com/tokens/callback');
 
         if (!$code) {
             Log::error('Código de autorización de Mercado Libre no recibido', ['query' => $request->query()]);
-            return redirect()->route('dashboard')->with('error', 'Error al autorizar la aplicación. Intenta nuevamente.');
+            return redirect()->route('dashboard')->with('error', 'Error al autorizar la aplicación. Intenta nuevamente. Si el problema persiste, contacta al soporte de Mercado Libre.');
         }
 
         if (!$clientId || !$clientSecret) {
@@ -97,7 +99,7 @@ class TokenController extends Controller
                     'status' => $response->status(),
                     'response' => $response->json(),
                 ]);
-                return redirect()->route('dashboard')->with('error', 'Error al generar el token. Intenta nuevamente.');
+                return redirect()->route('dashboard')->with('error', 'Error al generar el token: ' . $response->json()['message']);
             }
         } catch (\Exception $e) {
             Log::error('Excepción al procesar el callback de Mercado Libre', [

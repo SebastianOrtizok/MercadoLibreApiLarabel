@@ -15,88 +15,70 @@ class CompetidorXCategoriaService
         $this->mercadoLibreService = $mercadoLibreService;
     }
 
-    public function analyzeCompetitors($userId, $mlAccountId, $categoryId, $limit = 50)
+    public function getItemsByCategory($userId, $mlAccountId, $categoryId, $limit = 50, $offset = 0)
     {
         try {
+            \Log::info("Iniciando getItemsByCategory", ['user_id' => $userId, 'ml_account_id' => $mlAccountId, 'category_id' => $categoryId]);
             $region = 'MLA';
             $accessToken = $this->mercadoLibreService->getAccessToken($userId, $mlAccountId);
+            \Log::info("Access token obtenido", ['access_token' => substr($accessToken, 0, 20) . '...']);
+
             $response = $this->client->get("sites/{$region}/search", [
                 'headers' => [
                     'Authorization' => "Bearer {$accessToken}",
                 ],
-
+                'query' => [
+                    'category' => $categoryId,
+                    'limit' => $limit,
+                    'offset' => $offset,
+                    'sort' => 'sold_quantity_desc'
+                ]
             ]);
 
             $data = json_decode($response->getBody(), true);
+            \Log::info("Respuesta de la API", [
+                'status' => $response->getStatusCode(),
+                'results_count' => count($data['results'] ?? []),
+                'total' => $data['paging']['total'] ?? 0
+            ]);
 
             if (!isset($data['results']) || empty($data['results'])) {
+                \Log::info("No se encontraron ítems para la categoría", ['category_id' => $categoryId]);
                 return [
-                    'competitors' => [],
-                    'total_items' => 0,
-                    'category_id' => $categoryId,
-                    'top_keywords' => []
+                    'items' => [],
+                    'total' => $data['paging']['total'] ?? 0
                 ];
             }
 
-            $competitors = [];
-            $totalItems = count($data['results']);
-
-            foreach ($data['results'] as $item) {
-                $sellerId = $item['seller']['id'] ?? 'unknown';
-                if (!isset($competitors[$sellerId])) {
-                    $competitors[$sellerId] = [
-                        'seller_id' => $sellerId,
-                        'item_count' => 0,
-                        'average_price' => 0,
-                        'total_price' => 0,
-                        'free_shipping_percentage' => 0,
-                        'free_shipping_count' => 0,
-                        'titles' => []
-                    ];
-                }
-
-                $competitors[$sellerId]['item_count']++;
-                $competitors[$sellerId]['total_price'] += $item['price'] ?? 0;
-                $competitors[$sellerId]['free_shipping_count'] += ($item['shipping']['free_shipping'] ?? false) ? 1 : 0;
-                $competitors[$sellerId]['titles'][] = $item['title'] ?? '';
-
-                $competitors[$sellerId]['average_price'] = $competitors[$sellerId]['total_price'] / $competitors[$sellerId]['item_count'];
-                $competitors[$sellerId]['free_shipping_percentage'] = ($competitors[$sellerId]['free_shipping_count'] / $competitors[$sellerId]['item_count']) * 100;
-            }
-
-            $allTitles = array_merge(...array_column($competitors, 'titles'));
-            $wordCounts = [];
-            foreach ($allTitles as $title) {
-                $words = array_filter(explode(' ', strtolower($title)));
-                foreach ($words as $word) {
-                    if (strlen($word) > 3) {
-                        $wordCounts[$word] = ($wordCounts[$word] ?? 0) + 1;
-                    }
-                }
-            }
-            arsort($wordCounts);
-            $topKeywords = array_slice($wordCounts, 0, 10);
-
             return [
-                'competitors' => array_values($competitors),
-                'total_items' => $totalItems,
-                'category_id' => $categoryId,
-                'top_keywords' => $topKeywords
+                'items' => $data['results'],
+                'total' => $data['paging']['total'] ?? count($data['results'])
             ];
         } catch (RequestException $e) {
-            \Log::error("Error al analizar competidores por categoría: " . $e->getMessage());
-            throw $e;
+            $errorMessage = "Error al obtener ítems por categoría: " . $e->getMessage();
+            if ($e->hasResponse()) {
+                $errorMessage .= " - Respuesta de la API: " . $e->getResponse()->getBody()->getContents();
+            }
+            \Log::error($errorMessage);
+            throw new \Exception($errorMessage);
         }
     }
 
     public function getCategories()
     {
         try {
+            \Log::info("Iniciando getCategories");
             $response = $this->client->get('sites/MLA/categories');
-            return json_decode($response->getBody(), true);
+            $categories = json_decode($response->getBody(), true);
+            \Log::info("Categorías obtenidas desde la API", ['count' => count($categories)]);
+            return $categories;
         } catch (RequestException $e) {
-            \Log::error("Error al obtener categorías: " . $e->getMessage());
-            throw $e;
+            $errorMessage = "Error al obtener categorías: " . $e->getMessage();
+            if ($e->hasResponse()) {
+                $errorMessage .= " - Respuesta de la API: " . $e->getResponse()->getBody()->getContents();
+            }
+            \Log::error($errorMessage);
+            throw new \Exception($errorMessage);
         }
     }
 }
