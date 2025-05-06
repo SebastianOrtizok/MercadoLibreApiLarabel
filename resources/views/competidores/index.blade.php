@@ -100,47 +100,85 @@
         </table>
     </div>
 
-    <!-- Tabla de ítems descargados -->
+    <!-- Panel de estadísticas -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Estadísticas de Competidores</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Ventas Totales:</strong> {{ $stats['total_sales'] ?? 0 }}</p>
+            <p><strong>Ingresos Totales:</strong> ${{ number_format($stats['total_revenue'] ?? 0, 2) }}</p>
+            <h5>Vendedores Principales</h5>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Vendedor</th>
+                        <th>Ventas</th>
+                        <th>Ingresos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($stats['sellers'] ?? [] as $sellerId => $data)
+                        <tr>
+                            <td>{{ $data['nickname'] }}</td>
+                            <td>{{ $data['sales'] }}</td>
+                            <td>${{ number_format($data['revenue'], 2) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tabla de ítems descargados con seguimiento -->
     <h3 class="mb-4 text-primary fw-bold">Publicaciones Descargadas</h3>
     <div class="table-responsive">
-        <table class="table table-hover modern-table shadow-sm">
-            <thead class="table-primary">
-                <tr>
-                    <th scope="col">Competidor</th>
-                    <th scope="col">Publicación</th>
-                    <th scope="col">Título</th>
-                    <th scope="col">Precio</th>
-                    <th scope="col">Stock</th>
-                    <th scope="col">Ventas</th>
-                    <th scope="col">Envío Gratis</th>
-                    <th scope="col">Última Actualización</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($items as $item)
+        <form method="POST" action="{{ route('competidores.follow') }}">
+            @csrf
+            <table class="table table-hover modern-table shadow-sm">
+                <thead class="table-primary">
                     <tr>
-                        <td>{{ $item->competidor->nombre ?? 'N/A' }}</td>
-                        <td>{{ $item->item_id }}</td>
-                        <td>{{ $item->titulo }}</td>
-                        <td>${{ number_format($item->precio, 2) }}</td>
-                        <td>{{ $item->cantidad_disponible }}</td>
-                        <td>{{ $item->cantidad_vendida }}</td>
-                        <td>
-                            <span class="badge {{ $item->envio_gratis ? 'bg-success' : 'bg-secondary' }}">
-                                {{ $item->envio_gratis ? 'Sí' : 'No' }}
-                            </span>
-                        </td>
-                        <td>{{ $item->ultima_actualizacion->format('d/m/Y H:i') }}</td>
+                        <th>Seguir</th>
+                        <th>Competidor</th>
+                        <th>Publicación</th>
+                        <th>Título</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Ventas</th>
+                        <th>Envío Gratis</th>
+                        <th>Última Actualización</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="9" class="text-center text-muted py-4">
-                            <i class="fas fa-info-circle me-2"></i> No hay publicaciones descargadas aún.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse ($items as $item)
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="follow[{{ $item->item_id }}]" value="yes" {{ $item->following ? 'checked' : '' }}>
+                            </td>
+                            <td>{{ $item->competidor->nombre ?? 'N/A' }}</td>
+                            <td>{{ $item->item_id }}</td>
+                            <td>{{ $item->titulo }}</td>
+                            <td>${{ number_format($item->precio, 2) }}</td>
+                            <td>{{ $item->cantidad_disponible }}</td>
+                            <td>{{ $item->cantidad_vendida }}</td>
+                            <td>
+                                <span class="badge {{ $item->envio_gratis ? 'bg-success' : 'bg-secondary' }}">
+                                    {{ $item->envio_gratis ? 'Sí' : 'No' }}
+                                </span>
+                            </td>
+                            <td>{{ $item->ultima_actualizacion->format('d/m/Y H:i') }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-4">
+                                <i class="fas fa-info-circle me-2"></i> No hay publicaciones descargadas aún.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary mt-3">Actualizar Seguimiento</button>
+        </form>
     </div>
 </div>
 @endsection

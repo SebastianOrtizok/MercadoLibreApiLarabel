@@ -1,104 +1,85 @@
 <?php
+
 namespace App\Jobs;
 
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Facades\Http;
+use App\Services\CompetidorXCategoriaService;
 use App\Models\Competidor;
-use App\Models\ItemCompetidor;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
-class ActualizarItemsCompetidor
+class ActualizarItemsCompetidor implements ShouldQueue
 {
-    use Dispatchable;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $competidor;
+    protected $categoryId;
 
-    public function __construct(Competidor $competidor)
+    public function __construct(Competidor $competidor, $categoryId = 'MLA1051')
     {
         $this->competidor = $competidor;
+        $this->categoryId = $categoryId;
     }
 
-    public function handle()
+    public function handle(CompetidorXCategoriaService $competidorService)
     {
-        dump("Consultando ítems para el competidor ID: " . $this->competidor->id);
-        dump("Seller ID del competidor: " . $this->competidor->seller_id);
-        dump("User ID asociado: " . $this->competidor->user_id);
+        $userId = $this->competidor->user_id;
+        $mlAccountId = \App\Models\MercadoLibreToken::where('user_id', $userId)->first()->ml_account_id ?? null;
 
-        $user = $this->competidor->user;
-        if (!$user) {
-            dump("No se encontró el usuario asociado al competidor.");
-            return "Fin del Job - Sin usuario";
+        if (!$mlAccountId) {
+            \Log::error('Cuenta de Mercado Libre no vinculada', ['user_id' => $userId]);
+            return;
         }
 
-        $tokenModel = $user->mercadolibreTokens()->first();
-        if (!$tokenModel) {
-            dump("No se encontró un token de acceso para el usuario ID: " . $user->id);
-            return "Fin del Job - Sin token";
-        }
-        $token = $tokenModel->access_token;
-        dump("Usando token de ml_account_id: " . $tokenModel->ml_account_id);
-        dump("Token: " . substr($token, 0, 20) . "...");
-
-        $offset = 0;
-        $limit = 50;
-        $totalProcessedItems = 0;
-
-        do {
-            $response = Http::withToken($token)->get("https://api.mercadolibre.com/users/{$this->competidor->seller_id}/items/search", [
-                'status' => 'active',
-                'limit' => $limit,
-                'offset' => $offset,
+        try {
+            \Log::info('Iniciando actualización de ítems', [
+                'user_id' => $userId,
+                'competidor_id' => $this->competidor->id,
+                'category_id' => $this->categoryId,
             ]);
 
-            dump("Estado de la respuesta (offset $offset): " . $response->status());
+            $result = $competidorService->getItemsByCategory($userId, $mlAccountId, $this->categoryId);
+            $items = $result['items'];
 
-            if (!$response->successful()) {
-                dump("Error en la API: " . $response->body());
-                break;
+            \Log::info('Ítems obtenidos para actualizar', [
+                'items_count' => count($items),
+                'competidor_id' => $this->competidor->id,
+            ]);
+
+            foreach ($items as $item) {
+                \App\Models\ItemCompetidor::updateOrCreate(
+                    [
+                        'competidor_id' => $this->competidor->id,
+                        'item_id' => $item['item_id'],
+                    ],
+                    [
+                        'titulo' => $item['titulo'],
+                        'precio' => $item['precio'],
+                        'seller' => $item['seller'],
+                        'cantidad_vendida' => $item['cantidad_vendida'],
+                        'cantidad_disponible' => $item['cantidad_disponible'],
+                        'envio_gratis' => $item['envio_gratis'],
+                        'ultima_actualizacion' => now(),
+                        'following' => $item['following'],
+                    ]
+                );
             }
 
-            $data = $response->json();
-            $itemIds = $data['results'] ?? [];
-            dump("Cantidad de ítems recibidos en esta página: " . count($itemIds));
-
-            if (empty($itemIds)) {
-                dump("No hay más ítems para procesar.");
-                break;
-            }
-
-            foreach ($itemIds as $itemId) {
-                $itemResponse = Http::withToken($token)->get("https://api.mercadolibre.com/items/{$itemId}", [
-                    'include_attributes' => 'all',
-                ]);
-
-                if ($itemResponse->successful()) {
-                    $itemData = $itemResponse->json();
-                    if ($itemData['seller_id'] == $this->competidor->seller_id) {
-                        ItemCompetidor::updateOrCreate(
-                            [
-                                'competidor_id' => $this->competidor->id,
-                                'item_id' => $itemData['id'],
-                            ],
-                            [
-                                'titulo' => $itemData['title'] ?? 'Sin título',
-                                'precio' => $itemData['price'] ?? null,
-                                'cantidad_disponible' => $itemData['available_quantity'] ?? 0,
-                                'cantidad_vendida' => $itemData['sold_quantity'] ?? 0,
-                                'envio_gratis' => $itemData['shipping']['free_shipping'] ?? false,
-                                'ultima_actualizacion' => now(),
-                            ]
-                        );
-                        $totalProcessedItems++;
-                        dump("Ítem procesado: " . $itemData['id']);
-                    }
-                }
-            }
-
-            $offset += $limit;
-            dump("Ítems procesados hasta ahora: " . $totalProcessedItems);
-
-        } while (count($itemIds) == $limit);
-
-        dump("Total de ítems procesados para seller_id " . $this->competidor->seller_id . ": " . $totalProcessedItems);
-        return "Fin del Job";
+            \Log::info('Ítems de competidores actualizados exitosamente', [
+                'competidor_id' => $this->competidor->id,
+                'user_id' => $userId,
+                'items_count' => count($items),
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar ítems de competidores en el job', [
+                'error' => $e->getMessage(),
+                'competidor_id' => $this->competidor->id,
+                'user_id' => $userId,
+                'category_id' => $this->categoryId,
+            ]);
+            throw $e;
+        }
     }
 }

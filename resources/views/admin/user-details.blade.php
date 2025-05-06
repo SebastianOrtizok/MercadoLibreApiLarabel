@@ -40,8 +40,8 @@
                                 <tr>
                                     <td data-column="ml_account_id">{{ $token->ml_account_id }}</td>
                                     <td data-column="seller_name">{{ $token->seller_name ?? 'No disponible' }}</td>
-                                    <td data-column="access_token">{{ Str::limit($token->access_token, 20) }}</td>
-                                    <td data-column="refresh_token">{{ Str::limit($token->refresh_token, 20) }}</td>
+                                    <td data-column="access_token">{{ $token->access_token }}</td>
+                                    <td data-column="refresh_token">{{ $token->refresh_token }}</td>
                                     <td data-column="expires_at">{{ $token->expires_at ? $token->expires_at->format('d/m/Y H:i') : 'N/A' }}</td>
                                     <td>
                                         <a href="{{ route('admin.mercadolibre-tokens.edit', ['user' => $user->id, 'token' => $token->id]) }}" class="btn btn-sm btn-warning">Editar</a>
