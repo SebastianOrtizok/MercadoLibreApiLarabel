@@ -1,17 +1,15 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Jobs\ActualizarItemsCompetidor;
 use App\Models\Competidor;
-use App\Services\CompetidorXCategoriaService;
+use App\Services\CompetidorService;
 use Illuminate\Http\Request;
 
 class CompetidorController extends Controller
 {
     protected $competidorService;
 
-    public function __construct(CompetidorXCategoriaService $competidorService)
+    public function __construct(CompetidorService $competidorService)
     {
         $this->competidorService = $competidorService;
     }
@@ -23,19 +21,7 @@ class CompetidorController extends Controller
             ->with('competidor')
             ->get();
 
-        $userId = auth()->id();
-        $mlAccountId = auth()->user()->mercadolibreToken->ml_account_id ?? null;        $stats = [];
-
-        if ($mlAccountId) {
-            try {
-                $result = $this->competidorService->getItemsByCategory($userId, $mlAccountId, 'MLA1051');
-                $stats = $result['stats'];
-            } catch (\Exception $e) {
-                \Log::error('Error al obtener estadísticas', ['error' => $e->getMessage()]);
-            }
-        }
-
-        return view('competidores.index', compact('competidores', 'items', 'stats'));
+        return view('competidores.index', compact('competidores', 'items'));
     }
 
     public function store(Request $request)
@@ -60,22 +46,34 @@ class CompetidorController extends Controller
     {
         $competidor = Competidor::where('user_id', auth()->id())
             ->findOrFail($request->competidor_id);
-        $userId = auth()->id();
-        $mlAccountId = auth()->user()->mercadoLibreToken->ml_account_id ?? null;
-
-        if (!$mlAccountId) {
-            \Log::error('Cuenta de Mercado Libre no vinculada', ['user_id' => $userId]);
-            return redirect()->route('competidores.index')->with('error', 'Vincula tu cuenta de Mercado Libre primero.');
-        }
 
         try {
-            // Pasamos la categoría al job (puedes cambiar 'MLA1051' por otra categoría)
-            dispatch(new ActualizarItemsCompetidor($competidor, 'MLA1051'));
-            return redirect()->route('competidores.index')->with('success', 'Actualización iniciada');
+            // Realizar scraping directamente
+            $items = $this->competidorService->scrapeItemsBySeller($competidor->seller_id);
+
+            // Guardar los ítems en la base de datos
+            foreach ($items as $itemData) {
+                \App\Models\ItemCompetidor::updateOrCreate(
+                    [
+                        'competidor_id' => $competidor->id,
+                        'item_id' => $itemData['item_id'],
+                    ],
+                    [
+                        'titulo' => $itemData['titulo'],
+                        'precio' => $itemData['precio'],
+                        'ultima_actualizacion' => now(),
+                        'cantidad_disponible' => 0,
+                        'cantidad_vendida' => 0,
+                        'envio_gratis' => false,
+                    ]
+                );
+            }
+
+            return redirect()->route('competidores.index')->with('success', 'Competidor actualizado con ' . count($items) . ' ítems');
         } catch (\Exception $e) {
-            \Log::error('Error al iniciar actualización', [
+            \Log::error('Error al actualizar competidor', [
                 'error' => $e->getMessage(),
-                'user_id' => $userId,
+                'user_id' => auth()->id(),
                 'competidor_id' => $request->competidor_id,
             ]);
             return redirect()->route('competidores.index')->with('error', 'Error al actualizar: ' . $e->getMessage());

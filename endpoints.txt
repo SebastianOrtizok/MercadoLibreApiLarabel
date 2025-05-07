@@ -1,0 +1,12 @@
+Endpoints funcionales (200 OK):
+/users/65494552/items/search: Lista ítems del usuario autenticado (por ejemplo, MLA1495137683).
+/sites/MLA/categories: Lista categorías del sitio (por ejemplo, MLA1055 para Celulares y Smartphones).
+/users/me: Obtiene datos del usuario autenticado (IMPACTOTENIS).
+/sites/MLA/domain_discovery/search: Predice categorías por texto (por ejemplo, MLA1055 para "celular iphone").
+/items/MLA1495137683: Obtiene detalles de un ítem específico.
+Endpoints no funcionales:
+/sites/MLA/search?category=MLA1055: 403 Forbidden con token, 401 Unauthorized sin token.
+/sites/MLA/search?q=iphone: 403 Forbidden con token, 401 Unauthorized sin token.
+/sites/MLA/search?nickname=TESTUSER_65494552: 403 Forbidden (obsoleto).
+/items/MLA123456789: 404 Not Found (ítem inválido).
+Conclusión: Los endpoints privados relacionados con el usuario 65494552 funcionan bien con el token actual. Sin embargo, los endpoints de búsqueda pública (/sites/MLA/search) están bloqueados, ya sea por falta de autenticación (401) o por restricciones del token (403).

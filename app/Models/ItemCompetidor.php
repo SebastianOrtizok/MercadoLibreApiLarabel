@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -10,12 +9,13 @@ class ItemCompetidor extends Model
 
     protected $fillable = [
         'competidor_id', 'item_id', 'titulo', 'precio', 'cantidad_disponible',
-        'cantidad_vendida', 'envio_gratis', 'ultima_actualizacion', 'imagen',
+        'cantidad_vendida', 'envio_gratis', 'ultima_actualizacion', 'imagen', 'following',
     ];
 
     protected $casts = [
-        'ultima_actualizacion' => 'datetime', // Reemplaza $dates
-        'envio_gratis' => 'boolean', // De paso, aseguramos que sea booleano
+        'ultima_actualizacion' => 'datetime',
+        'envio_gratis' => 'boolean',
+        'following' => 'boolean',
     ];
 
     public function competidor()
