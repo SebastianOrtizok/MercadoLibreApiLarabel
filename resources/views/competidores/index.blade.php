@@ -23,6 +23,10 @@
                     @csrf
                     <div class="row g-3">
                         <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="official_store_id">Official Store ID (opcional)</label>
+                            <input type="number" name="official_store_id" id="official_store_id" class="form-control" value="{{ old('official_store_id') }}">
+                        </div>
                             <label for="seller_id" class="form-label fw-semibold">Seller ID</label>
                             <input type="text" name="seller_id" id="seller_id" class="form-control" placeholder="Ej: 179571326" required>
                             @error('seller_id')
@@ -118,15 +122,15 @@
             </thead>
             <tbody>
                 @forelse ($items->sortByDesc('following') as $item)
-                    <tr @if($item->following) style="background-color: #fff3cd;" @endif class="{{ $item->following ? 'highlight-followed' : '' }}">
-                        <td>
+                    <tr class="{{ $item->following ? 'highlight-followed' : '' }}">
+                        <td @if($item->following) style="background-color: #e6f3ff;" @endif>
                             <input type="checkbox" name="follow[{{ $item->item_id }}]" value="yes" {{ $item->following ? 'checked' : '' }}>
                         </td>
-                        <td>{{ $item->competidor->nombre ?? 'N/A' }}</td>
-                        <td>{{ $item->item_id }}</td>
-                        <td>{{ $item->titulo }}</td>
-                        <td>${{ number_format($item->precio, 2) }}</td>
-                        <td>{{ $item->ultima_actualizacion ? $item->ultima_actualizacion->format('d/m/Y H:i') : 'N/A' }}</td>
+                        <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->competidor->nombre ?? 'N/A' }}</td>
+                        <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->item_id }}</td>
+                        <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->titulo }}</td>
+                        <td @if($item->following) style="background-color: #e6f3ff;" @endif>${{ number_format($item->precio, 2) }}</td>
+                        <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->ultima_actualizacion ? $item->ultima_actualizacion->format('d/m/Y H:i') : 'N/A' }}</td>
                     </tr>
                 @empty
                     <tr>

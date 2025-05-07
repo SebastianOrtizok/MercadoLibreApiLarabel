@@ -30,6 +30,7 @@ class CompetidorController extends Controller
             'seller_id' => 'required|string',
             'nickname' => 'required|string',
             'nombre' => 'required|string',
+            'official_store_id' => 'nullable|integer',
         ]);
 
         Competidor::create([
@@ -37,6 +38,7 @@ class CompetidorController extends Controller
             'seller_id' => $request->seller_id,
             'nickname' => $request->nickname,
             'nombre' => $request->nombre,
+            'official_store_id' => $request->official_store_id,
         ]);
 
         return redirect()->route('competidores.index')->with('success', 'Competidor agregado');
@@ -48,10 +50,12 @@ class CompetidorController extends Controller
             ->findOrFail($request->competidor_id);
 
         try {
-            // Realizar scraping directamente
-            $items = $this->competidorService->scrapeItemsBySeller($competidor->seller_id);
+            $items = $this->competidorService->scrapeItemsBySeller(
+                $competidor->seller_id,
+                strtolower($competidor->nickname),
+                $competidor->official_store_id
+            );
 
-            // Guardar los ítems en la base de datos
             foreach ($items as $itemData) {
                 \App\Models\ItemCompetidor::updateOrCreate(
                     [
