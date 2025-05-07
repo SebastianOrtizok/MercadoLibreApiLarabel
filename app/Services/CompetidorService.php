@@ -23,25 +23,26 @@ class CompetidorService
     public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = null)
     {
         $items = [];
-        $page = 1;
-        $maxPages = 5; // Límite de 5 páginas (aproximadamente 240 ítems para tiendas oficiales)
+        $page = 3;
+        $maxPages = 10; // Límite de páginas
+        $maxItems = 200; // Límite total de ítems
         $itemsPerPage = $officialStoreId ? 48 : 50; // Tiendas oficiales usan 48 ítems por página
 
-        // Determinar la base URL según si es una tienda oficial
         $baseUrl = $officialStoreId
-            ? "https://tienda.mercadolibre.com.ar/{$sellerName}"
+            ? "https://listado.mercadolibre.com.ar"
             : "https://listado.mercadolibre.com.ar";
 
-        while ($page <= $maxPages) {
+        while ($page <= $maxPages && count($items) < $maxItems) {
             $offset = ($page - 1) * $itemsPerPage + 1;
             $url = $officialStoreId
-                ? "{$baseUrl}" . ($page > 1 ? "_Desde_{$offset}" : "")
+                ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True?official_store_id={$officialStoreId}"
+                    : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True?official_store_id={$officialStoreId}")
                 : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True";
 
-            \Log::info("Scrapeando página {$page}: {$url}");
+            \Log::info("Intentando scrapeo de página {$page} con URL: {$url}");
 
             try {
-                $response = $this->client->get($url);
+                $response = $this->client->get($url, ['timeout' => 10]);
                 \Log::info("Respuesta recibida", ['status' => $response->getStatusCode(), 'url' => $url]);
                 if ($response->getStatusCode() !== 200) {
                     \Log::warning("Código de estado no esperado: {$response->getStatusCode()}");
@@ -52,12 +53,18 @@ class CompetidorService
                 $crawler = new Crawler($html);
 
                 $itemNodes = $crawler->filter('li.ui-search-layout__item');
+                \Log::info("Ítems encontrados en página {$page}: " . $itemNodes->count());
+
                 if ($itemNodes->count() === 0) {
-                    \Log::info("No se encontraron más ítems en la página {$page}");
+                    \Log::info("No se encontraron más ítems en la página {$page}, contenido HTML: " . substr($html, 0, 200));
                     break;
                 }
 
-                $itemNodes->each(function (Crawler $node) use (&$items, $sellerId) {
+                $itemNodes->each(function (Crawler $node) use (&$items, $sellerId, $maxItems) {
+                    if (count($items) >= $maxItems) {
+                        return false; // Detener el each si alcanzamos el límite
+                    }
+
                     $title = $node->filter('h3.poly-component__title-wrapper')->count()
                         ? $node->filter('h3.poly-component__title-wrapper')->text()
                         : 'Sin título';
@@ -82,21 +89,33 @@ class CompetidorService
                 $page++;
                 sleep(2); // Pausa para evitar bloqueos
             } catch (RequestException $e) {
-                \Log::error("Error al scrapear ítems para el vendedor {$sellerId}", [
+                \Log::error("Error al scrapeo para el vendedor {$sellerId}", [
                     'error' => $e->getMessage(),
                     'url' => $url,
-                    'code' => $e->getCode()
+                    'code' => $e->getCode(),
+                    'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : 'No response'
                 ]);
                 break;
             }
         }
 
+        \Log::info("Scraping finalizado. Total ítems scrapeados: " . count($items));
         return $items;
     }
 
     protected function extractItemIdFromLink($link)
     {
-        preg_match('/(MLA\d+)/', $link, $matches);
-        return $matches[1] ?? $link;
+        if (preg_match('/(MLA\d+)/', $link, $matches)) {
+            return $matches[1];
+        }
+        // Intentar extraer el ID desde la parte de la URL que contiene el item_id
+        $parts = parse_url($link);
+        if (isset($parts['query'])) {
+            parse_str($parts['query'], $query);
+            if (isset($query['item_id']) && preg_match('/(MLA\d+)/', $query['item_id'], $matches)) {
+                return $matches[1];
+            }
+        }
+        return 'UNKNOWN'; // Fallback seguro
     }
 }
