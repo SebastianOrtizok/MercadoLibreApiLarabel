@@ -7,3 +7,19 @@ reports
 sessions
 transactions
 test1234
+
+Se puede seguir las publicaciones de otro usuario
+se puede seguir una publicacion 
+
+
+Zipnova conecta con empresas logisticas se puede seleccionar con que empresa trabajar (seria quien va a ser el envio) se conecta con la tienda (no tiene costo) el plan starter en principio es sin cargo el envio lo paga el comprador a no ser que se seleccione envio gratis
+no permite descuentos por el momento
+en zipnova hay que volver a agregar las medidas de los productos para el envío
+
+sincroniza precio y stock.  Precio de promocion no apareceria tachado en mercadolibre
+no le permite renovar las promociones de mercadolibre aun
+
+costos de realtrends para mercadolibre (parte analítica) y gestion (tiempo de prueba de 30 dias)
+La opcion de tienda hasta el 30 de abril gratis se pagara por venta de articulos del 0.04 porciento (se gestionan juntas ambas tiendas mercado libre y la tienda de realtrends) pero son canales diferentes
+
+Se puede manejar un sku propio unificado si es que tengo varias cuentas de MercadoLibre.  Para poder conocer por ejemplo cuantas ventas tuve acumulado por sku en vez de por articulo?  no se puede no permite
