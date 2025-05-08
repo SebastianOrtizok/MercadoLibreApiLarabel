@@ -32,7 +32,7 @@
                         Hola, {{ Auth::user()->name }}!
                         @if (!Auth::user()->suscripcion)
                         <p><span class="text">No hay suscripción asociada.</span></p>
-                        @elseif (in_array(Auth::user()->suscripcion->plan, ['test', 'prueba_gratuita']))
+                        @elseif (in_array(Auth::user()->suscripcion->plan, ['test']))
                         <p><span class="text">Plan: {{ Auth::user()->suscripcion->plan }} (sin vencimiento).</span></p>
                         @elseif (Auth::user()->suscripcion->estado !== 'activo')
                         <p><span class="text">Estado: {{ Auth::user()->suscripcion->estado }} (no activo).</span></p>
@@ -145,7 +145,7 @@
                     <h5><span class="userlog">Hola, {{ Auth::user()->name }}!</span></h5>
                     @if (!Auth::user()->suscripcion)
                     <p><span class="userlog">No hay suscripción asociada.</span></p>
-                    @elseif (in_array(Auth::user()->suscripcion->plan, ['test', 'prueba_gratuita']))
+                    @elseif (in_array(Auth::user()->suscripcion->plan, ['test']))
                     <p><span class="userlog">Plan: {{ Auth::user()->suscripcion->plan }} (sin vencimiento).</span></p>
                     @elseif (Auth::user()->suscripcion->estado !== 'activo')
                     <p><span class="userlog">Estado: {{ Auth::user()->suscripcion->estado }} (no activo).</span></p>

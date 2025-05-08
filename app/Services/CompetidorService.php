@@ -23,10 +23,10 @@ class CompetidorService
     public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = null)
     {
         $items = [];
-        $page = 3;
-        $maxPages = 10; // Límite de páginas
-        $maxItems = 200; // Límite total de ítems
-        $itemsPerPage = $officialStoreId ? 48 : 50; // Tiendas oficiales usan 48 ítems por página
+        $page = 1;
+        $maxPages = 2; // Reducimos para pruebas rápidas
+        $maxItems = 5; // Limitamos a 10 ítems por tu solicitud
+        $itemsPerPage = $officialStoreId ? 48 : 50;
 
         $baseUrl = $officialStoreId
             ? "https://listado.mercadolibre.com.ar"
@@ -56,38 +56,49 @@ class CompetidorService
                 \Log::info("Ítems encontrados en página {$page}: " . $itemNodes->count());
 
                 if ($itemNodes->count() === 0) {
-                    \Log::info("No se encontraron más ítems en la página {$page}, contenido HTML: " . substr($html, 0, 200));
+                    \Log::info("No se encontraron más ítems en la página {$page}, contenido HTML: " . substr($html, 0, 500));
                     break;
                 }
 
-                $itemNodes->each(function (Crawler $node) use (&$items, $sellerId, $maxItems) {
+                $itemNodes->each(function (Crawler $node) use (&$items, $maxItems) {
                     if (count($items) >= $maxItems) {
-                        return false; // Detener el each si alcanzamos el límite
+                        return false;
                     }
 
-                    $title = $node->filter('h3.poly-component__title-wrapper')->count()
-                        ? $node->filter('h3.poly-component__title-wrapper')->text()
+                    $title = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
+                        ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->text()
                         : 'Sin título';
-                    $price = $node->filter('span.andes-money-amount__fraction')->count()
-                        ? floatval(str_replace(',', '', $node->filter('span.andes-money-amount__fraction')->text()))
-                        : 0.0;
-                    $postLink = $node->filter('a')->count()
-                        ? $node->filter('a')->attr('href')
+                    $originalPrice = $node->filter('s.andes-money-amount--previous .andes-money-amount__fraction')->count()
+                        ? $this->normalizePrice($node->filter('s.andes-money-amount--previous .andes-money-amount__fraction')->text())
+                        : null;
+                    $currentPrice = $node->filter('.poly-price__current .andes-money-amount__fraction')->count()
+                        ? $this->normalizePrice($node->filter('.poly-price__current .andes-money-amount__fraction')->text())
+                        : ($originalPrice ?? 0.0);
+                    $postLink = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
+                        ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->attr('href')
                         : 'Sin enlace';
+                    $isFull = $node->filter('span.poly-component__shipped-from svg[aria-label="FULL"]')->count() > 0;
+                    $hasFreeShipping = $node->filter('.poly-component__shipping:contains("Envío gratis")')->count() > 0;
 
                     $itemId = $this->extractItemIdFromLink($postLink);
 
-                    $items[] = [
+                    $itemData = [
                         'item_id' => $itemId,
                         'titulo' => $title,
-                        'precio' => $price,
-                        'post_link' => $postLink,
-                        'seller_id' => $sellerId,
+                        'precio' => $originalPrice ?? $currentPrice,
+                        'precio_descuento' => $currentPrice,
+                        'url' => $postLink,
+                        'es_full' => $isFull,
+                        'envio_gratis' => $hasFreeShipping,
                     ];
+
+                    \Log::info("Ítem scrapeado", $itemData);
+
+                    $items[] = $itemData;
                 });
 
                 $page++;
-                sleep(2); // Pausa para evitar bloqueos
+                sleep(2);
             } catch (RequestException $e) {
                 \Log::error("Error al scrapeo para el vendedor {$sellerId}", [
                     'error' => $e->getMessage(),
@@ -108,7 +119,6 @@ class CompetidorService
         if (preg_match('/(MLA\d+)/', $link, $matches)) {
             return $matches[1];
         }
-        // Intentar extraer el ID desde la parte de la URL que contiene el item_id
         $parts = parse_url($link);
         if (isset($parts['query'])) {
             parse_str($parts['query'], $query);
@@ -116,6 +126,15 @@ class CompetidorService
                 return $matches[1];
             }
         }
-        return 'UNKNOWN'; // Fallback seguro
+        return 'UNKNOWN';
+    }
+
+    protected function normalizePrice($priceText)
+    {
+        $priceText = trim($priceText);
+        $priceText = str_replace('.', '', $priceText);
+        $priceText = str_replace(',', '.', $priceText);
+        $price = (float) $priceText;
+        return $price;
     }
 }

@@ -1,0 +1,9 @@
+Tablas a borrar
+api_tokens
+inventories
+kits
+order_items
+reports
+sessions
+transactions
+test1234

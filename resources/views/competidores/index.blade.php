@@ -4,7 +4,6 @@
 <div class="container mt-5">
     <h2 class="mb-4 text-primary fw-bold">Gestión de Competidores</h2>
 
-    <!-- Mensaje de éxito -->
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
@@ -12,7 +11,6 @@
         </div>
     @endif
 
-    <!-- Formulario para agregar competidor -->
     <div class="mb-4">
         <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse" aria-expanded="false" aria-controls="formCollapse">
             <i class="fas fa-plus me-2"></i> Agregar Nuevo Competidor
@@ -23,10 +21,10 @@
                     @csrf
                     <div class="row g-3">
                         <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="official_store_id">Official Store ID (opcional)</label>
-                            <input type="number" name="official_store_id" id="official_store_id" class="form-control" value="{{ old('official_store_id') }}">
-                        </div>
+                            <div class="form-group">
+                                <label for="official_store_id">Official Store ID (opcional)</label>
+                                <input type="number" name="official_store_id" id="official_store_id" class="form-control" value="{{ old('official_store_id') }}">
+                            </div>
                             <label for="seller_id" class="form-label fw-semibold">Seller ID</label>
                             <input type="text" name="seller_id" id="seller_id" class="form-control" placeholder="Ej: 179571326" required>
                             @error('seller_id')
@@ -58,7 +56,6 @@
         </div>
     </div>
 
-    <!-- Tabla de competidores -->
     <div class="table-responsive mb-5">
         <table class="table table-hover modern-table shadow-sm">
             <thead class="table-dark">
@@ -104,45 +101,63 @@
         </table>
     </div>
 
-<!-- Tabla de ítems descargados con seguimiento -->
-<h3 class="mb-4 text-primary fw-bold">Publicaciones Descargadas</h3>
-<div class="table-responsive">
-    <form method="POST" action="{{ route('competidores.follow') }}">
-        @csrf
-        <table class="table table-hover modern-table shadow-sm">
-            <thead class="table-primary">
-                <tr>
-                    <th>Seguir</th>
-                    <th>Competidor</th>
-                    <th>Publicación</th>
-                    <th>Título</th>
-                    <th>Precio</th>
-                    <th>Última Actualización</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($items->sortByDesc('following') as $item)
-                    <tr class="{{ $item->following ? 'highlight-followed' : '' }}">
-                        <td @if($item->following) style="background-color: #e6f3ff;" @endif>
-                            <input type="checkbox" name="follow[{{ $item->item_id }}]" value="yes" {{ $item->following ? 'checked' : '' }}>
-                        </td>
-                        <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->competidor->nombre ?? 'N/A' }}</td>
-                        <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->item_id }}</td>
-                        <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->titulo }}</td>
-                        <td @if($item->following) style="background-color: #e6f3ff;" @endif>${{ number_format($item->precio, 2) }}</td>
-                        <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->ultima_actualizacion ? $item->ultima_actualizacion->format('d/m/Y H:i') : 'N/A' }}</td>
-                    </tr>
-                @empty
+    <h3 class="mb-4 text-primary fw-bold">Publicaciones Descargadas</h3>
+    <div class="table-responsive">
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{{ route('competidores.index', ['export' => 'excel']) }}" class="btn btn-success">
+                <i class="fas fa-file-excel me-2"></i> Exportar a Excel
+            </a>
+        </div>
+        <form method="POST" action="{{ route('competidores.follow') }}">
+            @csrf
+            <table class="table table-hover modern-table shadow-sm">
+                <thead class="table-primary">
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            <i class="fas fa-info-circle me-2"></i> No hay publicaciones descargadas aún.
-                        </td>
+                        <th>Seguir</th>
+                        <th>Competidor</th>
+                        <th>Publicación</th>
+                        <th>Título</th>
+                        <th>Precio Original</th>
+                        <th>Precio con Descuento</th>
+                        <th>URL</th>
+                        <th>Es Full</th>
+                        <th>Envío Gratis</th>
+                        <th>Última Actualización</th>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
-        <button type="submit" class="btn btn-primary mt-3">Actualizar Seguimiento</button>
-    </form>
-</div>
+                </thead>
+                <tbody>
+                    @forelse ($items as $item)
+                        <tr class="{{ $item->following ? 'highlight-followed' : '' }}">
+                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>
+                                <input type="checkbox" name="follow[{{ $item->item_id }}]" value="yes" {{ $item->following ? 'checked' : '' }}>
+                            </td>
+                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->competidor->nombre ?? 'N/A' }}</td>
+                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->item_id }}</td>
+                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->titulo }}</td>
+                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>${{ number_format($item->precio, 2) }}</td>
+                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>${{ $item->precio_descuento ? number_format($item->precio_descuento, 2) : '-' }}</td>
+                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>  <a href="{{ $item->url }}" target="_blank">Publicación</a></td>
+                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->es_full ? 'Sí' : 'No' }}</td>
+                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->envio_gratis ? 'Sí' : 'No' }}</td>
+                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->ultima_actualizacion ? $item->ultima_actualizacion->format('d/m/Y H:i') : 'N/A' }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-4">
+                                <i class="fas fa-info-circle me-2"></i> No hay publicaciones descargadas aún.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary mt-3">Actualizar Seguimiento</button>
+        </form>
+
+        @include('layouts.pagination', [
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
+            'limit' => $limit
+        ])
+    </div>
 </div>
 @endsection
