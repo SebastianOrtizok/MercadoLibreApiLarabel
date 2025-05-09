@@ -123,9 +123,12 @@ Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('regi
 Route::post('/register', [AuthController::class, 'register']);
 
 
+
 use Illuminate\Support\Facades\DB;
 
 Route::get('/debug-table-structure', function () {
-    $structure = DB::select('DESCRIBE items_competidores');
+    $structure = DB::select("SELECT column_name, data_type, is_nullable, column_default
+                             FROM information_schema.columns
+                             WHERE table_name = 'items_competidores'");
     return response()->json($structure);
 });
