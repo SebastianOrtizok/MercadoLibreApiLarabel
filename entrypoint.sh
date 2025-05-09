@@ -7,7 +7,8 @@ php artisan cache:clear
 php artisan config:clear
 php artisan route:clear
 
-# Ejecutar migraciones de forma segura
+# Forzar rollback y re-ejecución de migraciones
+php artisan migrate:rollback --force
 php artisan migrate --force
 
 # Iniciar el servidor
