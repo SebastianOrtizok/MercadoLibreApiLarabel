@@ -27,7 +27,7 @@ use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CompetidorController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\CompetidorXCategoriaController;
+// use App\Http\Controllers\CompetidorXCategoriaController;
 
 // Ruta para login de prueba
 Route::get('/plans', [PaymentController::class, 'showPlans'])->name('plans');
@@ -93,8 +93,8 @@ Route::middleware(['auth', \App\Http\Middleware\CheckSubscription::class])->grou
     Route::get('/sincronizar/primera/{user_id}', [AccountController::class, 'primeraSincronizacionDB'])->name('sincronizacion.primera');
     Route::post('/missing-articles/sync/{mlAccountId}', [App\Http\Controllers\MissingArticlesController::class, 'sync'])->name('missing.articles.sync');
     Route::get('/sync-orders-db', [OrderDbController::class, 'syncOrders'])->name('sync.orders.db');
-    Route::get('/competidores/category', [CompetidorXCategoriaController::class, 'index'])->name('competidores.category');
-    Route::post('/competidores/category', [CompetidorXCategoriaController::class, 'index'])->name('competidores.category.analyze');
+    // Route::get('/competidores/category', [CompetidorXCategoriaController::class, 'index'])->name('competidores.category');
+    // Route::post('/competidores/category', [CompetidorXCategoriaController::class, 'index'])->name('competidores.category.analyze');
     Route::get('/competidores', [CompetidorController::class, 'index'])->name('competidores.index');
     Route::post('/competidores', [CompetidorController::class, 'store'])->name('competidores.store');
     Route::post('/competidores/follow', [CompetidorController::class, 'follow'])->name('competidores.follow');
