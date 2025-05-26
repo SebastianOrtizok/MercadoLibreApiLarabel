@@ -42,7 +42,7 @@ return [
     'mercadolibre' => [
         'client_id' => env('MERCADOLIBRE_CLIENT_ID'),
         'client_secret' => env('MERCADOLIBRE_CLIENT_SECRET'),
-        'redirect_uri' => env('MERCADOLIBRE_REDIRECT_URI'),
+        'redirect_uri' => env('MERCADOLIBRE_REDIRECT_URI', 'https://mldatatrends.com/tokens/callback'),
     ],
 
 ];
