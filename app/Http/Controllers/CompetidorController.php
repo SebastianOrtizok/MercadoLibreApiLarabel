@@ -82,7 +82,7 @@ class CompetidorController extends Controller
             \Log::info("Ítems scrapeados para el competidor", [
                 'competidor_id' => $competidor->id,
                 'total_items' => count($items),
-                'sample_items' => array_slice($items, 0, 5), // Solo los primeros 5 para no saturar el log
+                'sample_items' => array_slice($items, 0, 10), // Solo los primeros 5 para no saturar el log
             ]);
 
             if (empty($items)) {

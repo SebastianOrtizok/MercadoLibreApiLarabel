@@ -132,7 +132,7 @@
                         <li><i class="fas fa-check text-success me-2"></i>Estadísticas avanzadas</li>
                         <li><i class="fas fa-check text-success me-2"></i>Seguimiento de competidores</li>
                     </ul>
-                    <a href="https://mercadolibreapi.onrender.com/register" class="btn btn-primary" style="padding: 10px 20px; font-weight: bold;">Registrarme</a>
+                    <a href="{{ route('register') }}" class="btn btn-primary" style="padding: 10px 20px; font-weight: bold;">Registrarme</a>
                 </div>
             </div>
 
@@ -149,7 +149,7 @@
                         <li><i class="fas fa-check text-success me-2"></i>Informes personalizados</li>
                         <li><i class="fas fa-check text-success me-2"></i>Integraciones avanzadas</li>
                     </ul>
-                    <a href="https://mercadolibreapi.onrender.com/plans" class="btn btn-outline-primary" style="padding: 10px 20px; font-weight: bold;">Ver Planes</a>
+                     <a href="{{ route('plans') }}" class="btn btn-outline-primary" style="padding: 10px 20px; font-weight: bold;">Ver Planes</a>
                 </div>
             </div>
         </div>
@@ -184,8 +184,8 @@
                 </div>
                 <div class="col-md-4">
                     <h5>Contacto</h5>
-                    <p><i class="fas fa-envelope me-2"></i> soporte@plataforma.com</p>
-                    <p><i class="fas fa-phone me-2"></i> +54 11 1234-5678</p>
+                    <p><i class="fas fa-envelope me-2"></i> soporte@</p>
+                    <p><i class="fas fa-phone me-2"></i> +54</p>
                     <div class="social-icons">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
