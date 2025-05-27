@@ -21,7 +21,7 @@
                     <h3>Mensual</h3>
                 </div>
                 <div class="card-body">
-                    <h4>$100 ARS</h4>
+                    <h4>$10000 ARS</h4>
                     <p>Por mes</p>
                     <form action="{{ route('payment.create') }}" method="POST">
                         @csrf
@@ -39,7 +39,7 @@
                     <h3>Trimestral</h3>
                 </div>
                 <div class="card-body">
-                    <h4>$270 ARS</h4>
+                    <h4>$27000 ARS</h4>
                     <p>Cada 3 meses</p>
                     <form action="{{ route('payment.create') }}" method="POST">
                         @csrf
@@ -57,7 +57,7 @@
                     <h3>Anual</h3>
                 </div>
                 <div class="card-body">
-                    <h4>$960 ARS</h4>
+                    <h4>$96000 ARS</h4>
                     <p>Por año</p>
                     <form action="{{ route('payment.create') }}" method="POST">
                         @csrf
