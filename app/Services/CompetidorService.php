@@ -25,7 +25,7 @@ class CompetidorService
         $items = [];
         $page = 1;
         $maxPages = 2; // Reducimos para pruebas rápidas
-        $maxItems = 5; // Limitamos a 10 ítems por tu solicitud
+        $maxItems = 500; // Limitamos a 10 ítems por tu solicitud
         $itemsPerPage = $officialStoreId ? 48 : 50;
 
         $baseUrl = $officialStoreId
