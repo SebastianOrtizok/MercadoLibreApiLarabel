@@ -99,62 +99,80 @@
     </section>
 
     <!-- Pricing Section -->
-<section class="pricing-section py-5">
-    <div class="container">
-        <h2 class="text-center mb-5">Comienza a gestionar tu cuenta de Mercado Libre</h2>
-        <div class="row">
-            <!-- Opción 1: Usuario Test -->
-            <div class="col-md-4 mb-4">
-                <div class="pricing-card" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; text-align: center;">
-                    <h3 style="font-size: 1.5rem; color: #333;">Prueba con usuario test</h3>
-                    <p class="lead" style="font-size: 1.2rem; color: #666;">Recorre el programa gratis</p>
-                    <p style="font-size: 1rem; color: #666; margin-bottom: 20px;">
-                        Ingresá con las siguientes credenciales para explorar las funcionalidades básicas:
-                    </p>
-                    <div style="background-color: #f8f9fa; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
-                        <p style="margin: 0; font-weight: bold; color: #333;">Usuario: test@test.com</p>
-                        <p style="margin: 0; font-weight: bold; color: #333;">Contraseña: test1234</p>
+    <section class="pricing-section py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Comienza a gestionar tu cuenta de Mercado Libre</h2>
+            <div class="row">
+                <!-- Opción 1: Usuario Test -->
+                <div class="col-md-4 mb-4">
+                    <div class="pricing-card" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; text-align: center;">
+                        <h3 style="font-size: 1.5rem; color: #333;">Prueba con usuario test</h3>
+                        <p class="lead" style="font-size: 1.2rem; color: #666;">Recorre el programa gratis</p>
+                        <p style="font-size: 1rem; color: #666; margin-bottom: 20px;">
+                            Ingresá con las siguientes credenciales para explorar las funcionalidades básicas:
+                        </p>
+                        <div style="background-color: #f8f9fa; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                            <p style="margin: 0; font-weight: bold; color: #333;">Usuario: test@test.com</p>
+                            <p style="margin: 0; font-weight: bold; color: #333;">Contraseña: test1234</p>
+                        </div>
+                        <a href="{{ route('login') }}" class="btn btn-outline-primary" style="padding: 10px 20px; font-weight: bold;">Iniciar Sesión</a>
                     </div>
-                    <a href="{{ route('login') }}" class="btn btn-outline-primary" style="padding: 10px 20px; font-weight: bold;">Iniciar Sesión</a>
                 </div>
-            </div>
 
-            <!-- Opción 2: Regístrate y Navega Gratis -->
-            <div class="col-md-4 mb-4">
-                <div class="pricing-card" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; text-align: center;">
-                    <h3 style="font-size: 1.5rem; color: #333;">Regístrate y navega gratis</h3>
-                    <p class="lead" style="font-size: 1.2rem; color: #666;">Prueba gratuita de 7 días</p>
-                    <p style="font-size: 1rem; color: #666; margin-bottom: 20px;">
-                        Gestioná tu token y accedé a todas las funcionalidades sin cargo durante 7 días.
-                    </p>
-                    <ul class="list-unstyled" style="margin-bottom: 20px;">
-                        <li><i class="fas fa-check text-success me-2"></i>Multicuentas ilimitadas</li>
-                        <li><i class="fas fa-check text-success me-2"></i>Estadísticas avanzadas</li>
-                        <li><i class="fas fa-check text-success me-2"></i>Seguimiento de competidores</li>
-                    </ul>
-                    <a href="{{ route('register') }}" class="btn btn-primary" style="padding: 10px 20px; font-weight: bold;">Registrarme</a>
+                <!-- Opción 2: Regístrate y Navega Gratis -->
+                <div class="col-md-4 mb-4">
+                    <div class="pricing-card" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; text-align: center;">
+                        <h3 style="font-size: 1.5rem; color: #333;">Regístrate y navega gratis</h3>
+                        <p class="lead" style="font-size: 1.2rem; color: #666;">Prueba gratuita de 7 días</p>
+                        <p style="font-size: 1rem; color: #666; margin-bottom: 20px;">
+                            Gestioná tu token y accedé a todas las funcionalidades sin cargo durante 7 días.
+                        </p>
+                        <div class="alert alert-warning d-flex align-items-center mb-3" role="alert" style="background-color: #fff3cd; border-color: #ffeeba;">
+                            <i class="fas fa-exclamation-circle me-2" style="color: #856404;"></i>
+                            <div>
+                                <strong>¡Importante!</strong> Para que la plataforma funcione correctamente y podamos mostrar los datos de tu cuenta, es necesario generar un token de acceso a tu cuenta de MercadoLibre. Hacé clic en el botón de abajo para registrarte y generarlo. De lo contrario, no podremos acceder a la información de tu cuenta para mostrar publicaciones, promociones ni estadísticas.
+                            </div>
+                        </div>
+                        <ul class="list-unstyled" style="margin-bottom: 20px;">
+                            <li><i class="fas fa-check text-success me-2"></i>Multicuentas ilimitadas</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Estadísticas avanzadas</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Seguimiento de competidores</li>
+                        </ul>
+                        <a href="{{ route('register') }}" class="btn btn-primary" style="padding: 10px 20px; font-weight: bold;">Registrarme</a>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Opción 3: Adquirí un Plan -->
-            <div class="col-md-4 mb-4">
-                <div class="pricing-card" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; text-align: center;">
-                    <h3 style="font-size: 1.5rem; color: #333;">Adquirí uno de nuestros planes</h3>
-                    <p class="lead" style="font-size: 1.2rem; color: #666;">Acceso completo y soporte</p>
-                    <p style="font-size: 1rem; color: #666; margin-bottom: 20px;">
-                        Elegí el plan que mejor se adapte a tus necesidades y comenzá a optimizar tus ventas.
-                    </p>
-                    <ul class="list-unstyled" style="margin-bottom: 20px;">
-                        <li><i class="fas fa-check text-success me-2"></i>Soporte prioritario</li>
-                        <li><i class="fas fa-check text-success me-2"></i>Informes personalizados</li>
-                        <li><i class="fas fa-check text-success me-2"></i>Integraciones avanzadas</li>
-                    </ul>
-                     <a href="{{ route('plans') }}" class="btn btn-outline-primary" style="padding: 10px 20px; font-weight: bold;">Ver Planes</a>
+                <!-- Opción 3: Adquirí un Plan -->
+                <div class="col-md-4 mb-4">
+                    <div class="pricing-card" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; text-align: center;">
+                        <h3 style="font-size: 1.5rem; color: #333;">Adquirí uno de nuestros planes</h3>
+                        <p class="lead" style="font-size: 1.2rem; color: #666;">Acceso completo y soporte</p>
+                        <p style="font-size: 1rem; color: #666; margin-bottom: 20px;">
+                            Elegí el plan que mejor se adapte a tus necesidades y comenzá a optimizar tus ventas.
+                        </p>
+                        <ul class="list-unstyled" style="margin-bottom: 20px;">
+                            <li><i class="fas fa-check text-success me-2"></i>Soporte prioritario</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Informes personalizados</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Integraciones avanzadas</li>
+                        </ul>
+                        <a href="{{ route('plans') }}" class="btn btn-outline-primary" style="padding: 10px 20px; font-weight: bold;">Ver Planes</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+
+    <!-- Sync Recommendation Section -->
+    <section class="sync-recommendation-section py-5 bg-light">
+        <div class="container text-center">
+            <div class="recommendation-card p-4 shadow-sm rounded" style="background-color: #e6f0ff; max-width: 800px; margin: 0 auto;">
+                <i class="fas fa-lightbulb fa-2x mb-3" style="color: #007bff;"></i>
+                <h3 class="mb-3">¡Maximizá tu experiencia!</h3>
+                <p class="mb-4">Te recomendamos visitar la sección de sincronización, donde podrás descargar todas tus publicaciones para visualizarlas directamente sin conexión, así como tus ventas para trabajarlas offline. Además, podrás anexar SKUs propios, sincronizar promociones, gestionar stock y mucho más. ¡Explorá todas las herramientas disponibles para potenciar tus ventas!</p>
+                <a href="{{ url('/sincronizacion') }}" class="btn btn-primary">Explorar Ahora</a>
+            </div>
+        </div>
+    </section>
 
     <!-- CTA Section -->
     <section class="cta-section py-5">
