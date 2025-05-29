@@ -119,6 +119,7 @@
                         <th>Título</th>
                         <th>Precio Original</th>
                         <th>Precio con Descuento</th>
+                        <th>Información de Cuotas</th>
                         <th>URL</th>
                         <th>Es Full</th>
                         <th>Envío Gratis</th>
@@ -136,14 +137,15 @@
                             <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->titulo }}</td>
                             <td @if($item->following) style="background-color: #e6f3ff;" @endif>${{ number_format($item->precio, 2) }}</td>
                             <td @if($item->following) style="background-color: #e6f3ff;" @endif>${{ $item->precio_descuento ? number_format($item->precio_descuento, 2) : '-' }}</td>
-                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>  <a href="{{ $item->url }}" target="_blank">Publicación</a></td>
+                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->info_cuotas ?? '-' }}</td>
+                            <td @if($item->following) style="background-color: #e6f3ff;" @endif><a href="{{ $item->url }}" target="_blank">Publicación</a></td>
                             <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->es_full ? 'Sí' : 'No' }}</td>
                             <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->envio_gratis ? 'Sí' : 'No' }}</td>
                             <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->ultima_actualizacion ? $item->ultima_actualizacion->format('d/m/Y H:i') : 'N/A' }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="10" class="text-center text-muted py-4">
+                            <td colspan="11" class="text-center text-muted py-4">
                                 <i class="fas fa-info-circle me-2"></i> No hay publicaciones descargadas aún.
                             </td>
                         </tr>

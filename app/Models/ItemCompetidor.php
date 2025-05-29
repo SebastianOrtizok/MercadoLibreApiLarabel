@@ -1,23 +1,26 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class ItemCompetidor extends Model
 {
-    protected $table = 'items_competidores';
-
     protected $fillable = [
-        'competidor_id', 'item_id', 'titulo', 'precio', 'precio_descuento', 'url', 'es_full',
-        'cantidad_disponible', 'cantidad_vendida', 'envio_gratis', 'ultima_actualizacion',
-        'imagen', 'following',
-    ];
-
-    protected $casts = [
-        'ultima_actualizacion' => 'datetime',
-        'envio_gratis' => 'boolean',
-        'es_full' => 'boolean',
-        'following' => 'boolean',
+        'competidor_id',
+        'item_id',
+        'titulo',
+        'precio',
+        'precio_descuento',
+        'precio_sin_impuestos',
+        'info_cuotas',
+        'url',
+        'es_full',
+        'envio_gratis',
+        'cantidad_disponible',
+        'cantidad_vendida',
+        'following',
+        'ultima_actualizacion',
     ];
 
     public function competidor()

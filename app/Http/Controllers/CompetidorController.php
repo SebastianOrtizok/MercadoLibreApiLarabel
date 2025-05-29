@@ -82,7 +82,7 @@ class CompetidorController extends Controller
             \Log::info("Ítems scrapeados para el competidor", [
                 'competidor_id' => $competidor->id,
                 'total_items' => count($items),
-                'sample_items' => array_slice($items, 0, 500), // Solo los primeros 5 para no saturar el log
+                'sample_items' => array_slice($items, 0, 500),
             ]);
 
             if (empty($items)) {
@@ -102,6 +102,7 @@ class CompetidorController extends Controller
                         'titulo' => $itemData['titulo'],
                         'precio' => number_format($itemData['precio'], 2, '.', ''),
                         'precio_descuento' => number_format($itemData['precio_descuento'], 2, '.', ''),
+                        'info_cuotas' => $itemData['info_cuotas'],
                         'url' => $itemData['url'],
                         'es_full' => $itemData['es_full'],
                         'envio_gratis' => $itemData['envio_gratis'],

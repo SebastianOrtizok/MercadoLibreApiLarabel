@@ -24,8 +24,8 @@ class CompetidorService
     {
         $items = [];
         $page = 1;
-        $maxPages = 2; // Reducimos para pruebas rápidas
-        $maxItems = 500; // Limitamos a 10 ítems por tu solicitud
+        $maxPages = 2;
+        $maxItems = 500;
         $itemsPerPage = $officialStoreId ? 48 : 50;
 
         $baseUrl = $officialStoreId
@@ -79,6 +79,9 @@ class CompetidorService
                         : 'Sin enlace';
                     $isFull = $node->filter('span.poly-component__shipped-from svg[aria-label="FULL"]')->count() > 0;
                     $hasFreeShipping = $node->filter('.poly-component__shipping:contains("Envío gratis")')->count() > 0;
+                    $installments = $node->filter('.poly-price__installments')->count()
+                        ? trim($node->filter('.poly-price__installments')->text())
+                        : null;
 
                     $itemId = $this->extractItemIdFromLink($postLink);
 
@@ -87,6 +90,7 @@ class CompetidorService
                         'titulo' => $title,
                         'precio' => $originalPrice ?? $currentPrice,
                         'precio_descuento' => $currentPrice,
+                        'info_cuotas' => $installments,
                         'url' => $postLink,
                         'es_full' => $isFull,
                         'envio_gratis' => $hasFreeShipping,
