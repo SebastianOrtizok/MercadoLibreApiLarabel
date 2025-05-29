@@ -4,26 +4,14 @@
     <div class="wrap">
         <h1 class="home">Dashboard Mercadolibre</h1>
 
-        <!-- Mensaje de recomendación para todos los usuarios -->
-        <div class="recommendation-message-container" style="background-color: #e6f0ff; border: 1px solid #d0e0ff; border-radius: 8px; padding: 20px; margin: 20px 10px; text-align: center;">
-            <i class="fas fa-lightbulb fa-2x mb-3" style="color: #007bff;"></i>
-            <h2 style="font-size: 1.5rem; color: #333; margin-bottom: 10px;">¡Maximizá tu experiencia!</h2>
-            <p style="font-size: 1rem; color: #666; margin-bottom: 20px; line-height: 1.5;">
-                Te recomendamos visitar la sección de sincronización, donde podrás descargar todas tus publicaciones para visualizarlas directamente sin conexión, así como tus ventas para trabajarlas offline. Además, podrás anexar SKUs propios, sincronizar promociones, gestionar stock y mucho más. ¡Explorá todas las herramientas disponibles para potenciar tus ventas!
-            </p>
-            <a href="{{ route('sincronizacion.index') }}" class="btn btn-primary" style="padding: 12px 24px; font-weight: bold; transition: background-color 0.3s;">
-                Explorar Ahora
-            </a>
-        </div>
-
         @php
             $hasToken = \App\Models\MercadoLibreToken::where('user_id', auth()->id())->exists();
         @endphp
 
         @if (!$hasToken)
-            <!-- Mensaje para generar token -->
+            <!-- Paso 1: Generar token -->
             <div class="token-message-container" style="background-color: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin: 20px 10px; text-align: center;">
-                <h2 style="font-size: 1.5rem; color: #333; margin-bottom: 10px;">Configura tu Token de Mercado Libre</h2>
+                <h2 style="font-size: 1.5rem; color: #333; margin-bottom: 10px;">Paso 1: Configura tu Token de Mercado Libre</h2>
                 <p style="font-size: 1rem; color: #666; margin-bottom: 20px; line-height: 1.5;">
                     Para comenzar a gestionar tus cuentas, publicaciones y ventas en Mercado Libre, necesitas generar un token de acceso. Este token permitirá que nuestra plataforma se conecte de forma segura a tu cuenta de Mercado Libre y sincronice tus datos automáticamente.
                 </p>
@@ -52,6 +40,18 @@
                         <p>Sincronizar BD</p>
                     </a>
                 </div>
+            </div>
+
+            <!-- Paso 2: Recomendación de sincronización -->
+            <div class="recommendation-message-container" style="background-color: #e6f0ff; border: 1px solid #d0e0ff; border-radius: 8px; padding: 20px; margin: 20px 10px; text-align: center;">
+                <i class="fas fa-lightbulb fa-2x mb-3" style="color: #007bff;"></i>
+                <h2 style="font-size: 1.5rem; color: #333; margin-bottom: 10px;">Paso 2: ¡Maximizá tu experiencia!</h2>
+                <p style="font-size: 1rem; color: #666; margin-bottom: 20px; line-height: 1.5;">
+                    Ahora que tenés tu token, te recomendamos visitar la sección de sincronización, donde podrás descargar todas tus publicaciones para visualizarlas directamente sin conexión, así como tus ventas para trabajarlas offline. Además, podrás anexar SKUs propios, sincronizar promociones, gestionar stock y mucho más. ¡Explorá todas las herramientas disponibles para potenciar tus ventas!
+                </p>
+                <a href="{{ route('sincronizacion.index') }}" class="btn btn-primary" style="padding: 12px 24px; font-weight: bold; transition: background-color 0.3s;">
+                    Explorar Ahora
+                </a>
             </div>
         @endif
     </div>
