@@ -54,7 +54,7 @@ class CompetidorArticulosController extends Controller
                     $item->item_id,
                     $competidor->seller_id,
                     strtolower($competidor->nickname),
-                    $item->url, // Usar la URL almacenada en la base de datos
+                    $item->url,
                     $competidor->official_store_id
                 );
 
@@ -68,7 +68,7 @@ class CompetidorArticulosController extends Controller
 
                 $item->update([
                     'titulo' => $updatedData['titulo'],
-                    'precio' => $updatedData['precio'],
+                    // Excluimos 'precio' para no actualizarlo
                     'precio_descuento' => $updatedData['precio_descuento'],
                     'info_cuotas' => $updatedData['info_cuotas'],
                     'url' => $updatedData['url'],
