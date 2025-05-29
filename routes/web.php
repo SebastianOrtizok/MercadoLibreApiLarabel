@@ -27,7 +27,7 @@ use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CompetidorController;
 use App\Http\Controllers\PaymentController;
-// use App\Http\Controllers\CompetidorXCategoriaController;
+use App\Http\Controllers\CompetidorArticulosController;
 
 // Ruta para login de prueba
 Route::get('/plans', [PaymentController::class, 'showPlans'])->name('plans');
@@ -100,6 +100,7 @@ Route::middleware(['auth', \App\Http\Middleware\CheckSubscription::class])->grou
     Route::post('/competidores/follow', [CompetidorController::class, 'follow'])->name('competidores.follow');
     Route::post('/competidores/actualizar', [CompetidorController::class, 'actualizar'])->name('competidores.actualizar');
     Route::delete('/competidores', [CompetidorController::class, 'destroy'])->name('competidores.destroy');
+    Route::post('/competidor/articulos/actualizar', [CompetidorArticulosController::class, 'actualizar'])->name('competidor.articulos.actualizar');
     Route::get('/exportar-ventas', function () {
         $ventas = session('ventas_consolidadas', []);
         return Excel::download(new ConsolidadoVentasExport($ventas), 'ventas_consolidadas.xlsx');
