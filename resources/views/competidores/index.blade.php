@@ -104,7 +104,7 @@
     <h3 class="mb-4 text-primary fw-bold">Publicaciones Descargadas</h3>
     <div class="table-responsive">
         <div class="d-flex justify-content-end mb-3">
-            <a href="{{ route('competidores.index', ['export' => 'excel']) }}" class="btn btn-success">
+            <a href="{{ route('export.items-competidores') }}" class="btn btn-success">
                 <i class="fas fa-file-excel me-2"></i> Exportar a Excel
             </a>
         </div>
