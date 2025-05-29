@@ -156,12 +156,12 @@
             </table>
             <div class="mt-3">
                 <button type="submit" class="btn btn-primary me-2">Seguir Publicación Seleccionada</button>
-                <form action="{{ route('competidor.articulos.actualizar') }}" method="POST" class="d-inline">
+             </div>
+        </form>
+          <form action="{{ route('competidor.articulos.actualizar') }}" method="POST" class="d-inline">
                     @csrf
                     <button type="submit" class="btn btn-secondary">Actualizar Datos de la Publicación Seleccionada</button>
-                </form>
-            </div>
-        </form>
+          </form>
 
         @include('layouts.pagination', [
             'currentPage' => $currentPage,
