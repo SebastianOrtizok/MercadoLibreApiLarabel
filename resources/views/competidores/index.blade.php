@@ -141,7 +141,7 @@
                             <td @if($item->following) style="background-color: #e6f3ff;" @endif><a href="{{ $item->url }}" target="_blank">Publicación</a></td>
                             <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->es_full ? 'Sí' : 'No' }}</td>
                             <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->envio_gratis ? 'Sí' : 'No' }}</td>
-                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->ultima_actualizacion ? $item->ultima_actualizacion->format('d/m/Y H:i') : 'N/A' }}</td>
+                            <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->ultima_actualizacion ? \Carbon\Carbon::parse($item->ultima_actualizacion)->format('d/m/Y H:i') : 'N/A' }}</td>
                         </tr>
                     @empty
                         <tr>

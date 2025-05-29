@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ItemCompetidor extends Model
 {
-    protected $table = 'items_competidores'; // Asegurate de que esta línea esté presente
+    protected $table = 'items_competidores';
 
     protected $fillable = [
         'competidor_id',
@@ -24,6 +24,8 @@ class ItemCompetidor extends Model
         'following',
         'ultima_actualizacion',
     ];
+
+    protected $dates = ['ultima_actualizacion']; // Esto hace que Laravel trate el campo como fecha
 
     public function competidor()
     {
