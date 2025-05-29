@@ -22,7 +22,7 @@
 </head>
 <body>
     <div class="terms-container">
-        <h1 class="text-center mb-4">Términos y Condiciones de [Nombre de la Aplicación]</h1>
+        <h1 class="text-center mb-4">Términos y Condiciones de mldatatrends</h1>
         <p><strong>Última actualización: 29 de mayo de 2025</strong></p>
 
         <p>Bienvenido(a) a [Nombre de la Aplicación], una plataforma diseñada para ayudarte a gestionar tus ventas, promociones y análisis de competencia en MercadoLibre. Al acceder o utilizar nuestra aplicación (en adelante, "la Aplicación"), aceptas cumplir con los siguientes Términos y Condiciones de Uso ("Términos"). Si no estás de acuerdo con estos Términos, te pedimos que no utilices la Aplicación. Lee atentamente este documento, ya que regula tu relación con [Nombre de la Empresa] ("nosotros", "nuestro" o "la Empresa"), propietario y operador de la Aplicación.</p>
