@@ -18,13 +18,14 @@ class ItemsCompetidoresExport implements FromCollection, WithHeadings
     {
         return $this->items->map(function ($item) {
             return [
-                'Competidor' => $item->competidor->nombre ?? 'N/A',
+                'Competidor' => $item->competidor ? ($item->competidor->nombre ?? 'N/A') : 'N/A',
                 'Publicación' => $item->item_id,
-                'Título' => $item->titulo,
-                'Precio Original' => $item->precio,
+                'Título' => $item->titulo ?? 'N/A',
+                'Precio Original' => $item->precio ?? '-',
                 'Precio con Descuento' => $item->precio_descuento ?? '-',
                 'Información de Cuotas' => $item->info_cuotas ?? '-',
-                'URL' => $item->url,
+                'Precio sin Impuestos' => $item->precio_sin_impuestos ?? '-',
+                'URL' => $item->url ?? 'N/A',
                 'Es Full' => $item->es_full ? 'Sí' : 'No',
                 'Envío Gratis' => $item->envio_gratis ? 'Sí' : 'No',
                 'Última Actualización' => $item->ultima_actualizacion ? $item->ultima_actualizacion->format('d/m/Y H:i') : 'N/A',
@@ -41,6 +42,7 @@ class ItemsCompetidoresExport implements FromCollection, WithHeadings
             'Precio Original',
             'Precio con Descuento',
             'Información de Cuotas',
+            'Precio sin Impuestos',
             'URL',
             'Es Full',
             'Envío Gratis',
