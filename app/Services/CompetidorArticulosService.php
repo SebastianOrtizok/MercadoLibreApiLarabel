@@ -23,14 +23,14 @@ class CompetidorArticulosService
 
     public function scrapeItemDetails($itemId, $sellerId, $sellerName, $url, $officialStoreId = null)
     {
-        \Log::info("Intentando scrapeo de detalle de artículo", ['url' => $url]);
+        \Log::info("Intentando scrapeo de detalle de artículo", ['url' => $url, 'item_id' => $itemId]);
 
         try {
             $response = $this->client->get($url, ['timeout' => 10]);
             \Log::info("Respuesta recibida", ['status' => $response->getStatusCode(), 'url' => $url]);
 
             if ($response->getStatusCode() !== 200) {
-                \Log::warning("Código de estado no esperado: {$response->getStatusCode()}");
+                \Log::warning("Código de estado no esperado: {$response->getStatusCode()}", ['url' => $url]);
                 return [];
             }
 
@@ -40,19 +40,21 @@ class CompetidorArticulosService
             // Agregar logs para depurar los selectores
             \Log::info("Resultados de los selectores", [
                 'title_count' => $crawler->filter('h1.ui-pdp-title')->count(),
-                'original_price_count' => $crawler->filter('s.price-tag__original-value')->count(),
-                'current_price_count' => $crawler->filter('.price-tag-amount')->count(),
-                'installments_count' => $crawler->filter('.ui-pdp-installments__label')->count(),
-                'price_sin_impuestos_count' => $crawler->filter('.price-without-discount')->count(),
+                'original_price_count' => $crawler->filter('.andes-money-amount__original-value .andes-money-amount__fraction')->count(),
+                'current_price_count' => $crawler->filter('.ui-pdp-price__second-line .andes-money-amount__fraction')->count(),
+                'installments_count' => $crawler->filter('#pricing_price_subtitle')->count(),
+                'price_sin_impuestos_count' => $crawler->filter('#no_taxes_price_subtitle .andes-money-amount__fraction')->count(),
+                'full_count' => $crawler->filter('span.shg__shipping-method:contains("FULL")')->count(),
+                'free_shipping_count' => $crawler->filter('.ui-pdp-shipping__label--free')->count(),
             ]);
 
-            $title = $crawler->filter('h1.ui-pdp-title')->count() ? $crawler->filter('h1.ui-pdp-title')->text() : 'Sin título';
-            $originalPrice = $crawler->filter('s.price-tag__original-value')->count() ? $this->normalizePrice($crawler->filter('s.price-tag__original-value')->text()) : null;
-            $currentPrice = $crawler->filter('.price-tag-amount')->count() ? $this->normalizePrice($crawler->filter('.price-tag-amount')->text()) : ($originalPrice ?? 0.0);
-            $installments = $crawler->filter('.ui-pdp-installments__label')->count() ? trim($crawler->filter('.ui-pdp-installments__label')->text()) : null;
+            $title = $crawler->filter('h1.ui-pdp-title')->count() ? trim($crawler->filter('h1.ui-pdp-title')->text()) : 'Sin título';
+            $originalPrice = $crawler->filter('.andes-money-amount__original-value .andes-money-amount__fraction')->count() ? $this->normalizePrice($crawler->filter('.andes-money-amount__original-value .andes-money-amount__fraction')->text()) : null;
+            $currentPrice = $crawler->filter('.ui-pdp-price__second-line .andes-money-amount__fraction')->count() ? $this->normalizePrice($crawler->filter('.ui-pdp-price__second-line .andes-money-amount__fraction')->text()) : ($originalPrice ?? 0.0);
+            $installments = $crawler->filter('#pricing_price_subtitle')->count() ? trim($crawler->filter('#pricing_price_subtitle')->text()) : null;
             $isFull = $crawler->filter('span.shg__shipping-method:contains("FULL")')->count() > 0;
-            $hasFreeShipping = $crawler->filter('.free-shipping')->count() > 0;
-            $priceSinImpuestos = $crawler->filter('.price-without-discount')->count() ? $this->normalizePrice($crawler->filter('.price-without-discount')->text()) : null;
+            $hasFreeShipping = $crawler->filter('.ui-pdp-shipping__label--free')->count() > 0;
+            $priceSinImpuestos = $crawler->filter('#no_taxes_price_subtitle .andes-money-amount__fraction')->count() ? $this->normalizePrice($crawler->filter('#no_taxes_price_subtitle .andes-money-amount__fraction')->text()) : null;
 
             $data = [
                 'titulo' => $title,
@@ -62,10 +64,10 @@ class CompetidorArticulosService
                 'url' => $url,
                 'es_full' => $isFull,
                 'envio_gratis' => $hasFreeShipping,
-                'precio_sin_impuestos' => $priceSinImpuestos ?: 39090.00, // Valor por defecto si no se encuentra
+                'precio_sin_impuestos' => $priceSinImpuestos, // Sin valor por defecto
             ];
 
-            \Log::info("Datos scrapeados", ['data' => $data]);
+            \Log::info("Datos scrapeados", ['data' => $data, 'item_id' => $itemId]);
 
             return $data;
         } catch (RequestException $e) {
@@ -73,7 +75,7 @@ class CompetidorArticulosService
                 'error' => $e->getMessage(),
                 'url' => $url,
                 'code' => $e->getCode(),
-                'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : 'No response'
+                'response' => $e->hasResponse() ? substr($e->getResponse()->getBody()->getContents(), 0, 1000) : 'No response'
             ]);
             return [];
         }
