@@ -21,9 +21,8 @@ class CompetidorArticulosService
         ]);
     }
 
-    public function scrapeItemDetails($itemId, $sellerId, $sellerName, $officialStoreId = null)
+    public function scrapeItemDetails($itemId, $sellerId, $sellerName, $url, $officialStoreId = null)
     {
-        $url = "https://articulo.mercadolibre.com.ar/{$itemId}";
         \Log::info("Intentando scrapeo de detalle de artículo", ['url' => $url]);
 
         try {
@@ -38,6 +37,15 @@ class CompetidorArticulosService
             $html = $response->getBody()->getContents();
             $crawler = new Crawler($html);
 
+            // Agregar logs para depurar los selectores
+            \Log::info("Resultados de los selectores", [
+                'title_count' => $crawler->filter('h1.ui-pdp-title')->count(),
+                'original_price_count' => $crawler->filter('s.price-tag__original-value')->count(),
+                'current_price_count' => $crawler->filter('.price-tag-amount')->count(),
+                'installments_count' => $crawler->filter('.ui-pdp-installments__label')->count(),
+                'price_sin_impuestos_count' => $crawler->filter('.price-without-discount')->count(),
+            ]);
+
             $title = $crawler->filter('h1.ui-pdp-title')->count() ? $crawler->filter('h1.ui-pdp-title')->text() : 'Sin título';
             $originalPrice = $crawler->filter('s.price-tag__original-value')->count() ? $this->normalizePrice($crawler->filter('s.price-tag__original-value')->text()) : null;
             $currentPrice = $crawler->filter('.price-tag-amount')->count() ? $this->normalizePrice($crawler->filter('.price-tag-amount')->text()) : ($originalPrice ?? 0.0);
@@ -46,7 +54,7 @@ class CompetidorArticulosService
             $hasFreeShipping = $crawler->filter('.free-shipping')->count() > 0;
             $priceSinImpuestos = $crawler->filter('.price-without-discount')->count() ? $this->normalizePrice($crawler->filter('.price-without-discount')->text()) : null;
 
-            return [
+            $data = [
                 'titulo' => $title,
                 'precio' => $originalPrice ?? $currentPrice,
                 'precio_descuento' => $currentPrice,
@@ -56,6 +64,10 @@ class CompetidorArticulosService
                 'envio_gratis' => $hasFreeShipping,
                 'precio_sin_impuestos' => $priceSinImpuestos ?: 39090.00, // Valor por defecto si no se encuentra
             ];
+
+            \Log::info("Datos scrapeados", ['data' => $data]);
+
+            return $data;
         } catch (RequestException $e) {
             \Log::error("Error al scrapeo de detalle de artículo", [
                 'error' => $e->getMessage(),
