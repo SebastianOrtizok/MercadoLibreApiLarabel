@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ItemCompetidor extends Model
 {
+    protected $table = 'items_competidores'; // Asegurate de que esta línea esté presente
+
     protected $fillable = [
         'competidor_id',
         'item_id',
