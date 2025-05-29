@@ -178,19 +178,12 @@
                     <ul class="list-unstyled">
                         <li><a href="{{ route('login') }}">Iniciar Sesión</a></li>
                         <li><a href="{{ route('register') }}">Registrarse</a></li>
-                        <li><a href="#">Soporte</a></li>
                         <li><a href="#">Términos y Condiciones</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h5>Contacto</h5>
-                    <p><i class="fas fa-envelope me-2"></i> soporte@</p>
-                    <p><i class="fas fa-phone me-2"></i> +54</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
+                    <p><i class="fas fa-envelope me-2"></i> soporte@mldatatrends.com</p>
                 </div>
             </div>
             <hr class="bg-light">
