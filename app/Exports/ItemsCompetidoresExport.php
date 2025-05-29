@@ -4,8 +4,15 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Font;
 
-class ItemsCompetidoresExport implements FromCollection, WithHeadings
+class ItemsCompetidoresExport implements FromCollection, WithHeadings, WithEvents, WithStyles, WithCustomStartCell
 {
     protected $items;
 
@@ -18,9 +25,9 @@ class ItemsCompetidoresExport implements FromCollection, WithHeadings
     {
         return $this->items->map(function ($item) {
             return [
-                'Competidor' => $item->competidor_nombre ?? 'N/A',
-                'Seller ID' => $item->competidor_seller_id ?? 'N/A',
-                'Publicación' => $item->item_id,
+                'Competidor' => $item->competidor_nombre ?? '',
+                'Seller ID' => $item->competidor_seller_id ?? '',
+                'Publicaciones' => $item->item_id ?? '',
                 'Título' => $item->titulo ?? '--',
                 'Precio Original' => $item->precio ?? '-',
                 'Precio con Descuento' => $item->precio_descuento ?? '-',
@@ -42,7 +49,7 @@ class ItemsCompetidoresExport implements FromCollection, WithHeadings
         return [
             'Competidor',
             'Seller ID',
-            'Publicación',
+            'Publicaciones',
             'Título',
             'Precio Original',
             'Precio con Descuento',
@@ -55,6 +62,85 @@ class ItemsCompetidoresExport implements FromCollection, WithHeadings
             'Envío Gratis',
             'Following',
             'Última Actualización',
+        ];
+    }
+
+    public function startCell(): string
+    {
+        return 'A2'; // Los datos comienzan en A2, dejando A1 para el título
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        // Estilo para la fila de encabezados (A2:O2)
+        return [
+            2 => [
+                'font' => ['bold' => true],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['argb' => 'FFCCCCCC'], // Gris claro
+                ],
+            ],
+        ];
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (AfterSheet $event) {
+                $sheet = $event->sheet->getDelegate();
+
+                // Agregar título en A1
+                $sheet->setCellValue('A1', 'Publicaciones de la Competencia');
+                $sheet->mergeCells('A1:O1'); // Combinar celdas para el título
+                $sheet->getStyle('A1')->applyFromArray([
+                    'font' => [
+                        'bold' => true,
+                        'size' => 16,
+                        'color' => ['argb' => 'FF000000'], // Negro
+                    ],
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    ],
+                ]);
+
+                // Aplicar colores alternados a las filas de datos (desde A3)
+                $highestRow = $sheet->getHighestRow();
+                for ($row = 3; $row <= $highestRow; $row++) {
+                    if ($row % 2 == 1) { // Filas impares
+                        $sheet->getStyle("A{$row}:O{$row}")->applyFromArray([
+                            'fill' => [
+                                'fillType' => Fill::FILL_SOLID,
+                                'startColor' => ['argb' => 'FFF0F0F0'], // Gris muy suave
+                            ],
+                        ]);
+                    }
+                }
+
+                // Crear una tabla de Excel con filtros
+                $sheet->setAutoFilter('A2:O2'); // Filtros en la fila de encabezados
+                $tableRange = "A2:O{$highestRow}";
+                $sheet->getParent()->addNamedRange(
+                    new \PhpOffice\PhpSpreadsheet\NamedRange(
+                        'CompetidoresTable',
+                        $sheet,
+                        $tableRange
+                    )
+                );
+                $sheet->getStyle($tableRange)->applyFromArray([
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                            'color' => ['argb' => 'FF000000'],
+                        ],
+                    ],
+                ]);
+
+                // Ajustar el ancho de las columnas automáticamente
+                foreach (range('A', 'O') as $column) {
+                    $sheet->getColumnDimension($column)->setAutoSize(true);
+                }
+            },
         ];
     }
 }
