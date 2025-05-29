@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Suscripcion;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -49,17 +50,38 @@ class AuthController extends Controller
     {
         Log::info('Iniciando registro de usuario', ['email' => $request->email]);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+        // Validación de los datos
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'accept_terms' => ['required', 'accepted'], // Valida que el checkbox esté marcado
+        ], [
+            'name.required' => 'El nombre es obligatorio.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'El correo electrónico debe ser válido.',
+            'email.unique' => 'El correo electrónico ya está registrado.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
+            'accept_terms.required' => 'Debes aceptar los Términos y Condiciones.',
+            'accept_terms.accepted' => 'Debes aceptar los Términos y Condiciones.',
         ]);
+
+        if ($validator->fails()) {
+            Log::warning('Validación fallida en registro', [
+                'email' => $request->email,
+                'errors' => $validator->errors()->toArray(),
+            ]);
+            return back()->withErrors($validator)->withInput();
+        }
 
         try {
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'accept_terms' => true, // Almacena true si el checkbox está marcado
             ]);
             Log::info('Usuario registrado exitosamente', ['user_id' => $user->id]);
 
@@ -92,7 +114,7 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'trace' => $e->getTraceAsString(),
             ]);
-            return back()->withErrors(['error' => 'Error al registrar usuario o asignar plan de prueba: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Error al registrar usuario o asignar plan de prueba: ' . $e->getMessage()])->withInput();
         }
     }
 
