@@ -16,45 +16,8 @@
     <script
         src="https://www.paypal.com/sdk/js?client-id=BAALYLUmqvjd-Wzz1IJHFFalfEM-MjIeCdSPEhNYTdQqKeiQF6JC4ml2XVNFFJDNFS-NvHTFQjyvkWTdN4&components=hosted-buttons&disable-funding=venmo¤cy=USD">
     </script>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- Agregar meta tag para CSRF -->
     <title>Dashboard</title>
-    <style>
-        .container-fluid {
-            display: flex;
-            flex-wrap: nowrap;
-        }
-        #sidebar {
-            width: 250px;
-            min-width: 250px;
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            background-color: #f8f9fa;
-            transition: width 0.3s;
-            z-index: 1000;
-        }
-        .main-content {
-            margin-left: 250px;
-            flex-grow: 1;
-            padding: 20px;
-        }
-        .sidebar.collapsed {
-            width: 0;
-            min-width: 0;
-            overflow: hidden;
-        }
-        .sidebar.collapsed ~ .main-content {
-            margin-left: 0;
-        }
-        @media (max-width: 991px) {
-            #sidebar {
-                display: none;
-            }
-            .main-content {
-                margin-left: 0;
-            }
-        }
-    </style>
 </head>
 <body>
     <div class="container-fluid p-0">
@@ -176,6 +139,7 @@
         <!-- Sidebar para escritorio -->
         <div id="sidebar" class="sidebar d-none d-lg-block">
             <!-- Mostrar nombre de usuario y días restantes -->
+
             <h3 class="sidebar-title">Menu</h3>
             <div class="sidebar-header">
                 @if (Auth::check())
@@ -300,18 +264,12 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebar = document.getElementById('sidebar');
-            const toggleBtn = sidebar.querySelector('.toggle-btn');
+        // Script para manejar la barra lateral
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = sidebar.querySelector('.toggle-btn');
 
-            // Asegurarse de que el sidebar no esté colapsado por defecto
-            if (sidebar.classList.contains('collapsed')) {
-                sidebar.classList.remove('collapsed');
-            }
-
-            toggleBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-            });
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
         });
     </script>
 
@@ -320,6 +278,6 @@
     <!-- ColReorder para mover columnas -->
     <script src="https://cdn.datatables.net/colreorder/1.5.0/js/dataTables.colReorder.min.js"></script>
 
-    @yield('scripts')
+    @yield('scripts') <!-- Agregar esto para renderizar scripts de las vistas hijas -->
 </body>
 </html>
