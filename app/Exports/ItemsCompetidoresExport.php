@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\ItemCompetidor;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -14,19 +15,15 @@ use PhpOffice\PhpSpreadsheet\Style\Font;
 
 class ItemsCompetidoresExport implements FromCollection, WithHeadings, WithEvents, WithStyles, WithCustomStartCell
 {
-    protected $items;
-
-    public function __construct($items)
-    {
-        $this->items = $items;
-    }
-
     public function collection()
     {
-        return $this->items->map(function ($item) {
+        // Obtener todos los ítems con su competidor relacionado
+        $items = ItemCompetidor::with('competidor')->get();
+
+        return $items->map(function ($item) {
             return [
-                'Competidor' => $item->competidor_nombre ?? '',
-                'Seller ID' => $item->competidor_seller_id ?? '',
+                'Competidor' => $item->competidor->nombre ?? '',
+                'Seller ID' => $item->competidor->seller_id ?? '',
                 'Publicaciones' => $item->item_id ?? '',
                 'Título' => $item->titulo ?? '--',
                 'Precio Original' => $item->precio ?? '-',
