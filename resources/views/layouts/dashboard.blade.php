@@ -16,6 +16,7 @@
     <script
         src="https://www.paypal.com/sdk/js?client-id=BAALYLUmqvjd-Wzz1IJHFFalfEM-MjIeCdSPEhNYTdQqKeiQF6JC4ml2XVNFFJDNFS-NvHTFQjyvkWTdN4&components=hosted-buttons&disable-funding=venmo¤cy=USD">
     </script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dashboard</title>
 </head>
 <body>
@@ -138,7 +139,6 @@
         <!-- Sidebar para escritorio -->
         <div id="sidebar" class="sidebar d-none d-lg-block">
             <!-- Mostrar nombre de usuario y días restantes -->
-
             <h3 class="sidebar-title">Menu</h3>
             <div class="sidebar-header">
                 @if (Auth::check())
@@ -264,11 +264,18 @@
 
     <script>
         // Script para manejar la barra lateral
-        const sidebar = document.getElementById('sidebar');
-        const toggleBtn = sidebar.querySelector('.toggle-btn');
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = sidebar.querySelector('.toggle-btn');
 
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
+            // Asegurarse de que el sidebar no esté colapsado por defecto
+            if (sidebar.classList.contains('collapsed')) {
+                sidebar.classList.remove('collapsed');
+            }
+
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+            });
         });
     </script>
 
@@ -276,5 +283,7 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <!-- ColReorder para mover columnas -->
     <script src="https://cdn.datatables.net/colreorder/1.5.0/js/dataTables.colReorder.min.js"></script>
+
+    @yield('scripts')
 </body>
 </html>
