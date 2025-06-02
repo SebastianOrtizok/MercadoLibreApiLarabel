@@ -32,7 +32,7 @@ class SellerIdFinderController extends Controller
         // Obtener el usuario autenticado
         $user = Auth::user();
 
-        // Obtener el token desde la tabla mercadolibre_tokens
+        // Obtener el token y el ml_account_id desde la tabla mercadolibre_tokens
         $mercadoLibreToken = MercadoLibreToken::where('user_id', $user->id)->first();
 
         if (!$mercadoLibreToken || !$mercadoLibreToken->access_token) {
@@ -40,9 +40,10 @@ class SellerIdFinderController extends Controller
         }
 
         $token = $mercadoLibreToken->access_token;
+        $mlAccountId = $mercadoLibreToken->ml_account_id;
 
         // Buscar el seller_id usando el servicio
-        $sellerId = $this->sellerIdFinderService->findSellerIdByNickname($nickname, $token);
+        $sellerId = $this->sellerIdFinderService->findSellerIdByNickname($nickname, $token, $mlAccountId);
 
         if ($sellerId) {
             return response()->json(['success' => true, 'seller_id' => $sellerId]);

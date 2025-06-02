@@ -14,9 +14,42 @@ class SellerIdFinderService
         $this->client = $mercadoLibreService->getHttpClient();
     }
 
-    public function findSellerIdByNickname($nickname, $token)
+    public function findSellerIdByNickname($nickname, $token, $mlAccountId)
     {
-        $url = "https://api.mercadolibre.com/users/" . urlencode($nickname);
+        // Primero, obtenemos el nickname del usuario logueado con /users/me
+        $userInfoUrl = "https://api.mercadolibre.com/users/me";
+        try {
+            $response = $this->client->get($userInfoUrl, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                ],
+                'timeout' => 10,
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                Log::warning("No se pudo obtener información del usuario logueado", ['status' => $response->getStatusCode()]);
+                return null;
+            }
+
+            $userData = json_decode($response->getBody()->getContents(), true);
+            $loggedInNickname = $userData['nickname'] ?? null;
+
+            // Si el nickname ingresado es el del usuario logueado, devolvemos su ml_account_id
+            if ($loggedInNickname && strtolower($loggedInNickname) === strtolower($nickname)) {
+                Log::info("El nickname ingresado coincide con el usuario logueado", ['nickname' => $nickname, 'seller_id' => $mlAccountId]);
+                return $mlAccountId;
+            }
+        } catch (RequestException $e) {
+            Log::error("Error al obtener información del usuario logueado", [
+                'error' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : 'No response',
+            ]);
+            // Si falla /users/me, continuamos con el otro método
+        }
+
+        // Si no es el usuario logueado, buscamos publicaciones del competidor
+        $url = "https://api.mercadolibre.com/sites/MLA/search?seller_nickname=" . urlencode($nickname);
 
         Log::info("Buscando seller_id para el nickname", ['nickname' => $nickname, 'url' => $url]);
 
@@ -37,13 +70,14 @@ class SellerIdFinderService
 
             $data = json_decode($response->getBody()->getContents(), true);
 
-            if (isset($data['id'])) {
-                $sellerId = $data['id'];
+            // Verificar si hay resultados y extraer el seller_id
+            if (isset($data['results']) && !empty($data['results'])) {
+                $sellerId = $data['results'][0]['seller']['id'];
                 Log::info("Seller ID encontrado", ['nickname' => $nickname, 'seller_id' => $sellerId]);
                 return $sellerId;
             }
 
-            Log::warning("No se encontró seller_id para el nickname", ['nickname' => $nickname]);
+            Log::warning("No se encontraron publicaciones para el nickname", ['nickname' => $nickname]);
             return null;
         } catch (RequestException $e) {
             Log::error("Error al buscar seller_id para el nickname", [
