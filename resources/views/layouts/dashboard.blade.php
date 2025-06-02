@@ -18,6 +18,43 @@
     </script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dashboard</title>
+    <style>
+        .container-fluid {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+        #sidebar {
+            width: 250px;
+            min-width: 250px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            background-color: #f8f9fa;
+            transition: width 0.3s;
+            z-index: 1000;
+        }
+        .main-content {
+            margin-left: 250px;
+            flex-grow: 1;
+            padding: 20px;
+        }
+        .sidebar.collapsed {
+            width: 0;
+            min-width: 0;
+            overflow: hidden;
+        }
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 0;
+        }
+        @media (max-width: 991px) {
+            #sidebar {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid p-0">
@@ -263,7 +300,6 @@
     </div>
 
     <script>
-        // Script para manejar la barra lateral
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');
             const toggleBtn = sidebar.querySelector('.toggle-btn');
