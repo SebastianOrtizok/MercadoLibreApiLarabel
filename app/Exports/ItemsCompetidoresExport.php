@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\ItemCompetidor;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -17,8 +18,15 @@ class ItemsCompetidoresExport implements FromCollection, WithHeadings, WithEvent
 {
     public function collection()
     {
-        // Obtener todos los ítems con su competidor relacionado
-        $items = ItemCompetidor::with('competidor')->get();
+        // Obtener el ID del usuario logueado
+        $userId = Auth::id();
+
+        // Obtener los ítems de los competidores asociados al usuario logueado
+        $items = ItemCompetidor::with('competidor')
+            ->whereHas('competidor', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->get();
 
         return $items->map(function ($item) {
             return [
