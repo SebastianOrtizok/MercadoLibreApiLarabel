@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Services\SellerIdFinderService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Models\MercadoLibreToken;
 
 class SellerIdFinderController extends Controller
 {
@@ -22,7 +23,26 @@ class SellerIdFinderController extends Controller
         ]);
 
         $nickname = $request->input('nickname');
-        $sellerId = $this->sellerIdFinderService->findSellerIdByNickname($nickname);
+
+        // Verificar si el usuario está autenticado
+        if (!Auth::check()) {
+            return response()->json(['success' => false, 'message' => 'Usuario no autenticado.'], 401);
+        }
+
+        // Obtener el usuario autenticado
+        $user = Auth::user();
+
+        // Obtener el token desde la tabla mercadolibre_tokens
+        $mercadoLibreToken = MercadoLibreToken::where('user_id', $user->id)->first();
+
+        if (!$mercadoLibreToken || !$mercadoLibreToken->access_token) {
+            return response()->json(['success' => false, 'message' => 'No se encontró un token válido para el usuario logueado.'], 401);
+        }
+
+        $token = $mercadoLibreToken->access_token;
+
+        // Buscar el seller_id usando el servicio
+        $sellerId = $this->sellerIdFinderService->findSellerIdByNickname($nickname, $token);
 
         if ($sellerId) {
             return response()->json(['success' => true, 'seller_id' => $sellerId]);
