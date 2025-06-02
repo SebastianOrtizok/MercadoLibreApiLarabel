@@ -29,6 +29,7 @@ use App\Http\Controllers\CompetidorController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CompetidorArticulosController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\SellerIdFinderController;
 
 // Ruta para login de prueba
 Route::get('/plans', [PaymentController::class, 'showPlans'])->name('plans');
@@ -96,6 +97,7 @@ Route::middleware(['auth', \App\Http\Middleware\CheckSubscription::class])->grou
     Route::get('/sync-orders-db', [OrderDbController::class, 'syncOrders'])->name('sync.orders.db');
     // Route::get('/competidores/category', [CompetidorXCategoriaController::class, 'index'])->name('competidores.category');
     // Route::post('/competidores/category', [CompetidorXCategoriaController::class, 'index'])->name('competidores.category.analyze');
+    Route::post('/seller-id/find', [SellerIdFinderController::class, 'findSellerId'])->name('seller-id.find');
     Route::get('/competidores', [CompetidorController::class, 'index'])->name('competidores.index');
     Route::post('/competidores', [CompetidorController::class, 'store'])->name('competidores.store');
     Route::post('/competidores/follow', [CompetidorController::class, 'follow'])->name('competidores.follow');

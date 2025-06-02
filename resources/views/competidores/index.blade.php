@@ -17,7 +17,7 @@
         </button>
         <div class="collapse mt-3" id="formCollapse">
             <div class="card shadow-sm p-4 bg-light rounded">
-                <form action="{{ route('competidores.store') }}" method="POST">
+                <form action="{{ route('competidores.store') }}" method="POST" id="competidor-form">
                     @csrf
                     <div class="row g-3">
                         <div class="col-md-4">
@@ -26,17 +26,23 @@
                                 <input type="number" name="official_store_id" id="official_store_id" class="form-control" value="{{ old('official_store_id') }}">
                             </div>
                             <label for="seller_id" class="form-label fw-semibold">Seller ID</label>
-                            <input type="text" name="seller_id" id="seller_id" class="form-control" placeholder="Ej: 179571326" required>
+                            <input type="text" name="seller_id" id="seller_id" class="form-control" placeholder="Ej: 179571326" required readonly>
                             @error('seller_id')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
                         <div class="col-md-4">
                             <label for="nickname" class="form-label fw-semibold">Nickname</label>
-                            <input type="text" name="nickname" id="nickname" class="form-control" placeholder="Ej: TESTACCOUNT" required>
+                            <div class="input-group">
+                                <input type="text" name="nickname" id="nickname" class="form-control" placeholder="Ej: TESTACCOUNT" required>
+                                <button type="button" class="btn btn-outline-secondary" id="find-seller-id">
+                                    <i class="fas fa-search me-2"></i> Buscar Seller ID
+                                </button>
+                            </div>
                             @error('nickname')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
+                            <div id="seller-id-error" class="text-danger mt-1" style="display: none;"></div>
                         </div>
                         <div class="col-md-4">
                             <label for="nombre" class="form-label fw-semibold">Nombre</label>
@@ -108,7 +114,7 @@
                 <i class="fas fa-file-excel me-2"></i> Exportar a Excel
             </a>
         </div>
-        <form method="POST" action="{{ route('competidores.follow') }}">
+        <form method="POST" action="{{ route('competidores.follow') }}" id="follow-form">
             @csrf
             <table class="table table-hover modern-table shadow-sm">
                 <thead class="table-primary">
@@ -155,13 +161,13 @@
                 </tbody>
             </table>
             <div class="mt-3">
-                <button type="submit" class="btn btn-primary me-2">Seguir Publicación Seleccionada</button>
-             </div>
-        </form>
-          <form action="{{ route('competidor.articulos.actualizar') }}" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-primary me-2" form="follow-form">Seguir Publicación Seleccionada</button>
+                <form action="{{ route('competidor.articulos.actualizar') }}" method="POST" id="update-form">
                     @csrf
-                    <button type="submit" class="btn btn-secondary">Actualizar Datos de la Publicación Seleccionada</button>
-          </form>
+                    <button type="submit" class="btn btn-secondary" form="update-form">Actualizar Datos de la Publicación Seleccionada</button>
+                </form>
+            </div>
+        </form>
 
         @include('layouts.pagination', [
             'currentPage' => $currentPage,
@@ -170,4 +176,49 @@
         ])
     </div>
 </div>
+
+@section('scripts')
+    <script>
+        document.getElementById('find-seller-id').addEventListener('click', function() {
+            const nicknameInput = document.getElementById('nickname');
+            const sellerIdInput = document.getElementById('seller_id');
+            const errorDiv = document.getElementById('seller-id-error');
+            const nickname = nicknameInput.value.trim();
+
+            if (!nickname) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Por favor, ingresá un nickname válido.';
+                return;
+            }
+
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+
+            fetch('{{ route('seller-id.find') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({ nickname: nickname }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    sellerIdInput.value = data.seller_id;
+                } else {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = data.message || 'Error al buscar el Seller ID.';
+                    sellerIdInput.value = '';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Error al buscar el Seller ID. Por favor, intenta de nuevo.';
+                sellerIdInput.value = '';
+            });
+        });
+    </script>
+@endsection
 @endsection
