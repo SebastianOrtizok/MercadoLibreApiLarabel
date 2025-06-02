@@ -4,14 +4,23 @@ namespace App\Services;
 
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Log;
+use GuzzleHttp\Client;
 
 class SellerIdFinderService
 {
     protected $client;
+    protected $scrapingClient;
 
     public function __construct(MercadoLibreService $mercadoLibreService)
     {
         $this->client = $mercadoLibreService->getHttpClient();
+        $this->scrapingClient = new Client([
+            'headers' => [
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            ],
+            'allow_redirects' => ['track_redirects' => true], // Seguimos redirecciones
+        ]);
     }
 
     public function findSellerIdByNickname($nickname, $token, $mlAccountId)
@@ -45,42 +54,43 @@ class SellerIdFinderService
                 'code' => $e->getCode(),
                 'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : 'No response',
             ]);
-            // Si falla /users/me, continuamos con el otro método
+            // Si falla /users/me, continuamos con el scraping
         }
 
-        // Si no es el usuario logueado, buscamos publicaciones del competidor
-        $url = "https://api.mercadolibre.com/sites/MLA/search?seller_nickname=" . urlencode($nickname);
+        // Si no es el usuario logueado, hacemos scraping
+        return $this->scrapeSellerIdByNickname($nickname);
+    }
 
-        Log::info("Buscando seller_id para el nickname", ['nickname' => $nickname, 'url' => $url]);
+    protected function scrapeSellerIdByNickname($nickname)
+    {
+        $url = "https://www.mercadolibre.com.ar/perfil/" . urlencode($nickname);
+
+        Log::info("Realizando scraping para buscar seller_id", ['nickname' => $nickname, 'url' => $url]);
 
         try {
-            $response = $this->client->get($url, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $token,
-                ],
-                'timeout' => 10,
-            ]);
+            $response = $this->scrapingClient->get($url, ['timeout' => 10]);
+            $finalUrl = $response->getHeaderLine('X-Guzzle-Redirect-History') ?: $response->getEffectiveUri();
 
-            Log::info("Respuesta recibida", ['status' => $response->getStatusCode(), 'url' => $url]);
-
-            if ($response->getStatusCode() !== 200) {
-                Log::warning("Código de estado no esperado: {$response->getStatusCode()}");
-                return null;
-            }
-
-            $data = json_decode($response->getBody()->getContents(), true);
-
-            // Verificar si hay resultados y extraer el seller_id
-            if (isset($data['results']) && !empty($data['results'])) {
-                $sellerId = $data['results'][0]['seller']['id'];
-                Log::info("Seller ID encontrado", ['nickname' => $nickname, 'seller_id' => $sellerId]);
+            // Extraer seller_id desde la URL redirigida si contiene _CustId_
+            if (preg_match('/_CustId_(\d+)/', $finalUrl, $matches)) {
+                $sellerId = $matches[1];
+                Log::info("Seller ID encontrado en la redirección", ['nickname' => $nickname, 'seller_id' => $sellerId, 'url' => $finalUrl]);
                 return $sellerId;
             }
 
-            Log::warning("No se encontraron publicaciones para el nickname", ['nickname' => $nickname]);
+            // Si no hay _CustId_, buscar en el HTML
+            $html = $response->getBody()->getContents();
+
+            if (preg_match('/"seller_id":"(\d+)"/', $html, $matches)) {
+                $sellerId = $matches[1];
+                Log::info("Seller ID encontrado en el HTML", ['nickname' => $nickname, 'seller_id' => $sellerId]);
+                return $sellerId;
+            }
+
+            Log::warning("No se encontró el seller_id ni en la redirección ni en el HTML", ['nickname' => $nickname, 'url' => $finalUrl]);
             return null;
         } catch (RequestException $e) {
-            Log::error("Error al buscar seller_id para el nickname", [
+            Log::error("Error al realizar scraping para buscar seller_id", [
                 'nickname' => $nickname,
                 'error' => $e->getMessage(),
                 'url' => $url,
