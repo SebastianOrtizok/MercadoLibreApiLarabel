@@ -16,7 +16,6 @@
     <script
         src="https://www.paypal.com/sdk/js?client-id=BAALYLUmqvjd-Wzz1IJHFFalfEM-MjIeCdSPEhNYTdQqKeiQF6JC4ml2XVNFFJDNFS-NvHTFQjyvkWTdN4&components=hosted-buttons&disable-funding=venmo¤cy=USD">
     </script>
-    <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- Agregar meta tag para CSRF -->
     <title>Dashboard</title>
 </head>
 <body>
@@ -277,7 +276,5 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <!-- ColReorder para mover columnas -->
     <script src="https://cdn.datatables.net/colreorder/1.5.0/js/dataTables.colReorder.min.js"></script>
-
-    @yield('scripts') <!-- Agregar esto para renderizar scripts de las vistas hijas -->
 </body>
 </html>
