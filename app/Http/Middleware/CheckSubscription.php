@@ -15,13 +15,6 @@ public function handle(Request $request, Closure $next)
 
     $user = Auth::user()?->load('suscripcion');
 
-    // 1. Verificar si la suscripción ya está marcada como vencida
-    if ($user && !$user->is_admin && $user->suscripcion && $user->suscripcion->estado === 'vencido') {
-        Log::info('CheckSubscription: Suscripción ya vencida, redirigiendo.', ['user_id' => $user->id]);
-        return redirect()->route('subscription.expired')->with('error', 'Tu suscripción ha vencido. Por favor, renueva tu plan.');
-    }
-
-    // 2. Verificar si se venció ahora (según fechas) y actualizar estado si es necesario
     if ($user && !$user->is_admin && $user->suscripcion && !in_array($user->suscripcion->plan, ['test', 'prueba_gratuita'])) {
         $subscription = $user->suscripcion;
 
@@ -39,16 +32,24 @@ public function handle(Request $request, Closure $next)
             'fecha_fin' => $subscription->fecha_fin,
             'expiration_date' => $expirationDate->toDateTimeString(),
             'now' => Carbon::now()->toDateTimeString(),
+            'estado_actual' => $subscription->estado,
             'is_expired' => Carbon::now()->greaterThan($expirationDate),
         ]);
 
-        if (Carbon::now()->greaterThan($expirationDate)) {
+        if (Carbon::now()->greaterThan($expirationDate) && $subscription->estado !== 'vencido') {
             $subscription->update(['estado' => 'vencido']);
-            return redirect()->route('subscription.expired')->with('error', 'Tu suscripción ha vencido. Por favor, renueva tu plan.');
+            Log::info('CheckSubscription: Estado actualizado a vencido.', ['user_id' => $user->id]);
         }
+    }
+
+    // Redirigir si está vencida, ya sea porque lo estaba o porque recién lo actualizamos
+    if ($user && !$user->is_admin && $user->suscripcion && $user->suscripcion->estado === 'vencido') {
+        Log::info('CheckSubscription: Suscripción vencida, redirigiendo.', ['user_id' => $user->id]);
+        return redirect()->route('subscription.expired')->with('error', 'Tu suscripción ha vencido. Por favor, renueva tu plan.');
     }
 
     return $next($request);
 }
+
 
 }
