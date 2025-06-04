@@ -10,26 +10,28 @@
     <link rel="canonical" href="https://mldatatrends.com">
     <!-- Open Graph -->
     <meta property="og:title" content="MLDataTrends: Potencia tus Ventas en Mercado Libre">
-    <meta property="og:description" content="Aumenta tus ventas con nuestra plataforma: gestiona multicuentas, analiza competidores y optimiza stock. ¡Prueba gratis hoy!">
+    <meta property="og:description" content="Aumenta tus ventas con nuestra plataforma: gestiona multicuentas, analiza competidores y optimiza stock. ¡Prueba gratis 7 días!">
     <meta property="og:url" content="https://mldatatrends.com">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://mldatatrends.com/images/hero-image.jpg">
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="MLDataTrends: Potencia tus Ventas en Mercado Libre">
-    <meta name="twitter:description" content="Aumenta tus ventas con nuestra plataforma: gestiona multicuentas, analiza competidores y optimiza stock. ¡Prueba gratis hoy!">
+    <meta name="twitter:description" content="Aumenta tus ventas con nuestra plataforma: gestiona multicuentas, analiza competidores y optimiza stock. ¡Prueba gratis 7 días!">
     <meta name="twitter:image" content="https://mldatatrends.com/images/hero-image.jpg">
+    <!-- Preload Fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" as="style" onload="this.rel='stylesheet'">
     <title>MLDataTrends: Gestiona y Potencia tus Ventas en Mercado Libre</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-   </head>
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+</head>
 <body>
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-content container text-center">
             <h1>Potencia tus Ventas en Mercado Libre con MLDataTrends</h1>
-            <p class="lead">Gestiona multicuentas, analiza competidores, optimiza tu stock y maximiza ganancias con nuestra plataforma. ¡Prueba gratis 7 días!</p>
+            <p class="lead">Gestiona multicuentas, analiza competidores, optimiza tu stock y maximiza ganancias con nuestra plataforma para vendedores de Mercado Libre. ¡Prueba gratis 7 días!</p>
             <div class="hero-buttons">
                 <a href="{{ route('register') }}" class="btn btn-primary btn-hero">¡Regístrate Gratis!</a>
                 <a href="{{ route('login') }}" class="btn btn-outline-light btn-hero">Iniciar Sesión</a>
@@ -40,69 +42,69 @@
     <!-- Features Section -->
     <section class="features-section py-5">
         <div class="container">
-            <h2 class="text-center mb-5">Herramientas para Dominar Mercado Libre</h2>
+            <h2 class="text-center mb-5">Herramientas para Optimizar tus Ventas en Mercado Libre</h2>
             <div class="row">
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
                         <i class="fas fa-users"></i>
                         <h3>Gestión de Multicuentas</h3>
-                        <p>Administra todas tus cuentas de Mercado Libre desde un solo lugar. Obtén datos detallados y sincroniza órdenes en tiempo real para mejorar tu gestión.</p>
+                        <p>Administra todas tus cuentas de Mercado Libre desde un solo lugar. Obtén datos detallados y sincroniza órdenes en tiempo real para una gestión eficiente.</p>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
                         <i class="fas fa-search"></i>
                         <h3>Seguimiento de Competidores</h3>
-                        <p>Monitorea al instante las publicaciones y estrategias de tus competidores en Mercado Libre para ajustar tu estrategia y mantener la ventaja.</p>
+                        <p>Monitorea al instante las publicaciones y estrategias de tus competidores en Mercado Libre para ajustar tu estrategia y mantener la ventaja competitiva.</p>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
                         <i class="fas fa-chart-bar"></i>
                         <h3>Estadísticas Avanzadas</h3>
-                        <p>Analiza tus ventas diarias, top 10 productos y facturación con filtros personalizados. Toma decisiones basadas en datos reales.</p>
+                        <p>Analiza tus ventas diarias, top 10 productos y facturación con filtros personalizados. Toma decisiones basadas en datos para aumentar tus ganancias.</p>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
                         <i class="fas fa-box"></i>
                         <h3>Gestión de Stock</h3>
-                        <p>Controla tu stock con cálculos de días disponibles, gestiona fulfillment y recibe alertas automáticas para evitar quiebres.</p>
+                        <p>Controla tu stock con cálculos de días disponibles, gestiona fulfillment y recibe alertas automáticas para evitar quiebres de inventario.</p>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
                         <i class="fas fa-tags"></i>
                         <h3>Promociones Inteligentes</h3>
-                        <p>Crea y renueva promociones en Mercado Libre para destacar tus productos y aumentar tus ventas de manera eficiente.</p>
+                        <p>Crea y renueva promociones en Mercado Libre para destacar tus productos y aumentar tus ventas de manera eficiente y estratégica.</p>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
                         <i class="fas fa-file-excel"></i>
                         <h3>Exportación a Excel</h3>
-                        <p>Descarga reportes detallados de ventas, stock y publicaciones en Excel con un solo clic para análisis offline.</p>
+                        <p>Descarga reportes detallados de ventas, stock y publicaciones en Excel con un solo clic para análisis offline y reportes personalizados.</p>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
                         <i class="fas fa-star"></i>
                         <h3>Optimización de Catálogo</h3>
-                        <p>Recibe sugerencias para mejorar tus publicaciones y destacar en el catálogo de Mercado Libre, aumentando tu visibilidad.</p>
+                        <p>Recibe sugerencias para mejorar tus publicaciones y destacar en el catálogo de Mercado Libre, aumentando tu visibilidad y ventas.</p>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
                         <i class="fas fa-barcode"></i>
                         <h3>SKUs Personalizados</h3>
-                        <p>Agrega SKUs propios para filtrar y buscar productos rápidamente, optimizando tu gestión diaria.</p>
+                        <p>Agrega SKUs propios para filtrar y buscar productos rápidamente, optimizando tu gestión diaria en Mercado Libre.</p>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
                         <i class="fas fa-tachometer-alt"></i>
                         <h3>Panel de Control</h3>
-                        <p>Visualiza métricas clave como productos activos, stock crítico y tendencias en un panel intuitivo.</p>
+                        <p>Visualiza métricas clave como productos activos, stock crítico y tendencias de ventas en un panel intuitivo y fácil de usar.</p>
                     </div>
                 </div>
             </div>
@@ -147,7 +149,7 @@
                     </div>
                 </div>
 
-                <!-- Opción 3: Adquirí un Plan -->
+                <!-- Opción 3: Adquiere un Plan -->
                 <div class="col-md-4 mb-4">
                     <div class="pricing-card" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; text-align: center;">
                         <h3 style="font-size: 1.5rem; color: #333;">Adquiere un Plan</h3>
@@ -192,6 +194,7 @@
                         <li><a href="{{ url('/terminos-y-condiciones') }}" target="_blank">Términos y Condiciones</a></li>
                         <li><a href="{{ url('/politica-privacidad') }}" target="_blank">Política de Privacidad</a></li>
                         <li><a href="{{ url('/como-funciona') }}">Cómo Funciona</a></li>
+                        <li><a href="{{ url('/blog/optimizar-ventas-mercado-libre') }}">Consejos para Vender Más</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
@@ -203,6 +206,24 @@
             <p class="text-center mb-0">© 2025 MLDataTrends. Todos los derechos reservados.</p>
         </div>
     </footer>
+
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "MLDataTrends",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+        },
+        "description": "Plataforma para gestionar multicuentas, analizar competidores y optimizar ventas en Mercado Libre."
+    }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
 </body>
