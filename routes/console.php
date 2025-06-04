@@ -11,13 +11,15 @@ Artisan::command('orders:sync-hourly', function () {
     $this->comment('Ejecutando orders:sync-hourly');
     $this->call(\App\Console\Commands\SyncOrdersHourly::class);
 })->describe('Sincroniza las órdenes de MercadoLibre al final del día')
-  ->dailyAt('23:00');
+  ->hourly();
+
 
 Artisan::command('stock:sync-hourly', function () {
     $this->comment('Ejecutando stock:sync-hourly');
     $this->call(\App\Console\Commands\SyncStockHourly::class);
 })->describe('Sincroniza el stock de ventas al final del día')
-  ->dailyAt('23:00');
+ ->hourly();
+
 
 // Comandos desactivados por ahora (solo queremos ventas y stock al final del día)
 /*
