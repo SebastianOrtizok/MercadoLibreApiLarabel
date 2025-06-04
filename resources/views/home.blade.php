@@ -14,11 +14,11 @@
     <meta property="og:url" content="https://mldatatrends.com">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://mldatatrends.com/images/hero.jpg">
-    <!-- Twitter Card (opcional, puedes eliminar si no lo necesitas) -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="MLDataTrends: Potencia tus Ventas en Mercado Libre">
     <meta name="twitter:description" content="Aumenta tus ventas con nuestra plataforma: gestiona multicuentas, analiza competidores y optimiza stock. ¡Prueba gratis 7 días!">
-    <meta name="twitter:image" content="https://mldatatrends.com/images/hero.jpg">
+    <meta name="twitter:image" content="https://mldatatrends.com/images/hero-image.jpg">
     <!-- Preload Fonts -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" as="style" onload="this.rel='stylesheet'">
     <title>MLDataTrends: Gestiona y Potencia tus Ventas en Mercado Libre</title>
@@ -30,7 +30,6 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-content container text-center">
-            <img src="{{ asset('images/hero.jpg') }}" alt="Notebook con gráficos de estadísticas, taza de café y manos trabajando, representando la gestión de ventas en Mercado Libre con MLDataTrends" class="img-fluid mb-4" style="max-width: 100%;">
             <h1>Potencia tus Ventas en Mercado Libre con MLDataTrends</h1>
             <p class="lead">Gestiona multicuentas, analiza competidores, optimiza tu stock y maximiza ganancias con nuestra plataforma para vendedores de Mercado Libre. ¡Prueba gratis 7 días!</p>
             <div class="hero-buttons">
@@ -194,7 +193,6 @@
                         <li><a href="{{ route('register') }}">Regístrarse</a></li>
                         <li><a href="{{ url('/terminos-y-condiciones') }}" target="_blank">Términos y Condiciones</a></li>
                         <li><a href="{{ url('/politica-privacidad') }}" target="_blank">Política de Privacidad</a></li>
-                        <li><a href="{{ url('/como-funciona') }}">Cómo Funciona</a></li>
                         <li><a href="{{ url('/blog/optimizar-ventas-mercado-libre') }}">Consejos para Vender Más</a></li>
                     </ul>
                 </div>
