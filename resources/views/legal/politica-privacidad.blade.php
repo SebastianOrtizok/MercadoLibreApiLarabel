@@ -162,8 +162,7 @@
             <h2>10. Contacto</h2>
             <p>Si tienes preguntas o inquietudes sobre esta Política de Privacidad o el uso de tus datos, contáctanos en:</p>
             <ul>
-                <li>Correo: <span style="color: #e74c3c;">[soporte@mldatatrends.com]</span></li>
-                <li>Dirección: <span style="color: #e74c3c;">[Tu dirección física, si aplica]</span></li>
+                <li>Correo: <span style="color: #e74c3c;">soporte@mldatatrends.com</span></li>
             </ul>
         </div>
 
