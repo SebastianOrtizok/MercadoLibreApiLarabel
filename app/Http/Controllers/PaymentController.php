@@ -25,7 +25,7 @@ class PaymentController extends Controller
     public function showPlans()
     {
         $plans = [
-            'mensual' => 10000,
+            'mensual' => 1,
             'trimestral' => 27000,
             'anual' => 960000,
         ];
@@ -40,7 +40,7 @@ class PaymentController extends Controller
 
         $plan = $request->input('plan');
         $amounts = [
-            'mensual' => 10000,
+            'mensual' => 1,
             'trimestral' => 27000,
             'anual' => 96000,
         ];
@@ -109,7 +109,7 @@ class PaymentController extends Controller
         ]);
 
         if ($userId && $plan && in_array($plan, ['mensual', 'trimestral', 'anual'])) {
-            $amount = $plan === 'mensual' ? 10000 : ($plan === 'trimestral' ? 27000 : 96000);
+            $amount = $plan === 'mensual' ? 1 : ($plan === 'trimestral' ? 27000 : 96000);
             $daysToAdd = $plan === 'mensual' ? 30 : ($plan === 'trimestral' ? 90 : 360);
 
             try {
@@ -168,7 +168,7 @@ class PaymentController extends Controller
         ]);
 
         if ($userId && $plan && in_array($plan, ['mensual', 'trimestral', 'anual'])) {
-            $amount = $plan === 'mensual' ? 10000 : ($plan === 'trimestral' ? 27000 : 96000);
+            $amount = $plan === 'mensual' ? 1 : ($plan === 'trimestral' ? 27000 : 96000);
 
             Pago::create([
                 'usuario_id' => $userId,
