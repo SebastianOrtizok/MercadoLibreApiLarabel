@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Aumenta tus ventas en Mercado Libre con MLDataTrends: gestiona multicuentas, analiza competidores, optimiza stock y potencia promociones. ¡Prueba gratis 7 días!">
-     <meta name="keywords" content="MLDataTrends, gestión multicuentas MercadoLibre, herramientas MercadoLibre, análisis de ventas MercadoLibre, gestión de stock MercadoLibre, e-commerce MercadoLibre Argentina">
+    <meta name="keywords" content="MLDataTrends, gestión multicuentas MercadoLibre, herramientas MercadoLibre, análisis de ventas MercadoLibre, gestión de stock MercadoLibre, e-commerce MercadoLibre Argentina">
     <meta name="author" content="MLDataTrends">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://mldatatrends.com">
@@ -13,18 +13,21 @@
     <meta property="og:description" content="Aumenta tus ventas con nuestra plataforma: gestiona multicuentas, analiza competidores y optimiza stock. ¡Prueba gratis 7 días!">
     <meta property="og:url" content="https://mldatatrends.com">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="images/hero.webp>
+    <meta property="og:image" content="https://mldatatrends.com/images/hero.webp">
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="MLDataTrends: Potencia tus Ventas en Mercado Libre">
     <meta name="twitter:description" content="Aumenta tus ventas con nuestra plataforma: gestiona multicuentas, analiza competidores y optimiza stock. ¡Prueba gratis 7 días!">
-    <meta name="twitter:image" content="https://mldatatrends.com/images/hero-image.jpg">
-    <!-- Preload Fonts -->
+    <meta name="twitter:image" content="https://mldatatrends.com/images/hero.webp">
+    <!-- Preload Fonts and Images -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" as="style" onload="this.rel='stylesheet'">
+    <link rel="preload" href="https://mldatatrends.com/images/hero-mobile.webp" as="image" media="(max-width: 767px)">
+    <link rel="preload" href="https://mldatatrends.com/images/hero.webp" as="image" media="(min-width: 768px)">
     <title>MLDataTrends: Gestiona y Potencia tus Ventas en Mercado Libre</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/critical.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet" media="print" onload="this.media='all'">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
 </head>
 <body>
     <!-- Hero Section -->
@@ -33,7 +36,7 @@
             <picture>
                 <source media="(min-width: 768px)" srcset="https://mldatatrends.com/images/hero.webp" type="image/webp">
                 <source media="(max-width: 767px)" srcset="https://mldatatrends.com/images/hero-mobile.webp" type="image/webp">
-                <img src="https://mldatatrends.com/images/hero.webp" alt="Potencia tus ventas en Mercado Libre con MLDataTrends" width="1920" height="1280" fetchpriority="high">
+                <img src="https://mldatatrends.com/images/hero.webp" alt="Potencia tus Ventas en Mercado Libre con MLDataTrends" width="1920" height="1280" fetchpriority="high">
             </picture>
         </div>
         <div class="hero-content container text-center">
@@ -125,51 +128,45 @@
             <div class="row">
                 <!-- Opción 1: Usuario Test -->
                 <div class="col-md-4 mb-4">
-                    <div class="pricing-card" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; text-align: center;">
-                        <h3 style="font-size: 1.5rem; color: #333;">Prueba con Usuario Test</h3>
-                        <p class="lead" style="font-size: 1.2rem; color: #666;">Explora Gratis</p>
-                        <p style="font-size: 1rem; color: #666; margin-bottom: 20px;">
-                            Usa nuestras credenciales de prueba para explorar las funcionalidades básicas de la plataforma.
-                        </p>
-                        <div style="background-color: #f8f9fa; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
-                            <p style="margin: 0; font-weight: bold; color: #333;">Usuario: test@test.com</p>
-                            <p style="margin: 0; font-weight: bold; color: #333;">Contraseña: test1234</p>
+                    <div class="pricing-card">
+                        <h3>Prueba con Usuario Test</h3>
+                        <p class="lead">Explora Gratis</p>
+                        <p>Usa nuestras credenciales de prueba para explorar las funcionalidades básicas de la plataforma.</p>
+                        <div class="credential-box">
+                            <p>Usuario: test@test.com</p>
+                            <p>Contraseña: test1234</p>
                         </div>
-                        <a href="{{ route('login') }}" class="btn btn-outline-primary" style="padding: 10px 20px; font-weight: bold;">Iniciar Sesión</a>
+                        <a href="{{ route('login') }}" class="btn btn-outline-primary">Iniciar Sesión</a>
                     </div>
                 </div>
 
                 <!-- Opción 2: Regístrate y Navega Gratis -->
                 <div class="col-md-4 mb-4">
-                    <div class="pricing-card" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; text-align: center;">
-                        <h3 style="font-size: 1.5rem; color: #333;">Regístrate y Navega Gratis</h3>
-                        <p class="lead" style="font-size: 1.2rem; color: #666;">Prueba Gratuita de 7 Días</p>
-                        <p style="font-size: 1rem; color: #666; margin-bottom: 20px;">
-                            Gestiona tu token y accede a todas las funcionalidades sin costo durante 7 días.
-                        </p>
-                        <ul class="list-unstyled" style="margin-bottom: 20px;">
+                    <div class="pricing-card">
+                        <h3>Regístrate y Navega Gratis</h3>
+                        <p class="lead">Prueba Gratuita de 7 Días</p>
+                        <p>Gestiona tu token y accede a todas las funcionalidades sin costo durante 7 días.</p>
+                        <ul class="list-unstyled">
                             <li><i class="fas fa-check text-success me-2"></i>Multicuentas Ilimitadas</li>
                             <li><i class="fas fa-check text-success me-2"></i>Estadísticas Avanzadas</li>
                             <li><i class="fas fa-check text-success me-2"></i>Seguimiento de Competidores</li>
                         </ul>
-                        <a href="{{ route('register') }}" class="btn btn-primary" style="padding: 10px 20px; font-weight: bold;">Regístrate</a>
+                        <a href="{{ route('register') }}" class="btn btn-primary">Regístrate</a>
                     </div>
                 </div>
 
                 <!-- Opción 3: Adquiere un Plan -->
                 <div class="col-md-4 mb-4">
-                    <div class="pricing-card" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; text-align: center;">
-                        <h3 style="font-size: 1.5rem; color: #333;">Adquiere un Plan</h3>
-                        <p class="lead" style="font-size: 1.2rem; color: #666;">Acceso Completo y Soporte</p>
-                        <p style="font-size: 1rem; color: #666; margin-bottom: 20px;">
-                            Elige el plan que mejor se adapte a tus necesidades y optimiza tus ventas con soporte prioritario.
-                        </p>
-                        <ul class="list-unstyled" style="margin-bottom: 20px;">
+                    <div class="pricing-card">
+                        <h3>Adquiere un Plan</h3>
+                        <p class="lead">Acceso Completo y Soporte</p>
+                        <p>Elige el plan que mejor se adapte a tus necesidades y optimiza tus ventas con soporte prioritario.</p>
+                        <ul class="list-unstyled">
                             <li><i class="fas fa-check text-success me-2"></i>Soporte Prioritario</li>
                             <li><i class="fas fa-check text-success me-2"></i>Informes Personalizados</li>
                             <li><i class="fas fa-check text-success me-2"></i>Integraciones Avanzadas</li>
                         </ul>
-                        <a href="{{ route('plans') }}" class="btn btn-outline-primary" style="padding: 10px 20px; font-weight: bold;">Ver Planes</a>
+                        <a href="{{ route('plans') }}" class="btn btn-outline-primary">Ver Planes</a>
                     </div>
                 </div>
             </div>
