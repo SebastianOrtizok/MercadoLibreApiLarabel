@@ -29,6 +29,13 @@
 <body>
     <!-- Hero Section -->
     <section class="hero-section">
+        <div class="hero-image">
+            <picture>
+                <source media="(min-width: 768px)" srcset="https://mldatatrends.com/images/hero.webp" type="image/webp">
+                <source media="(max-width: 767px)" srcset="https://mldatatrends.com/images/hero-mobile.webp" type="image/webp">
+                <img src="https://mldatatrends.com/images/hero.webp" alt="Potencia tus ventas en Mercado Libre con MLDataTrends" width="1920" height="1280" fetchpriority="high">
+            </picture>
+        </div>
         <div class="hero-content container text-center">
             <h1>Potencia tus Ventas en Mercado Libre con MLDataTrends</h1>
             <p class="lead">Gestiona multicuentas, analiza competidores, optimiza tu stock y maximiza ganancias con nuestra plataforma para vendedores de Mercado Libre. ¡Prueba gratis 7 días!</p>

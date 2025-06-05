@@ -18,16 +18,33 @@ body {
     font-family: "Poppins", sans-serif;
     background-color: #f8f9fa;
 }
+
 .hero-section {
-    background: url("/images/hero.webp") no-repeat center center;
-    background-size: cover;
-    color: #f5f5f5; /* Blanco suave para mejor contraste */
+    position: relative;
+    width: 100%;
+    min-height: 600px; /* Altura mínima para que se vea bien */
     padding: 150px 0; /* Más espacio vertical */
     text-align: center;
-    position: relative;
-    min-height: 600px; /* Altura mínima para que se vea bien */
+    overflow: hidden;
 }
-.hero-section::before {
+
+.hero-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Asegura que la imagen cubra el área sin distorsión */
+}
+
+/* Overlay oscuro */
+.hero-image::before {
     content: "";
     position: absolute;
     top: 0;
@@ -35,13 +52,18 @@ body {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.7); /* Overlay más oscuro */
+    z-index: 2;
 }
+
 .hero-content {
     position: relative;
-    z-index: 1;
+    z-index: 3; /* Asegura que el texto esté encima del overlay */
+    color: #f5f5f5; /* Blanco suave para mejor contraste */
     max-width: 800px; /* Contenido más ancho y centrado */
     margin: 0 auto;
 }
+
+
 .hero-section h1 {
     font-size: 3.5rem;
     font-weight: 700;
