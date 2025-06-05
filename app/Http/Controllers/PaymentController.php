@@ -96,58 +96,69 @@ class PaymentController extends Controller
         }
     }
 
-    public function success(Request $request)
-    {
-        $userId = $request->query('user_id');
-        $plan = $request->query('plan');
-        $paymentId = $request->query('payment_id', 'MP_TEST_' . now()->timestamp);
+   public function success(Request $request)
+{
+    $userId = $request->query('user_id');
+    $plan = $request->query('plan');
+    $paymentId = $request->query('payment_id', 'MP_TEST_' . now()->timestamp);
 
-        Log::info('Pago Mercado Pago exitoso', [
-            'user_id' => $userId,
-            'plan' => $plan,
-            'payment_id' => $paymentId,
-        ]);
+    Log::info('Pago Mercado Pago exitoso', [
+        'user_id' => $userId,
+        'plan' => $plan,
+        'payment_id' => $paymentId,
+    ]);
 
-        if ($userId && $plan && in_array($plan, ['mensual', 'trimestral', 'anual'])) {
-            $amount = $plan === 'mensual' ? 1 : ($plan === 'trimestral' ? 27000 : 96000);
-            $daysToAdd = $plan === 'mensual' ? 30 : ($plan === 'trimestral' ? 90 : 360);
+    if ($userId && $plan && in_array($plan, ['mensual', 'trimestral', 'anual'])) {
+        $amount = $plan === 'mensual' ? 1 : ($plan === 'trimestral' ? 27000 : 96000);
+        $daysToAdd = $plan === 'mensual' ? 30 : ($plan === 'trimestral' ? 90 : 360);
 
-            try {
-                $fechaInicio = now();
-                $fechaFin = $fechaInicio->copy()->addDays($daysToAdd);
+        try {
+            $fechaInicio = now();
+            $fechaFin = $fechaInicio->copy()->addDays($daysToAdd);
 
-                $suscripcion = Suscripcion::create([
-                    'usuario_id' => $userId,
+            // Busca y actualiza o crea la suscripción
+            $suscripcion = Suscripcion::updateOrCreate(
+                ['usuario_id' => $userId], // Condición para buscar
+                [
                     'plan' => $plan,
                     'monto' => $amount,
                     'fecha_inicio' => $fechaInicio,
                     'fecha_fin' => $fechaFin,
                     'estado' => 'activo',
-                ]);
+                ]
+            );
 
-                Pago::create([
-                    'usuario_id' => $userId,
-                    'suscripcion_id' => $suscripcion->id,
-                    'monto' => $amount,
-                    'metodo_pago' => 'mercadopago',
-                    'id_transaccion' => $paymentId,
-                    'estado' => 'completado',
-                ]);
+            // Crea el registro de pago
+            Pago::create([
+                'usuario_id' => $userId,
+                'suscripcion_id' => $suscripcion->id,
+                'monto' => $amount,
+                'metodo_pago' => 'mercadopago',
+                'id_transaccion' => $paymentId,
+                'estado' => 'completado',
+            ]);
 
-                return redirect()->route('dashboard')->with('success', '¡Pago realizado con éxito! Tu suscripción está activa.');
-            } catch (\Exception $e) {
-                Log::error('Error al guardar suscripción o pago', [
-                    'error' => $e->getMessage(),
-                    'user_id' => $userId,
-                    'plan' => $plan,
-                    'payment_id' => $paymentId,
-                ]);
-                return redirect()->route('plans')->with('error', 'Error al procesar el pago: ' . $e->getMessage());
+            // Actualiza el estado del usuario en la sesión (opcional)
+            $user = auth()->user();
+            if ($user && $user->id == $userId) {
+                $user->estado = 'activo'; // Ajusta según tu modelo User
+                $user->save();
             }
-        }
 
-        return redirect()->route('plans')->with('error', 'Error al procesar el pago. Intenta nuevamente.');
+            return redirect()->route('dashboard')->with('success', '¡Pago realizado con éxito! Tu suscripción está activa.');
+        } catch (\Exception $e) {
+            Log::error('Error al guardar suscripción o pago', [
+                'error' => $e->getMessage(),
+                'user_id' => $userId,
+                'plan' => $plan,
+                'payment_id' => $paymentId,
+            ]);
+            return redirect()->route('plans')->with('error', 'Error al procesar el pago: ' . $e->getMessage());
+        }
     }
+
+    return redirect()->route('plans')->with('error', 'Error al procesar el pago. Intenta nuevamente.');
+}
 
     public function failure(Request $request)
     {
