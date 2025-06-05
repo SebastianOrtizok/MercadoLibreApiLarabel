@@ -13,7 +13,7 @@
     <meta property="og:description" content="Aumenta tus ventas con nuestra plataforma: gestiona multicuentas, analiza competidores y optimiza stock. ¡Prueba gratis 7 días!">
     <meta property="og:url" content="https://mldatatrends.com">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://mldatatrends.com/images/hero.webp>
+    <meta property="og:image" content="images/hero.webp>
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="MLDataTrends: Potencia tus Ventas en Mercado Libre">
