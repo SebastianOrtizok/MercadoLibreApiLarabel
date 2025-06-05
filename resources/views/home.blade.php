@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Aumenta tus ventas en Mercado Libre con MLDataTrends: gestiona multicuentas, analiza competidores, optimiza stock y potencia promociones. ¡Prueba gratis 7 días!">
-    <meta name="keywords" content="Mercado Libre, gestión multicuentas, análisis competidores, optimización stock, promociones Mercado Libre, estadísticas ventas, ecommerce Argentina">
+     <meta name="keywords" content="MLDataTrends, gestión multicuentas MercadoLibre, herramientas MercadoLibre, análisis de ventas MercadoLibre, gestión de stock MercadoLibre, e-commerce MercadoLibre Argentina">
     <meta name="author" content="MLDataTrends">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://mldatatrends.com">
@@ -13,7 +13,7 @@
     <meta property="og:description" content="Aumenta tus ventas con nuestra plataforma: gestiona multicuentas, analiza competidores y optimiza stock. ¡Prueba gratis 7 días!">
     <meta property="og:url" content="https://mldatatrends.com">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://mldatatrends.com/images/hero.jpg">
+    <meta property="og:image" content="https://mldatatrends.com/images/hero.webp>
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="MLDataTrends: Potencia tus Ventas en Mercado Libre">

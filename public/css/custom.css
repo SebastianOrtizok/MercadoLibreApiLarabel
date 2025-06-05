@@ -19,7 +19,7 @@ body {
     background-color: #f8f9fa;
 }
 .hero-section {
-    background: url("/images/hero.jpg") no-repeat center center;
+    background: url("/images/hero.webp") no-repeat center center;
     background-size: cover;
     color: #f5f5f5; /* Blanco suave para mejor contraste */
     padding: 150px 0; /* Más espacio vertical */
