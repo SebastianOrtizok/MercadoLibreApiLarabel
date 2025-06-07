@@ -6,6 +6,7 @@ use App\Services\CompetidorService;
 use Illuminate\Http\Request;
 use App\Exports\ItemsCompetidoresExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Suscripcion; // Agregamos el modelo Suscripcion
 
 class CompetidorController extends Controller
 {
@@ -48,6 +49,14 @@ class CompetidorController extends Controller
             'nombre' => 'required|string',
             'official_store_id' => 'nullable|integer',
         ]);
+
+        // Verificar el plan del usuario
+        $suscripcion = Suscripcion::where('usuario_id', auth()->id())->latest()->first();
+        $competidorCount = Competidor::where('user_id', auth()->id())->count();
+
+        if ($suscripcion && $suscripcion->plan === 'mensual' && $competidorCount >= 5) {
+            return redirect()->route('competidores.index')->with('error', 'Has alcanzado el límite de 5 competidores con el plan mensual. Actualiza tu plan para agregar más.');
+        }
 
         Competidor::create([
             'user_id' => auth()->id(),
