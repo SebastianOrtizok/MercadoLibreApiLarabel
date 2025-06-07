@@ -54,8 +54,21 @@ class CompetidorController extends Controller
         $suscripcion = Suscripcion::where('usuario_id', auth()->id())->latest()->first();
         $competidorCount = Competidor::where('user_id', auth()->id())->count();
 
-        if ($suscripcion && $suscripcion->plan === 'mensual' && $competidorCount >= 5) {
-            return redirect()->route('competidores.index')->with('error', 'Has alcanzado el límite de 5 competidores con el plan mensual. Actualiza tu plan para agregar más.');
+        // Definir límites por plan
+        $limits = [
+            'mensual' => 5,
+            'trimestral' => 15,
+            'anual' => 60,
+        ];
+
+        if ($suscripcion && array_key_exists($suscripcion->plan, $limits)) {
+            $planLimit = $limits[$suscripcion->plan];
+
+            if ($competidorCount >= $planLimit) {
+                return redirect()->route('competidores.index')->with('error', 'Ya no puedes agregar más competidores, has alcanzado el límite de ' . $planLimit . ' con tu plan ' . $suscripcion->plan . '.');
+            } elseif ($competidorCount == $planLimit - 1) {
+                return redirect()->route('competidores.index')->with('warning', 'Agotaste todos los seguidores, el tope de tu plan ' . $suscripcion->plan . ' es ' . $planLimit . '.');
+            }
         }
 
         Competidor::create([
