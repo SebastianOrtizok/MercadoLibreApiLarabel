@@ -11,6 +11,13 @@
         </div>
     @endif
 
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i> {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <div class="mb-4">
         <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse" aria-expanded="false" aria-controls="formCollapse">
             <i class="fas fa-plus me-2"></i> Agregar Nuevo Competidor
@@ -176,7 +183,8 @@
         ])
     </div>
 </div>
-@endsection 
+@endsection
+
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -239,5 +247,4 @@
             }
         });
     </script>
-
 @endsection
