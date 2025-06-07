@@ -67,7 +67,7 @@ class CompetidorController extends Controller
             if ($competidorCount >= $planLimit) {
                 return redirect()->route('competidores.index')->with('error', 'Ya no puedes agregar más competidores, has alcanzado el límite de ' . $planLimit . ' con tu plan ' . $suscripcion->plan . '.');
             } elseif ($competidorCount == $planLimit - 1) {
-                return redirect()->route('competidores.index')->with('warning', 'Agotaste todos los seguidores, el tope de tu plan ' . $suscripcion->plan . ' es ' . $planLimit . '.');
+                return redirect()->route('competidores.index')->with('warning', 'Te queda 1 seguidor, el tope de tu plan ' . $suscripcion->plan . ' es ' . $planLimit . '.');
             }
         }
 
