@@ -18,6 +18,7 @@
     </script>
     <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- Agregar meta tag para CSRF -->
     <title>Dashboard</title>
+     @yield('head') <!-- Agregar esto para renderizar la sección head de las vistas hijas -->
 </head>
 <body>
     <div class="container-fluid p-0">

@@ -117,3 +117,7 @@
     </div>
 </div>
 @endsection
+
+@section('head')
+    <link rel="canonical" href="https://www.mldatatrends.com/plans">
+@endsection
