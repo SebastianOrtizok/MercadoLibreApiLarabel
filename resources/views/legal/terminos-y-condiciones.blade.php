@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Términos y Condiciones</title>
+    <title>Términos y Condiciones de MLDataTrends para MercadoLibre</title>
+    <meta name="description" content="Consulta los Términos y Condiciones de uso de MLDataTrends, la plataforma para gestionar ventas y optimizar tu experiencia en MercadoLibre. Última actualización: 29 de mayo de 2025.">
+    <link rel="canonical" href="https://www.mldatatrends.com/terminos-y-condiciones">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {

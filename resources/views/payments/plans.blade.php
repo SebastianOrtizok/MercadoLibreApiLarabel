@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-5">
-    <h2 class="mb-4 text-primary fw-bold">Elige tu Plan</h2>
+    <h2 class="mb-4 text-primary fw-bold">Elige tu Plan para Optimizar MercadoLibre: Multicuentas, SKU y Competidores</h2>
 
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -33,7 +33,7 @@
                     <h4 class="mb-3">$10,000 ARS</h4>
                     <p class="mb-4">Por mes</p>
                     <ul class="list-group list-group-flush flex-grow-1">
-                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Múltiples cuentas</li>
+                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Múltiples cuentas MercadoLibre</li>
                         <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Descargar publicaciones</li>
                         <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Agregar SKU propio</li>
                         <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Descargar ventas</li>
@@ -63,7 +63,7 @@
                     <h4 class="mb-3">$27,000 ARS</h4>
                     <p class="mb-4">Cada 3 meses</p>
                     <ul class="list-group list-group-flush flex-grow-1">
-                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Múltiples cuentas</li>
+                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Múltiples cuentas MercadoLibre</li>
                         <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Descargar publicaciones</li>
                         <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Agregar SKU propio</li>
                         <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Descargar ventas</li>
@@ -93,7 +93,7 @@
                     <h4 class="mb-3">$96,000 ARS</h4>
                     <p class="mb-4">Por año</p>
                     <ul class="list-group list-group-flush flex-grow-1">
-                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Múltiples cuentas</li>
+                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Múltiples cuentas MercadoLibre</li>
                         <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Descargar publicaciones</li>
                         <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Agregar SKU propio</li>
                         <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Descargar ventas</li>
@@ -120,4 +120,7 @@
 
 @section('head')
     <link rel="canonical" href="https://www.mldatatrends.com/plans">
+    <title>Planes de Gestión de SKU y Multicuentas para MercadoLibre</title>
+    <meta name="description" content="Elige tu plan MLDataTrends para gestionar multicuentas, optimizar stock con SKU personalizado y analizar competidores en MercadoLibre. ¡Suscríbete hoy!">
+    <!-- No es necesario agregar meta keywords aquí; enfócate en título y descripción -->
 @endsection
