@@ -160,18 +160,48 @@ class CompetidorController extends Controller
         return redirect()->route('competidores.index')->with('success', 'Competidor eliminado');
     }
 
-    public function follow(Request $request)
-    {
-        $items = \App\Models\ItemCompetidor::whereIn('competidor_id', Competidor::where('user_id', auth()->id())->pluck('id'))->get();
-        $followData = $request->follow ?? [];
+   public function follow(Request $request)
+{
+    \Log::info("Solicitud recibida en CompetidorController@follow", [
+        'request' => $request->all(),
+        'user_id' => auth()->id(),
+    ]);
 
-        foreach ($followData as $itemId => $follow) {
-            $item = $items->where('item_id', $itemId)->first();
-            if ($item) {
-                $item->update(['following' => $follow === 'yes']);
-            }
+    try {
+        // Obtener todos los ítems de los competidores del usuario autenticado
+        $items = \App\Models\ItemCompetidor::whereIn('competidor_id',
+            Competidor::where('user_id', auth()->id())->pluck('id')
+        )->get();
+
+        // Obtener el array de ítems seleccionados desde el formulario
+        $followData = $request->input('follow', []);
+
+        \Log::info("Ítems seleccionados desde el formulario", [
+            'follow_data' => $followData,
+        ]);
+
+        // Actualizar el estado de seguimiento de todos los ítems
+        foreach ($items as $item) {
+            // Si el ítem está en followData con valor 'yes', following = true; si no, following = false
+            $isFollowing = isset($followData[$item->item_id]) && $followData[$item->item_id] === 'yes';
+            $item->update([
+                'following' => $isFollowing,
+            ]);
+
+            \Log::info("Estado de seguimiento actualizado", [
+                'item_id' => $item->item_id,
+                'following' => $isFollowing,
+            ]);
         }
 
-        return redirect()->route('competidores.index')->with('success', 'Seguimiento actualizado');
+        return redirect()->route('competidores.index')->with('success', 'Seguimiento actualizado correctamente.');
+    } catch (\Exception $e) {
+        \Log::error('Error al actualizar el seguimiento de ítems', [
+            'error' => $e->getMessage(),
+            'user_id' => auth()->id(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+        return redirect()->route('competidores.index')->with('error', 'Error al actualizar el seguimiento: ' . $e->getMessage());
     }
+}
 }
