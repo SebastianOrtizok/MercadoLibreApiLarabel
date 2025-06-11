@@ -153,36 +153,36 @@
                 <div class="accordion-item">
                     <h3 class="accordion-header" id="faq1-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false" aria-controls="faq1">
-                            ¿Cómo puedo gestionar múltiples cuentas de Mercado Libre?
+                            ¿Cómo gestiona MLDataTrends múltiples cuentas de Mercado Libre?
                         </button>
                     </h3>
                     <div id="faq1" class="accordion-collapse collapse" aria-labelledby="faq1-header" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            Nuestra plataforma permite sincronizar y administrar todas tus cuentas desde un solo lugar, facilitando la gestión eficiente y el seguimiento en tiempo real.
+                            MLDataTrends permite conectar y administrar múltiples cuentas de Mercado Libre desde un panel centralizado. Sincroniza órdenes, publicaciones y datos en tiempo real, ofreciendo herramientas avanzadas para optimizar la gestión y maximizar la eficiencia de tus operaciones.
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
                     <h3 class="accordion-header" id="faq2-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
-                            ¿Cuánto dura la prueba gratuita?
+                            ¿Qué incluye la prueba gratuita de MLDataTrends?
                         </button>
                     </h3>
                     <div id="faq2" class="accordion-collapse collapse" aria-labelledby="faq2-header" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            Ofrecemos una prueba gratuita de 7 días para que explores todas las funcionalidades sin costo alguno.
+                            La prueba gratuita de 7 días te da acceso completo a todas las funcionalidades de MLDataTrends, incluyendo gestión de multicuentas, análisis de competidores, estadísticas avanzadas y optimización de stock. No se requiere tarjeta de crédito para comenzar.
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
                     <h3 class="accordion-header" id="faq3-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
-                            ¿Es segura mi información en MLDataTrends?
+                            ¿Cómo protege MLDataTrends mis datos y claves de acceso?
                         </button>
                     </h3>
                     <div id="faq3" class="accordion-collapse collapse" aria-labelledby="faq3-header" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            Sí, utilizamos los más altos estándares de seguridad para proteger tus datos, incluyendo encriptación y protocolos seguros.
+                            En MLDataTrends, la seguridad es prioridad. Utilizamos encriptación AES-256 para proteger tus datos y claves de acceso, como los tokens de integración con Mercado Libre. Además, implementamos protocolos HTTPS y autenticación segura para garantizar la confidencialidad y protección de tu información.
                         </div>
                     </div>
                 </div>
@@ -273,6 +273,7 @@
         </div>
     </footer>
 
+    <!-- Schema Markup (actualizado para reflejar las nuevas FAQs) -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -291,26 +292,26 @@
         "mainEntity": [
             {
                 "@type": "Question",
-                "name": "¿Cómo puedo gestionar múltiples cuentas de Mercado Libre?",
+                "name": "¿Cómo gestiona MLDataTrends múltiples cuentas de Mercado Libre?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Nuestra plataforma permite sincronizar y administrar todas tus cuentas desde un solo lugar, facilitando la gestión eficiente y el seguimiento en tiempo real."
+                    "text": "MLDataTrends permite conectar y administrar múltiples cuentas de Mercado Libre desde un panel centralizado. Sincroniza órdenes, publicaciones y datos en tiempo real, ofreciendo herramientas avanzadas para optimizar la gestión y maximizar la eficiencia de tus operaciones."
                 }
             },
             {
                 "@type": "Question",
-                "name": "¿Cuánto dura la prueba gratuita?",
+                "name": "¿Qué incluye la prueba gratuita de MLDataTrends?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Ofrecemos una prueba gratuita de 7 días para que explores todas las funcionalidades sin costo alguno."
+                    "text": "La prueba gratuita de 7 días te da acceso completo a todas las funcionalidades de MLDataTrends, incluyendo gestión de multicuentas, análisis de competidores, estadísticas avanzadas y optimización de stock. No se requiere tarjeta de crédito para comenzar."
                 }
             },
             {
                 "@type": "Question",
-                "name": "¿Es segura mi información en MLDataTrends?",
+                "name": "¿Cómo protege MLDataTrends mis datos y claves de acceso?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Sí, utilizamos los más altos estándares de seguridad para proteger tus datos, incluyendo encriptación y protocolos seguros."
+                    "text": "En MLDataTrends, la seguridad es prioridad. Utilizamos encriptación AES-256 para proteger tus datos y claves de acceso, como los tokens de integración con Mercado Libre. Además, implementamos protocolos HTTPS y autenticación segura para garantizar la confidencialidad y protección de tu información."
                 }
             }
         ]
