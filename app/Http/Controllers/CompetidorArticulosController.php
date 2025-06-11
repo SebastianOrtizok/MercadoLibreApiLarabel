@@ -6,7 +6,6 @@ use App\Models\Competidor;
 use App\Models\ItemCompetidor;
 use App\Services\CompetidorArticulosService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class CompetidorArticulosController extends Controller
 {
@@ -14,48 +13,72 @@ class CompetidorArticulosController extends Controller
 
     public function __construct(CompetidorArticulosService $competidorArticulosService)
     {
+        $this->competidorArticulosService = $competidorArticulosService;
+    }
+
+public function filtrarCompetidores(Request $request)
+    {
         try {
-            $this->competidorArticulosService = $competidorArticulosService;
-            if (!auth()->check()) {
-                Log::warning('Usuario no autenticado en el constructor');
-                throw new \Exception('Usuario no autenticado');
+            Log::info('Entrando al método filtrarCompetidores', ['url' => $request->url(), 'params' => $request->all()]);
+
+            $userId = auth()->id();
+            if (!$userId) {
+                Log::warning('No se obtuvo user_id');
+                throw new \Exception('Usuario no autenticado o ID no disponible');
             }
-            Log::info('Constructor ejecutado con éxito', ['service' => get_class($competidorArticulosService)]);
+
+            $competidores = Competidor::where('user_id', $userId)->get();
+            Log::info('Competidores encontrados', ['user_id' => $userId, 'count' => $competidores->count(), 'ids' => $competidores->pluck('id')->toArray()]);
+
+            if ($competidores->isEmpty()) {
+                Log::warning('No se encontraron competidores para el usuario', ['user_id' => $userId]);
+                $items = collect();
+            } else {
+                $query = ItemCompetidor::with('competidor')->whereIn('competidor_id', $competidores->pluck('id'));
+
+                if ($request->has('nickname') && !empty($request->input('nickname'))) {
+                    $query->whereHas('competidor', function ($q) use ($request) {
+                        $q->where('nickname', 'like', '%' . $request->input('nickname') . '%');
+                        Log::info('Filtro nickname aplicado', ['nickname' => $request->input('nickname')]);
+                    });
+                }
+
+                if ($request->has('titulo') && !empty($request->input('titulo'))) {
+                    $query->where('titulo', 'like', '%' . $request->input('titulo') . '%');
+                    Log::info('Filtro título aplicado', ['titulo' => $request->input('titulo')]);
+                }
+
+                if ($request->has('es_full') && $request->input('es_full') !== null) {
+                    $query->where('es_full', filter_var($request->input('es_full'), FILTER_VALIDATE_BOOLEAN));
+                    Log::info('Filtro es_full aplicado', ['es_full' => $request->input('es_full')]);
+                }
+
+                if ($request->has('following') && $request->input('following') !== null) {
+                    $query->where('following', filter_var($request->input('following'), FILTER_VALIDATE_BOOLEAN));
+                    Log::info('Filtro following aplicado', ['following' => $request->input('following')]);
+                }
+
+                if ($request->has('order_by') && in_array($request->input('order_by'), ['precio', 'precio_descuento', 'ultima_actualizacion'])) {
+                    $direction = $request->input('direction', 'asc');
+                    $query->orderBy($request->input('order_by'), $direction);
+                    Log::info('Ordenamiento aplicado', ['order_by' => $request->input('order_by'), 'direction' => $direction]);
+                }
+
+                Log::info('Consulta final antes de paginar', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
+                $items = $query->paginate(10);
+            }
+
+            return view('competidores.index', compact('items', 'competidores'));
         } catch (\Exception $e) {
-            Log::error('Error en el constructor', [
+            Log::error('Error en filtrarCompetidores', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->all(),
+                'user_id' => $userId ?? 'No disponible'
             ]);
-            throw $e;
+            return redirect()->back()->with('error', 'Error al procesar los filtros: ' . $e->getMessage());
         }
     }
-
-  public function index(Request $request)
-{
-    try {
-        \Log::info('Entrando al método index', ['url' => $request->url(), 'params' => $request->all()]);
-        $userId = auth()->id();
-        if (!$userId) {
-            \Log::warning('No se obtuvo user_id');
-            throw new \Exception('Usuario no autenticado o ID no disponible');
-        }
-
-        $items = $this->competidorArticulosService->getFilteredItems($request, $userId);
-        $competidores = Competidor::where('user_id', $userId)->get();
-
-        \Log::info('Items y competidores cargados', ['items_count' => $items->count(), 'competidores_count' => $competidores->count()]);
-
-        return view('competidores.index', compact('items', 'competidores'));
-    } catch (\Exception $e) {
-        \Log::error('Error en index', [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-            'request' => $request->all(),
-            'user_id' => $userId ?? 'No disponible'
-        ]);
-        return redirect()->back()->with('error', 'Error al procesar los filtros: ' . $e->getMessage());
-    }
-}
 
 
     public function actualizar(Request $request)
