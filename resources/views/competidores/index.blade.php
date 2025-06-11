@@ -18,68 +18,6 @@
         </div>
     @endif
 
-
-<!-- Formulario de filtros colapsado -->
-    <div class="mb-4">
-        <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
-            <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
-        </button>
-        <div class="collapse" id="filtrosCollapse">
-            <form method="GET" action="{{ route('competidores.index') }}" class="mt-3">
-                <div class="filtros-container p-3 bg-light rounded shadow-sm">
-                    <div class="row">
-                        <div class="col-md-3 mb-2">
-                            <label>Nickname</label>
-                            <input type="text" name="nickname" class="form-control" placeholder="Buscar por nickname" value="{{ request('nickname') }}">
-                        </div>
-                        <div class="col-md-3 mb-2">
-                            <label>Título</label>
-                            <input type="text" name="titulo" class="form-control" placeholder="Buscar por título" value="{{ request('titulo') }}">
-                        </div>
-                        <div class="col-md-2 mb-2">
-                            <label>Es Full</label>
-                            <select name="es_full" class="form-control">
-                                <option value="">Todos</option>
-                                <option value="1" {{ request('es_full') == '1' ? 'selected' : '' }}>Sí</option>
-                                <option value="0" {{ request('es_full') == '0' ? 'selected' : '' }}>No</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 mb-2">
-                            <label>Following</label>
-                            <select name="following" class="form-control">
-                                <option value="">Todos</option>
-                                <option value="1" {{ request('following') == '1' ? 'selected' : '' }}>Sí</option>
-                                <option value="0" {{ request('following') == '0' ? 'selected' : '' }}>No</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 mb-2">
-                            <label>Ordenar por</label>
-                            <select name="order_by" class="form-control">
-                                <option value="">Sin orden</option>
-                                <option value="precio" {{ request('order_by') == 'precio' ? 'selected' : '' }}>Precio Original</option>
-                                <option value="precio_descuento" {{ request('order_by') == 'precio_descuento' ? 'selected' : '' }}>Precio con Descuento</option>
-                                <option value="ultima_actualizacion" {{ request('ultima_actualizacion') == 'ultima_actualizacion' ? 'selected' : '' }}>Última Actualización</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 mb-2">
-                            <label>Dirección</label>
-                            <select name="direction" class="form-control">
-                                <option value="asc" {{ request('direction') == 'asc' ? 'selected' : '' }}>Ascendente</option>
-                                <option value="desc" {{ request('direction') == 'desc' ? 'selected' : '' }}>Descendente</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 mb-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="fas fa-search"></i> Filtrar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
     <div class="mb-4">
         <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse" aria-expanded="false" aria-controls="formCollapse">
             <i class="fas fa-plus me-2"></i> Agregar Nuevo Competidor
@@ -177,6 +115,66 @@
     </div>
 
     <h3 class="mb-4 text-primary fw-bold">Publicaciones Descargadas</h3>
+
+    <!-- Formulario de filtros colapsado -->
+    <div class="mb-4 mt-5">
+        <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
+            <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
+        </button>
+        <div class="collapse" id="filtrosCollapse">
+            <form method="GET" action="{{ route('competidores.index') }}" class="mt-3">
+                <div class="filtros-container p-3 bg-light rounded shadow-sm">
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            <label>Nickname</label>
+                            <input type="text" name="nickname" class="form-control" placeholder="Buscar por nickname" value="{{ request('nickname') }}">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label>Título</label>
+                            <input type="text" name="titulo" class="form-control" placeholder="Buscar por título" value="{{ request('titulo') }}">
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <label>Es Full</label>
+                            <select name="es_full" class="form-control">
+                                <option value="">Todos</option>
+                                <option value="1" {{ request('es_full') == '1' ? 'selected' : '' }}>Sí</option>
+                                <option value="0" {{ request('es_full') == '0' ? 'selected' : '' }}>No</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <label>Following</label>
+                            <select name="following" class="form-control">
+                                <option value="">Todos</option>
+                                <option value="1" {{ request('following') == '1' ? 'selected' : '' }}>Sí</option>
+                                <option value="0" {{ request('following') == '0' ? 'selected' : '' }}>No</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <label>Ordenar por</label>
+                            <select name="order_by" class="form-control">
+                                <option value="">Sin orden</option>
+                                <option value="precio" {{ request('order_by') == 'precio' ? 'selected' : '' }}>Precio Original</option>
+                                <option value="precio_descuento" {{ request('order_by') == 'precio_descuento' ? 'selected' : '' }}>Precio con Descuento</option>
+                                <option value="ultima_actualizacion" {{ request('ultima_actualizacion') == 'ultima_actualizacion' ? 'selected' : '' }}>Última Actualización</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <label>Dirección</label>
+                            <select name="direction" class="form-control">
+                                <option value="asc" {{ request('direction') == 'asc' ? 'selected' : '' }}>Ascendente</option>
+                                <option value="desc" {{ request('direction') == 'desc' ? 'selected' : '' }}>Descendente</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Filtrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     <div class="table-responsive">
         <div class="d-flex justify-content-end mb-3">
             <a href="{{ route('export.items-competidores') }}" class="btn btn-success">

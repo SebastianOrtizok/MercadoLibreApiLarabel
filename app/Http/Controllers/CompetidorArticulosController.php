@@ -17,42 +17,52 @@ class CompetidorArticulosController extends Controller
     }
 
 public function index(Request $request)
-    {
-        $userId = auth()->id();
-        $competidores = Competidor::where('user_id', $userId)->get();
+{
+    $userId = auth()->id();
+    $competidores = Competidor::where('user_id', $userId)->get();
 
-        $query = ItemCompetidor::with('competidor') // Carga la relación con competidores para acceder a nickname
-            ->whereIn('competidor_id', $competidores->pluck('id'));
+    $query = ItemCompetidor::with('competidor')
+        ->whereIn('competidor_id', $competidores->pluck('id'));
 
-        // Aplicar filtros
-        if ($request->has('nickname') && !empty($request->input('nickname'))) {
-            $query->whereHas('competidor', function ($q) use ($request) {
-                $q->where('nickname', 'like', '%' . $request->input('nickname') . '%');
-            });
-        }
+    // Depuración de parámetros recibidos
+    \Log::info('Parámetros de filtro recibidos', $request->all());
 
-        if ($request->has('titulo') && !empty($request->input('titulo'))) {
-            $query->where('titulo', 'like', '%' . $request->input('titulo') . '%');
-        }
-
-        if ($request->has('es_full') && $request->input('es_full') !== null) {
-            $query->where('es_full', $request->input('es_full') === '1');
-        }
-
-        if ($request->has('following') && $request->input('following') !== null) {
-            $query->where('following', $request->input('following') === '1');
-        }
-
-        if ($request->has('order_by') && in_array($request->input('order_by'), ['precio', 'precio_descuento', 'ultima_actualizacion'])) {
-            $direction = $request->input('direction', 'asc');
-            $query->orderBy($request->input('order_by'), $direction);
-        }
-
-        $items = $query->paginate(10); // Paginar los resultados (ajusta el número según necesites)
-
-        return view('competidores.index', compact('items', 'competidores'));
+    // Aplicar filtros
+    if ($request->has('nickname') && !empty($request->input('nickname'))) {
+        $query->whereHas('competidor', function ($q) use ($request) {
+            $q->where('nickname', 'like', '%' . $request->input('nickname') . '%');
+            \Log::info('Filtro nickname aplicado', ['nickname' => $request->input('nickname')]);
+        });
     }
 
+    if ($request->has('titulo') && !empty($request->input('titulo'))) {
+        $query->where('titulo', 'like', '%' . $request->input('titulo') . '%');
+        \Log::info('Filtro título aplicado', ['titulo' => $request->input('titulo')]);
+    }
+
+    if ($request->has('es_full') && $request->input('es_full') !== null) {
+        $query->where('es_full', filter_var($request->input('es_full'), FILTER_VALIDATE_BOOLEAN));
+        \Log::info('Filtro es_full aplicado', ['es_full' => $request->input('es_full')]);
+    }
+
+    if ($request->has('following') && $request->input('following') !== null) {
+        $query->where('following', filter_var($request->input('following'), FILTER_VALIDATE_BOOLEAN));
+        \Log::info('Filtro following aplicado', ['following' => $request->input('following')]);
+    }
+
+    if ($request->has('order_by') && in_array($request->input('order_by'), ['precio', 'precio_descuento', 'ultima_actualizacion'])) {
+        $direction = $request->input('direction', 'asc');
+        $query->orderBy($request->input('order_by'), $direction);
+        \Log::info('Ordenamiento aplicado', ['order_by' => $request->input('order_by'), 'direction' => $direction]);
+    }
+
+    // Depuración de la consulta SQL
+    \Log::info('Consulta SQL generada', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
+
+    $items = $query->paginate(10);
+
+    return view('competidores.index', compact('items', 'competidores'));
+}
     public function actualizar(Request $request)
     {
         \Log::info("Solicitud recibida en CompetidorArticulosController@actualizar", [
