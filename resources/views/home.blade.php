@@ -149,37 +149,47 @@
     <section class="faq-section py-5 bg-light" role="region" aria-label="Preguntas Frecuentes">
         <div class="container">
             <h2 class="text-center mb-5 fw-bold display-5">Preguntas Frecuentes</h2>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card shadow-sm border-0 rounded-3 h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-users fa-2x text-primary mb-3" aria-hidden="true"></i>
-                            <h3 class="card-title fw-semibold mb-3">¿Cómo gestiona MLDataTrends múltiples cuentas de Mercado Libre?</h3>
-                            <p class="card-text text-muted">MLDataTrends permite conectar y administrar múltiples cuentas de Mercado Libre desde un panel centralizado. Sincroniza órdenes, publicaciones y datos en tiempo real, ofreciendo herramientas avanzadas para optimizar la gestión y maximizar la eficiencia de tus operaciones.</p>
+            <div class="accordion accordion-flush" id="faqAccordion">
+                <div class="accordion-item shadow-sm rounded-3 mb-2">
+                    <h3 class="accordion-header" id="faq1-header">
+                        <button class="accordion-button collapsed bg-primary text-white fs-5 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false" aria-controls="faq1">
+                            <i class="fas fa-users me-2" aria-hidden="true"></i> ¿Cómo gestiona MLDataTrends múltiples cuentas de Mercado Libre?
+                        </button>
+                    </h3>
+                    <div id="faq1" class="accordion-collapse collapse" aria-labelledby="faq1-header" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            MLDataTrends permite conectar y administrar múltiples cuentas de Mercado Libre desde un panel centralizado. Sincroniza órdenes, publicaciones y datos en tiempo real, ofreciendo herramientas avanzadas para optimizar la gestión y maximizar la eficiencia de tus operaciones.
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card shadow-sm border-0 rounded-3 h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-gift fa-2x text-primary mb-3" aria-hidden="true"></i>
-                            <h3 class="card-title fw-semibold mb-3">¿Qué incluye la prueba gratuita de MLDataTrends?</h3>
-                            <p class="card-text text-muted">La prueba gratuita de 7 días te da acceso completo a todas las funcionalidades de MLDataTrends, incluyendo gestión de multicuentas, análisis de competidores, estadísticas avanzadas y optimización de stock. No se requiere tarjeta de crédito para comenzar.</p>
+                <div class="accordion-item shadow-sm rounded-3 mb-2">
+                    <h3 class="accordion-header" id="faq2-header">
+                        <button class="accordion-button collapsed bg-primary text-white fs-5 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded "¿Qué incluye la prueba gratuita de MLDataTrends?">
+                            <i class="fas fa-gift me-2" aria-hidden="true"></i> ¿Qué incluye la prueba gratuita de MLDataTrends?
+                        </button>
+                    </h3>
+                    <div id="faq2" class="accordion-collapse collapse" aria-labelledby="faq2-header" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            La prueba gratuita de 7 días te da acceso completo a todas las funcionalidades de MLDataTrends, incluyendo gestión de multicuentas, análisis de competidores, estadísticas avanzadas y optimización de stock. No se requiere tarjeta de crédito para comenzar.
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card shadow-sm border-0 rounded-3 h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-shield-alt fa-2x text-primary mb-3" aria-hidden="true"></i>
-                            <h3 class="card-title fw-semibold mb-3">¿Cómo protege MLDataTrends mis datos y claves de integración?</h3>
-                            <p class="card-text text-muted">En MLDataTrends, protegemos tus datos y claves de integración, como los tokens de Mercado Libre, con encriptación robusta y protocolos seguros. Nuestro sitio utiliza HTTPS para conexiones seguras y medidas de autenticación avanzadas para garantizar la confidencialidad de tu información.</p>
+                <div class="accordion-item shadow-sm rounded-3 mb-2">
+                    <h3 class="accordion-header" id="faq3-header">
+                        <button class="accordion-button collapsed bg-primary text-white fs-5 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
+                            <i class="fas fa-shield-alt me-2" aria-hidden="true"></i> ¿Cómo protege MLDataTrends mis datos y claves de integración?
+                        </button>
+                    </h3>
+                    <div id="faq3" class="accordion-collapse collapse" aria-labelledby="faq3-header" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            En MLDataTrends, protegemos tus datos y claves de integración, como los tokens de Mercado Libre, con encriptación robusta y protocolos seguros. Nuestro sitio utiliza HTTPS para conexiones seguras y medidas de autenticación avanzadas para garantizar la confidencialidad de tu información. <a href="{{ url('/politica-privacidad') }}" target="_blank">Conoce más sobre nuestra política de privacidad</a>.
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
 
 
 
@@ -267,6 +277,7 @@
     </footer>
 
      <!-- Schema Markup (actualizado para reflejar las nuevas FAQs) -->
+    <!-- Schema Markup -->
     <!-- Schema Markup -->
     <script type="application/ld+json">
     {
