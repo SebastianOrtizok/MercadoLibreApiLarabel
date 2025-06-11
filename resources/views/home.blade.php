@@ -177,18 +177,19 @@
                 <div class="accordion-item">
                     <h3 class="accordion-header" id="faq3-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
-                            ¿Cómo protege MLDataTrends mis datos y claves de acceso?
+                            ¿Cómo protege MLDataTrends mis datos y claves de integración?
                         </button>
                     </h3>
                     <div id="faq3" class="accordion-collapse collapse" aria-labelledby="faq3-header" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            En MLDataTrends, la seguridad es prioridad. Utilizamos encriptación AES-256 para proteger tus datos y claves de acceso, como los tokens de integración con Mercado Libre. Además, implementamos protocolos HTTPS y autenticación segura para garantizar la confidencialidad y protección de tu información.
+                            En MLDataTrends, protegemos tus datos y claves de integración, como los tokens de Mercado Libre, con encriptación robusta y protocolos seguros. Nuestro sitio utiliza HTTPS para conexiones seguras, y aplicamos medidas de autenticación avanzadas para garantizar la confidencialidad y seguridad de tu información.
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
 
     <!-- Pricing Section -->
     <section class="pricing-section py-5" role="region" aria-label="Planes de Precios">
@@ -273,7 +274,7 @@
         </div>
     </footer>
 
-    <!-- Schema Markup (actualizado para reflejar las nuevas FAQs) -->
+     <!-- Schema Markup (actualizado para reflejar las nuevas FAQs) -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -308,10 +309,10 @@
             },
             {
                 "@type": "Question",
-                "name": "¿Cómo protege MLDataTrends mis datos y claves de acceso?",
+                "name": "¿Cómo protege MLDataTrends mis datos y claves de integración?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "En MLDataTrends, la seguridad es prioridad. Utilizamos encriptación AES-256 para proteger tus datos y claves de acceso, como los tokens de integración con Mercado Libre. Además, implementamos protocolos HTTPS y autenticación segura para garantizar la confidencialidad y protección de tu información."
+                    "text": "En MLDataTrends, protegemos tus datos y claves de integración, como los tokens de Mercado Libre, con encriptación robusta y protocolos seguros. Nuestro sitio utiliza HTTPS para conexiones seguras, y aplicamos medidas de autenticación avanzadas para garantizar la confidencialidad y seguridad de tu información."
                 }
             }
         ]
