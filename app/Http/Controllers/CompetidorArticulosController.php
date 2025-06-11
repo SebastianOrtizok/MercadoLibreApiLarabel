@@ -30,23 +30,20 @@ class CompetidorArticulosController extends Controller
         }
     }
 
-public function index(Request $request)
+  public function index(Request $request)
 {
     try {
         \Log::info('Entrando al método index', ['url' => $request->url(), 'params' => $request->all()]);
-
         $userId = auth()->id();
         if (!$userId) {
             \Log::warning('No se obtuvo user_id');
             throw new \Exception('Usuario no autenticado o ID no disponible');
         }
 
+        $items = $this->competidorArticulosService->getFilteredItems($request, $userId);
         $competidores = Competidor::where('user_id', $userId)->get();
-        \Log::info('Competidores encontrados', ['user_id' => $userId, 'count' => $competidores->count(), 'ids' => $competidores->pluck('id')->toArray()]);
 
-        $items = $competidores->isEmpty() ? collect() : ItemCompetidor::whereIn('competidor_id', $competidores->pluck('id'))->paginate(10);
-
-        \Log::info('Items cargados', ['count' => $items->count()]);
+        \Log::info('Items y competidores cargados', ['items_count' => $items->count(), 'competidores_count' => $competidores->count()]);
 
         return view('competidores.index', compact('items', 'competidores'));
     } catch (\Exception $e) {

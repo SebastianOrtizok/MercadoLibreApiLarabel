@@ -89,4 +89,39 @@ class CompetidorArticulosService
         $price = (float) $priceText;
         return $price;
     }
+
+    public function getFilteredItems(Request $request, $userId)
+{
+    $competidores = Competidor::where('user_id', $userId)->get();
+    if ($competidores->isEmpty()) {
+        return collect();
+    }
+
+    $query = ItemCompetidor::with('competidor')->whereIn('competidor_id', $competidores->pluck('id'));
+
+    if ($request->has('nickname') && !empty($request->input('nickname'))) {
+        $query->whereHas('competidor', function ($q) use ($request) {
+            $q->where('nickname', 'like', '%' . $request->input('nickname') . '%');
+        });
+    }
+
+    if ($request->has('titulo') && !empty($request->input('titulo'))) {
+        $query->where('titulo', 'like', '%' . $request->input('titulo') . '%');
+    }
+
+    if ($request->has('es_full') && $request->input('es_full') !== null) {
+        $query->where('es_full', filter_var($request->input('es_full'), FILTER_VALIDATE_BOOLEAN));
+    }
+
+    if ($request->has('following') && $request->input('following') !== null) {
+        $query->where('following', filter_var($request->input('following'), FILTER_VALIDATE_BOOLEAN));
+    }
+
+    if ($request->has('order_by') && in_array($request->input('order_by'), ['precio', 'precio_descuento', 'ultima_actualizacion'])) {
+        $direction = $request->input('direction', 'asc');
+        $query->orderBy($request->input('order_by'), $direction);
+    }
+
+    return $query->paginate(10);
+}
 }
