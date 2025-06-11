@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Aumenta tus ventas en Mercado Libre con MLDataTrends: gestiona multicuentas, analiza competidores, optimiza stock y potencia promociones. ¡Prueba gratis 7 días!">
+    <meta name="description" content="Aumenta tus ventas en Mercado Libre con mldatatrends: gestiona multicuentas, analiza competidores, optimiza stock y potencia promociones. ¡Prueba gratis 7 días!">
     <meta name="keywords" content="MLDataTrends, gestión multicuentas MercadoLibre, herramientas MercadoLibre, gestión de stock MercadoLibre, análisis de competidores ml, análisis de ventas MercadoLibre, gestión de SKU personalizada,software de ventas MercadoLibre Argentina">
     <meta name="author" content="MLDataTrends">
     <meta name="robots" content="index, follow">
