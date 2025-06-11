@@ -16,6 +16,43 @@ class CompetidorArticulosController extends Controller
         $this->competidorArticulosService = $competidorArticulosService;
     }
 
+public function index(Request $request)
+    {
+        $userId = auth()->id();
+        $competidores = Competidor::where('user_id', $userId)->get();
+
+        $query = ItemCompetidor::with('competidor') // Carga la relación con competidores para acceder a nickname
+            ->whereIn('competidor_id', $competidores->pluck('id'));
+
+        // Aplicar filtros
+        if ($request->has('nickname') && !empty($request->input('nickname'))) {
+            $query->whereHas('competidor', function ($q) use ($request) {
+                $q->where('nickname', 'like', '%' . $request->input('nickname') . '%');
+            });
+        }
+
+        if ($request->has('titulo') && !empty($request->input('titulo'))) {
+            $query->where('titulo', 'like', '%' . $request->input('titulo') . '%');
+        }
+
+        if ($request->has('es_full') && $request->input('es_full') !== null) {
+            $query->where('es_full', $request->input('es_full') === '1');
+        }
+
+        if ($request->has('following') && $request->input('following') !== null) {
+            $query->where('following', $request->input('following') === '1');
+        }
+
+        if ($request->has('order_by') && in_array($request->input('order_by'), ['precio', 'precio_descuento', 'ultima_actualizacion'])) {
+            $direction = $request->input('direction', 'asc');
+            $query->orderBy($request->input('order_by'), $direction);
+        }
+
+        $items = $query->paginate(10); // Paginar los resultados (ajusta el número según necesites)
+
+        return view('competidores.index', compact('items', 'competidores'));
+    }
+
     public function actualizar(Request $request)
     {
         \Log::info("Solicitud recibida en CompetidorArticulosController@actualizar", [
