@@ -11,23 +11,7 @@ class CompetidorArticulosController extends Controller
 {
     protected $competidorArticulosService;
 
-public function __construct(CompetidorArticulosService $competidorArticulosService)
-{
-    try {
-        $this->competidorArticulosService = $competidorArticulosService;
-        if (!auth()->check()) {
-            \Log::warning('Usuario no autenticado en el constructor');
-            throw new \Exception('Usuario no autenticado');
-        }
-        \Log::info('Constructor ejecutado con éxito', ['service' => get_class($competidorArticulosService)]);
-    } catch (\Exception $e) {
-        \Log::error('Error en el constructor', [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        throw $e;
-    }
-}
+
 
 public function filtrarCompetidores(Request $request)
     {
