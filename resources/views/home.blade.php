@@ -76,7 +76,7 @@
     <!-- Features Section -->
     <section class="features-section py-5" role="region" aria-label="Funcionalidades">
         <div class="container">
-            <h2 class="text-center mb-5">Herramientas para Optimizar tus Ventas en Mercado Libre</h2>
+            <h2 class="text-center mb-5 fw-bold display-5">Herramientas para Optimizar tus Ventas en Mercado Libre</h2>
             <div class="row">
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
@@ -196,7 +196,7 @@
     <!-- Pricing Section -->
     <section class="pricing-section py-5" role="region" aria-label="Planes de Precios">
         <div class="container">
-            <h2 class="text-center mb-5">Comienza a Gestionar tu Cuenta de Mercado Libre</h2>
+            <h2 class="text-center mb-5 fw-bold display-5">Comienza a Gestionar tu Cuenta de Mercado Libre</h2>
             <div class="row">
                 <div class="col-md-4 mb-4">
                     <div class="pricing-card">
