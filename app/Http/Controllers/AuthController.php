@@ -54,16 +54,23 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'accept_terms' => ['required', 'accepted'], // Valida que el checkbox esté marcado
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
+            ],
+            'accept_terms' => ['required', 'accepted'],
         ], [
             'name.required' => 'El nombre es obligatorio.',
             'email.required' => 'El correo electrónico es obligatorio.',
             'email.email' => 'El correo electrónico debe ser válido.',
             'email.unique' => 'El correo electrónico ya está registrado.',
             'password.required' => 'La contraseña es obligatoria.',
-            'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password.confirmed' => 'Las contraseñas no coinciden.',
+            'password.regex' => 'La contraseña debe contener al menos una letra mayúscula, una minúscula, un número y un carácter especial (@$!%*?&).',
             'accept_terms.required' => 'Debes aceptar los Términos y Condiciones.',
             'accept_terms.accepted' => 'Debes aceptar los Términos y Condiciones.',
         ]);
@@ -81,7 +88,7 @@ class AuthController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'accept_terms' => true, // Almacena true si el checkbox está marcado
+                'accept_terms' => true,
             ]);
             Log::info('Usuario registrado exitosamente', ['user_id' => $user->id]);
 
@@ -114,7 +121,7 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'trace' => $e->getTraceAsString(),
             ]);
-            return back()->withErrors(['error' => 'Error al registrar usuario o asignar plan de prueba: ' . $e->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Ocurrió un error al registrar el usuario. Por favor, intenta de nuevo.'])->withInput();
         }
     }
 

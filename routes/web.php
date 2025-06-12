@@ -127,7 +127,7 @@ Route::get('/subscription/expired', function () {
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:10,1');
 // Nuevas rutas para términos y privacidad
 Route::get('/terminos-y-condiciones', function () {
     return view('legal.terminos-y-condiciones');

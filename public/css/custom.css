@@ -373,6 +373,33 @@ h1 {
     color: var(--color-lupa-active);
 }
 
+/*********** acordeon *******/
+.accordion-button {
+    font-weight: 600;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.accordion-button:not(.collapsed) {
+    background-color: #e7f1ff;
+    color: #0d6efd;
+}
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(0, 0, 0, 0.125);
+}
+.accordion-button:hover {
+    background-color: #f8f9fa;
+}
+.accordion-body {
+    background-color: #fff;
+    color: #6c757d;
+    line-height: 1.6;
+}
+.accordion-item {
+    border: none;
+    transition: all 0.3s ease;
+}
+
 /******* publicaciones******/
 .img-container {
     width: 100px; /* Tamaño fijo del contenedor */
