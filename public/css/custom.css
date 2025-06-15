@@ -374,32 +374,31 @@ h1 {
 }
 
 /*********** acordeon *******/
-/*********** acordeon *******/
 .accordion-button {
     font-weight: 600;
-    color: #fff; /* Cambiado a blanco para mejor contraste con el gradiente */
-    transition: background-color 0.3s ease, color 0.3s ease, background-image 0.3s ease; /* Añadido background-image para animar el gradiente */
+    color: #fff; /* Texto blanco para contraste con el gradiente */
+    transition: background 0.3s ease, color 0.3s ease; /* Transición para background en lugar de background-image */
 }
 
-.accordion-button.collapsed {
-    background-image: linear-gradient(135deg, #007bff, #00ddeb); /* Gradiente para estado colapsado */
-    color: #fff; /* Texto blanco para contraste */
+/* Aumentamos especificidad para sobrescribir Bootstrap */
+.accordion .accordion-button.collapsed {
+    background: linear-gradient(135deg, #007bff, #00ddeb); /* Gradiente para estado colapsado */
+    color: #fff; /* Texto blanco */
 }
 
-.accordion-button:not(.collapsed) {
-    background-image: none; /* Sin gradiente cuando abierto */
-    background-color: #e7f1ff; /* Fondo azul claro */
+/* Aseguramos que el estado no colapsado no tenga gradiente */
+.accordion .accordion-button:not(.collapsed) {
+    background: #e7f1ff; /* Fondo azul claro */
     color: #0d6efd; /* Texto azul */
 }
 
-.accordion-button:focus {
+.accordion .accordion-button:focus {
     box-shadow: none;
     border-color: rgba(0, 0, 0, 0.125);
 }
 
-.accordion-button:hover {
-    background-image: none; /* Sin gradiente en hover */
-    background-color: #f8f9fa; /* Fondo gris claro */
+.accordion .accordion-button:hover {
+    background: #f8f9fa; /* Fondo gris claro en hover */
 }
 
 .accordion-body {
@@ -412,6 +411,13 @@ h1 {
     border: none;
     transition: all 0.3s ease;
 }
+
+/* Aseguramos que los íconos sean visibles en el gradiente */
+.accordion-button.collapsed .text-primary {
+    color: #fff; /* Iconos blancos en estado colapsado */
+}
+
+
 /******* publicaciones******/
 .img-container {
     width: 100px; /* Tamaño fijo del contenedor */
