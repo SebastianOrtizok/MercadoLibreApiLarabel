@@ -374,32 +374,44 @@ h1 {
 }
 
 /*********** acordeon *******/
+/*********** acordeon *******/
 .accordion-button {
     font-weight: 600;
-    color: #333;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    color: #fff; /* Cambiado a blanco para mejor contraste con el gradiente */
+    transition: background-color 0.3s ease, color 0.3s ease, background-image 0.3s ease; /* Añadido background-image para animar el gradiente */
 }
+
+.accordion-button.collapsed {
+    background-image: linear-gradient(135deg, #007bff, #00ddeb); /* Gradiente para estado colapsado */
+    color: #fff; /* Texto blanco para contraste */
+}
+
 .accordion-button:not(.collapsed) {
-    background-color: #e7f1ff;
-    color: #0d6efd;
+    background-image: none; /* Sin gradiente cuando abierto */
+    background-color: #e7f1ff; /* Fondo azul claro */
+    color: #0d6efd; /* Texto azul */
 }
+
 .accordion-button:focus {
     box-shadow: none;
     border-color: rgba(0, 0, 0, 0.125);
 }
+
 .accordion-button:hover {
-    background-color: #f8f9fa;
+    background-image: none; /* Sin gradiente en hover */
+    background-color: #f8f9fa; /* Fondo gris claro */
 }
+
 .accordion-body {
     background-color: #fff;
     color: #6c757d;
     line-height: 1.6;
 }
+
 .accordion-item {
     border: none;
     transition: all 0.3s ease;
 }
-
 /******* publicaciones******/
 .img-container {
     width: 100px; /* Tamaño fijo del contenedor */
