@@ -44,15 +44,7 @@
     </script>
 </head>
 <body>
-    <!-- Breadcrumbs for SEO -->
-    <nav aria-label="breadcrumb" class="bg-light py-2">
-        <div class="container">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{{ url('/') }}">Inicio</a></li>
-                <li class="breadcrumb-item active" aria-current="page">MLDataTrends</li>
-            </ol>
-        </div>
-    </nav>
+
 
     <!-- Hero Section -->
     <section class="hero-section" role="banner">

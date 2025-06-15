@@ -176,7 +176,7 @@
         </div>
     </div>
 
-    
+
     <div class="table-responsive">
         <div class="d-flex justify-content-end mb-3">
             <a href="{{ route('export.items-competidores') }}" class="btn btn-success">
@@ -233,7 +233,7 @@
                 <button type="submit" class="btn btn-primary me-2" form="follow-form">Seguir Publicación Seleccionada</button>
                 <form action="{{ route('competidor.articulos.actualizar') }}" method="POST" id="update-form">
                     @csrf
-                    <button type="submit" class="btn btn-secondary" form="update-form">Actualizar Datos de la Publicación Seleccionada</button>
+                    <button type="submit" class="btn btn-secondary mb-3" form="update-form">Actualizar Datos de la Publicación Seleccionada</button>
                 </form>
             </div>
         </form>
