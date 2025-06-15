@@ -104,7 +104,9 @@ Route::middleware(['auth', \App\Http\Middleware\CheckSubscription::class])->grou
     Route::post('/competidores/follow', [CompetidorController::class, 'follow'])->name('competidores.follow');
     Route::post('/competidores/actualizar', [CompetidorController::class, 'actualizar'])->name('competidores.actualizar');
     Route::delete('/competidores', [CompetidorController::class, 'destroy'])->name('competidores.destroy');
-    Route::post('/competidores/articulos/actualizar', [CompetidorArticulosController::class, 'actualizar'])->name('competidor.articulos.actualizar');
+
+    Route::post('/competidores/articulos/actualizar', [CompetidorArticulosController::class, 'actualizar'])->name('competidores.articulos.actualizar');
+
     Route::get('/export/items-competidores', [ExportController::class, 'exportItemsCompetidores'])
     ->name('export.items-competidores');
     Route::get('/exportar-ventas', function () {
