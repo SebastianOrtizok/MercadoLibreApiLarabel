@@ -374,7 +374,74 @@ h1 {
 }
 
 /*********** acordeon *******/
+/* Acordeón personalizado */
+.custom-accordion {
+    max-width: 100%;
+    margin: 0 auto;
+}
 
+.custom-accordion-item {
+    background-color: #fff;
+    margin-bottom: 1rem; /* Reemplaza mb-3 */
+    border-radius: 0.5rem; /* Reemplaza rounded-3 */
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Reemplaza shadow-sm */
+    transition: all 0.3s ease;
+}
+
+.custom-accordion-header {
+    width: 100%;
+}
+
+.custom-accordion-button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 1.25rem; /* Similar al padding de Bootstrap */
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff; /* Blanco para contraste con #00cfed */
+    background-color: #00cfed; /* Fondo colapsado */
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.custom-accordion-button:not(.collapsed) {
+    background-color: #e7f1ff; /* Fondo azul claro cuando abierto */
+    color: #0d6efd; /* Texto azul */
+}
+
+.custom-accordion-button:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: rgba(0, 0, 0, 0.125);
+}
+
+.custom-accordion-button:hover {
+    background-color: #f8f9fa; /* Fondo gris claro en hover */
+}
+
+.custom-accordion-button .icon {
+    margin-right: 1rem; /* Reemplaza me-3 */
+    font-size: 1.25rem; /* Reemplaza fa-lg */
+    color: #fff; /* Blanco en estado colapsado */
+}
+
+.custom-accordion-button:not(.collapsed) .icon {
+    color: #0d6efd; /* Azul en estado no colapsado */
+}
+
+.custom-accordion-collapse {
+    overflow: hidden;
+}
+
+.custom-accordion-body {
+    padding: 1rem 1.25rem;
+    background-color: #fff;
+    color: #6c757d; /* Gris medio */
+    line-height: 1.6;
+}
 
 /******* publicaciones******/
 .img-container {
