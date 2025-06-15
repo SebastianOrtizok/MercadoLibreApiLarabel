@@ -23,7 +23,7 @@ body {
 .hero-section {
     position: relative;
     width: 100%;
-    min-height: 600px;
+    height: 100vh;
     padding: 150px 0;
     text-align: center;
     overflow: hidden;
