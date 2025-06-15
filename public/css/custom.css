@@ -376,44 +376,6 @@ h1 {
 /*********** acordeon *******/
 
 
-/* Aumentamos especificidad para sobrescribir Bootstrap */
-.accordion .accordion-button.collapsed {
-    background: linear-gradient(135deg, #007bff, #00ddeb); /* Gradiente para estado colapsado */
-    color: #fff; /* Texto blanco */
-}
-
-/* Aseguramos que el estado no colapsado no tenga gradiente */
-.accordion .accordion-button:not(.collapsed) {
-    background: #e7f1ff; /* Fondo azul claro */
-    color: #0d6efd; /* Texto azul */
-}
-
-.accordion .accordion-button:focus {
-    box-shadow: none;
-    border-color: rgba(0, 0, 0, 0.125);
-}
-
-.accordion .accordion-button:hover {
-    background: #f8f9fa; /* Fondo gris claro en hover */
-}
-
-.accordion-body {
-    background-color: #fff;
-    color: #6c757d;
-    line-height: 1.6;
-}
-
-.accordion-item {
-    border: none;
-    transition: all 0.3s ease;
-}
-
-/* Aseguramos que los íconos sean visibles en el gradiente */
-.accordion-button.collapsed .text-primary {
-    color: #fff; /* Iconos blancos en estado colapsado */
-}
-
-
 /******* publicaciones******/
 .img-container {
     width: 100px; /* Tamaño fijo del contenedor */
