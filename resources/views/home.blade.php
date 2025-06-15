@@ -209,7 +209,7 @@
                 </div>
                 <div class="accordion-item shadow-sm rounded-3 mb-3">
                     <h3 class="accordion-header">
-                        <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
                             <i class="fas fa-gift fa-lg text-primary me-3" aria-hidden="true"></i>
                             ¿Qué incluye la prueba gratuita de MLDataTrends?
                         </button>
@@ -222,7 +222,7 @@
                 </div>
                 <div class="accordion-item shadow-sm rounded-3 mb-3">
                     <h3 class="accordion-header">
-                        <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
                             <i class="fas fa-shield-alt fa-lg text-primary me-3" aria-hidden="true"></i>
                             ¿Cómo protege MLDataTrends mis datos y claves de integración?
                         </button>
