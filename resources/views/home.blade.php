@@ -44,8 +44,6 @@
     </script>
 </head>
 <body>
-
-
     <!-- Hero Section -->
     <section class="hero-section" role="banner">
         <div class="hero-image">
@@ -137,64 +135,116 @@
         </div>
     </section>
 
-    <!-- FAQ Section for SEO -->
-   <section class="faq-section py-5 bg-light" role="region" aria-label="Preguntas Frecuentes">
-    <div class="container">
-        <h2 class="text-center mb-5">Preguntas Frecuentes</h2>
-        <div class="accordion accordion-flush" id="faqAccordion">
-            <div class="accordion-item shadow-sm rounded-3 mb-3">
-                <h3 class="accordion-header">
-                    <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false" aria-controls="faq1">
-                        <i class="fas fa-users fa-lg text-primary me-3" aria-hidden="true"></i>
-                        ¿Cómo gestiona MLDataTrends múltiples cuentas de Mercado Libre?
-                    </button>
-                </h3>
-                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        MLDataTrends permite conectar y administrar múltiples cuentas de Mercado Libre desde un panel centralizado. Sincroniza órdenes, publicaciones y datos en tiempo real, ofreciendo herramientas avanzadas para optimizar la gestión y maximizar la eficiencia de tus operaciones.
+    <!-- Testimonials Section -->
+    <section class="testimonials-section py-5 bg-light" role="region" aria-label="Testimonios de Usuarios">
+        <div class="container">
+            <h2 class="text-center mb-5">Lo que Dicen Nuestros Usuarios</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="testimonial-card shadow-sm rounded-3 p-4 text-center">
+                        <i class="fas fa-quote-left fa-2x text-primary mb-3" aria-hidden="true"></i>
+                        <p class="testimonial-text">"MLDataTrends transformó mi forma de vender en Mercado Libre. La gestión de multicuentas y el análisis de competidores me dieron una ventaja enorme. ¡Totalmente recomendado!"</p>
+                        <h4 class="testimonial-author">Marisa</h4>
+                        <p class="testimonial-role">Vendedora en Mercado Libre</p>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="accordion-item shadow-sm rounded-3 mb-3">
-                <h3 class="accordion-header">
-                    <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
-                        <i class="fas fa-gift fa-lg text-primary me-3" aria-hidden="true"></i>
-                        ¿Qué incluye la prueba gratuita de MLDataTrends?
-                    </button>
-                </h3>
-                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        La prueba gratuita de 7 días te da acceso completo a todas las funcionalidades de MLDataTrends, incluyendo gestión de multicuentas, análisis de competidores, estadísticas avanzadas y optimización de stock. No se requiere tarjeta de crédito para comenzar.
+                <div class="col-md-4 mb-4">
+                    <div class="testimonial-card shadow-sm rounded-3 p-4 text-center">
+                        <i class="fas fa-quote-left fa-2x text-primary mb-3" aria-hidden="true"></i>
+                        <p class="testimonial-text">"Gracias a MLDataTrends, optimicé mi stock y aumenté mis ventas en un 30%. El panel de control es súper intuitivo y fácil de usar. ¡Lo recomiendo a todos los vendedores!"</p>
+                        <h4 class="testimonial-author">Sebastián</h4>
+                        <p class="testimonial-role">Emprendedor E-commerce</p>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="accordion-item shadow-sm rounded-3 mb-3">
-                <h3 class="accordion-header">
-                    <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
-                        <i class="fas fa-shield-alt fa-lg text-primary me-3" aria-hidden="true"></i>
-                        ¿Cómo protege MLDataTrends mis datos y claves de integración?
-                    </button>
-                </h3>
-                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        En MLDataTrends, la seguridad de tus datos personales y claves de integración, como los tokens de Mercado Libre, es una prioridad. Utilizamos las siguientes medidas para garantizar la confidencialidad, integridad y disponibilidad de tu información:
-                        <ul>
-                            <li><strong>Cifrado de datos en tránsito</strong>: Todas las comunicaciones entre tu dispositivo y nuestros servidores se realizan a través de HTTPS, asegurando que los datos, como tus credenciales de registro y tokens de integración, estén protegidos contra interceptaciones.</li>
-                            <li><strong>Almacenamiento seguro de contraseñas</strong>: Las contraseñas de los usuarios se almacenan utilizando el algoritmo de hash bcrypt, un estándar de la industria que protege contra accesos no autorizados, incluso en caso de una brecha de datos.</li>
-                            <li><strong>Validación estricta de datos</strong>: Durante el registro, aplicamos reglas de validación robustas, como requerir contraseñas de al menos 8 caracteres con letras mayúsculas, minúsculas, números y caracteres especiales, para garantizar que las credenciales sean seguras.</li>
-                            <li><strong>Protección contra abusos</strong>: Implementamos límites de intentos (rate limiting) en el proceso de registro para prevenir ataques automatizados, permitiendo un máximo de 10 intentos por minuto desde una misma dirección IP.</li>
-                            <li><strong>Gestión segura de sesiones</strong>: Las sesiones de usuario se manejan de forma segura mediante almacenamiento en la base de datos y se invalidan al cerrar sesión, con regeneración de tokens CSRF para proteger contra ataques de falsificación de solicitudes.</li>
-                            <li><strong>Almacenamiento protegido de claves de integración</strong>: Los tokens de Mercado Libre y otras claves sensibles se gestionan con estrictas medidas de seguridad, incluyendo almacenamiento en variables de entorno protegidas y acceso restringido.</li>
-                        </ul>
-                        Estamos comprometidos con cumplir con las mejores prácticas de seguridad y normativas de protección de datos para que puedas usar MLDataTrends con total confianza.
+                <div class="col-md-4 mb-4">
+                    <div class="testimonial-card shadow-sm rounded-3 p-4 text-center">
+                        <i class="fas fa-quote-left fa-2x text-primary mb-3" aria-hidden="true"></i>
+                        <p class="testimonial-text">"Las estadísticas avanzadas y las promociones inteligentes de MLDataTrends me ayudaron a destacar en Mercado Libre. Es una herramienta imprescindible para cualquier vendedor serio."</p>
+                        <h4 class="testimonial-author">Patricio</h4>
+                        <p class="testimonial-role">Gerente de Ventas Online</p>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-
+    <!-- FAQ Section for SEO -->
+    <section class="faq-section py-5 bg-light" role="region" aria-label="Preguntas Frecuentes">
+        <div class="container">
+            <h2 class="text-center mb-5">Preguntas Frecuentes</h2>
+            <div class="accordion accordion-flush" id="faqAccordion">
+                <div class="accordion-item shadow-sm rounded-3 mb-3">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false" aria-controls="faq1">
+                            <i class="fas fa-users fa-lg text-primary me-3" aria-hidden="true"></i>
+                            ¿Cómo gestiona MLDataTrends múltiples cuentas de Mercado Libre?
+                        </button>
+                    </h3>
+                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            MLDataTrends permite conectar y administrar múltiples cuentas de Mercado Libre desde un panel centralizado. Sincroniza órdenes, publicaciones y datos en tiempo real, ofreciendo herramientas avanzadas para optimizar la gestión y maximizar la eficiencia de tus operaciones.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item shadow-sm rounded-3 mb-3">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
+                            <i class="fas fa-gift fa-lg text-primary me-3" aria-hidden="true"></i>
+                            ¿Qué incluye la prueba gratuita de MLDataTrends?
+                        </button>
+                    </h3>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            La prueba gratuita de 7 días te da acceso completo a todas las funcionalidades de MLDataTrends, incluyendo gestión de multicuentas, análisis de competidores, estadísticas avanzadas y optimización de stock. No se requiere tarjeta de crédito para comenzar.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item shadow-sm rounded-3 mb-3">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
+                            <i class="fas fa-shield-alt fa-lg text-primary me-3" aria-hidden="true"></i>
+                            ¿Cómo protege MLDataTrends mis datos y claves de integración?
+                        </button>
+                    </h3>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            En MLDataTrends, la seguridad de tus datos personales y claves de integración, como los tokens de Mercado Libre, es una prioridad. Utilizamos las siguientes medidas para garantizar la confidencialidad, integridad y disponibilidad de tu información:
+                            <ul>
+                                <li><strong>Cifrado de datos en tránsito</strong>: Todas las comunicaciones entre tu dispositivo y nuestros servidores se realizan a través de HTTPS, asegurando que los datos, como tus credenciales de registro y tokens de integración, estén protegidos contra interceptaciones.</li>
+                                <li><strong>Almacenamiento seguro de contraseñas</strong>: Las contraseñas de los usuarios se almacenan utilizando el algoritmo de hash bcrypt, un estándar de la industria que protege contra accesos no autorizados, incluso en caso de una brecha de datos.</li>
+                                <li><strong>Validación estricta de datos</strong>: Durante el registro, aplicamos reglas de validación robustas, como requerir contraseñas de al menos 8 caracteres con letras mayúsculas, minúsculas, números y caracteres especiales, para garantizar que las credenciales sean seguras.</li>
+                                <li><strong>Protección contra abusos</strong>: Implementamos límites de intentos (rate limiting) en el proceso de registro para prevenir ataques automatizados, permitiendo un máximo de 10 intentos por minuto desde una misma dirección IP.</li>
+                                <li><strong>Gestión segura de sesiones</strong>: Las sesiones de usuario se manejan de forma segura mediante almacenamiento en la base de datos y se invalidan al cerrar sesión, con regeneración de tokens CSRF para proteger contra ataques de falsificación de solicitudes.</li>
+                                <li><strong>Almacenamiento protegido de claves de integración</strong>: Los tokens de Mercado Libre y otras claves sensibles se gestionan con estrictas medidas de seguridad, incluyendo almacenamiento en variables de entorno protegidas y acceso restringido.</li>
+                            </ul>
+                            Estamos comprometidos con cumplir con las mejores prácticas de seguridad y normativas de protección de datos para que puedas usar MLDataTrends con total confianza.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Pricing Section -->
     <section class="pricing-section py-5" role="region" aria-label="Planes de Precios">
@@ -279,7 +329,6 @@
         </div>
     </footer>
 
-     <!-- Schema Markup (actualizado para reflejar las nuevas FAQs) -->
     <!-- Schema Markup -->
     <script type="application/ld+json">
 {
@@ -296,6 +345,49 @@
         "description": "Prueba gratuita de 7 días para gestionar tus ventas en Mercado Libre"
     },
     "description": "Plataforma para gestionar multicuentas, analizar competidores y optimizar ventas en Mercado Libre.",
+    "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5",
+        "reviewCount": "3"
+    },
+    "review": [
+        {
+            "@type": "Review",
+            "author": {
+                "@type": "Person",
+                "name": "Marisa"
+            },
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": "5"
+            },
+            "reviewBody": "MLDataTrends transformó mi forma de vender en Mercado Libre. La gestión de multicuentas y el análisis de competidores me dieron una ventaja enorme. ¡Totalmente recomendado!"
+        },
+        {
+            "@type": "Review",
+            "author": {
+                "@type": "Person",
+                "name": "Sebastián"
+            },
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": "5"
+            },
+            "reviewBody": "Gracias a MLDataTrends, optimicé mi stock y aumenté mis ventas en un 30%. El panel de control es súper intuitivo y fácil de usar. ¡Lo recomiendo a todos los vendedores!"
+        },
+        {
+            "@type": "Review",
+            "author": {
+                "@type": "Person",
+                "name": "Patricio"
+            },
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": "5"
+            },
+            "reviewBody": "Las estadísticas avanzadas y las promociones inteligentes de MLDataTrends me ayudaron a destacar en Mercado Libre. Es una herramienta imprescindible para cualquier vendedor serio."
+        }
+    ],
     "mainEntity": [
         {
             "@type": "Question",
