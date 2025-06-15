@@ -374,11 +374,7 @@ h1 {
 }
 
 /*********** acordeon *******/
-.accordion-button {
-    font-weight: 600;
-    color: #fff; /* Texto blanco para contraste con el gradiente */
-    transition: background 0.3s ease, color 0.3s ease; /* Transición para background en lugar de background-image */
-}
+
 
 /* Aumentamos especificidad para sobrescribir Bootstrap */
 .accordion .accordion-button.collapsed {
