@@ -190,13 +190,13 @@
     </section>
 
     <!-- FAQ Section for SEO -->
-    <section class="faq-section py-5 bg-light" role="region" aria-label="Preguntas Frecuentes">
+    <section class="faq-section py-5" role="region" aria-label="Preguntas Frecuentes">
         <div class="container">
             <h2 class="text-center mb-5">Preguntas Frecuentes</h2>
             <div class="accordion accordion-flush" id="faqAccordion">
                 <div class="accordion-item shadow-sm rounded-3 mb-3">
                     <h3 class="accordion-header">
-                        <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false" aria-controls="faq1">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false" aria-controls="faq1">
                             <i class="fas fa-users fa-lg text-primary me-3" aria-hidden="true"></i>
                             ¿Cómo gestiona MLDataTrends múltiples cuentas de Mercado Libre?
                         </button>
@@ -297,7 +297,7 @@
     <section class="cta-section py-5" role="region" aria-label="Llamada a la Acción">
         <div class="container text-center">
             <h2>¡Transforma tu Negocio en Mercado Libre Hoy!</h2>
-            <p>Unite a más de 500 vendedores que ya optimizan sus ventas con MLDataTrends.</p>
+            <p>Unite a los vendedores que ya optimizan sus ventas con MLDataTrends.</p>
             <a href="{{ route('register') }}" class="btn btn-primary btn-hero">Comienza Gratis</a>
         </div>
     </section>
