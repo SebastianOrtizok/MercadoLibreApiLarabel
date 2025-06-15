@@ -231,7 +231,7 @@
             </table>
             <div class="mt-3">
                 <button type="submit" class="btn btn-primary me-2" form="follow-form">Seguir Publicación Seleccionada</button>
-                <form action="{{ route('competidor.articulos.actualizar') }}" method="POST" id="update-form">
+                <form action="{{ route('competidores.articulos.actualizar') }}" method="POST" id="update-form">
                     @csrf
                     <button type="submit" class="btn btn-secondary mb-3" form="update-form">Actualizar Datos de la Publicación Seleccionada</button>
                 </form>
