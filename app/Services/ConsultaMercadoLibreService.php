@@ -426,12 +426,24 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
         }
 
         $userId = $userData['userId'];
-        $mlAccountId = $userData['ml_account_id']; // Usar ml_account_id
+
+        // Obtener el token directamente desde mercadolibre_tokens
+        $token = \App\Models\MercadoLibreToken::where('user_id', $userId)->first();
+
+        if (!$token || !$token->access_token) {
+            \Log::error('No se encontró un token de acceso para el usuario: ' . $userId);
+            throw new \Exception('No se encontró un token de acceso válido.');
+        }
+
+        \Log::info('Token obtenido en getItemsByCategory:', [
+            'ml_account_id' => $token->ml_account_id ?? 'No encontrado',
+            'access_token' => $token->access_token ?? 'No encontrado'
+        ]);
 
         $region = 'MLA'; // Región para Argentina
         $response = $this->client->get("sites/{$region}/search", [
             'headers' => [
-                'Authorization' => "Bearer {$this->mercadoLibreService->getAccessToken($userId, $mlAccountId)}"
+                'Authorization' => "Bearer {$token->access_token}"
             ],
             'query' => [
                 'category' => $categoryId,
@@ -451,7 +463,7 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
         }
 
         // Enriquecer ítems con las claves esperadas por la vista
-        $items = array_map(function ($item) use ($mlAccountId) {
+        $items = array_map(function ($item) use ($token) {
             return [
                 'id' => $item['id'] ?? null,
                 'titulo' => $item['title'] ?? 'Sin título',
@@ -466,7 +478,7 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
                 'tipoPublicacion' => $item['listing_type_id'] ?? null,
                 'enCatalogo' => $item['catalog_product_id'] !== null,
                 'categoryid' => $item['category_id'] ?? null,
-                'ml_account_id' => $mlAccountId ?? 'N/A', // Usar ml_account_id
+                'ml_account_id' => $token->ml_account_id ?? 'N/A', // Usar ml_account_id si está disponible
                 'logistic_type' => $item['shipping']['logistic_type'] ?? '',
                 'user_product_id' => $item['seller_custom_field'] ?? '', // Ajustar según sea necesario
             ];
@@ -478,6 +490,9 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
         ];
     } catch (RequestException $e) {
         \Log::error("Error al obtener items por categoría: " . $e->getMessage());
+        throw $e;
+    } catch (\Exception $e) {
+        \Log::error("Error general en getItemsByCategory: " . $e->getMessage());
         throw $e;
     }
 }
