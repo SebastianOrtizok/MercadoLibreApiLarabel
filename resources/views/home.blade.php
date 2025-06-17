@@ -246,52 +246,59 @@
     </div>
 </section>
 
-    <!-- Pricing Section -->
-    <section class="pricing-section py-5" role="region" aria-label="Planes de Precios">
-        <div class="container">
-            <h2 class="text-center mb-5">Comienza a Gestionar tu Cuenta de Mercado Libre</h2>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="pricing-card">
-                        <h3>Prueba con Usuario Test</h3>
-                        <p class="lead">Explora Gratis</p>
-                        <p>Usa nuestras credenciales de prueba para explorar las funcionalidades básicas de la plataforma.</p>
-                        <div class="credential-box">
-                            <p>Usuario: test@test.com</p>
-                            <p>Contraseña: test1234</p>
-                        </div>
-                        <a href="{{ route('login') }}" class="btn btn-outline-primary">Iniciar Sesión</a>
+   <section class="pricing-section py-5" role="region" aria-label="Planes de Precios">
+    <div class="container">
+        <h2 class="text-center mb-5">Comienza a Gestionar tu Cuenta de Mercado Libre</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="pricing-card h-100 d-flex flex-column p-4 border rounded"> <!-- 💡 -->
+                    <h3>Prueba con Usuario Test</h3>
+                    <p class="lead">Explora Gratis</p>
+                    <p>Usa nuestras credenciales de prueba para explorar las funcionalidades básicas de la plataforma.</p>
+                    <div class="credential-box mb-3">
+                        <p>Usuario: test@test.com</p>
+                        <p>Contraseña: test1234</p>
+                    </div>
+                    <div class="mt-auto"> <!-- 💡 esto empuja el botón hacia abajo -->
+                        <a href="{{ route('login') }}" class="btn btn-outline-primary w-100">Iniciar Sesión</a>
                     </div>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="pricing-card">
-                        <h3>Regístrate y Navega Gratis</h3>
-                        <p class="lead">Prueba Gratuita de 7 Días</p>
-                        <p>Gestiona tu token y accede a todas las funcionalidades sin costo durante 7 días. No requiere tarjeta de crédito</p>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check text-success me-2"></i>Multicuentas Ilimitadas</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Estadísticas Avanzadas</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Seguimiento de Competidores</li>
-                        </ul>
-                        <a href="{{ route('register') }}" class="btn btn-primary">Regístrate</a>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="pricing-card h-100 d-flex flex-column p-4 border rounded"> <!-- 💡 -->
+                    <h3>Regístrate y Navega Gratis</h3>
+                    <p class="lead">Prueba Gratuita de 7 Días</p>
+                    <p>Gestiona tu token y accede a todas las funcionalidades sin costo durante 7 días. No requiere tarjeta de crédito</p>
+                    <ul class="list-unstyled mb-3">
+                        <li><i class="fas fa-check text-success me-2"></i>Multicuentas Ilimitadas</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Estadísticas Avanzadas</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Seguimiento de Competidores</li>
+                    </ul>
+                    <div class="mt-auto">
+                        <a href="{{ route('register') }}" class="btn btn-primary w-100">Regístrate</a>
                     </div>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="pricing-card">
-                        <h3>Adquiere un Plan</h3>
-                        <p class="lead">Acceso Completo y Soporte</p>
-                        <p>Elige el plan que mejor se adapte a tus necesidades y optimiza tus ventas con soporte prioritario.</p>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check text-success me-2"></i>Soporte Prioritario</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Informes Personalizados</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Integraciones Avanzadas</li>
-                        </ul>
-                        <a href="{{ route('plans') }}" class="btn btn-outline-primary">Ver Planes</a>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="pricing-card h-100 d-flex flex-column p-4 border rounded"> <!-- 💡 -->
+                    <h3>Adquiere un Plan</h3>
+                    <p class="lead">Acceso Completo y Soporte</p>
+                    <p>Elige el plan que mejor se adapte a tus necesidades y optimiza tus ventas con soporte prioritario.</p>
+                    <ul class="list-unstyled mb-3">
+                        <li><i class="fas fa-check text-success me-2"></i>Soporte Prioritario</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Informes Personalizados</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Integraciones Avanzadas</li>
+                    </ul>
+                    <div class="mt-auto">
+                        <a href="{{ route('plans') }}" class="btn btn-outline-primary w-100">Ver Planes</a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- CTA Section -->
     <section class="cta-section py-5" role="region" aria-label="Llamada a la Acción">
