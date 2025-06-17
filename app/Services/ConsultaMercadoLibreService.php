@@ -41,7 +41,7 @@ class ConsultaMercadoLibreService
             ];
 
             // Consultar el ml_account_id desde la tabla 'mercadolibre_tokens' usando el user_id
-            $mercadoLibreToken = \App\Models\MercadoLibreToken::where('user_id', $userId)->first(); // Asumiendo que el modelo es MercadoLibreToken y tiene la relación adecuada
+            $mercadoLibreToken = \App\Models\MercadoLibreToken::where('user_id', $userId)->first();
 
             // Verifica si se encontró el ml_account_id
             if (!$mercadoLibreToken || !$mercadoLibreToken->ml_account_id) {
@@ -418,8 +418,16 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
 {
     try {
         $userData = $this->getUserId();
+        \Log::info('userData en getItemsByCategory:', $userData);
+
+        // Manejar caso de redirección
+        if ($userData instanceof \Illuminate\Http\RedirectResponse) {
+            return $userData; // Retornar la redirección si el usuario no está autenticado
+        }
+
         $userId = $userData['userId'];
-        $mlAccountId = $userData['mlAccountId'];
+        $mlAccountId = $userData['ml_account_id']; // Usar ml_account_id
+
         $region = 'MLA'; // Región para Argentina
         $response = $this->client->get("sites/{$region}/search", [
             'headers' => [
@@ -442,8 +450,30 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
             ];
         }
 
+        // Enriquecer ítems con las claves esperadas por la vista
+        $items = array_map(function ($item) use ($mlAccountId) {
+            return [
+                'id' => $item['id'] ?? null,
+                'titulo' => $item['title'] ?? 'Sin título',
+                'imagen' => $item['thumbnail'] ?? null,
+                'stockActual' => $item['available_quantity'] ?? 0,
+                'precio' => $item['price'] ?? null,
+                'precio_original' => $item['original_price'] ?? null,
+                'estado' => $item['status'] ?? 'Desconocido',
+                'permalink' => $item['permalink'] ?? '#',
+                'condicion' => $item['condition'] ?? 'Desconocido',
+                'sku' => $item['seller_custom_field'] ?? null,
+                'tipoPublicacion' => $item['listing_type_id'] ?? null,
+                'enCatalogo' => $item['catalog_product_id'] !== null,
+                'categoryid' => $item['category_id'] ?? null,
+                'ml_account_id' => $mlAccountId ?? 'N/A', // Usar ml_account_id
+                'logistic_type' => $item['shipping']['logistic_type'] ?? '',
+                'user_product_id' => $item['seller_custom_field'] ?? '', // Ajustar según sea necesario
+            ];
+        }, $data['results']);
+
         return [
-            'items' => $data['results'],
+            'items' => $items,
             'total' => $data['paging']['total'] ?? count($data['results'])
         ];
     } catch (RequestException $e) {
