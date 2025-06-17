@@ -420,14 +420,12 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
         $userData = $this->getUserId();
         \Log::info('userData en getItemsByCategory:', $userData);
 
-        // Manejar caso de redirección
         if ($userData instanceof \Illuminate\Http\RedirectResponse) {
-            return $userData; // Retornar la redirección si el usuario no está autenticado
+            return $userData;
         }
 
         $userId = $userData['userId'];
 
-        // Obtener el token directamente desde mercadolibre_tokens
         $token = \App\Models\MercadoLibreToken::where('user_id', $userId)->first();
 
         if (!$token || !$token->access_token) {
@@ -435,12 +433,24 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
             throw new \Exception('No se encontró un token de acceso válido.');
         }
 
+        // Verificar si el token está expirado
+        if ($token->expires_at && $token->expires_at < now()) {
+            \Log::info('Token expirado para usuario: ' . $userId . ', intentando refrescar');
+            $newToken = $this->mercadoLibreService->refreshAccessToken($userId, $token->ml_account_id);
+            $token->access_token = $newToken['access_token'];
+            $token->refresh_token = $newToken['refresh_token'] ?? $token->refresh_token;
+            $token->expires_at = now()->addSeconds($newToken['expires_in']);
+            $token->save();
+            \Log::info('Token refrescado exitosamente para usuario: ' . $userId);
+        }
+
         \Log::info('Token obtenido en getItemsByCategory:', [
             'ml_account_id' => $token->ml_account_id ?? 'No encontrado',
-            'access_token' => $token->access_token ?? 'No encontrado'
+            'access_token' => $token->access_token ?? 'No encontrado',
+            'expires_at' => $token->expires_at ? $token->expires_at->toDateTimeString() : 'No definido'
         ]);
 
-        $region = 'MLA'; // Región para Argentina
+        $region = 'MLA';
         $response = $this->client->get("sites/{$region}/search", [
             'headers' => [
                 'Authorization' => "Bearer {$token->access_token}"
@@ -449,7 +459,7 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
                 'category' => $categoryId,
                 'limit' => $limit,
                 'offset' => $offset,
-                'sort' => 'sold_quantity_desc'
+                // Sin sort para prueba
             ]
         ]);
 
@@ -462,7 +472,6 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
             ];
         }
 
-        // Enriquecer ítems con las claves esperadas por la vista
         $items = array_map(function ($item) use ($token) {
             return [
                 'id' => $item['id'] ?? null,
@@ -478,9 +487,9 @@ public function getItemsByCategory($categoryId, $limit = 50, $offset = 0)
                 'tipoPublicacion' => $item['listing_type_id'] ?? null,
                 'enCatalogo' => $item['catalog_product_id'] !== null,
                 'categoryid' => $item['category_id'] ?? null,
-                'ml_account_id' => $token->ml_account_id ?? 'N/A', // Usar ml_account_id si está disponible
+                'ml_account_id' => $token->ml_account_id ?? 'N/A',
                 'logistic_type' => $item['shipping']['logistic_type'] ?? '',
-                'user_product_id' => $item['seller_custom_field'] ?? '', // Ajustar según sea necesario
+                'user_product_id' => $item['seller_custom_field'] ?? '',
             ];
         }, $data['results']);
 
