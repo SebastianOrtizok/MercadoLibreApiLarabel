@@ -103,6 +103,15 @@ body {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* testimonials */
+.testimonials-section {
+    background-color: #007bff;
+}
+
+.testimonial-card {
+    background-color: #333;
+}
+
 /* Animación de entrada */
 @keyframes fadeInUp {
     0% {

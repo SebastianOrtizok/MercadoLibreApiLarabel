@@ -136,7 +136,7 @@
     </section>
 
     <!-- Testimonials Section -->
-    <section class="testimonials-section py-5 bg-light" role="region" aria-label="Testimonios de Usuarios">
+    <section class="testimonials-section py-5 text-white" role="region" aria-label="Testimonios de Usuarios">
         <div class="container">
             <h2 class="text-center mb-5">Lo que Dicen Nuestros Usuarios</h2>
             <div class="row">
@@ -267,7 +267,7 @@
                     <div class="pricing-card">
                         <h3>Regístrate y Navega Gratis</h3>
                         <p class="lead">Prueba Gratuita de 7 Días</p>
-                        <p>Gestiona tu token y accede a todas las funcionalidades sin costo durante 7 días.</p>
+                        <p>Gestiona tu token y accede a todas las funcionalidades sin costo durante 7 días. No requiere tarjeta de crédito</p>
                         <ul class="list-unstyled">
                             <li><i class="fas fa-check text-success me-2"></i>Multicuentas Ilimitadas</li>
                             <li><i class="fas fa-check text-success me-2"></i>Estadísticas Avanzadas</li>
