@@ -66,7 +66,7 @@
             <tbody id="table-body">
                 @forelse($publications as $item)
                     <tr>
-                        <td data-column="Usuario">{{ $item['ml_account_id'] }}</td>
+                        <td data-column="Usuario">{{ $item['ml_account_id'] ?? 'N/A' }}</td>
                         <td>
                             <img src="{{ $item['imagen'] ?? asset('images/default.png') }}" alt="{{ $item['titulo'] ?? 'Sin título' }}" class="table-img">
                         </td>
