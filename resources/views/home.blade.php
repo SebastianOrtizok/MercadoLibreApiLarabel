@@ -158,7 +158,7 @@
                 <div class="col-md-4 mb-4">
                     <div class="testimonial-card shadow-sm rounded-3 p-4 text-center">
                         <i class="fas fa-quote-left fa-2x text-primary mb-3" aria-hidden="true"></i>
-                        <p class="testimonial-text">"Gracias a MLDataTrends, optimicé mi stock y centralicé el control de todas mis promociones. Ahora manejo reportes de ventas unificados por SKU para todas mis cuentas. ¡Lo super recomiendo!"</p>
+                        <p class="testimonial-text">"Gracias a MLDataTrends, optimicé mi stock y centralicé todas mis promociones. Ahora manejo reportes de ventas unificados por SKU para todas mis cuentas. ¡Lo super recomiendo!"</p>
                         <h4 class="testimonial-author">Sebastián</h4>
                         <p class="testimonial-role">Emprendedor E-commerce</p>
                         <div class="testimonial-rating">
