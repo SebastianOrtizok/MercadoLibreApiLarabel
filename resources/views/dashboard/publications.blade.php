@@ -60,7 +60,7 @@
                     <th data-column-name="SKU" data-sortable="true" data-column="sku"><span>SKU</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Tipo de Publicación" data-sortable="true" data-column="tipoPublicacion"><span>Tipo Pub.</span><i class="fas fa-eye toggle-visibility"></i></th>
                     <th data-column-name="Catálogo"><span>Catálogo</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Categoría"><span>Categoría</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <!-- <th data-column-name="Categoría"><span>Categoría</span><i class="fas fa-eye toggle-visibility"></i></th> -->
                 </tr>
             </thead>
             <tbody id="table-body">
@@ -108,12 +108,12 @@
                                 <span style="color: red;">No</span>
                             @endif
                         </td>
-                        <td data-column="categoria">
+                        <!-- <td data-column="categoria">
                             <form method="POST" action="{{ route('dashboard.category.items', ['categoryId' => $item['categoryid']]) }}" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-primary btn-sm">Ver Categoría</button>
                             </form>
-                        </td>
+                        </td> -->
                     </tr>
                 @empty
                 @endforelse
