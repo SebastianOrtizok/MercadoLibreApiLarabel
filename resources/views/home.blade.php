@@ -135,72 +135,122 @@
         </div>
     </section>
 
-<!-- Funcionalidades Detalladas Section -->
-<section class="features-detailed-section py-5 bg-light" role="region" aria-label="Funcionalidades Detalladas">
+<!-- Guía de Uso del Dashboard Section -->
+<section class="dashboard-guide-section py-5 bg-light" role="region" aria-label="Guía de Uso del Dashboard">
     <div class="container">
-        <h2 class="text-center mb-5">Explora las Funcionalidades Detalladas de MLDataTrends</h2>
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <i class="fas fa-users" aria-hidden="true"></i>
-                    <h3>Gestión de Cuentas</h3>
-                    <p>Administra tus cuentas de MercadoLibre con datos gráficos: Account ID (ej. 65494552), Nombre Completo (ej. Sebastián Ortiz), Email, Reputación y Puntos. Sincroniza órdenes en tiempo real.</p>
+        <h2 class="text-center mb-5">Guía de Uso: Domina tu Dashboard de MLDataTrends</h2>
+        <div class="custom-accordion" id="dashboardGuideAccordion">
+            <div class="custom-accordion-item">
+                <h3 class="custom-accordion-header">
+                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide1" aria-expanded="false" aria-controls="guide1">
+                        <i class="fas fa-users icon" aria-hidden="true"></i>
+                        ¿Cómo usar la sección de Cuentas?
+                    </button>
+                </h3>
+                <div id="guide1" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                    <div class="custom-accordion-body">
+                        <p>La sección de Cuentas te permite gestionar tus perfiles de MercadoLibre desde un panel centralizado. Úsala para visualizar métricas clave como reputación y puntos, acceder a datos históricos de ventas y analizar distribuciones de calificaciones. Ideal para monitorear el rendimiento general de tus cuentas y tomar decisiones estratégicas.</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <i class="fas fa-list" aria-hidden="true"></i>
-                    <h3>Publicaciones y Listado Completo</h3>
-                    <p>Descarga datos de publicaciones desde la API de MercadoLibre (Título, Precio, Stock, SKU) o accede a listados completos locales más rápidos con stock fulfillment y depósito.</p>
+            <div class="custom-accordion-item">
+                <h3 class="custom-accordion-header">
+                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide2" aria-expanded="false" aria-controls="guide2">
+                        <i class="fas fa-list icon" aria-hidden="true"></i>
+                        ¿Para qué sirve la sección de Publicaciones y Listado Completo?
+                    </button>
+                </h3>
+                <div id="guide2" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                    <div class="custom-accordion-body">
+                        <p>La sección de Publicaciones te conecta con datos en tiempo real desde la API de MercadoLibre, mostrando detalles como estado y catálogo. El Listado Completo, basado en tu base de datos local, ofrece un acceso más rápido para gestionar stock fulfillment y depósitos, perfecto para revisiones rápidas y actualizaciones eficientes.</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <i class="fas fa-barcode" aria-hidden="true"></i>
-                    <h3>Gestión de SKUs Personalizados</h3>
-                    <p>Agrega SKUs propios a cada artículo (ej. sku3) para filtrar y buscar productos. Consolida ventas agrupadas por SKU entre múltiples cuentas.</p>
+            <div class="custom-accordion-item">
+                <h3 class="custom-accordion-header">
+                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide3" aria-expanded="false" aria-controls="guide3">
+                        <i class="fas fa-barcode icon" aria-hidden="true"></i>
+                        ¿Cómo aprovechar la sección de SKUs Personalizados?
+                    </button>
+                </h3>
+                <div id="guide3" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                    <div class="custom-accordion-body">
+                        <p>Úsala para asignar códigos SKU propios a tus productos, facilitando la identificación y búsqueda. Esta sección es clave para gestionar múltiples cuentas, permitiendo consolidar ventas y análisis agrupados por SKU, lo que optimiza la organización y el seguimiento de inventario.</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <i class="fas fa-shopping-cart" aria-hidden="true"></i>
-                    <h3>Gestión de Ventas</h3>
-                    <p>Listado automático de ventas locales con filtros por título, SKU, fechas (ej. 20/06/2025) y estados. Calcula stock crítico y consolida ventas por SKU.</p>
+            <div class="custom-accordion-item">
+                <h3 class="custom-accordion-header">
+                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide4" aria-expanded="false" aria-controls="guide4">
+                        <i class="fas fa-shopping-cart icon" aria-hidden="true"></i>
+                        ¿Cómo funciona la sección de Ventas?
+                    </button>
+                </h3>
+                <div id="guide4" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                    <div class="custom-accordion-body">
+                        <p>Accede a un listado automático de ventas desde tu base de datos local. Filtra por título, SKU o rangos de fechas, y utiliza la vista consolidada para calcular stock crítico y agrupar ventas. Perfecta para análisis detallados y planificación de inventario.</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <i class="fas fa-tags" aria-hidden="true"></i>
-                    <h3>Promociones y Catálogo</h3>
-                    <p>Lista promociones activas con fechas de vencimiento (ej. Dashboard de Promociones) y optimiza tu catálogo con sugerencias para mejorar posicionamiento.</p>
+            <div class="custom-accordion-item">
+                <h3 class="custom-accordion-header">
+                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide5" aria-expanded="false" aria-controls="guide5">
+                        <i class="fas fa-tags icon" aria-hidden="true"></i>
+                        ¿Para qué sirve la sección de Promociones y Catálogo?
+                    </button>
+                </h3>
+                <div id="guide5" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                    <div class="custom-accordion-body">
+                        <p>Monitorea promociones activas y sus fechas de vencimiento para renovarlas a tiempo. La sección de Catálogo te ayuda a mejorar el posicionamiento de tus productos con sugerencias personalizadas, aumentando tu visibilidad en MercadoLibre.</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <i class="fas fa-chart-pie" aria-hidden="true"></i>
-                    <h3>Estadísticas Avanzadas</h3>
-                    <p>Analiza facturación (ej. $0,00 del 21/05/2025 al 20/06/2025), distribución de stock, top productos y stock crítico (ej. Head Fire Flexponit 280 G: 0 unidades).</p>
+            <div class="custom-accordion-item">
+                <h3 class="custom-accordion-header">
+                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide6" aria-expanded="false" aria-controls="guide6">
+                        <i class="fas fa-chart-pie icon" aria-hidden="true"></i>
+                        ¿Cómo usar la sección de Estadísticas?
+                    </button>
+                </h3>
+                <div id="guide6" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                    <div class="custom-accordion-body">
+                        <p>Explora métricas como facturación, distribución de stock y top productos con filtros por fechas. Úsala para identificar stock crítico y planificar estrategias basadas en datos, ideal para optimizar tu rendimiento general.</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <i class="fas fa-search-plus" aria-hidden="true"></i>
-                    <h3>Análisis de Competencia</h3>
-                    <p>Sigue competidores (ej. Nike, Head) y escanea publicaciones clave (Precio, Cuotas, URL) para ajustar estrategias. Actualiza datos específicos en tiempo real.</p>
+            <div class="custom-accordion-item">
+                <h3 class="custom-accordion-header">
+                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide7" aria-expanded="false" aria-controls="guide7">
+                        <i class="fas fa-search-plus icon" aria-hidden="true"></i>
+                        ¿Cómo funciona el Análisis de Competencia?
+                    </button>
+                </h3>
+                <div id="guide7" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                    <div class="custom-accordion-body">
+                        <p>Selecciona competidores para seguir sus publicaciones y ajusta tus estrategias. Esta sección te permite priorizar publicaciones clave y actualizar datos específicos, dándote una ventaja competitiva en MercadoLibre.</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <i class="fas fa-sync" aria-hidden="true"></i>
-                    <h3>Sincronización Manual</h3>
-                    <p>Descarga manualmente artículos, ventas, promociones y stock a tu base de datos local para un acceso rápido y eficiente.</p>
+            <div class="custom-accordion-item">
+                <h3 class="custom-accordion-header">
+                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide8" aria-expanded="false" aria-controls="guide8">
+                        <i class="fas fa-sync icon" aria-hidden="true"></i>
+                        ¿Para qué sirve la Sincronización?
+                    </button>
+                </h3>
+                <div id="guide8" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                    <div class="custom-accordion-body">
+                        <p>Realiza descargas manuales de artículos, ventas, promociones y stock a tu base de datos local. Úsala para mantener tu información actualizada y acceder a ella rápidamente cuando lo necesites.</p>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="text-center mt-4">
-            <a href="{{ route('plans') }}" class="btn btn-primary">Descubre Nuestros Planes</a>
+            <a href="{{ route('plans') }}" class="btn btn-primary">Explora Nuestros Planes</a>
         </div>
-    </section>
+    </div>
+</section>
+
 
     <!-- Testimonials Section -->
     <section class="testimonials-section py-5 text-white" role="region" aria-label="Testimonios de Usuarios">
