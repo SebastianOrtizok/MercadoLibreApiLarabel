@@ -135,6 +135,73 @@
         </div>
     </section>
 
+<!-- Funcionalidades Detalladas Section -->
+<section class="features-detailed-section py-5 bg-light" role="region" aria-label="Funcionalidades Detalladas">
+    <div class="container">
+        <h2 class="text-center mb-5">Explora las Funcionalidades Detalladas de MLDataTrends</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-users" aria-hidden="true"></i>
+                    <h3>Gestión de Cuentas</h3>
+                    <p>Administra tus cuentas de MercadoLibre con datos gráficos: Account ID (ej. 65494552), Nombre Completo (ej. Sebastián Ortiz), Email, Reputación y Puntos. Sincroniza órdenes en tiempo real.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-list" aria-hidden="true"></i>
+                    <h3>Publicaciones y Listado Completo</h3>
+                    <p>Descarga datos de publicaciones desde la API de MercadoLibre (Título, Precio, Stock, SKU) o accede a listados completos locales más rápidos con stock fulfillment y depósito.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-barcode" aria-hidden="true"></i>
+                    <h3>Gestión de SKUs Personalizados</h3>
+                    <p>Agrega SKUs propios a cada artículo (ej. sku3) para filtrar y buscar productos. Consolida ventas agrupadas por SKU entre múltiples cuentas.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                    <h3>Gestión de Ventas</h3>
+                    <p>Listado automático de ventas locales con filtros por título, SKU, fechas (ej. 20/06/2025) y estados. Calcula stock crítico y consolida ventas por SKU.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-tags" aria-hidden="true"></i>
+                    <h3>Promociones y Catálogo</h3>
+                    <p>Lista promociones activas con fechas de vencimiento (ej. Dashboard de Promociones) y optimiza tu catálogo con sugerencias para mejorar posicionamiento.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-chart-pie" aria-hidden="true"></i>
+                    <h3>Estadísticas Avanzadas</h3>
+                    <p>Analiza facturación (ej. $0,00 del 21/05/2025 al 20/06/2025), distribución de stock, top productos y stock crítico (ej. Head Fire Flexponit 280 G: 0 unidades).</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-search-plus" aria-hidden="true"></i>
+                    <h3>Análisis de Competencia</h3>
+                    <p>Sigue competidores (ej. Nike, Head) y escanea publicaciones clave (Precio, Cuotas, URL) para ajustar estrategias. Actualiza datos específicos en tiempo real.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-sync" aria-hidden="true"></i>
+                    <h3>Sincronización Manual</h3>
+                    <p>Descarga manualmente artículos, ventas, promociones y stock a tu base de datos local para un acceso rápido y eficiente.</p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ route('plans') }}" class="btn btn-primary">Descubre Nuestros Planes</a>
+        </div>
+    </section>
+
     <!-- Testimonials Section -->
     <section class="testimonials-section py-5 text-white" role="region" aria-label="Testimonios de Usuarios">
         <div class="container">

@@ -67,6 +67,20 @@ footer a:hover {
     text-decoration: underline;
 }
 
+/* Home features card*/
+.feature-card {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    height: 100%;
+}
+.feature-card i {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
 /* Dashboard panel derecho*/
 
 .dashboard-container {
