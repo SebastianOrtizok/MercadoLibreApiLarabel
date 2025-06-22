@@ -373,7 +373,7 @@ h1 {
     color: var(--color-lupa-active);
 }
 
-/*********** acordeon *******/
+/*********** acordeón *******/
 /* Acordeón personalizado */
 .custom-accordion {
     max-width: 100%;
@@ -408,8 +408,8 @@ h1 {
 }
 
 .custom-accordion-button:not(.collapsed) {
-    background-color: #000000; /* Fondo azul claro cuando abierto */
-    color: #0d6efd; /* Texto azul */
+    background-color: #000000; /* Fondo negro cuando está abierto */
+    color: #fff; /* Texto blanco para contraste */
 }
 
 .custom-accordion-button:focus {
@@ -419,7 +419,13 @@ h1 {
 }
 
 .custom-accordion-button:hover {
-    background-color: #545454;
+    background-color: #545454; /* Gris oscuro para estado colapsado al pasar el mouse */
+}
+
+/* Ajuste para el hover cuando está activo (no colapsado) */
+.custom-accordion-button:not(.collapsed):hover {
+    background-color: #333333; /* Negro más suave al pasar el mouse cuando está abierto */
+    color: #fff; /* Mantiene el texto blanco para legibilidad */
 }
 
 .custom-accordion-button .icon {
@@ -429,7 +435,7 @@ h1 {
 }
 
 .custom-accordion-button:not(.collapsed) .icon {
-    color: #0d6efd; /* Azul en estado no colapsado */
+    color: #fff; /* Mantiene el ícono blanco en estado no colapsado */
 }
 
 .custom-accordion-collapse {
@@ -442,6 +448,7 @@ h1 {
     color: #6c757d; /* Gris medio */
     line-height: 1.6;
 }
+
 
 /******* publicaciones******/
 .img-container {

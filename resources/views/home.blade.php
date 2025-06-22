@@ -540,6 +540,168 @@
     ]
 }
 </script>
+<!-- Schema Markup existente -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "MLDataTrends",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "description": "Prueba gratuita de 7 días para gestionar tus ventas en Mercado Libre"
+  },
+  "description": "Plataforma para gestionar multicuentas, analizar competidores y optimizar ventas en Mercado Libre.",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "5",
+    "reviewCount": "3"
+  },
+  "review": [
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "Marisa"
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5"
+      },
+      "reviewBody": "MLDataTrends transformó mi forma de vender en Mercado Libre. La gestión de multicuentas y el análisis de competidores me dieron una ventaja enorme. ¡Totalmente recomendado!"
+    },
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "Sebastián"
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5"
+      },
+      "reviewBody": "Gracias a MLDataTrends, optimicé mi stock y aumenté mis ventas en un 30%. El panel de control es súper intuitivo y fácil de usar. ¡Lo recomiendo a todos los vendedores!"
+    },
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "Patricio"
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5"
+      },
+      "reviewBody": "Las estadísticas avanzadas y las promociones inteligentes de MLDataTrends me ayudaron a destacar en Mercado Libre. Es una herramienta imprescindible para cualquier vendedor serio."
+    }
+  ],
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Cómo gestiona MLDataTrends múltiples cuentas de Mercado Libre?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "MLDataTrends permite conectar y administrar múltiples cuentas de Mercado Libre desde un panel centralizado. Sincroniza órdenes, publicaciones y datos en tiempo real, ofreciendo herramientas avanzadas para optimizar la gestión y maximizar la eficiencia de tus operaciones."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué incluye la prueba gratuita de MLDataTrends?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "La prueba gratuita de 7 días te da acceso completo a todas las funcionalidades de MLDataTrends, incluyendo gestión de multicuentas, análisis de competidores, estadísticas avanzadas y optimización de stock. No se requiere tarjeta de crédito para comenzar."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo protege MLDataTrends mis datos y claves de integración?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "En MLDataTrends, la seguridad de tus datos personales y claves de integración, como los tokens de Mercado Libre, es una prioridad. Utilizamos las siguientes medidas para garantizar la confidencialidad, integridad y disponibilidad de tu información: Cifrado de datos en tránsito mediante HTTPS; almacenamiento seguro de contraseñas con el algoritmo bcrypt; validación estricta de datos, incluyendo contraseñas de al menos 8 caracteres con letras mayúsculas, minúsculas, números y caracteres especiales; límites de intentos (rate limiting) en el registro para prevenir ataques automatizados; gestión segura de sesiones con almacenamiento en base de datos y protección CSRF; y almacenamiento protegido de claves de integración en variables de entorno con acceso restringido. Estamos comprometidos con cumplir con las mejores prácticas de seguridad y normativas de protección de datos."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- Schema FAQ adicional para Guía de Uso del Dashboard -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Cómo usar la sección de Cuentas?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "La sección de Cuentas te permite gestionar tus perfiles de MercadoLibre desde un panel centralizado. Úsala para visualizar métricas clave como reputación y puntos, acceder a datos históricos de ventas y analizar distribuciones de calificaciones."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Para qué sirve la sección de Publicaciones y Listado Completo?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Conecta con datos en tiempo real desde MercadoLibre para ver publicaciones activas y catálogos. El Listado Completo te permite gestionar stock y depósitos desde tu base local."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo aprovechar la sección de SKUs Personalizados?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Asigna códigos SKU propios para identificar productos fácilmente, consolidar ventas y analizar inventario agrupado entre cuentas."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo funciona la sección de Ventas?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Accedé a un listado automático de ventas desde tu base local, filtrá por título, SKU o fecha y obtené una vista consolidada para stock crítico."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Para qué sirve la sección de Promociones y Catálogo?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Monitorea promociones activas y mejora el posicionamiento de productos con sugerencias personalizadas del catálogo."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo usar la sección de Estadísticas?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Explorá métricas como facturación y top productos, filtrando por fechas para identificar oportunidades y planificar stock."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo funciona el Análisis de Competencia?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Seleccioná competidores y seguí sus publicaciones para adaptar tu estrategia, actualizar datos y ganar visibilidad en MercadoLibre."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Para qué sirve la Sincronización?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Descargá datos de ventas, artículos y promociones a tu base local para acceder sin conexión y mantener todo actualizado."
+      }
+    }
+  ]
+}
+</script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
 </body>
