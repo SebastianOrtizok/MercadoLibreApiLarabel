@@ -44,6 +44,9 @@ class SuscripcionesController extends Controller
             $fechaInicio = Carbon::now();
             $fechaFin = null;
             switch ($validated['plan']) {
+                case 'prueba_gratuita':
+                    $fechaFin = $fechaInicio->copy()->addDays(7); // 7 días para prueba gratuita
+                    break;
                 case 'mensual':
                     $fechaFin = $fechaInicio->copy()->addDays(30);
                     break;
@@ -53,10 +56,6 @@ class SuscripcionesController extends Controller
                 case 'anual':
                     $fechaFin = $fechaInicio->copy()->addDays(365);
                     break;
-                case 'oferta_del_mes':
-                    $fechaFin = $fechaInicio->copy()->addDays(30); // Ajustar si oferta_del_mes tiene otra duración
-                    break;
-                // test y prueba_gratuita no tienen fecha_fin
             }
 
             // Actualizar o crear la suscripción
