@@ -18,7 +18,7 @@ class ItemPromotionsController extends Controller
         $this->itemPromotionsService = $itemPromotionsService;
     }
 
-    // Sincronización manual completa (tu versión original con ajustes mínimos)
+    // Sincronización manual completa
     public function syncPromotions(Request $request)
     {
         try {
@@ -63,7 +63,7 @@ class ItemPromotionsController extends Controller
         }
     }
 
-    // Nueva sincronización automática (incremental)
+    // Sincronización automática (incremental)
     public function syncPromotionsAutomatic()
     {
         try {
@@ -75,11 +75,11 @@ class ItemPromotionsController extends Controller
                 ->get();
 
             if ($mlAccounts->isEmpty()) {
-                Log::info("Sincronización automática: No hay cuentas asociadas.");
+                Log::info("Sincronización automática: No hay cuentas de usuarios asociadas.");
                 return ['status' => 'No accounts'];
             }
 
-            $products = DB::table('articulos')
+            $products = DB::table('products')
                 ->where('estado', 'active')
                 ->whereIn('user_id', $mlAccounts->pluck('ml_account_id'))
                 ->where(function ($query) {
@@ -120,7 +120,7 @@ class ItemPromotionsController extends Controller
         }
     }
 
-    // Vista de promociones (tu versión original sin cambios)
+    // Vista de promociones
     public function showPromotions(Request $request)
     {
         $userId = auth()->user()->id;
@@ -129,13 +129,22 @@ class ItemPromotionsController extends Controller
             ->where('user_id', $userId)
             ->pluck('ml_account_id');
 
+        // Verificar si hay cuentas asociadas
+        if ($mlAccounts->isEmpty()) {
+            Log::info('No se encontraron cuentas de MercadoLibre para el usuario', ['user_id' => $userId]);
+            return view('dashboard.item_promotions', [
+                'promotions' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 30),
+                'currentPage' => 1,
+                'totalPages' => 1,
+                'limit' => 30,
+            ]);
+        }
+
         $promotionFilter = $request->input('promotion_filter', 'with_promotions');
 
         $query = DB::table('articulos')
             ->leftJoin('item_promotions', 'articulos.ml_product_id', '=', 'item_promotions.ml_product_id')
-            ->join('mercadolibre_tokens', function ($join) {
-                $join->on('articulos.user_id', '=', DB::raw('CAST(mercadolibre_tokens.ml_account_id AS BIGINT)'));
-            })
+            ->join('mercadolibre_tokens', 'articulos.user_id', '=', 'mercadolibre_tokens.ml_account_id')
             ->whereIn('articulos.user_id', $mlAccounts)
             ->where('articulos.estado', 'active')
             ->select(
@@ -204,7 +213,7 @@ class ItemPromotionsController extends Controller
         ]);
     }
 
-    // Renovación de promociones (nueva funcionalidad)
+    // Renovación de promociones
     public function renewPromotion(Request $request, $promotionId)
     {
         try {
