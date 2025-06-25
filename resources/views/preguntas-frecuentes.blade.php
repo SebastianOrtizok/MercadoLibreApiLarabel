@@ -27,6 +27,14 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet" media="print" onload="this.media='all'">
 
+    <style>
+        .faq-section h2 { font-size: 1.8rem; font-weight: 600; }
+        .accordion-button { font-size: 1.2rem; }
+        .accordion-body { font-size: 1rem; line-height: 1.6; }
+        .faq-index { background-color: #f8f9fa; padding: 20px; border-radius: 8px; }
+        .faq-index a { text-decoration: none; }
+        .faq-index a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -57,17 +65,17 @@
             <!-- Índice de secciones -->
             <div class="faq-index mb-5">
                 <h3>Índice</h3>
-                    <ul class="list-unstyled">
-                        <li><a href="#cuentasAccordion">Cuentas</a></li>
-                        <li><a href="#publicacionesAccordion">Publicaciones</a></li>
-                        <li><a href="#listadoCompletoAccordion">Listado completo</a></li>
-                        <li><a href="#skuAccordion">SKU</a></li>
-                        <li><a href="#ventasAccordion">Ventas</a></li>
-                        <li><a href="#promocionesAccordion">Promociones</a></li>
-                        <li><a href="#catalogoAccordion">Catálogo</a></li>
-                        <li><a href="#estadisticasAccordion">Estadísticas</a></li>
-                        <li><a href="#sincronizacionAccordion">Sincronización</a></li>
-                    </ul>
+                <ul class="list-unstyled">
+                    <li><a href="#cuentasAccordion">Cuentas</a></li>
+                    <li><a href="#publicacionesAccordion">Publicaciones</a></li>
+                    <li><a href="#listadoCompletoAccordion">Listado completo</a></li>
+                    <li><a href="#skuAccordion">SKU</a></li>
+                    <li><a href="#ventasAccordion">Ventas</a></li>
+                    <li><a href="#promocionesAccordion">Promociones</a></li>
+                    <li><a href="#catalogoAccordion">Catálogo</a></li>
+                    <li><a href="#estadisticasAccordion">Estadísticas</a></li>
+                    <li><a href="#sincronizacionAccordion">Sincronización</a></li>
+                </ul>
             </div>
 
             <div itemscope itemtype="https://schema.org/FAQPage">
@@ -386,7 +394,7 @@
                 </div>
             </div>
 
-           <div itemscope itemtype="https://schema.org/FAQPage">
+            <div itemscope itemtype="https://schema.org/FAQPage">
     <!-- Sección: SKU -->
     <h2 class="mt-5 mb-4" id="skuAccordion">SKU</h2>
     <div class="accordion" id="skuAccordion">
@@ -439,18 +447,16 @@
             </div>
         </div>
         <!-- Pregunta 3: Actualizar SKU -->
-        <div class="accordion-item"mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="sku3">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSku3" aria-expanded="false" aria-controls="collapseSku3">
-                    <i class="fas fa-edit me-2" aria-hidden="true">
-                        <span itemprop="name">¿Puedo actualizar los SKU de mis productos en MLDataTrends?</span>
-                    </h3>
-                    <button>
+                    <i class="fas fa-edit me-2" aria-hidden="true"></i>
+                    <span itemprop="name">¿Puedo actualizar los SKU de mis productos en MLDataTrends?</span>
                 </button>
             </h3>
-            <div id="collapseSku3" class="collapse accordion-collapse collapse" data-bs-parent="#skuAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+            <div id="collapseSku3" class="accordion-collapse collapse" data-bs-parent="#skuAccordion">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>MLDataTrends permite actualizar los SKU internos de tus productos para mantener tu inventario ordenado. Aunque el <code>SkuController</code> no detalla esta función específica en el código proporcionado, podés gestionar SKU a través de la interfaz. Seguí estos pasos:</p>
                         <ol>
                             <li>Navegá a <strong>SKU</strong> en el panel de control.</li>
@@ -458,20 +464,19 @@
                             <li>Hacé clic en el artículo para abrir los detalles y seleccioná la opción de edición (si está disponible).</li>
                             <li>Ingresá el nuevo SKU (por ejemplo, cambiar "ZAP123" a "ZAP789") y guardá los cambios.</li>
                         </ol>
-                        <p>Los cambios se sincronizarán con tu base de datos local, pero no modifican los SKU en MercadoLibre directamente. Asegurá que los nuevos SKU sean únicos para evitar duplicados. Si no ves la opción de edición, contacta a support@mldatatrends.com para confirmar si esta función está habilitada en tu plan.</p>
+                        <p>Los cambios se sincronizarán con tu base de datos local, pero no modifican los SKU en MercadoLibre directamente. Asegurá que los nuevos SKU sean únicos para evitar duplicados. Si no ves la opción de edición, contactá a support@mldatatrends.com para confirmar si esta función está habilitada en tu plan.</p>
                         <p><strong>Tidio trigger sugerido</strong>: "actualizar sku producto" → Mostrar esta FAQ.</p>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- Sección: Ventas -->
     <h2 class="mt-5 mb-4" id="ventasAccordion">Ventas</h2>
     <div class="accordion" id="ventasAccordion">
         <!-- Pregunta 1: Ver ventas -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="ventas1">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVentas1" aria-expanded="false" aria-controls="collapseVentas1">
                     <i class="fas fa-shopping-cart me-2" aria-hidden="true"></i>
@@ -479,8 +484,8 @@
                 </button>
             </h3>
             <div id="collapseVentas1" class="accordion-collapse collapse" data-bs-parent="#ventasAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>La sección <strong>Ventas</strong> te muestra un resumen detallado de tus órdenes en MercadoLibre, sincronizadas vía el <code>SalesController</code>. Esto te ayuda a monitorear tus ingresos y rendimiento. Seguí estos pasos:</p>
                         <ol>
                             <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
@@ -495,7 +500,7 @@
             </div>
         </div>
         <!-- Pregunta 2: Filtrar ventas -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="ventas2">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVentas2" aria-expanded="false" aria-controls="collapseVentas2">
                     <i class="fas fa-filter me-2" aria-hidden="true"></i>
@@ -503,8 +508,8 @@
                 </button>
             </h3>
             <div id="collapseVentas2" class="accordion-collapse collapse" data-bs-parent="#ventasAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>Filtrar ventas te permite analizar órdenes específicas por fecha o producto, usando el <code>SalesController</code>. Seguí estos pasos:</p>
                         <ol>
                             <li>Navegá a <strong>Ventas</strong> en el panel.</li>
@@ -519,7 +524,7 @@
             </div>
         </div>
         <!-- Pregunta 3: Problemas con ventas -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="ventas3">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVentas3" aria-expanded="false" aria-controls="collapseVentas3">
                     <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
@@ -527,8 +532,8 @@
                 </button>
             </h3>
             <div id="collapseVentas3" class="accordion-collapse collapse" data-bs-parent="#ventasAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>Si no ves tus ventas recientes en <strong>Ventas</strong>, puede haber problemas con la sincronización o configuración. El <code>SalesController</code> depende de datos de la tabla <code>ordenes</code>. Revisá estos puntos:</p>
                         <ul>
                             <li><strong>Sincronización pendiente</strong>: Verificá en <strong>Sincronización</strong> si el proceso está completo. Si está en curso, esperá unos minutos.</li>
@@ -548,7 +553,7 @@
     <h2 class="mt-5 mb-4" id="promocionesAccordion">Promociones</h2>
     <div class="accordion" id="promocionesAccordion">
         <!-- Pregunta 1: Ver promociones -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="promociones1">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromociones1" aria-expanded="false" aria-controls="collapsePromociones1">
                     <i class="fas fa-tags me-2" aria-hidden="true"></i>
@@ -556,8 +561,8 @@
                 </button>
             </h3>
             <div id="collapsePromociones1" class="accordion-collapse collapse" data-bs-parent="#promocionesAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>La sección <strong>Promociones</strong> te muestra los productos con descuentos activos en MercadoLibre, usando el <code>PromotionsController</code>. Esto te ayuda a monitorear tus campañas promocionales. Seguí estos pasos:</p>
                         <ol>
                             <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
@@ -572,7 +577,7 @@
             </div>
         </div>
         <!-- Pregunta 2: Filtrar promociones -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="promociones2">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromociones2" aria-expanded="false" aria-controls="collapsePromociones2">
                     <i class="fas fa-filter me-2" aria-hidden="true"></i>
@@ -580,8 +585,8 @@
                 </button>
             </h3>
             <div id="collapsePromociones2" class="accordion-collapse collapse" data-bs-parent="#promocionesAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>Filtrar productos en promoción por porcentaje de descuento te permite enfocarte en las ofertas más atractivas. El <code>PromotionsController</code> usa el campo <code>descuento_porcentaje</code> de la tabla <code>articulos</code>. Seguí estos pasos:</p>
                         <ol>
                             <li>Navegá a <strong>Promociones</strong> en el panel.</li>
@@ -596,7 +601,7 @@
             </div>
         </div>
         <!-- Pregunta 3: Problemas con promociones -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="promociones3">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromociones3" aria-expanded="false" aria-controls="collapsePromociones3">
                     <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
@@ -604,8 +609,8 @@
                 </button>
             </h3>
             <div id="collapsePromociones3" class="accordion-collapse collapse" data-bs-parent="#promocionesAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>Si no ves tus promociones en <strong>Promociones</strong>, puede haber problemas con la sincronización o configuración. El <code>PromotionsController</code> depende de datos de la tabla <code>articulos</code>. Revisá estos puntos:</p>
                         <ul>
                             <li><strong>Sin promociones activas</strong>: Confirmá en MercadoLibre que tenés descuentos activos en tus publicaciones.</li>
@@ -625,7 +630,7 @@
     <h2 class="mt-5 mb-4" id="catalogoAccordion">Catálogo</h2>
     <div class="accordion" id="catalogoAccordion">
         <!-- Pregunta 1: Ver catálogo -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="catalogo1">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCatalogo1" aria-expanded="false" aria-controls="collapseCatalogo1">
                     <i class="fas fa-book me-2" aria-hidden="true"></i>
@@ -633,8 +638,8 @@
                 </button>
             </h3>
             <div id="collapseCatalogo1" class="accordion-collapse collapse" data-bs-parent="#catalogoAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>La sección <strong>Catálogo</strong> te muestra un listado de tus productos activos en MercadoLibre, con filtros avanzados. Usa el <code>CatalogoController</code> y <code>CatalogoService::getArticulosEnCatalogo</code>. Seguí estos pasos:</p>
                         <ol>
                             <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
@@ -649,7 +654,7 @@
             </div>
         </div>
         <!-- Pregunta 2: Filtrar catálogo -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="catalogo2">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCatalogo2" aria-expanded="false" aria-controls="collapseCatalogo2">
                     <i class="fas fa-filter me-2" aria-hidden="true"></i>
@@ -657,8 +662,8 @@
                 </button>
             </h3>
             <div id="collapseCatalogo2" class="accordion-collapse collapse" data-bs-parent="#catalogoAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>Filtrar productos en <strong>Catálogo</strong> te permite encontrar artículos específicos por cuenta de MercadoLibre o palabra clave. El <code>CatalogoService::getArticulosEnCatalogo</code> soporta filtros dinámicos. Seguí estos pasos:</p>
                         <ol>
                             <li>Navegá a <strong>Catálogo</strong> en el panel.</li>
@@ -673,7 +678,7 @@
             </div>
         </div>
         <!-- Pregunta 3: Analizar competencia -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="catalogo3">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCatalogo3" aria-expanded="false" aria-controls="collapseCatalogo3">
                     <i class="fas fa-chart-line me-2" aria-hidden="true"></i>
@@ -681,16 +686,16 @@
                 </button>
             </h3>
             <div id="collapseCatalogo3" class="accordion-collapse collapse" data-bs-parent="#catalogoAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
-                        <p>MLDataTrends te permite analizar la competencia de un producto específico usando la API de MercadoLibre (`price_to_win`), implementada en <code>CatalogoService::getCompetenciaArticulo</code>. Seguí estos pasos:</p>
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        <p>MLDataTrends te permite analizar la competencia de un producto específico usando la API de MercadoLibre (<code>price_to_win</code>), implementada en <code>CatalogoService::getCompetenciaArticulo</code>. Seguí estos pasos:</p>
                         <ol>
                             <li>En <strong>Catálogo</strong>, buscá un producto por título o ID (por ejemplo, "MLA987654321").</li>
                             <li>Hacé clic en el producto para ver detalles.</li>
                             <li>Seleccioná <strong>Ver competencia</strong> para cargar el análisis.</li>
                             <li>Verás datos como precios de competidores, stock, y estrategias de otros vendedores para el mismo producto.</li>
                         </ol>
-                        <p>Esta funcionalidad usa el endpoint `https://api.mercadolibre.com/items/{id}/price_to_win`. Asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> y que el producto esté sincronizado. Si no carga la competencia, revisá las notificaciones en <strong>Sincronización</strong> para errores de API. Es ideal para ajustar precios y mejorar tu posicionamiento.</p>
+                        <p>Esta funcionalidad usa el endpoint <code>https://api.mercadolibre.com/items/{id}/price_to_win</code>. Asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> y que el producto esté sincronizado. Si no carga la competencia, revisá las notificaciones en <strong>Sincronización</strong> para errores de API. Es ideal para ajustar precios y mejorar tu posicionamiento.</p>
                         <p><strong>Tidio trigger sugerido</strong>: "analizar competencia catálogo" → Mostrar esta FAQ.</p>
                     </div>
                 </div>
@@ -702,7 +707,7 @@
     <h2 class="mt-5 mb-4" id="estadisticasAccordion">Estadísticas</h2>
     <div class="accordion" id="estadisticasAccordion">
         <!-- Pregunta 1: Ver estadísticas -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="estadisticas1">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEstadisticas1" aria-expanded="false" aria-controls="collapseEstadisticas1">
                     <i class="fas fa-chart-bar me-2" aria-hidden="true"></i>
@@ -710,8 +715,8 @@
                 </button>
             </h3>
             <div id="collapseEstadisticas1" class="accordion-collapse collapse" data-bs-parent="#estadisticasAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>La sección <strong>Estadísticas</strong> te ofrece métricas detalladas sobre tu desempeño en MercadoLibre, usando el <code>EstadisticasController</code> y <code>EstadisticasService</code>. Seguí estos pasos:</p>
                         <ol>
                             <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
@@ -726,7 +731,7 @@
             </div>
         </div>
         <!-- Pregunta 2: Stock crítico -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="estadisticas2">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEstadisticas2" aria-expanded="false" aria-controls="collapseEstadisticas2">
                     <i class="fas fa-exclamation-circle me-2" aria-hidden="true"></i>
@@ -734,8 +739,8 @@
                 </button>
             </h3>
             <div id="collapseEstadisticas2" class="accordion-collapse collapse" data-bs-parent="#estadisticasAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>Identificar productos con stock crítico te ayuda a evitar perder ventas. El <code>EstadisticasService::getStockCritico</code> detecta artículos con menos de 5 unidades en fulfillment o depósito. Seguí estos pasos:</p>
                         <ol>
                             <li>Navegá a <strong>Estadísticas</strong> en el panel.</li>
@@ -750,7 +755,7 @@
             </div>
         </div>
         <!-- Pregunta 3: Tasa de conversión -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="estadisticas3">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEstadisticas3" aria-expanded="false" aria-controls="collapseEstadisticas3">
                     <i class="fas fa-percentage me-2" aria-hidden="true"></i>
@@ -758,8 +763,8 @@
                 </button>
             </h3>
             <div id="collapseEstadisticas3" class="accordion-collapse collapse" data-bs-parent="#estadisticasAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>La tasa de conversión mide cuántas visitas se convierten en ventas, calculada por <code>EstadisticasService::getTasaConversionPorProducto</code>. Seguí estos pasos:</p>
                         <ol>
                             <li>En <strong>Estadísticas</strong>, buscá la sección <strong>Tasa de Conversión</strong>.</li>
@@ -779,7 +784,7 @@
     <h2 class="mt-5 mb-4" id="sincronizacionAccordion">Sincronización</h2>
     <div class="accordion" id="sincronizacionAccordion">
         <!-- Pregunta 1: Iniciar sincronización -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="sincronizacion1">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSincronizacion1" aria-expanded="false" aria-controls="collapseSincronizacion1">
                     <i class="fas fa-sync me-2" aria-hidden="true"></i>
@@ -787,8 +792,8 @@
                 </button>
             </h3>
             <div id="collapseSincronizacion1" class="accordion-collapse collapse" data-bs-parent="#sincronizacionAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>Sincronizar datos con MercadoLibre actualiza tus publicaciones, ventas, y estadísticas en MLDataTrends, usando el <code>ConsultaMercadoLibreService</code>. Seguí estos pasos:</p>
                         <ol>
                             <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
@@ -803,7 +808,7 @@
             </div>
         </div>
         <!-- Pregunta 2: Ver estado -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="sincronizacion2">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSincronizacion2" aria-expanded="false" aria-controls="collapseSincronizacion2">
                     <i class="fas fa-info-circle me-2" aria-hidden="true"></i>
@@ -811,8 +816,8 @@
                 </button>
             </h3>
             <div id="collapseSincronizacion2" class="accordion-collapse collapse" data-bs-parent="#sincronizacionAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>Verificar el estado de la sincronización te permite saber si tus datos están actualizados. El <code>ConsultaMercadoLibreService</code> registra el progreso. Seguí estos pasos:</p>
                         <ol>
                             <li>Navegá a <strong>Sincronización</strong> en el panel de control.</li>
@@ -826,7 +831,7 @@
             </div>
         </div>
         <!-- Pregunta 3: Problemas con sincronización -->
-        <div class="accordion-item" itemscope="mainEntity" itemtype="https://schema.org/Question">
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 class="accordion-header" id="sincronizacion3">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSincronizacion3" aria-expanded="false" aria-controls="collapseSincronizacion3">
                     <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
@@ -834,8 +839,8 @@
                 </button>
             </h3>
             <div id="collapseSincronizacion3" class="accordion-collapse collapse" data-bs-parent="#sincronizacionAccordion">
-                <div class="accordion-body" itemscope="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div class="itemprop" itemprop="text">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
                         <p>Si la sincronización falla, puede haber problemas con la API de MercadoLibre o la configuración. El <code>ConsultaMercadoLibreService</code> registra errores. Revisá estos puntos:</p>
                         <ul>
                             <li><strong>Token expirado</strong>: Revinculá tu cuenta en <strong>Cuentas</strong> si ves "Token expirado".</li>
