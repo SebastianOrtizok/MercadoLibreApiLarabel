@@ -135,118 +135,66 @@
         </div>
     </section>
 
-<!-- Guía de Uso del Dashboard Section -->
-<section class="dashboard-guide-section py-5 bg-light" role="region" aria-label="Guía de Uso del Dashboard">
+<!-- Funciones Destacadas Section -->
+<section class="dashboard-guide-section py-5 bg-light" role="region" aria-label="Funciones Destacadas">
     <div class="container">
-        <h2 class="text-center mb-5">Guía de Uso: Domina tu Dashboard de MLDataTrends</h2>
+        <h2 class="text-center mb-5">Funciones Destacadas de MLDataTrends</h2>
         <div class="custom-accordion" id="dashboardGuideAccordion">
             <div class="custom-accordion-item">
                 <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide1" aria-expanded="false" aria-controls="guide1">
-                        <i class="fas fa-users icon" aria-hidden="true"></i>
-                        ¿Cómo usar la sección de Cuentas?
-                    </button>
-                </h3>
-                <div id="guide1" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
-                    <div class="custom-accordion-body">
-                        <p>La sección de Cuentas te permite gestionar tus perfiles de MercadoLibre desde un panel centralizado. Úsala para visualizar métricas clave como reputación y puntos, acceder a datos históricos de ventas y analizar distribuciones de calificaciones. Ideal para monitorear el rendimiento general de tus cuentas y tomar decisiones estratégicas.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="custom-accordion-item">
-                <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide2" aria-expanded="false" aria-controls="guide2">
-                        <i class="fas fa-list icon" aria-hidden="true"></i>
-                        ¿Para qué sirve la sección de Publicaciones y Listado Completo?
-                    </button>
-                </h3>
-                <div id="guide2" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
-                    <div class="custom-accordion-body">
-                        <p>La sección de Publicaciones te conecta con datos en tiempo real desde la API de MercadoLibre, mostrando detalles como estado y catálogo. El Listado Completo, basado en tu base de datos local, ofrece un acceso más rápido para gestionar stock fulfillment y depósitos, perfecto para revisiones rápidas y actualizaciones eficientes.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="custom-accordion-item">
-                <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide3" aria-expanded="false" aria-controls="guide3">
-                        <i class="fas fa-barcode icon" aria-hidden="true"></i>
-                        ¿Cómo aprovechar la sección de SKUs Personalizados?
-                    </button>
-                </h3>
-                <div id="guide3" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
-                    <div class="custom-accordion-body">
-                        <p>Úsala para asignar códigos SKU propios a tus productos, facilitando la identificación y búsqueda. Esta sección es clave para gestionar múltiples cuentas, permitiendo consolidar ventas y análisis agrupados por SKU, lo que optimiza la organización y el seguimiento de inventario.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="custom-accordion-item">
-                <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide4" aria-expanded="false" aria-controls="guide4">
-                        <i class="fas fa-shopping-cart icon" aria-hidden="true"></i>
-                        ¿Cómo funciona la sección de Ventas?
-                    </button>
-                </h3>
-                <div id="guide4" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
-                    <div class="custom-accordion-body">
-                        <p>Accede a un listado automático de ventas desde tu base de datos local. Filtra por título, SKU o rangos de fechas, y utiliza la vista consolidada para calcular stock crítico y agrupar ventas. Perfecta para análisis detallados y planificación de inventario.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="custom-accordion-item">
-                <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide5" aria-expanded="false" aria-controls="guide5">
-                        <i class="fas fa-tags icon" aria-hidden="true"></i>
-                        ¿Para qué sirve la sección de Promociones y Catálogo?
-                    </button>
-                </h3>
-                <div id="guide5" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
-                    <div class="custom-accordion-body">
-                        <p>Monitorea promociones activas y sus fechas de vencimiento para renovarlas a tiempo. La sección de Catálogo te ayuda a mejorar el posicionamiento de tus productos con sugerencias personalizadas, aumentando tu visibilidad en MercadoLibre.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="custom-accordion-item">
-                <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide6" aria-expanded="false" aria-controls="guide6">
-                        <i class="fas fa-chart-pie icon" aria-hidden="true"></i>
-                        ¿Cómo usar la sección de Estadísticas?
-                    </button>
-                </h3>
-                <div id="guide6" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
-                    <div class="custom-accordion-body">
-                        <p>Explora métricas como facturación, distribución de stock y top productos con filtros por fechas. Úsala para identificar stock crítico y planificar estrategias basadas en datos, ideal para optimizar tu rendimiento general.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="custom-accordion-item">
-                <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide7" aria-expanded="false" aria-controls="guide7">
+                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#highlight1" aria-expanded="false" aria-controls="highlight1">
                         <i class="fas fa-search-plus icon" aria-hidden="true"></i>
-                        ¿Cómo funciona el Análisis de Competencia?
+                        Análisis de Competencia con Exportación a Excel
                     </button>
                 </h3>
-                <div id="guide7" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                <div id="highlight1" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
                     <div class="custom-accordion-body">
-                        <p>Selecciona competidores para seguir sus publicaciones y ajusta tus estrategias. Esta sección te permite priorizar publicaciones clave y actualizar datos específicos, dándote una ventaja competitiva en MercadoLibre.</p>
+                        <p><strong>¡Dominá el mercado con el Análisis de Competencia!</strong> Elegí a tus rivales en MercadoLibre y vigilá cada uno de sus movimientos. Monitoreá cientos de publicaciones, como "Zapatillas Nike Air", para analizar su posicionamiento. Marcá las publicaciones clave, resáltalas con colores y posiciones destacadas, y actualizá sus datos al instante para estar siempre un paso adelante. Exportá todo a Excel con un clic y tomá decisiones que te hagan liderar. Esta herramienta es tu arma secreta para brillar y dejar atrás a la competencia en MercadoLibre. ¡Potenciá tu estrategia y ganá la carrera!</p>
                     </div>
                 </div>
             </div>
             <div class="custom-accordion-item">
                 <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide8" aria-expanded="false" aria-controls="guide8">
-                        <i class="fas fa-sync icon" aria-hidden="true"></i>
-                        ¿Para qué sirve la Sincronización?
+                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#highlight2" aria-expanded="false" aria-controls="highlight2">
+                        <i class="fas fa-barcode icon" aria-hidden="true"></i>
+                        Gestión de SKU Propio
                     </button>
                 </h3>
-                <div id="guide8" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                <div id="highlight2" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
                     <div class="custom-accordion-body">
-                        <p>Realiza descargas manuales de artículos, ventas, promociones y stock a tu base de datos local. Úsala para mantener tu información actualizada y acceder a ella rápidamente cuando lo necesites.</p>
+                        <p>La <strong>Gestión de SKU Propio</strong> te permite asignar códigos únicos a tus productos, como "ZAP123" para "Zapatillas Nike". Esto simplifica la búsqueda y organización de tu inventario, especialmente si manejás múltiples cuentas. Buscá o editá tus SKU en la sección <strong>SKU</strong> para mantener todo ordenado. Esta funcionalidad es ideal para consolidar ventas y analizar productos específicos.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="custom-accordion-item">
+                <h3 class="custom-accordion-header">
+                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#highlight3" aria-expanded="false" aria-controls="highlight3">
+                        <i class="fas fa-shopping-cart icon" aria-hidden="true"></i>
+                        Ventas Consolidadas con Filtros y Exportación a Excel
+                    </button>
+                </h3>
+                <div id="highlight3" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                    <div class="custom-accordion-body">
+                        <p><strong>¡Controlá tus ventas como nunca con Ventas Consolidadas!</strong> Visualizá todas tus órdenes en un solo lugar y filtrá por título (como "Auriculares Sony"), SKU ("AUR456") o fechas (por ejemplo, "junio 2025") para analizar todo al instante. Si manejás varias cuentas en MercadoLibre, consolidá tus ventas por SKU propio: vendé 3 auriculares en una cuenta y 2 en otra, y verás las 5 ventas juntas del SKU. Exportá todo a Excel con un clic para crear informes personalizados o planificar tu inventario. Esta función es clave para organizar tus multicuentas y tomar decisiones estratégicas. ¡Organizá todo como crack y dominá tus resultados en Mercado!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="custom-accordion-item">
+                <h3 class="custom-accordion-header">
+                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#highlight4" aria-expanded="false" aria-controls="highlight4">
+                        <i class="fas fa-tags icon" aria-hidden="true"></i>
+                        Promociones Inteligentes
+                    </button>
+                </h3>
+                <div id="highlight4" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                    <div class="custom-accordion-body">
+                        <p>Con <strong>Promociones Inteligentes</strong>, monitoreá tus productos en oferta, como "Smartphone Samsung" con 15% off. Visualizá qué artículos están en promoción, sus descuentos, y fechas de vencimiento (por ejemplo, "finaliza el 30/06/2025") para renovarlas a tiempo. Esta sección te ayuda a maximizar la visibilidad y las ventas en MercadoLibre. Accedé desde <strong>Promociones</strong> y filtrá por porcentaje o producto. Asegurá que tus promociones estén sincronizadas en <strong>Sincronización</strong>. Si no ves descuentos, confirmá que estén activos en MercadoLibre o contactá a support@mldatatrends.com.</p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="text-center mt-4">
-            <a href="{{ route('plans') }}" class="btn btn-primary">Explora Nuestros Planes</a>
+            <a href="{{ url('/preguntas-frecuentes') }}" class="btn btn-primary">Preguntas Frecuentes</a>
         </div>
     </div>
 </section>
