@@ -139,6 +139,10 @@ Route::get('/politica-privacidad', function () {
     return view('legal.politica-privacidad');
 })->name('politica-privacidad');
 
+Route::get('/preguntas-frecuentes', function () {
+    return view('preguntas-frecuentes');
+})->name('faq.index');
+
 
 use Illuminate\Support\Facades\DB;
 

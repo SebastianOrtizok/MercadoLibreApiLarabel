@@ -439,6 +439,7 @@
                     <ul class="list-unstyled">
                         <li><a href="{{ route('login') }}">Iniciar Sesión</a></li>
                         <li><a href="{{ route('register') }}">Regístrarse</a></li>
+                        <li><a href="{{ url('/preguntas-frecuentes') }}">Preguntas Frecuentes</a></li>
                         <li><a href="{{ url('/terminos-y-condiciones') }}" target="_blank">Términos y Condiciones</a></li>
                         <li><a href="{{ url('/politica-privacidad') }}" target="_blank">Política de Privacidad</a></li>
                     </ul>
