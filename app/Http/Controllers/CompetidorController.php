@@ -160,7 +160,7 @@ class CompetidorController extends Controller
         return redirect()->route('competidores.index')->with('success', 'Competidor eliminado');
     }
 
-   public function follow(Request $request)
+ public function follow(Request $request)
 {
     \Log::info("Solicitud recibida en CompetidorController@follow", [
         'request' => $request->all(),
@@ -168,33 +168,35 @@ class CompetidorController extends Controller
     ]);
 
     try {
-        // Obtener todos los ítems de los competidores del usuario autenticado
-        $items = \App\Models\ItemCompetidor::whereIn('competidor_id',
-            Competidor::where('user_id', auth()->id())->pluck('id')
-        )->get();
+        // Obtener los competidores del usuario autenticado
+        $competidores = Competidor::where('user_id', auth()->id())->pluck('id');
 
         // Obtener el array de ítems seleccionados desde el formulario
         $followData = $request->input('follow', []);
+        $selectedItemIds = array_keys(array_filter($followData, fn($value) => $value === 'yes'));
 
         \Log::info("Ítems seleccionados desde el formulario", [
             'follow_data' => $followData,
+            'selected_item_ids' => $selectedItemIds,
         ]);
 
-        // Actualizar el estado de seguimiento de todos los ítems
-        foreach ($items as $item) {
-            // Si el ítem está en followData con valor 'yes', following = true; si no, following = false
-            $isFollowing = isset($followData[$item->item_id]) && $followData[$item->item_id] === 'yes';
-            $item->update([
-                'following' => $isFollowing,
-            ]);
+        // Actualizar solo los ítems seleccionados
+        $updatedCount = 0;
+        if (!empty($selectedItemIds)) {
+            $updatedCount = \App\Models\ItemCompetidor::whereIn('competidor_id', $competidores)
+                ->whereIn('item_id', $selectedItemIds)
+                ->update(['following' => true]);
 
-            \Log::info("Estado de seguimiento actualizado", [
-                'item_id' => $item->item_id,
-                'following' => $isFollowing,
+            \Log::info("Ítems marcados como seguidos", [
+                'updated_count' => $updatedCount,
+                'selected_item_ids' => $selectedItemIds,
             ]);
         }
 
-        return redirect()->route('competidores.index')->with('success', 'Seguimiento actualizado correctamente.');
+        // Los ítems no incluidos en el formulario no se modifican
+        \Log::info("Método follow completado", ['updated_count' => $updatedCount]);
+
+        return redirect()->route('competidores.index')->with('success', "Se actualizaron $updatedCount publicaciones como seguidas.");
     } catch (\Exception $e) {
         \Log::error('Error al actualizar el seguimiento de ítems', [
             'error' => $e->getMessage(),
