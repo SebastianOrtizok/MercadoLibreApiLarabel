@@ -183,7 +183,7 @@
                 <i class="fas fa-file-excel me-2"></i> Exportar a Excel
             </a>
         </div>
-        <form method="POST" action="{{ route('competidores.follow') }}" id="follow-form">
+       <form method="POST" action="{{ route('competidores.follow') }}" id="follow-form">
     @csrf
     <table class="table table-hover modern-table shadow-sm">
         <thead class="table-primary">
@@ -206,6 +206,7 @@
             @forelse ($items as $item)
                 <tr class="{{ $item->following ? 'highlight-followed' : '' }}">
                     <td @if($item->following) style="background-color: #e6f3ff;" @endif>
+                        <input type="hidden" name="follow[{{ $item->item_id }}]" value="no">
                         <input type="checkbox" name="follow[{{ $item->item_id }}]" value="yes" {{ $item->following ? 'checked' : '' }}>
                     </td>
                     <td @if($item->following) style="background-color: #e6f3ff;" @endif>{{ $item->competidor->nombre ?? 'N/A' }}</td>
