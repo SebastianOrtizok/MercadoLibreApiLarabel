@@ -100,7 +100,7 @@
                                 <li>Iniciá sesión en MercadoLibre y aceptá los permisos solicitados.</li>
                                 <li>Una vez autorizado, verás tu cuenta listada con el <em>Seller ID</em> (por ejemplo, 123456789) y el estado "Vinculada".</li>
                             </ol>
-                            <p>Si la vinculación falla, asegurá que tu navegador permita pop-ups y que tu cuenta de MercadoLibre esté activa. Verificá que usaste la cuenta correcta si tenés varias (por ejemplo, "TiendaEjemplo"). Contactá a support@mldatatrends.com si el problema persiste.</p>
+                            <p>Si la vinculación falla, asegurá que tu navegador permita pop-ups y que tu cuenta de MercadoLibre esté activa. Verificá que usaste la cuenta correcta si tenés varias (por ejemplo, "TiendaEjemplo"). Contactá a soporte@mldatatrends.com si el problema persiste.</p>
                         </div>
                     </div>
                 </div>
@@ -142,7 +142,7 @@
                                 <li>Hacé clic en <strong>Iniciar sincronización</strong>.</li>
                                 <li>Esperá a que termine (puede tomar minutos si tenés muchas publicaciones, como 500 artículos).</li>
                             </ol>
-                            <p>Los datos aparecerán en <strong>Publicaciones</strong> y <strong>Listado completo</strong>. Verificá el progreso en <strong>Sincronización</strong>. Si no inicia, asegurá que tu cuenta esté vinculada y el token esté activo. Por ejemplo, si tenés publicaciones como "Zapatillas Nike", estas se listarán tras sincronizar. Contactá a support@mldatatrends.com si hay errores.</p>
+                            <p>Los datos aparecerán en <strong>Publicaciones</strong> y <strong>Listado completo</strong>. Verificá el progreso en <strong>Sincronización</strong>. Si no inicia, asegurá que tu cuenta esté vinculada y el token esté activo. Por ejemplo, si tenés publicaciones como "Zapatillas Nike", estas se listarán tras sincronizar. Contactá a soporte@mldatatrends.com si hay errores.</p>
                         </div>
                     </div>
                 </div>
@@ -163,7 +163,7 @@
                                 <li><strong>Errores de sincronización</strong>: Revisá <strong>Sincronización</strong> para mensajes como "Límite de consultas alcanzado".</li>
                                 <li><strong>Filtros aplicados</strong>: Quitá filtros en <strong>Publicaciones</strong> o <strong>Listado completo</strong>.</li>
                             </ul>
-                            <p>Por ejemplo, si sincronizaste "Zapatillas Nike" pero no aparece, asegurá que esté activa en MercadoLibre. Intentá sincronizar nuevamente tras 10 minutos. Si el problema persiste, contactá a support@mldatatrends.com con detalles del error.</p>
+                            <p>Por ejemplo, si sincronizaste "Zapatillas Nike" pero no aparece, asegurá que esté activa en MercadoLibre. Intentá sincronizar nuevamente tras 10 minutos. Si el problema persiste, contactá a soporte@mldatatrends.com con detalles del error.</p>
                         </div>
                     </div>
                 </div>
@@ -210,7 +210,7 @@
                                 <li>Hacé clic en la lupa o presioná Enter.</li>
                                 <li>Verás la publicación con detalles como título, precio, y enlace a MercadoLibre.</li>
                             </ol>
-                            <p>El MLA ID está en la URL de la publicación (por ejemplo, <code>https://www.mercadolibre.com.ar/MLA-987654321</code>). Asegurá que la publicación esté sincronizada en <strong>Sincronización</strong>. Si no aparece, verificá que el ID sea correcto o que la publicación esté activa. Contactá a support@mldatatrends.com si hay problemas.</p>
+                            <p>El MLA ID está en la URL de la publicación (por ejemplo, <code>https://www.mercadolibre.com.ar/MLA-987654321</code>). Asegurá que la publicación esté sincronizada en <strong>Sincronización</strong>. Si no aparece, verificá que el ID sea correcto o que la publicación esté activa. Contactá a soporte@mldatatrends.com si hay problemas.</p>
                         </div>
                     </div>
                 </div>
@@ -252,7 +252,7 @@
                                 <li><strong>Filtros aplicados</strong>: Quitá filtros haciendo clic en "Restablecer filtros".</li>
                                 <li><strong>Sin publicaciones creadas</strong>: Confirmá en MercadoLibre que tenés publicaciones activas.</li>
                             </ul>
-                            <p>Por ejemplo, si "Zapatillas Nike" no aparece, asegurá que esté activa y sincronizada. Intentá sincronizar nuevamente tras 10 minutos. Si el problema persiste, contactá a support@mldatatrends.com con detalles.</p>
+                            <p>Por ejemplo, si "Zapatillas Nike" no aparece, asegurá que esté activa y sincronizada. Intentá sincronizar nuevamente tras 10 minutos. Si el problema persiste, contactá a soporte@mldatatrends.com con detalles.</p>
                         </div>
                     </div>
                 </div>
@@ -345,7 +345,7 @@
                                 <li><strong>Filtros aplicados</strong>: Quitá clickeando en "Restablecer filtros".</li>
                                 <li><strong>Sin publicaciones</strong>: Confirmá en MercadoLibre que tenés publicaciones activas.</li>
                             </ul>
-                            <p>Por ejemplo, si "Smartphone Samsung" no aparece, asegurá que esté sincronizado. Intentá sincronizar nuevamente. Contactá a support@mldatatrends.com si el problema persiste.</p>
+                            <p>Por ejemplo, si "Smartphone Samsung" no aparece, asegurá que esté sincronizado. Intentá sincronizar nuevamente. Contactá a soporte@mldatatrends.com si el problema persiste.</p>
                         </div>
                     </div>
                 </div>
@@ -392,7 +392,7 @@
                                 <li>Hacé clic en la lupa o presioná Enter.</li>
                                 <li>Verás el artículo con título, precio, y stock.</li>
                             </ol>
-                            <p>Por ejemplo, buscá "SAM456" para encontrar un "Smartphone Samsung". Asegura que el SKU esté sincronizado en <strong>Sincronización</strong>. Si no aparece, verificá que el código sea correcto o que la cuenta esté vinculada. Contactá a support@mldatatrends.com si hay problemas.</p>
+                            <p>Por ejemplo, buscá "SAM456" para encontrar un "Smartphone Samsung". Asegura que el SKU esté sincronizado en <strong>Sincronización</strong>. Si no aparece, verificá que el código sea correcto o que la cuenta esté vinculada. Contactá a soporte@mldatatrends.com si hay problemas.</p>
                         </div>
                     </div>
                 </div>
@@ -413,7 +413,7 @@
                                 <li>Hacé clic en el artículo y seleccioná la opción de edición.</li>
                                 <li>Ingresá el nuevo SKU (por ejemplo, "ZAP789") y guardá.</li>
                             </ol>
-                            <p>Los cambios se aplican en MLDataTrends, pero no en MercadoLibre. Asegura que los SKU sean únicos. Si no ves la opción de edición, contactá a support@mldatatrends.com para verificar tu plan. Esta funcionalidad es útil para mantener tu inventario ordenado.</p>
+                            <p>Los cambios se aplican en MLDataTrends, pero no en MercadoLibre. Asegura que los SKU sean únicos. Si no ves la opción de edición, contactá a soporte@mldatatrends.com para verificar tu plan. Esta funcionalidad es útil para mantener tu inventario ordenado.</p>
                         </div>
                     </div>
                 </div>
@@ -481,7 +481,7 @@
                                 <li><strong>Filtros aplicados</strong>: Quitá filtros clicando en "Restablecer filtros".</li>
                                 <li><strong>Retraso</strong>: Intentá sincronizar tras 10 minutos.</li>
                             </ul>
-                            <p>Por ejemplo, si no ves una venta de "Auriculares Sony", asegura su clic en clic. Contactá a support@mldatatrends.com si persiste.</p>
+                            <p>Por ejemplo, si no ves una venta de "Auriculares Sony", asegura su clic en clic. Contactá a soporte@mldatatrends.com si persiste.</p>
                         </div>
                     </div>
                 </div>
@@ -549,7 +549,7 @@
                                 <li><strong>Cuenta no vinculada</strong>: Revisá <strong>Cuentas</strong>.</li>
                                 <li><strong>Filtros aplicados</strong>: Quitá filtros clicando en "Restablecer filtros".</li>
                             </ul>
-                            <p>Por ejemplo, si no ves un descuento en "Smart TV", asegura que esté activo. Intentá sincronizar nuevamente. Contactá a support@mldatatrends.com si persiste.</p>
+                            <p>Por ejemplo, si no ves un descuento en "Smart TV", asegura que esté activo. Intentá sincronizar nuevamente. Contactá a soporte@mldatatrends.com si persiste.</p>
                         </div>
                     </div>
                 </div>
@@ -617,7 +617,7 @@
                                 <li>Selecciona una <strong>Ver competencia</strong>.</li>
                                 <li>Verás precios y stock de competidores.</li>
                             </ol>
-                            <p>Por ejemplo, analizá un "Smartphone Samsung" para comparar precios. Asegura que el producto esté sincronizado en el <strong>Sincronización</strong>. Si no carga, revisá los <strong>Cuentas</strong>. Contactá a support@mldatatrends.com si hay errores.</p>
+                            <p>Por ejemplo, analizá un "Smartphone Samsung" para comparar precios. Asegura que el producto esté sincronizado en el <strong>Sincronización</strong>. Si no carga, revisá los <strong>Cuentas</strong>. Contactá a soporte@mldatatrends.com si hay errores.</p>
                         </div>
                     </div>
                 </div>
@@ -685,7 +685,7 @@
                                 <li>Verás tasas por producto (por ejemplo, "Zapatillas Nike: 5%").</li>
                                 <li>Analizá tasas bajas para mejorar.</li>
                             </ol>
-                            <p>Asegura que esté sincronizado en <strong>Sincronización</strong>. Si no ves tasas, revisá si hay ventas recientes. Contactá a support@mldatatrends.com si hay problemas.</p>
+                            <p>Asegura que esté sincronizado en <strong>Sincronización</strong>. Si no ves tasas, revisá si hay ventas recientes. Contactá a soporte@mldatatrends.com si hay problemas.</p>
                         </div>
                     </div>
                 </div>
@@ -731,7 +731,7 @@
                                 <li>Revisa la última sincronización: fecha (por ejemplo, "2025-06-25 10:30"), estado ("Completada"), y artículos sincronizados.</li>
                                 <li>Buscá errores como "Límite de consultas alcanzado".</li>
                             </ol>
-                            <p>Si está en curso, espera antes de usar otras secciones. Si hay errores, intenta sincronizar tras 10 minutos o revisá <strong>Cuentas</strong>. Contactá a support@mldatatrends.com si persiste.</p>
+                            <p>Si está en curso, espera antes de usar otras secciones. Si hay errores, intenta sincronizar tras 10 minutos o revisá <strong>Cuentas</strong>. Contactá a soporte@mldatatrends.com si persiste.</p>
                         </div>
                     </div>
                 </div>
@@ -752,7 +752,7 @@
                                 <li><strong>Sin datos</strong>: Asegura que tu cuenta tenga publicaciones o ventas.</li>
                                 <li><strong>Errores</strong>: Revisa <strong>Sincronización</strong> para mensajes.</li>
                             </ul>
-                            <p>Por ejemplo, si ves "Error 429", intenta sincronizar más tarde. Contactá a support@mldatatrends.com con detalles si persiste. Una sincronización exitosa es clave.</p>
+                            <p>Por ejemplo, si ves "Error 429", intenta sincronizar más tarde. Contactá a soporte@mldatatrends.com con detalles si persiste. Una sincronización exitosa es clave.</p>
                         </div>
                     </div>
                 </div>
@@ -785,7 +785,7 @@
                 </div>
                 <div class="col-md-4">
                     <h5>Correo</h5>
-                    <p><i class="fas fa-envelope me-2" aria-hidden="true"></i>support@mldatatrends.com</p>
+                    <p><i class="fas fa-envelope me-2" aria-hidden="true"></i>soporte@mldatatrends.com</p>
                 </div>
             </div>
             <hr class="bg-light">
