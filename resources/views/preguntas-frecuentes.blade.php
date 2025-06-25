@@ -793,6 +793,255 @@
         </div>
     </footer>
 
+    <script type="application/ld+json">
+        {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+            "@type": "Question",
+            "name": "¿Cómo vinculo mi cuenta de MercadoLibre a MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Vincular tu cuenta de MercadoLibre a MLDataTrends es el primer paso para gestionar tus ventas. Seguí estos pasos: 1) Iniciá sesión en MLDataTrends.com/login. 2) Navegá a Cuentas en el panel de control. 3) Hacé clic en Vincular cuenta de MercadoLibre. 4) Iniciá sesión en MercadoLibre y aceptá los permisos. 5) Una vez autorizado, verás tu cuenta listada."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Qué información puedo ver de mi cuenta de MercadoLibre en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "La sección Cuentas te muestra un resumen con Seller ID, nombre de la cuenta, estado, y última sincronización. Accedé desde el panel y verificá que esté vinculada correctamente."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo sincronizo mis artículos de MercadoLibre con MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sincroniza tus artículos así: 1) Iniciá sesión. 2) Selecciona la cuenta en Cuentas. 3) Hacé clic en Iniciar sincronización. 4) Esperá a que termine. Los datos aparecerán en Publicaciones y Listado completo."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Por qué no veo mis publicaciones después de sincronizar?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Si no ves publicaciones, revisá: Token expirado (revinculá), sin publicaciones activas, errores en Sincronización, o filtros aplicados. Intentá sincronizar nuevamente."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo veo mis publicaciones de MercadoLibre en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "En Publicaciones, iniciá sesión, hacé clic en la sección, y verás una lista con título, precio, stock y estado. Asegurá que esté sincronizada."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo busco una publicación específica por ID en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ingresá el MLA ID en el campo de búsqueda en Publicaciones, hacé clic en la lupa, y verás los detalles. Asegura que esté sincronizada."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo filtro mis publicaciones por estado o categoría en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Usá el panel de filtros en Publicaciones para seleccionar estado o categoría, y hacé clic en Aplicar filtros. Quitá si no hay resultados."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Por qué no veo todas mis publicaciones en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Revisá: cuenta no vinculada, sincronización incompleta, filtros aplicados, o sin publicaciones activas. Sincroniza nuevamente."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo accedo al listado completo de mis artículos en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "En Listado completo, iniciá sesión, hacé clic en el enlace, y verás una tabla con título, SKU, precio y stock. Asegurá que esté sincronizado."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo filtro mis artículos por título o SKU en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ingresá título o SKU en el campo de búsqueda en Listado completo, seleccioná estado si querés, y aplicá filtros."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Qué información puedo ver en el listado completo de MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Incluye título, SKU, precio, stock, estado, condición, enlace y categoría. Accedé desde el enlace y verificá sincronización."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Por qué no veo artículos en el listado completo de MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Revisá: sin cuenta vinculada, sincronización incompleta, filtros aplicados, o sin publicaciones. Sincroniza nuevamente."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo veo los SKU de mis artículos en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "En SKU, iniciá sesión, hacé clic en el enlace, y verás una tabla con SKU, título, precio y stock. Asegurá sincronización."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo busco un artículo por SKU en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ingresá el SKU en el campo de búsqueda en SKU, hacé clic en la lupa, y verás el artículo. Asegura que esté sincronizado."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Puedo actualizar los SKU de mis productos en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sí, buscá el artículo en SKU, hacé clic en editar, ingresá el nuevo SKU y guardá. Los cambios son locales a MLDataTrends."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo veo mis ventas de MercadoLibre en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "En Ventas, iniciá sesión, hacé clic en el enlace, y verás una tabla con ID, fecha, producto y monto. Filtrá si querés."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo filtro mis ventas por fecha o producto en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Seleccioná un rango de fechas o ingresá un título/SKU en Ventas, y aplicá filtros para ver resultados específicos."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Por qué no veo mis ventas recientes en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Revisá: sincronización pendiente, cuenta no vinculada, filtros aplicados, o retraso. Sincroniza tras 10 minutos."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo veo los productos en promoción en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "En Promociones, iniciá sesión, hacé clic en el enlace, y verás productos con descuentos. Filtrá por cuenta si querés."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo filtro productos en promoción por porcentaje de descuento?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Seleccioná un rango de descuento en Promociones, ingresá un título si querés, y aplicá filtros."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Por qué no veo mis promociones en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Revisá: sin promociones activas, sincronización incompleta, cuenta no vinculada, o filtros aplicados. Sincroniza nuevamente."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo accedo al catálogo de mis productos en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "En Catálogo, iniciá sesión, hacé clic en el enlace, y verás una tabla con ID, título, precio y stock."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo filtro productos en el catálogo por cuenta o búsqueda?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Seleccioná una cuenta o ingresá una palabra clave en Catálogo, y aplicá filtros para ver resultados."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo analizo la competencia de un producto en el catálogo?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Buscá un producto en Catálogo, hacé clic en Ver competencia, y verás precios y stock de competidores."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo accedo a las estadísticas de mi cuenta en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "En Estadísticas, iniciá sesión, hacé clic en el enlace, y verás stock total, ventas y tasa de conversión. Ajustá fechas."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo identifico productos con stock crítico en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "En Estadísticas, buscá Stock Crítico para ver productos con menos de 5 unidades y reabastecelos."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo veo la tasa de conversión de mis productos en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "En Estadísticas, seleccioná un rango de fechas y verás tasas por producto. Analizá tasas bajas."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo inicio la sincronización de datos con MercadoLibre en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "En Sincronización, seleccioná la cuenta y hacé clic en Iniciar sincronización. Esperá a que termine."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Cómo verifico el estado de la sincronización en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "En Sincronización, revisá la fecha, estado y errores de la última sincronización."
+            }
+            },
+            {
+            "@type": "Question",
+            "name": "¿Por qué falla la sincronización de datos en MLDataTrends?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Revisá: token expirado, límite de consultas, sin datos, o errores. Reintentá tras 10 minutos."
+            }
+            }
+        ]
+        }
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="//code.tidio.co/jo26sf9h8f1m3xswvswb1eh3i7r1z3k9.js" async></script>
 </body>

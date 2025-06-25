@@ -135,70 +135,69 @@
         </div>
     </section>
 
-<!-- Funciones Destacadas Section -->
-<section class="dashboard-guide-section py-5 bg-light" role="region" aria-label="Funciones Destacadas">
-    <div class="container">
-        <h2 class="text-center mb-5">Funciones Destacadas de MLDataTrends</h2>
-        <div class="custom-accordion" id="dashboardGuideAccordion">
-            <div class="custom-accordion-item">
-                <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#highlight1" aria-expanded="false" aria-controls="highlight1">
-                        <i class="fas fa-search-plus icon" aria-hidden="true"></i>
-                        Análisis de Competencia con Exportación a Excel
-                    </button>
-                </h3>
-                <div id="highlight1" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
-                    <div class="custom-accordion-body">
-                        <p><strong>¡Dominá el mercado con el Análisis de Competencia!</strong> Elegí a tus rivales en MercadoLibre y vigilá cada uno de sus movimientos. Monitoreá cientos de publicaciones, como "Zapatillas Nike Air", para analizar su posicionamiento. Marcá las publicaciones clave, resáltalas con colores y posiciones destacadas, y actualizá sus datos al instante para estar siempre un paso adelante. Exportá todo a Excel con un clic y tomá decisiones que te hagan liderar. Esta herramienta es tu arma secreta para brillar y dejar atrás a la competencia en MercadoLibre. ¡Potenciá tu estrategia y ganá la carrera!</p>
+    <!-- Funciones Destacadas Section -->
+    <section class="dashboard-guide-section py-5 bg-light" role="region" aria-label="Funciones Destacadas">
+        <div class="container">
+            <h2 class="text-center mb-5">Funciones Destacadas de MLDataTrends</h2>
+            <div class="custom-accordion" id="dashboardGuideAccordion">
+                <div class="custom-accordion-item">
+                    <h3 class="custom-accordion-header">
+                        <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#highlight1" aria-expanded="false" aria-controls="highlight1">
+                            <i class="fas fa-search-plus icon" aria-hidden="true"></i>
+                            Análisis de Competencia con Exportación a Excel
+                        </button>
+                    </h3>
+                    <div id="highlight1" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                        <div class="custom-accordion-body">
+                            <p><strong>¡Dominá el mercado con el Análisis de Competencia!</strong> Elegí a tus rivales en MercadoLibre y vigilá cada uno de sus movimientos. Monitoreá cientos de publicaciones, como "Zapatillas Nike Air", para analizar su posicionamiento. Marcá las publicaciones clave, resáltalas con colores y posiciones destacadas, y actualizá sus datos al instante para estar siempre un paso adelante. Exportá todo a Excel con un clic y tomá decisiones que te hagan liderar. Esta herramienta es tu arma secreta para brillar y dejar atrás a la competencia en MercadoLibre. ¡Potenciá tu estrategia y ganá la carrera!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-accordion-item">
+                    <h3 class="custom-accordion-header">
+                        <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#highlight2" aria-expanded="false" aria-controls="highlight2">
+                            <i class="fas fa-barcode icon" aria-hidden="true"></i>
+                            Gestión de SKU Propio
+                        </button>
+                    </h3>
+                    <div id="highlight2" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                        <div class="custom-accordion-body">
+                            <p>La <strong>Gestión de SKU Propio</strong> te permite asignar códigos únicos a tus productos, como "ZAP123" para "Zapatillas Nike". Esto simplifica la búsqueda y organización de tu inventario, especialmente si manejás múltiples cuentas. Buscá o editá tus SKU en la sección <strong>SKU</strong> para mantener todo ordenado. Esta funcionalidad es ideal para consolidar ventas y analizar productos específicos.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-accordion-item">
+                    <h3 class="custom-accordion-header">
+                        <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#highlight3" aria-expanded="false" aria-controls="highlight3">
+                            <i class="fas fa-shopping-cart icon" aria-hidden="true"></i>
+                            Ventas Consolidadas con Filtros y Exportación a Excel
+                        </button>
+                    </h3>
+                    <div id="highlight3" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                        <div class="custom-accordion-body">
+                            <p><strong>¡Controlá tus ventas como nunca con Ventas Consolidadas!</strong> Visualizá todas tus órdenes en un solo lugar y filtrá por título (como "Auriculares Sony"), SKU ("AUR456") o fechas (por ejemplo, "junio 2025") para analizar todo al instante. Si manejás varias cuentas en MercadoLibre, consolidá tus ventas por SKU propio: vendé 3 auriculares en una cuenta y 2 en otra, y verás las 5 ventas juntas del SKU. Exportá todo a Excel con un clic para crear informes personalizados o planificar tu inventario. Esta función es clave para organizar tus multicuentas y tomar decisiones estratégicas. ¡Organizá todo como crack y dominá tus resultados en Mercado!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-accordion-item">
+                    <h3 class="custom-accordion-header">
+                        <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#highlight4" aria-expanded="false" aria-controls="highlight4">
+                            <i class="fas fa-tags icon" aria-hidden="true"></i>
+                            Promociones Inteligentes
+                        </button>
+                    </h3>
+                    <div id="highlight4" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
+                        <div class="custom-accordion-body">
+                            <p>Con <strong>Promociones Inteligentes</strong>, monitoreá tus productos en oferta, como "Smartphone Samsung" con 15% off. Visualizá qué artículos están en promoción, sus descuentos, y fechas de vencimiento (por ejemplo, "finaliza el 30/06/2025") para renovarlas a tiempo. Esta sección te ayuda a maximizar la visibilidad y las ventas en MercadoLibre. Accedé desde <strong>Promociones</strong> y filtrá por porcentaje o producto. Si no ves descuentos, confirmá que estén activos en MercadoLibre o contactá a support@mldatatrends.com.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="custom-accordion-item">
-                <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#highlight2" aria-expanded="false" aria-controls="highlight2">
-                        <i class="fas fa-barcode icon" aria-hidden="true"></i>
-                        Gestión de SKU Propio
-                    </button>
-                </h3>
-                <div id="highlight2" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
-                    <div class="custom-accordion-body">
-                        <p>La <strong>Gestión de SKU Propio</strong> te permite asignar códigos únicos a tus productos, como "ZAP123" para "Zapatillas Nike". Esto simplifica la búsqueda y organización de tu inventario, especialmente si manejás múltiples cuentas. Buscá o editá tus SKU en la sección <strong>SKU</strong> para mantener todo ordenado. Esta funcionalidad es ideal para consolidar ventas y analizar productos específicos.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="custom-accordion-item">
-                <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#highlight3" aria-expanded="false" aria-controls="highlight3">
-                        <i class="fas fa-shopping-cart icon" aria-hidden="true"></i>
-                        Ventas Consolidadas con Filtros y Exportación a Excel
-                    </button>
-                </h3>
-                <div id="highlight3" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
-                    <div class="custom-accordion-body">
-                        <p><strong>¡Controlá tus ventas como nunca con Ventas Consolidadas!</strong> Visualizá todas tus órdenes en un solo lugar y filtrá por título (como "Auriculares Sony"), SKU ("AUR456") o fechas (por ejemplo, "junio 2025") para analizar todo al instante. Si manejás varias cuentas en MercadoLibre, consolidá tus ventas por SKU propio: vendé 3 auriculares en una cuenta y 2 en otra, y verás las 5 ventas juntas del SKU. Exportá todo a Excel con un clic para crear informes personalizados o planificar tu inventario. Esta función es clave para organizar tus multicuentas y tomar decisiones estratégicas. ¡Organizá todo como crack y dominá tus resultados en Mercado!</p>
-                    </div>
-                </div>
-            </div>
-            <div class="custom-accordion-item">
-                <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#highlight4" aria-expanded="false" aria-controls="highlight4">
-                        <i class="fas fa-tags icon" aria-hidden="true"></i>
-                        Promociones Inteligentes
-                    </button>
-                </h3>
-                <div id="highlight4" class="custom-accordion-collapse collapse" data-bs-parent="#dashboardGuideAccordion">
-                    <div class="custom-accordion-body">
-                        <p>Con <strong>Promociones Inteligentes</strong>, monitoreá tus productos en oferta, como "Smartphone Samsung" con 15% off. Visualizá qué artículos están en promoción, sus descuentos, y fechas de vencimiento (por ejemplo, "finaliza el 30/06/2025") para renovarlas a tiempo. Esta sección te ayuda a maximizar la visibilidad y las ventas en MercadoLibre. Accedé desde <strong>Promociones</strong> y filtrá por porcentaje o producto. Asegurá que tus promociones estén sincronizadas en <strong>Sincronización</strong>. Si no ves descuentos, confirmá que estén activos en MercadoLibre o contactá a support@mldatatrends.com.</p>
-                    </div>
-                </div>
+            <div class="text-center mt-4">
+                <a href="{{ url('/preguntas-frecuentes') }}" class="btn btn-primary">Preguntas Frecuentes</a>
             </div>
         </div>
-        <div class="text-center mt-4">
-            <a href="{{ url('/preguntas-frecuentes') }}" class="btn btn-primary">Preguntas Frecuentes</a>
-        </div>
-    </div>
-</section>
-
+    </section>
 
     <!-- Testimonials Section -->
     <section class="testimonials-section py-5 text-white" role="region" aria-label="Testimonios de Usuarios">
@@ -255,115 +254,115 @@
     </section>
 
     <!-- FAQ Section for SEO -->
-<section class="faq-section py-5 bg-white" role="region" aria-label="Preguntas Frecuentes">
-    <div class="container">
-        <h2 class="text-center mb-5">Preguntas Frecuentes</h2>
-        <div class="custom-accordion" id="faqAccordion">
-            <div class="custom-accordion-item">
-                <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false" aria-controls="faq1">
-                        <i class="fas fa-users icon" aria-hidden="true"></i>
-                        ¿Cómo gestiona MLDataTrends múltiples cuentas de Mercado Libre?
-                    </button>
-                </h3>
-                <div id="faq1" class="custom-accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="custom-accordion-body">
-                        MLDataTrends permite conectar y administrar múltiples cuentas de Mercado Libre desde un panel centralizado. Sincroniza órdenes, publicaciones y datos en tiempo real, ofreciendo herramientas avanzadas para optimizar la gestión y maximizar la eficiencia de tus operaciones.
+    <section class="faq-section py-5 bg-white" role="region" aria-label="Preguntas Frecuentes">
+        <div class="container">
+            <h2 class="text-center mb-5">Preguntas Frecuentes</h2>
+            <div class="custom-accordion" id="faqAccordion">
+                <div class="custom-accordion-item">
+                    <h3 class="custom-accordion-header">
+                        <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false" aria-controls="faq1">
+                            <i class="fas fa-users icon" aria-hidden="true"></i>
+                            ¿Cómo gestiona MLDataTrends múltiples cuentas de Mercado Libre?
+                        </button>
+                    </h3>
+                    <div id="faq1" class="custom-accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="custom-accordion-body">
+                            MLDataTrends permite conectar y administrar múltiples cuentas de Mercado Libre desde un panel centralizado. Sincroniza órdenes, publicaciones y datos en tiempo real, ofreciendo herramientas avanzadas para optimizar la gestión y maximizar la eficiencia de tus operaciones.
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-accordion-item">
+                    <h3 class="custom-accordion-header">
+                        <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
+                            <i class="fas fa-gift icon" aria-hidden="true"></i>
+                            ¿Qué incluye la prueba gratuita de MLDataTrends?
+                        </button>
+                    </h3>
+                    <div id="faq2" class="custom-accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="custom-accordion-body">
+                            La prueba gratuita de 7 días te da acceso completo a todas las funcionalidades de MLDataTrends, incluyendo gestión de multicuentas, análisis de competidores, estadísticas avanzadas y optimización de stock. No se requiere tarjeta de crédito para comenzar.
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-accordion-item">
+                    <h3 class="custom-accordion-header">
+                        <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
+                            <i class="fas fa-shield-alt icon" aria-hidden="true"></i>
+                            ¿Cómo protege MLDataTrends mis datos y claves de integración?
+                        </button>
+                    </h3>
+                    <div id="faq3" class="custom-accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="custom-accordion-body">
+                            En MLDataTrends, la seguridad de tus datos personales y claves de integración, como los tokens de Mercado Libre, es una prioridad. Utilizamos las siguientes medidas para garantizar la confidencialidad, integridad y disponibilidad de tu información:
+                            <ul>
+                                <li><strong>Cifrado de datos en tránsito</strong>: Todas las comunicaciones entre tu dispositivo y nuestros servidores se realizan a través de HTTPS, asegurando que los datos, como tus credenciales de registro y tokens de integración, estén protegidos contra interceptaciones.</li>
+                                <li><strong>Almacenamiento seguro de contraseñas</strong>: Las contraseñas de los usuarios se almacenan utilizando el algoritmo de hash bcrypt, un estándar de la industria que protege contra accesos no autorizados, incluso en caso de una brecha de datos.</li>
+                                <li><strong>Validación estricta de datos</strong>: Durante el registro, aplicamos reglas de validación robustas, como requerir contraseñas de al menos 8 caracteres con letras mayúsculas, minúsculas, números y caracteres especiales, para garantizar que las credenciales sean seguras.</li>
+                                <li><strong>Protección contra abusos</strong>: Implementamos límites de intentos (rate limiting) en el proceso de registro para prevenir ataques automatizados, permitiendo un máximo de 10 intentos por minuto desde una misma dirección IP.</li>
+                                <li><strong>Gestión segura de sesiones</strong>: Las sesiones de usuario se manejan de forma segura mediante almacenamiento en la base de datos y se invalidan al cerrar sesión, con regeneración de tokens CSRF para proteger contra ataques de falsificación de solicitudes.</li>
+                                <li><strong>Almacenamiento protegido de claves de integración</strong>: Los tokens de Mercado Libre y otras claves sensibles se gestionan con estrictas medidas de seguridad, incluyendo almacenamiento en variables de entorno protegidas y acceso restringido.</li>
+                            </ul>
+                            Estamos comprometidos con cumplir con las mejores prácticas de seguridad y normativas de protección de datos para que puedas usar MLDataTrends con total confianza.
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="custom-accordion-item">
-                <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
-                        <i class="fas fa-gift icon" aria-hidden="true"></i>
-                        ¿Qué incluye la prueba gratuita de MLDataTrends?
-                    </button>
-                </h3>
-                <div id="faq2" class="custom-accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="custom-accordion-body">
-                        La prueba gratuita de 7 días te da acceso completo a todas las funcionalidades de MLDataTrends, incluyendo gestión de multicuentas, análisis de competidores, estadísticas avanzadas y optimización de stock. No se requiere tarjeta de crédito para comenzar.
+        </div>
+    </section>
+
+    <section class="pricing-section py-5" role="region" aria-label="Planes de Precios">
+        <div class="container">
+            <h2 class="text-center mb-5">Comienza a Gestionar tu Cuenta de Mercado Libre</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="pricing-card h-100 d-flex flex-column p-4 border rounded">
+                        <h3>Prueba con Usuario Test</h3>
+                        <p class="lead">Explora Gratis</p>
+                        <p>Usa nuestras credenciales de prueba para explorar las funcionalidades básicas de la plataforma.</p>
+                        <div class="credential-box mb-3">
+                            <p>Usuario: test@test.com</p>
+                            <p>Contraseña: test1234</p>
+                        </div>
+                        <div class="mt-auto">
+                            <a href="{{ route('login') }}" class="btn btn-outline-primary w-100">Iniciar Sesión</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="custom-accordion-item">
-                <h3 class="custom-accordion-header">
-                    <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
-                        <i class="fas fa-shield-alt icon" aria-hidden="true"></i>
-                        ¿Cómo protege MLDataTrends mis datos y claves de integración?
-                    </button>
-                </h3>
-                <div id="faq3" class="custom-accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="custom-accordion-body">
-                        En MLDataTrends, la seguridad de tus datos personales y claves de integración, como los tokens de Mercado Libre, es una prioridad. Utilizamos las siguientes medidas para garantizar la confidencialidad, integridad y disponibilidad de tu información:
-                        <ul>
-                            <li><strong>Cifrado de datos en tránsito</strong>: Todas las comunicaciones entre tu dispositivo y nuestros servidores se realizan a través de HTTPS, asegurando que los datos, como tus credenciales de registro y tokens de integración, estén protegidos contra interceptaciones.</li>
-                            <li><strong>Almacenamiento seguro de contraseñas</strong>: Las contraseñas de los usuarios se almacenan utilizando el algoritmo de hash bcrypt, un estándar de la industria que protege contra accesos no autorizados, incluso en caso de una brecha de datos.</li>
-                            <li><strong>Validación estricta de datos</strong>: Durante el registro, aplicamos reglas de validación robustas, como requerir contraseñas de al menos 8 caracteres con letras mayúsculas, minúsculas, números y caracteres especiales, para garantizar que las credenciales sean seguras.</li>
-                            <li><strong>Protección contra abusos</strong>: Implementamos límites de intentos (rate limiting) en el proceso de registro para prevenir ataques automatizados, permitiendo un máximo de 10 intentos por minuto desde una misma dirección IP.</li>
-                            <li><strong>Gestión segura de sesiones</strong>: Las sesiones de usuario se manejan de forma segura mediante almacenamiento en la base de datos y se invalidan al cerrar sesión, con regeneración de tokens CSRF para proteger contra ataques de falsificación de solicitudes.</li>
-                            <li><strong>Almacenamiento protegido de claves de integración</strong>: Los tokens de Mercado Libre y otras claves sensibles se gestionan con estrictas medidas de seguridad, incluyendo almacenamiento en variables de entorno protegidas y acceso restringido.</li>
+
+                <div class="col-md-4 mb-4">
+                    <div class="pricing-card h-100 d-flex flex-column p-4 border rounded">
+                        <h3>Regístrate y Navega Gratis</h3>
+                        <p class="lead">Prueba Gratuita de 7 Días</p>
+                        <p>Gestiona tu token y accede a todas las funcionalidades sin costo durante 7 días. No requiere tarjeta de crédito</p>
+                        <ul class="list-unstyled mb-3">
+                            <li><i class="fas fa-check text-success me-2"></i>Multicuentas Ilimitadas</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Estadísticas Avanzadas</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Seguimiento de Competidores</li>
                         </ul>
-                        Estamos comprometidos con cumplir con las mejores prácticas de seguridad y normativas de protección de datos para que puedas usar MLDataTrends con total confianza.
+                        <div class="mt-auto">
+                            <a href="{{ route('register') }}" class="btn btn-primary w-100">Regístrate</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="pricing-card h-100 d-flex flex-column p-4 border rounded">
+                        <h3>Adquiere un Plan</h3>
+                        <p class="lead">Acceso Completo y Soporte</p>
+                        <p>Elige el plan que mejor se adapte a tus necesidades y optimiza tus ventas con soporte prioritario.</p>
+                        <ul class="list-unstyled mb-3">
+                            <li><i class="fas fa-check text-success me-2"></i>Soporte Prioritario</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Informes Personalizados</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Integraciones Avanzadas</li>
+                        </ul>
+                        <div class="mt-auto">
+                            <a href="{{ route('plans') }}" class="btn btn-outline-primary w-100">Ver Planes</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
-   <section class="pricing-section py-5" role="region" aria-label="Planes de Precios">
-    <div class="container">
-        <h2 class="text-center mb-5">Comienza a Gestionar tu Cuenta de Mercado Libre</h2>
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="pricing-card h-100 d-flex flex-column p-4 border rounded"> <!-- 💡 -->
-                    <h3>Prueba con Usuario Test</h3>
-                    <p class="lead">Explora Gratis</p>
-                    <p>Usa nuestras credenciales de prueba para explorar las funcionalidades básicas de la plataforma.</p>
-                    <div class="credential-box mb-3">
-                        <p>Usuario: test@test.com</p>
-                        <p>Contraseña: test1234</p>
-                    </div>
-                    <div class="mt-auto"> <!-- 💡 esto empuja el botón hacia abajo -->
-                        <a href="{{ route('login') }}" class="btn btn-outline-primary w-100">Iniciar Sesión</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <div class="pricing-card h-100 d-flex flex-column p-4 border rounded"> <!-- 💡 -->
-                    <h3>Regístrate y Navega Gratis</h3>
-                    <p class="lead">Prueba Gratuita de 7 Días</p>
-                    <p>Gestiona tu token y accede a todas las funcionalidades sin costo durante 7 días. No requiere tarjeta de crédito</p>
-                    <ul class="list-unstyled mb-3">
-                        <li><i class="fas fa-check text-success me-2"></i>Multicuentas Ilimitadas</li>
-                        <li><i class="fas fa-check text-success me-2"></i>Estadísticas Avanzadas</li>
-                        <li><i class="fas fa-check text-success me-2"></i>Seguimiento de Competidores</li>
-                    </ul>
-                    <div class="mt-auto">
-                        <a href="{{ route('register') }}" class="btn btn-primary w-100">Regístrate</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <div class="pricing-card h-100 d-flex flex-column p-4 border rounded"> <!-- 💡 -->
-                    <h3>Adquiere un Plan</h3>
-                    <p class="lead">Acceso Completo y Soporte</p>
-                    <p>Elige el plan que mejor se adapte a tus necesidades y optimiza tus ventas con soporte prioritario.</p>
-                    <ul class="list-unstyled mb-3">
-                        <li><i class="fas fa-check text-success me-2"></i>Soporte Prioritario</li>
-                        <li><i class="fas fa-check text-success me-2"></i>Informes Personalizados</li>
-                        <li><i class="fas fa-check text-success me-2"></i>Integraciones Avanzadas</li>
-                    </ul>
-                    <div class="mt-auto">
-                        <a href="{{ route('plans') }}" class="btn btn-outline-primary w-100">Ver Planes</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 
     <!-- CTA Section -->
     <section class="cta-section py-5" role="region" aria-label="Llamada a la Acción">
@@ -402,255 +401,129 @@
         </div>
     </footer>
 
-    <!-- Schema Markup -->
+    <!-- Schema Markup Consolidado -->
     <script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "MLDataTrends",
-    "applicationCategory": "BusinessApplication",
-    "operatingSystem": "Web",
-    "offers": {
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "MLDataTrends",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD",
         "availability": "https://schema.org/InStock",
         "description": "Prueba gratuita de 7 días para gestionar tus ventas en Mercado Libre"
-    },
-    "description": "Plataforma para gestionar multicuentas, analizar competidores y optimizar ventas en Mercado Libre.",
-    "aggregateRating": {
+      },
+      "description": "Plataforma para gestionar multicuentas, analizar competidores, optimizar stock, estadísticas avanzadas, promociones, exportación a Excel, catálogo, SKUs personalizados y panel de control en Mercado Libre.",
+      "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "5",
         "reviewCount": "3"
-    },
-    "review": [
+      },
+      "review": [
         {
-            "@type": "Review",
-            "author": {
-                "@type": "Person",
-                "name": "Marisa"
-            },
-            "reviewRating": {
-                "@type": "Rating",
-                "ratingValue": "5"
-            },
-            "reviewBody": "MLDataTrends transformó mi forma de vender en Mercado Libre. La gestión de multicuentas y el análisis de competidores me dieron una ventaja enorme. ¡Totalmente recomendado!"
+          "@type": "Review",
+          "author": {
+            "@type": "Person",
+            "name": "Marisa"
+          },
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "MLDataTrends transformó mi forma de vender en Mercado Libre. La gestión de multicuentas y el análisis de competidores me dieron una ventaja enorme. ¡Totalmente recomendado!"
         },
         {
-            "@type": "Review",
-            "author": {
-                "@type": "Person",
-                "name": "Sebastián"
-            },
-            "reviewRating": {
-                "@type": "Rating",
-                "ratingValue": "5"
-            },
-            "reviewBody": "Gracias a MLDataTrends, optimicé mi stock y aumenté mis ventas en un 30%. El panel de control es súper intuitivo y fácil de usar. ¡Lo recomiendo a todos los vendedores!"
+          "@type": "Review",
+          "author": {
+            "@type": "Person",
+            "name": "Sebastián"
+          },
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "Gracias a MLDataTrends, optimicé mi stock y aumenté mis ventas en un 30%. El panel de control es súper intuitivo y fácil de usar. ¡Lo recomiendo a todos los vendedores!"
         },
         {
-            "@type": "Review",
-            "author": {
-                "@type": "Person",
-                "name": "Patricio"
-            },
-            "reviewRating": {
-                "@type": "Rating",
-                "ratingValue": "5"
-            },
-            "reviewBody": "Las estadísticas avanzadas y las promociones inteligentes de MLDataTrends me ayudaron a destacar en Mercado Libre. Es una herramienta imprescindible para cualquier vendedor serio."
+          "@type": "Review",
+          "author": {
+            "@type": "Person",
+            "name": "Patricio"
+          },
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "Las estadísticas avanzadas y las promociones inteligentes de MLDataTrends me ayudaron a destacar en Mercado Libre. Es una herramienta imprescindible para cualquier vendedor serio."
         }
-    ],
-    "mainEntity": [
+      ],
+      "mainEntity": [
         {
-            "@type": "Question",
-            "name": "¿Cómo gestiona MLDataTrends múltiples cuentas de Mercado Libre?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "MLDataTrends permite conectar y administrar múltiples cuentas de Mercado Libre desde un panel centralizado. Sincroniza órdenes, publicaciones y datos en tiempo real, ofreciendo herramientas avanzadas para optimizar la gestión y maximizar la eficiencia de tus operaciones."
-            }
+          "@type": "Question",
+          "name": "¿Cómo gestiona MLDataTrends múltiples cuentas de Mercado Libre?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MLDataTrends permite conectar y administrar múltiples cuentas de Mercado Libre desde un panel centralizado. Sincroniza órdenes, publicaciones y datos en tiempo real, ofreciendo herramientas avanzadas para optimizar la gestión."
+          }
         },
         {
-            "@type": "Question",
-            "name": "¿Qué incluye la prueba gratuita de MLDataTrends?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "La prueba gratuita de 7 días te da acceso completo a todas las funcionalidades de MLDataTrends, incluyendo gestión de multicuentas, análisis de competidores, estadísticas avanzadas y optimización de stock. No se requiere tarjeta de crédito para comenzar."
-            }
+          "@type": "Question",
+          "name": "¿Qué incluye la prueba gratuita de MLDataTrends?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "La prueba gratuita de 7 días te da acceso completo a todas las funcionalidades de MLDataTrends, incluyendo gestión de multicuentas, análisis de competidores, estadísticas avanzadas y optimización de stock. No se requiere tarjeta de crédito."
+          }
         },
         {
-            "@type": "Question",
-            "name": "¿Cómo protege MLDataTrends mis datos y claves de integración?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "En MLDataTrends, la seguridad de tus datos personales y claves de integración, como los tokens de Mercado Libre, es una prioridad. Utilizamos las siguientes medidas para garantizar la confidencialidad, integridad y disponibilidad de tu información: Cifrado de datos en tránsito mediante HTTPS; almacenamiento seguro de contraseñas con el algoritmo bcrypt; validación estricta de datos, incluyendo contraseñas de al menos 8 caracteres con letras mayúsculas, minúsculas, números y caracteres especiales; límites de intentos (rate limiting) en el registro para prevenir ataques automatizados; gestión segura de sesiones con almacenamiento en base de datos y protección CSRF; y almacenamiento protegido de claves de integración en variables de entorno con acceso restringido. Estamos comprometidos con cumplir con las mejores prácticas de seguridad y normativas de protección de datos."
-            }
+          "@type": "Question",
+          "name": "¿Cómo protege MLDataTrends mis datos y claves de integración?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "En MLDataTrends, la seguridad de tus datos y claves de integración es una prioridad. Utilizamos cifrado HTTPS, almacenamiento seguro con bcrypt, validación estricta, límites de intentos, gestión segura de sesiones y protección de claves en variables de entorno."
+          }
         }
-    ]
-}
-</script>
-<!-- Schema Markup existente -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "MLDataTrends",
-  "applicationCategory": "BusinessApplication",
-  "operatingSystem": "Web",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD",
-    "availability": "https://schema.org/InStock",
-    "description": "Prueba gratuita de 7 días para gestionar tus ventas en Mercado Libre"
-  },
-  "description": "Plataforma para gestionar multicuentas, analizar competidores y optimizar ventas en Mercado Libre.",
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "5",
-    "reviewCount": "3"
-  },
-  "review": [
-    {
-      "@type": "Review",
-      "author": {
-        "@type": "Person",
-        "name": "Marisa"
-      },
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "5"
-      },
-      "reviewBody": "MLDataTrends transformó mi forma de vender en Mercado Libre. La gestión de multicuentas y el análisis de competidores me dieron una ventaja enorme. ¡Totalmente recomendado!"
-    },
-    {
-      "@type": "Review",
-      "author": {
-        "@type": "Person",
-        "name": "Sebastián"
-      },
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "5"
-      },
-      "reviewBody": "Gracias a MLDataTrends, optimicé mi stock y aumenté mis ventas en un 30%. El panel de control es súper intuitivo y fácil de usar. ¡Lo recomiendo a todos los vendedores!"
-    },
-    {
-      "@type": "Review",
-      "author": {
-        "@type": "Person",
-        "name": "Patricio"
-      },
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "5"
-      },
-      "reviewBody": "Las estadísticas avanzadas y las promociones inteligentes de MLDataTrends me ayudaron a destacar en Mercado Libre. Es una herramienta imprescindible para cualquier vendedor serio."
+      ]
     }
-  ],
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "¿Cómo gestiona MLDataTrends múltiples cuentas de Mercado Libre?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "MLDataTrends permite conectar y administrar múltiples cuentas de Mercado Libre desde un panel centralizado. Sincroniza órdenes, publicaciones y datos en tiempo real, ofreciendo herramientas avanzadas para optimizar la gestión y maximizar la eficiencia de tus operaciones."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Qué incluye la prueba gratuita de MLDataTrends?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "La prueba gratuita de 7 días te da acceso completo a todas las funcionalidades de MLDataTrends, incluyendo gestión de multicuentas, análisis de competidores, estadísticas avanzadas y optimización de stock. No se requiere tarjeta de crédito para comenzar."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Cómo protege MLDataTrends mis datos y claves de integración?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "En MLDataTrends, la seguridad de tus datos personales y claves de integración, como los tokens de Mercado Libre, es una prioridad. Utilizamos las siguientes medidas para garantizar la confidencialidad, integridad y disponibilidad de tu información: Cifrado de datos en tránsito mediante HTTPS; almacenamiento seguro de contraseñas con el algoritmo bcrypt; validación estricta de datos, incluyendo contraseñas de al menos 8 caracteres con letras mayúsculas, minúsculas, números y caracteres especiales; límites de intentos (rate limiting) en el registro para prevenir ataques automatizados; gestión segura de sesiones con almacenamiento en base de datos y protección CSRF; y almacenamiento protegido de claves de integración en variables de entorno con acceso restringido. Estamos comprometidos con cumplir con las mejores prácticas de seguridad y normativas de protección de datos."
-      }
-    }
-  ]
-}
-</script>
+    </script>
 
-<!-- Schema FAQ adicional para Guía de Uso del Dashboard -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
+    <!-- Schema Markup para Funciones Destacadas -->
+    <script type="application/ld+json">
     {
-      "@type": "Question",
-      "name": "¿Cómo usar la sección de Cuentas?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "La sección de Cuentas te permite gestionar tus perfiles de MercadoLibre desde un panel centralizado. Úsala para visualizar métricas clave como reputación y puntos, acceder a datos históricos de ventas y analizar distribuciones de calificaciones."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Para qué sirve la sección de Publicaciones y Listado Completo?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Conecta con datos en tiempo real desde MercadoLibre para ver publicaciones activas y catálogos. El Listado Completo te permite gestionar stock y depósitos desde tu base local."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Cómo aprovechar la sección de SKUs Personalizados?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Asigna códigos SKU propios para identificar productos fácilmente, consolidar ventas y analizar inventario agrupado entre cuentas."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Cómo funciona la sección de Ventas?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Accedé a un listado automático de ventas desde tu base local, filtrá por título, SKU o fecha y obtené una vista consolidada para stock crítico."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Para qué sirve la sección de Promociones y Catálogo?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Monitorea promociones activas y mejora el posicionamiento de productos con sugerencias personalizadas del catálogo."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Cómo usar la sección de Estadísticas?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Explorá métricas como facturación y top productos, filtrando por fechas para identificar oportunidades y planificar stock."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Cómo funciona el Análisis de Competencia?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Seleccioná competidores y seguí sus publicaciones para adaptar tu estrategia, actualizar datos y ganar visibilidad en MercadoLibre."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Para qué sirve la Sincronización?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Descargá datos de ventas, artículos y promociones a tu base local para acceder sin conexión y mantener todo actualizado."
-      }
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Funciones Destacadas de MLDataTrends",
+      "description": "Explora las principales funcionalidades de MLDataTrends para optimizar tus ventas en Mercado Libre.",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Análisis de Competencia con Exportación a Excel",
+          "description": "Monitorea competidores en MercadoLibre, analiza publicaciones y exporta datos a Excel."
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Gestión de SKU Propio",
+          "description": "Asigna y edita códigos SKU para organizar tu inventario y consolidar ventas."
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Ventas Consoladas con Filtros y Exportación",
+          "description": "Filtra y consolida ventas por SKU o fecha, con exportación a Excel."
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Promociones Inteligentes",
+          "description": "Gestiona y renueva promociones para maximizar visibilidad y ventas."
+        }
+      ]
     }
-  ]
-}
-</script>
-
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="//code.tidio.co/jo26sf9xwxm54yytrbdsaeflv2b1timh.js" async></script>
