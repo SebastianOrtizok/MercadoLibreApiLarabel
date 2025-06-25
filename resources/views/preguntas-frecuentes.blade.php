@@ -27,14 +27,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet" media="print" onload="this.media='all'">
 
-    <style>
-        .faq-section h2 { font-size: 1.8rem; font-weight: 600; }
-        .accordion-button { font-size: 1.2rem; }
-        .accordion-body { font-size: 1rem; line-height: 1.6; }
-        .faq-index { background-color: #f8f9fa; padding: 20px; border-radius: 8px; }
-        .faq-index a { text-decoration: none; }
-        .faq-index a:hover { text-decoration: underline; }
-    </style>
 </head>
 <body>
     <!-- Header -->
