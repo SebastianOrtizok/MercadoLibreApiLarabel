@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Resuelve tus dudas sobre cómo usar MLDataTrends para gestionar cuentas, publicaciones y listado completo de artículos en MercadoLibre. ¡Consulta nuestras Preguntas Frecuentes detalladas!">
-    <meta name="keywords" content="preguntas frecuentes mldatatrends, vincular cuenta mercadolibre, sincronizar artículos mercadolibre, ver publicaciones mercadolibre, listado completo artículos, tutorial mldatatrends, gestionar ventas mercadolibre">
+    <meta name="description" content="Resuelve tus dudas sobre cómo usar MLDataTrends para gestionar cuentas, publicaciones, SKU, ventas, promociones, catálogo, estadísticas y sincronización en MercadoLibre. ¡Consulta nuestras Preguntas Frecuentes detalladas!">
+    <meta name="keywords" content="preguntas frecuentes mldatatrends, vincular cuenta mercadolibre, sincronizar artículos, ver publicaciones, listado completo, gestionar SKU, ventas mercadolibre, promociones, catálogo productos, estadísticas ventas, tutorial mldatatrends">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url('/preguntas-frecuentes') }}">
     <title>Preguntas Frecuentes - MLDataTrends: Gestión de Ventas en MercadoLibre</title>
 
     <!-- Open Graph -->
     <meta property="og:title" content="Preguntas Frecuentes - MLDataTrends">
-    <meta property="og:description" content="Aprendé cómo vincular tu cuenta de MercadoLibre, sincronizar artículos, gestionar publicaciones y ver tu listado completo con nuestras Preguntas Frecuentes detalladas.">
+    <meta property="og:description" content="Aprendé cómo gestionar tu cuenta de MercadoLibre, sincronizar datos, analizar ventas, SKU, promociones, catálogo, estadísticas y sincronización con nuestras Preguntas Frecuentes detalladas en MLDataTrends.">
     <meta property="og:url" content="{{ url('/preguntas-frecuentes') }}">
     <meta property="og:type" content="website">
     <meta property="og:image" content="{{ asset('images/faq.webp') }}">
@@ -19,7 +19,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Preguntas Frecuentes - MLDataTrends">
-    <meta name="twitter:description" content="Aprendé cómo vincular tu cuenta de MercadoLibre, sincronizar artículos, gestionar publicaciones y ver tu listado completo con nuestras Preguntas Frecuentes detalladas.">
+    <meta name="twitter:description" content="Aprendé cómo gestionar tu cuenta de MercadoLibre, sincronizar datos, analizar ventas, SKU, promociones, catálogo, estadísticas y sincronización con nuestras Preguntas Frecuentes detalladas.">
     <meta name="twitter:image" content="{{ asset('images/faq.webp') }}">
 
     <!-- Bootstrap y FontAwesome -->
@@ -60,7 +60,7 @@
     <section class="faq-section py-5" role="region" aria-label="Preguntas Frecuentes">
         <div class="container">
             <h1 class="text-center mb-5">Preguntas Frecuentes sobre MLDataTrends</h1>
-            <p class="lead text-center mb-5">¿No sabés cómo empezar a usar MLDataTrends para gestionar tus ventas en MercadoLibre? Acá te explicamos paso a paso cómo vincular tu cuenta, sincronizar artículos, gestionar publicaciones y ver tu listado completo, con ejemplos prácticos y soluciones a problemas comunes.</p>
+            <p class="lead text-center mb-5">¿No sabés cómo empezar a usar MLDataTrends para gestionar tus ventas en MercadoLibre? Acá te explicamos paso a paso cómo vincular tu cuenta, sincronizar artículos, gestionar publicaciones, SKU, ventas, promociones, catálogo, estadísticas y sincronización, con ejemplos prácticos y soluciones a problemas comunes.</p>
 
             <!-- Índice de secciones -->
             <div class="faq-index mb-5">
@@ -93,17 +93,15 @@
                         <div id="collapseCuentas1" class="accordion-collapse collapse" data-bs-parent="#cuentasAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
-                                    <p>Vincular tu cuenta de MercadoLibre a MLDataTrends es el primer paso para gestionar tus ventas y publicaciones. Este proceso usa la autenticación OAuth de MercadoLibre para conectar tu cuenta de manera segura. Seguí estos pasos:</p>
+                                    <p>Vincular tu cuenta de MercadoLibre a MLDataTrends es el primer paso para gestionar tus ventas. Este proceso conecta tu cuenta de manera segura. Seguí estos pasos:</p>
                                     <ol>
-                                        <li>Iniciá sesión en MLDataTrends en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
-                                        <li>En el panel de control, navegá a <strong>Cuentas</strong> (encontrarás el enlace en la barra lateral).</li>
-                                        <li>Hacé clic en <strong>Vincular cuenta de MercadoLibre</strong>. Esto te redirigirá a la página de autorización de MercadoLibre.</li>
-                                        <li>Iniciá sesión en MercadoLibre con tu email y contraseña (asegurá que sea la cuenta correcta si tenés varias).</li>
-                                        <li>Aceptá los permisos que solicita MLDataTrends (por ejemplo, acceso a publicaciones y ventas).</li>
-                                        <li>Una vez autorizado, serás redirigido a MLDataTrends, y verás tu cuenta listada con el <em>Seller ID</em> y el estado "Vinculada".</li>
+                                        <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
+                                        <li>Navegá a <strong>Cuentas</strong> en el panel de control.</li>
+                                        <li>Hacé clic en <strong>Vincular cuenta de MercadoLibre</strong>.</li>
+                                        <li>Iniciá sesión en MercadoLibre y aceptá los permisos solicitados.</li>
+                                        <li>Una vez autorizado, verás tu cuenta listada con el <em>Seller ID</em> (por ejemplo, 123456789) y el estado "Vinculada".</li>
                                     </ol>
-                                    <p>Si la vinculación falla, verificá que tu navegador permita pop-ups y que tu cuenta de MercadoLibre esté activa. Este proceso corresponde a la funcionalidad del <code>AccountController</code>, que maneja la autenticación OAuth y guarda el token de acceso.</p>
-                                    <p><strong>Tidio trigger sugerido</strong>: "vincular cuenta mercadolibre" → Mostrar esta FAQ.</p>
+                                    <p>Si la vinculación falla, asegurá que tu navegador permita pop-ups y que tu cuenta de MercadoLibre esté activa. Verificá que usaste la cuenta correcta si tenés varias (por ejemplo, "TiendaEjemplo"). Contactá a support@mldatatrends.com si el problema persiste.</p>
                                 </div>
                             </div>
                         </div>
@@ -119,16 +117,14 @@
                         <div id="collapseCuentas2" class="accordion-collapse collapse" data-bs-parent="#cuentasAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
-                                    <p>La sección <strong>Cuentas</strong> te muestra un resumen detallado de tu cuenta de MercadoLibre vinculada, lo que te ayuda a verificar que todo esté configurado correctamente. Basado en el <code>AccountController</code>, esta sección incluye:</p>
+                                    <p>La sección <strong>Cuentas</strong> te muestra un resumen de tu cuenta vinculada, útil para verificar su estado. Incluye:</p>
                                     <ul>
-                                        <li><strong>Seller ID</strong>: El identificador único de tu cuenta (por ejemplo, 123456789).</li>
-                                        <li><strong>Nombre de la cuenta</strong>: El nombre o apodo asociado a tu perfil de MercadoLibre (por ejemplo, "TiendaEjemplo").</li>
-                                        <li><strong>Estado de vinculación</strong>: Indica si la cuenta está activa, pendiente de autorización, o necesita revinculación (por ejemplo, "Token expirado").</li>
-                                        <li><strong>Última sincronización</strong>: Fecha y hora de la última sincronización de datos (por ejemplo, "2025-06-25 10:30").</li>
-                                        <li><strong>Permisos otorgados</strong>: Qué datos puede acceder MLDataTrends (publicaciones, ventas, etc.).</li>
+                                        <li><strong>Seller ID</strong>: Identificador único (por ejemplo, 123456789).</li>
+                                        <li><strong>Nombre de la cuenta</strong>: Apodo de tu perfil (por ejemplo, "TiendaEjemplo").</li>
+                                        <li><strong>Estado</strong>: Vinculada, pendiente, o necesita revinculación.</li>
+                                        <li><strong>Última sincronización</strong>: Fecha y hora (por ejemplo, "2025-06-25 10:30").</li>
                                     </ul>
-                                    <p>Para acceder, iniciá sesión y hacé clic en <strong>Cuentas</strong> en el panel. Si no ves la información, asegurá que la cuenta esté vinculada correctamente. Este módulo usa <code>ConsultaMercadoLibreService</code> para obtener datos de la API de MercadoLibre.</p>
-                                    <p><strong>Tidio trigger sugerido</strong>: "información cuenta mercadolibre" → Mostrar esta FAQ.</p>
+                                    <p>Para acceder, iniciá sesión y hacé clic en <strong>Cuentas</strong>. Si no ves datos, asegurá que tu cuenta esté vinculada correctamente. Revisá si aparece "Token expirado" y revinculá si es necesario. Esta sección te ayuda a confirmar que tu cuenta está lista para sincronizar datos.</p>
                                 </div>
                             </div>
                         </div>
@@ -144,16 +140,14 @@
                         <div id="collapseCuentas3" class="accordion-collapse collapse" data-bs-parent="#cuentasAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
-                                    <p>Sincronizar tus artículos es clave para que MLDataTrends pueda mostrar tus publicaciones, ventas y otros datos. La funcionalidad está implementada en el <code>AccountController</code> (método <code>primeraSincronizacionDB</code>) y usa el <code>ConsultaMercadoLibreService</code> para descargar datos vía la API de MercadoLibre. Seguí estos pasos:</p>
+                                    <p>Sincronizar tus artículos actualiza tus publicaciones y ventas en MLDataTrends. Seguí estos pasos:</p>
                                     <ol>
-                                        <li>Iniciá sesión en MLDataTrends y navegá a <strong>Cuentas</strong>.</li>
-                                        <li>Seleccioná la cuenta vinculada que querés sincronizar (si tenés varias, elegí una).</li>
-                                        <li>Hacé clic en <strong>Iniciar sincronización</strong>. Esto ejecutará un proceso que descarga tus publicaciones activas, incluyendo título, precio, stock, y estado.</li>
-                                        <li>Esperá a que el proceso termine (puede tomar unos minutos si tenés muchas publicaciones, por ejemplo, 500 artículos pueden tardar 2-3 minutos).</li>
-                                        <li>Una vez finalizado, los datos aparecerán en <strong>Publicaciones</strong> y <strong>Listado completo</strong>.</li>
+                                        <li>Iniciá sesión y navegá a <strong>Cuentas</strong>.</li>
+                                        <li>Seleccioná la cuenta vinculada (por ejemplo, "TiendaEjemplo").</li>
+                                        <li>Hacé clic en <strong>Iniciar sincronización</strong>.</li>
+                                        <li>Esperá a que termine (puede tomar minutos si tenés muchas publicaciones, como 500 artículos).</li>
                                     </ol>
-                                    <p>Podés verificar el progreso en la sección <strong>Sincronización</strong>. Si la sincronización no inicia, asegurá que tu token de MercadoLibre esté activo. Este proceso es esencial para usar las demás funcionalidades de MLDataTrends.</p>
-                                    <p><strong>Tidio trigger sugerido</strong>: "sincronizar artículos mercadolibre" → Mostrar esta FAQ.</p>
+                                    <p>Los datos aparecerán en <strong>Publicaciones</strong> y <strong>Listado completo</strong>. Verificá el progreso en <strong>Sincronización</strong>. Si no inicia, asegurá que tu cuenta esté vinculada y el token esté activo. Por ejemplo, si tenés publicaciones como "Zapatillas Nike", estas se listarán tras sincronizar. Contactá a support@mldatatrends.com si hay errores.</p>
                                 </div>
                             </div>
                         </div>
@@ -169,15 +163,14 @@
                         <div id="collapseCuentas4" class="accordion-collapse collapse" data-bs-parent="#cuentasAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
-                                    <p>Si no ves tus publicaciones después de sincronizar, puede haber varios motivos relacionados con el proceso de <code>ConsultaMercadoLibreService</code>. Revisá estos puntos:</p>
+                                    <p>Si no ves tus publicaciones tras sincronizar, revisá estos puntos:</p>
                                     <ul>
-                                        <li><strong>Token expirado</strong>: El token de acceso de MercadoLibre puede haber caducado. Volvé a <strong>Cuentas</strong>, hacé clic en "Revincular" y seguí los pasos para autorizar nuevamente.</li>
-                                        <li><strong>Sin publicaciones activas</strong>: Asegurá que tu cuenta de MercadoLibre tenga publicaciones activas. Podés verificarlo en <a href="https://www.mercadolibre.com.ar">MercadoLibre.com.ar</a>.</li>
-                                        <li><strong>Errores de API</strong>: La API de MercadoLibre puede tener límites de consultas. Esperá 5-10 minutos y reintentá la sincronización.</li>
-                                        <li><strong>Filtros aplicados</strong>: En <strong>Publicaciones</strong> o <strong>Listado completo</strong>, asegurá que no haya filtros (por ejemplo, "Activas" o búsqueda por título) que oculten los resultados.</li>
+                                        <li><strong>Token expirado</strong>: Revinculá tu cuenta en <strong>Cuentas</strong>.</li>
+                                        <li><strong>Sin publicaciones activas</strong>: Verificá en MercadoLibre que tenés publicaciones activas.</li>
+                                        <li><strong>Errores de sincronización</strong>: Revisá <strong>Sincronización</strong> para mensajes como "Límite de consultas alcanzado".</li>
+                                        <li><strong>Filtros aplicados</strong>: Quitá filtros en <strong>Publicaciones</strong> o <strong>Listado completo</strong>.</li>
                                     </ul>
-                                    <p>Si el problema persiste, revisá las notificaciones en <strong>Sincronización</strong> para ver mensajes de error específicos (por ejemplo, "API rate limit exceeded"). Contactá a support@mldatatrends.com si necesitás ayuda adicional.</p>
-                                    <p><strong>Tidio trigger sugerido</strong>: "no veo publicaciones sincronizadas" → Mostrar esta FAQ.</p>
+                                    <p>Por ejemplo, si sincronizaste "Zapatillas Nike" pero no aparece, asegurá que esté activa en MercadoLibre. Intentá sincronizar nuevamente tras 10 minutos. Si el problema persiste, contactá a support@mldatatrends.com con detalles del error.</p>
                                 </div>
                             </div>
                         </div>
@@ -198,15 +191,14 @@
                         <div id="collapsePublicaciones1" class="accordion-collapse collapse" data-bs-parent="#publicacionesAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
-                                    <p>La sección <strong>Publicaciones</strong> te permite visualizar todas tus publicaciones activas de MercadoLibre en un formato claro y organizado, usando datos sincronizados por el <code>ConsultaMercadoLibreService</code>. Esto es ideal para monitorear precios, stock y estados sin entrar a MercadoLibre. Seguí estos pasos:</p>
+                                    <p>La sección <strong>Publicaciones</strong> te muestra tus publicaciones activas en MercadoLibre. Seguí estos pasos:</p>
                                     <ol>
-                                        <li>Iniciá sesión en MLDataTrends en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
-                                        <li>En el panel de control, hacé clic en <strong>Publicaciones</strong> (en la barra lateral).</li>
-                                        <li>Verás una lista con tus publicaciones, mostrando detalles como título (por ejemplo, "Zapatillas Nike Air"), precio ($10,000), stock (15 unidades), y estado ("Activa" o "Pausada").</li>
-                                        <li>Podés ordenar la lista por cualquier columna (por ejemplo, precio descendente) haciendo clic en el encabezado.</li>
+                                        <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
+                                        <li>Hacé clic en <strong>Publicaciones</strong> en el panel.</li>
+                                        <li>Verás una lista con detalles como título (por ejemplo, "Zapatillas Nike Air"), precio ($10,000), stock (15 unidades), y estado ("Activa").</li>
+                                        <li>Ordená por columna (por ejemplo, precio) haciendo clic en el encabezado.</li>
                                     </ol>
-                                    <p>Para que las publicaciones aparezcan, primero debés vincular tu cuenta en <strong>Cuentas</strong> y sincronizar los datos en <strong>Sincronización</strong>. Si tenés muchas publicaciones (por ejemplo, más de 100), la carga inicial puede tomar unos segundos. Esta funcionalidad está soportada por el <code>ListadoArticulosController</code>, que consulta la base de datos local.</p>
-                                    <p><strong>Tidio trigger sugerido</strong>: "ver publicaciones mercadolibre" → Mostrar esta FAQ.</p>
+                                    <p>Asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> y sincronizada en <strong>Sincronización</strong>. Si no ves publicaciones, revisá si están activas en MercadoLibre o quitá filtros aplicados. Esta sección es ideal para monitorear tu inventario.</p>
                                 </div>
                             </div>
                         </div>
@@ -222,15 +214,14 @@
                         <div id="collapsePublicaciones2" class="accordion-collapse collapse" data-bs-parent="#publicacionesAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
-                                    <p>Si necesitás encontrar una publicación específica, MLDataTrends te permite buscar por el ID de MercadoLibre (MLA ID), que es el código único de cada publicación (por ejemplo, MLA123456789). Esta funcionalidad está implementada en el <code>ListadoArticulosController</code>. Seguí estos pasos:</p>
+                                    <p>Para encontrar una publicación por su ID de MercadoLibre (MLA ID), seguí estos pasos:</p>
                                     <ol>
-                                        <li>Navegá a <strong>Publicaciones</strong> en el panel de control.</li>
-                                        <li>En el campo de búsqueda, ingresá el MLA ID completo (por ejemplo, MLA987654321).</li>
-                                        <li>Hacé clic en el ícono de lupa o presioná Enter.</li>
-                                        <li>Si la publicación está sincronizada, aparecerá con detalles como título, precio, stock y un enlace directo a MercadoLibre.</li>
+                                        <li>Navegá a <strong>Publicaciones</strong> en el panel.</li>
+                                        <li>Ingresá el MLA ID (por ejemplo, MLA987654321) en el campo de búsqueda.</li>
+                                        <li>Hacé clic en la lupa o presioná Enter.</li>
+                                        <li>Verás la publicación con detalles como título, precio, y enlace a MercadoLibre.</li>
                                     </ol>
-                                    <p>Para encontrar el MLA ID, abrí la publicación en MercadoLibre y buscá el número en la URL (por ejemplo, <code>https://www.mercadolibre.com.ar/MLA-123456789</code>). Asegurá que la publicación esté sincronizada (revisá <strong>Sincronización</strong>) y que el ID sea correcto. Si no aparece, puede que la publicación esté pausada o no vinculada a la cuenta seleccionada.</p>
-                                    <p><strong>Tidio trigger sugerido</strong>: "buscar publicación por id" → Mostrar esta FAQ.</p>
+                                    <p>El MLA ID está en la URL de la publicación (por ejemplo, <code>https://www.mercadolibre.com.ar/MLA-987654321</code>). Asegurá que la publicación esté sincronizada en <strong>Sincronización</strong>. Si no aparece, verificá que el ID sea correcto o que la publicación esté activa. Contactá a support@mldatatrends.com si hay problemas.</p>
                                 </div>
                             </div>
                         </div>
@@ -246,16 +237,14 @@
                         <div id="collapsePublicaciones3" class="accordion-collapse collapse" data-bs-parent="#publicacionesAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
-                                    <p>Filtrar tus publicaciones te ayuda a enfocarte en un grupo específico, como publicaciones activas o de una categoría particular. El <code>ListadoArticulosController</code> soporta filtros dinámicos para facilitar la gestión. Seguí estos pasos:</p>
+                                    <p>Filtrar publicaciones te ayuda a enfocarte en un grupo específico. Seguí estos pasos:</p>
                                     <ol>
-                                        <li>En <strong>Publicaciones</strong>, localizá el panel de filtros en la parte superior de la lista.</li>
-                                        <li>Seleccioná un estado en el menú desplegable (por ejemplo, "Activas", "Pausadas", "Finalizadas").</li>
-                                        <li>Para filtrar por categoría, elegí una opción como "Electrónica" o "Ropa" (si está disponible en tu cuenta).</li>
-                                        <li>Podés combinar con una búsqueda por palabra clave (por ejemplo, "Zapatillas" en el título).</li>
-                                        <li>Hacé clic en <strong>Aplicar filtros</strong> para ver los resultados actualizados.</li>
+                                        <li>En <strong>Publicaciones</strong>, buscá el panel de filtros.</li>
+                                        <li>Seleccioná un estado (por ejemplo, "Activas" o "Pausadas").</li>
+                                        <li>Elegí una categoría (por ejemplo, "Electrónica") si está disponible.</li>
+                                        <li>Hacé clic en <strong>Aplicar filtros</strong>.</li>
                                     </ol>
-                                    <p>Por ejemplo, para ver solo publicaciones activas de "Electrónica", seleccioná "Activas" y "Electrónica" en los filtros. Si no ves resultados, quitá los filtros o verificá que tus datos estén sincronizados en <strong>Sincronización</strong>. Esto usa el <code>ListadoArticulosService</code> para consultar la base de datos local.</p>
-                                    <p><strong>Tidio trigger sugerido</strong>: "filtrar publicaciones mercadolibre" → Mostrar esta FAQ.</p>
+                                    <p>Por ejemplo, filtrá por "Activas" y "Electrónica" para ver solo esas publicaciones. Si no hay resultados, quitá los filtros o verificá la sincronización en <strong>Sincronización</strong>. Asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong>. Esta funcionalidad es útil para gestionar grandes inventarios.</p>
                                 </div>
                             </div>
                         </div>
@@ -271,15 +260,14 @@
                         <div id="collapsePublicaciones4" class="accordion-collapse collapse" data-bs-parent="#publicacionesAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
-                                    <p>Si no ves todas tus publicaciones en la sección <strong>Publicaciones</strong>, puede haber problemas relacionados con la vinculación, sincronización o filtros. El <code>ListadoArticulosController</code> depende de datos sincronizados por el <code>ConsultaMercadoLibreService</code>. Revisá estos puntos:</p>
+                                    <p>Si no ves todas tus publicaciones, revisá estos puntos:</p>
                                     <ul>
-                                        <li><strong>Cuenta no vinculada</strong>: Asegurá que tu cuenta esté activa en <strong>Cuentas</strong>. Si ves "Token expirado", revinculá siguiendo los pasos de vinculación.</li>
-                                        <li><strong>Sincronización incompleta</strong>: Verificá en <strong>Sincronización</strong> si el proceso terminó correctamente. Si está en curso, esperá unos minutos.</li>
-                                        <li><strong>Filtros aplicados</strong>: Quitá todos los filtros (estado, categoría, búsqueda) haciendo clic en "Restablecer filtros".</li>
-                                        <li><strong>Sin publicaciones activas</strong>: Confirmá en MercadoLibre que tenés publicaciones activas. Por ejemplo, si todas están pausadas, no aparecerán en "Activas".</li>
+                                        <li><strong>Cuenta no vinculada</strong>: Verificá en <strong>Cuentas</strong> que tu cuenta esté activa.</li>
+                                        <li><strong>Sincronización incompleta</strong>: Revisá <strong>Sincronización</strong> si está en curso.</li>
+                                        <li><strong>Filtros aplicados</strong>: Quitá filtros haciendo clic en "Restablecer filtros".</li>
+                                        <li><strong>Sin publicaciones activas</strong>: Confirmá en MercadoLibre que tenés publicaciones activas.</li>
                                     </ul>
-                                    <p>Si el problema persiste, revisá las notificaciones en <strong>Sincronización</strong> para errores específicos (por ejemplo, "Error 429: Too Many Requests"). Intentá sincronizar nuevamente después de 10 minutos o contactá a support@mldatatrends.com.</p>
-                                    <p><strong>Tidio trigger sugerido</strong>: "no veo publicaciones mldata" → Mostrar esta FAQ.</p>
+                                    <p>Por ejemplo, si "Zapatillas Nike" no aparece, asegurá que esté activa y sincronizada. Intentá sincronizar nuevamente tras 10 minutos. Si el problema persiste, contactá a support@mldatatrends.com con detalles.</p>
                                 </div>
                             </div>
                         </div>
@@ -300,15 +288,14 @@
                         <div id="collapseListadoCompleto1" class="accordion-collapse collapse" data-bs-parent="#listadoCompletoAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
-                                    <p>La sección <strong>Listado completo</strong> te ofrece una vista detallada de todos tus artículos sincronizados, ideal para gestionar tu inventario en MercadoLibre. Esta funcionalidad está soportada por el <code>ListadoArticulosController</code> y el <code>ListadoArticulosService</code>, que consultan la base de datos local. Seguí estos pasos:</p>
+                                    <p>La sección <strong>Listado completo</strong> muestra todos tus artículos sincronizados. Seguí estos pasos:</p>
                                     <ol>
-                                        <li>Iniciá sesión en MLDataTrends en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
-                                        <li>En el panel de control, hacé clic en <strong>Listado completo</strong> (en la barra lateral).</li>
-                                        <li>Verás una tabla con todos tus artículos, incluyendo título (por ejemplo, "Smartphone Samsung Galaxy"), SKU interno (por ejemplo, "SAM123"), precio ($50,000), stock (10 unidades), y estado ("Activo").</li>
-                                        <li>Podés ordenar la tabla por cualquier columna, como precio o stock, para analizar rápidamente.</li>
+                                        <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
+                                        <li>Hacé clic en <strong>Listado completo</strong> en el panel.</li>
+                                        <li>Verás una tabla con título (por ejemplo, "Smartphone Samsung Galaxy"), SKU (por ejemplo, "SAM123"), precio ($50,000), stock (10 unidades), y estado ("Activo").</li>
+                                        <li>Ordená por columna haciendo clic en el encabezado.</li>
                                     </ol>
-                                    <p>Para que los artículos aparezcan, primero debés vincular tu cuenta en <strong>Cuentas</strong> y completar la sincronización en <strong>Sincronización</strong>. Esta sección es útil para vendedores con grandes inventarios, ya que permite exportar los datos a Excel (si está habilitado).</p>
-                                    <p><strong>Tidio trigger sugerido</strong>: "ver listado completo artículos" → Mostrar esta FAQ.</p>
+                                    <p>Asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> y sincronizada en <strong>Sincronización</strong>. Si la tabla está vacía, revisá si hay publicaciones activas en MercadoLibre. Esta sección es ideal para gestionar inventarios grandes.</p>
                                 </div>
                             </div>
                         </div>
@@ -324,16 +311,14 @@
                         <div id="collapseListadoCompleto2" class="accordion-collapse collapse" data-bs-parent="#listadoCompletoAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
-                                    <p>Filtrar artículos en <strong>Listado completo</strong> te permite encontrar rápidamente productos específicos, ya sea por título o SKU interno. El <code>ListadoArticulosService</code> soporta búsquedas dinámicas en la base de datos. Seguí estos pasos:</p>
+                                    <p>Filtrar artículos te ayuda a encontrar productos específicos. Seguí estos pasos:</p>
                                     <ol>
-                                        <li>Navegá a <strong>Listado completo</strong> en el panel de control.</li>
-                                        <li>En el campo de búsqueda, ingresá una palabra clave del título (por ejemplo, "Zapatillas") o un SKU interno (por ejemplo, "ZAP123").</li>
-                                        <li>Seleccioná un estado opcional en el filtro (por ejemplo, "Activo" o "Pausado") para reducir los resultados.</li>
-                                        <li>Hacé clic en el ícono de lupa o presioná Enter para aplicar la búsqueda.</li>
-                                        <li>Los resultados mostrarán los artículos que coincidan, con detalles como precio, stock y enlace a MercadoLibre.</li>
+                                        <li>Navegá a <strong>Listado completo</strong>.</li>
+                                        <li>Ingresá un título (por ejemplo, "Zapatillas") o SKU (por ejemplo, "ZAP123") en el campo de búsqueda.</li>
+                                        <li>Seleccioná un estado (por ejemplo, "Activo") si querés.</li>
+                                        <li>Hacé clic en la lupa o presioná Enter.</li>
                                     </ol>
-                                    <p>Por ejemplo, si buscás "Zapatillas Nike" y filtrás por "Activo", verás solo las publicaciones activas de zapatillas Nike. Si no hay resultados, verificá que los datos estén sincronizados o quitá los filtros. Esta funcionalidad es ideal para gestionar inventarios grandes.</p>
-                                    <p><strong>Tidio trigger sugerido</strong>: "filtrar artículos por sku" → Mostrar esta FAQ.</p>
+                                    <p>Por ejemplo, buscá "Zapatillas Nike" y filtrá por "Activo" para ver solo esas publicaciones. Si no hay resultados, quitá filtros o verificá la sincronización en <strong>Sincronización</strong>. Esta funcionalidad es útil para gestionar inventarios extensos.</p>
                                 </div>
                             </div>
                         </div>
@@ -349,19 +334,18 @@
                         <div id="collapseListadoCompleto3" class="accordion-collapse collapse" data-bs-parent="#listadoCompletoAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
-                                    <p>La sección <strong>Listado completo</strong> muestra todos los detalles de tus artículos sincronizados, extraídos por el <code>ListadoArticulosService</code>. Esto es útil para analizar tu inventario y tomar decisiones estratégicas. Los campos disponibles incluyen:</p>
+                                    <p>La sección <strong>Listado completo</strong> muestra detalles de tus artículos sincronizados, incluyendo:</p>
                                     <ul>
-                                        <li><strong>Título</strong>: Nombre de la publicación (por ejemplo, "Auriculares Sony Inalámbricos").</li>
-                                        <li><strong>SKU interno</strong>: Código único asignado por vos (por ejemplo, "AUR456").</li>
-                                        <li><strong>Precio</strong>: Precio actual en MercadoLibre (por ejemplo, $8,000).</li>
-                                        <li><strong>Stock</strong>: Cantidad disponible (por ejemplo, 20 unidades).</li>
-                                        <li><strong>Estado</strong>: Activo, pausado, finalizado, etc.</li>
-                                        <li><strong>Condición</strong>: Nuevo, usado, reacondicionado.</li>
-                                        <li><strong>Enlace</strong>: URL directa a la publicación en MercadoLibre (por ejemplo, <code>https://www.mercadolibre.com.ar/MLA-123456789</code>).</li>
-                                        <li><strong>Categoría</strong>: Categoría asignada (por ejemplo, "Electrónica").</li>
+                                        <li><strong>Título</strong>: Nombre de la publicación (por ejemplo, "Auriculares Sony").</li>
+                                        <li><strong>SKU interno</strong>: Código asignado (por ejemplo, "AUR456").</li>
+                                        <li><strong>Precio</strong>: Precio actual ($8,000).</li>
+                                        <li><strong>Stock</strong>: Cantidad disponible (20 unidades).</li>
+                                        <li><strong>Estado</strong>: Activo, pausado, finalizado.</li>
+                                        <li><strong>Condición</strong>: Nuevo, usado.</li>
+                                        <li><strong>Enlace</strong>: URL a MercadoLibre.</li>
+                                        <li><strong>Categoría</strong>: Por ejemplo, "Electrónica".</li>
                                     </ul>
-                                    <p>Accedé a esta sección desde el panel de control. Podés exportar la tabla a Excel para análisis offline (si está habilitado). Asegurá que los datos estén sincronizados en <strong>Sincronización</strong> para ver información actualizada.</p>
-                                    <p><strong>Tidio trigger sugerido</strong>: "información listado completo" → Mostrar esta FAQ.</p>
+                                    <p>Accedé desde el panel. Asegurá que los datos estén sincronizados en <strong>Sincronización</strong>. Esta sección te ayuda a gestionar tu inventario eficientemente.</p>
                                 </div>
                             </div>
                         </div>
@@ -377,717 +361,463 @@
                         <div id="collapseListadoCompleto4" class="accordion-collapse collapse" data-bs-parent="#listadoCompletoAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
-                                    <p>Si la sección <strong>Listado completo</strong> está vacía, puede haber problemas con la configuración o los datos. El <code>ListadoArticulosController</code> depende de datos sincronizados por el <code>ConsultaMercadoLibreService</code>. Revisá estos puntos:</p>
+                                    <p>Si el listado está vacío, revisá estos puntos:</p>
                                     <ul>
-                                        <li><strong>Sin cuentas vinculadas</strong>: Asegurá que tu cuenta de MercadoLibre esté vinculada en <strong>Cuentas</strong>. Si no, seguí los pasos de vinculación.</li>
-                                        <li><strong>Sincronización incompleta</strong>: Verificá en <strong>Sincronización</strong> si el proceso terminó. Si ves "En curso", esperá a que finalice.</li>
-                                        <li><strong>Filtros aplicados</strong>: Quitá todos los filtros (búsqueda por título, SKU, o estado) haciendo clic en "Restablecer filtros".</li>
-                                        <li><strong>Sin publicaciones</strong>: Confirmá en MercadoLibre que tenés publicaciones activas. Por ejemplo, si todas están pausadas, no aparecerán en el listado predeterminado.</li>
-                                        <li><strong>Errores de sincronización</strong>: Revisá las notificaciones en <strong>Sincronización</strong> para errores como "API rate limit exceeded" o "Invalid token".</li>
+                                        <li><strong>Sin cuenta vinculada</strong>: Verificá en <strong>Cuentas</strong>.</li>
+                                        <li><strong>Sincronización incompleta</strong>: Revisá <strong>Sincronización</strong> si está en curso.</li>
+                                        <li><strong>Filtros aplicados</strong>: Quitá clickeando en "Restablecer filtros".</li>
+                                        <li><strong>Sin publicaciones</strong>: Confirmá en MercadoLibre que tenés publicaciones activas.</li>
                                     </ul>
-                                    <p>Si el problema persiste, intentá sincronizar nuevamente o contactá a support@mldatatrends.com con el mensaje de error. También podés verificar manualmente en MercadoLibre para confirmar que los datos existen.</p>
-                                    <p><strong>Tidio trigger sugerido</strong>: "no veo artículos listado completo" → Mostrar esta FAQ.</p>
+                                    <p>Por ejemplo, si "Smartphone Samsung" no aparece, asegurá que esté sincronizado. Intentá sincronizar nuevamente. Contactá a support@mldatatrends.com si el problema persiste.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección: SKU -->
+                <h2 class="mt-5 mb-4" id="skuAccordion">SKU</h2>
+                <div class="accordion" id="skuAccordion">
+                    <!-- Pregunta 1: Ver SKU -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="sku1">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSku1" aria-expanded="false" aria-controls="collapseSku1">
+                                <i class="fas fa-barcode me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Cómo veo los SKU de mis artículos en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseSku1" class="accordion-collapse collapse" data-bs-parent="#skuAccordion">
+                            <div class="accordion-body" itemscope itemprop="acceptedAnswer">
+                                <div itemprop="text">
+                                    <p>La sección <strong>SKU</strong> te muestra los códigos internos de tus artículos. Seguí estos pasos:</p>
+                                    <ol>
+                                        <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
+                                        <li>Hacé clic en <strong>SKU</strong> en el panel.</li>
+                                        <li>Verás una tabla con SKU (por ejemplo, "ZAP123"), título ("Zapatillas Nike Air"), precio, y stock.</li>
+                                        <li>Ordená o buscá un SKU específico.</li>
+                                    </ol>
+                                    <p>Asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> y sincronizada en <strong>Sincronización</strong>. Si no ves SKU, revisá que tus productos tengan códigos asignados en MercadoLibre. Esta sección es ideal para controlar inventarios.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 2: Buscar por SKU -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="sku2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSku2" aria-expanded="false" aria-controls="collapseSku2">
+                                <i class="fas fa-search me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Cómo busco un artículo por SKU en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseSku2" class="accordion-collapse collapse" data-bs-parent="#skuAccordion">
+                            <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                                <div itemprop="text">
+                                    <p>Para localizar un artículo por SKU, seguí estos pasos:</p>
+                                    <ol>
+                                        <li>Navegá a <strong>SKU</strong> en el panel.</li>
+                                        <li>Ingresá el SKU (por ejemplo, "SAM456") en el campo de búsqueda.</li>
+                                        <li>Hacé clic en la lupa o presioná Enter.</li>
+                                        <li>Verás el artículo con título, precio, y stock.</li>
+                                    </ol>
+                                    <p>Por ejemplo, buscá "SAM456" para encontrar un "Smartphone Samsung". Asegurá que el SKU esté sincronizado en <strong>Sincronización</strong>. Si no aparece, verificá que el código sea correcto o que la cuenta esté vinculada. Contactá a support@mldatatrends.com si hay problemas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 3: Actualizar SKU -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="sku3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSku3" aria-expanded="false" aria-controls="collapseSku3">
+                                <i class="fas fa-edit me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Puedo actualizar los SKU de mis productos en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseSku3" class="accordion-collapse collapse" data-bs-parent="#skuAccordion">
+                            <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                                <div itemprop="text">
+                                    <p>Podés actualizar los SKU internos para organizar tu inventario. Seguí estos pasos:</p>
+                                    <ol>
+                                        <li>Navegá a <strong>SKU</strong>.</li>
+                                        <li>Buscá el artículo (por ejemplo, "ZAP123").</li>
+                                        <li>Hacé clic en el artículo y seleccioná la opción de edición.</li>
+                                        <li>Ingresá el nuevo SKU (por ejemplo, "ZAP789") y guardá.</li>
+                                    </ol>
+                                    <p>Los cambios se aplican en MLDataTrends, pero no en MercadoLibre. Asegurá que los SKU sean únicos. Si no ves la opción de edición, contactá a support@mldatatrends.com para verificar tu plan. Esta funcionalidad es útil para mantener tu inventario ordenado.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección: Ventas -->
+                <h2 class="mt-5 mb-4" id="ventasAccordion">Ventas</h2>
+                <div class="accordion" id="ventasAccordion">
+                    <!-- Pregunta 1: Ver ventas -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="ventas1">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVentas1" aria-expanded="false" aria-controls="collapseVentas1">
+                                <i class="fas fa-shopping-cart me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Cómo veo mis ventas de MercadoLibre en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseVentas1" class="accordion-collapse collapse" data-bs-parent="#ventasAccordion">
+                            <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                                <div>
+                                    <p>La sección <strong>Ventas</strong> muestra tus órdenes. Seguí estos pasos:</p>
+                                    <ol>
+                                        <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends</a>.</li>
+                                        <li>Hacé clic en <strong>Ventas</strong> en el panel.</li>
+                                        <li>Verás una tabla con órdenes, incluyendo ID (por ejemplo, "2000001234567890"), fecha ("2025-06-20"), producto ("Auriculares Sony"), y monto ($10,000).</li>
+                                        <li>Filtrá por fecha o estado ("Pagado").</li>
+                                    </ol>
+                                    <p>Asegurá que tu cuenta esté vinculada y sincronizada en <strong>Sincronización</strong>. Si no ves ventas, revisá que haya compras recientes en MercadoLibre. Esta sección te ayuda a monitorear tus ingresos.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 2: Filtrar ventas -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="ventas2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVentas2" aria-expanded="false" aria-controls="collapseVentas2">
+                                <i class="fas fa-filter me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Cómo filtro mis ventas por fecha o producto en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseVentas2" class="accordion-collapse collapse" data-bs-parent="#ventasAccordion">
+                            <div class="accordion-body" itemscope itemprop="acceptedAnswer">
+                                <div>
+                                    <p>Filtrar ventas te ayuda a analizar datos específicos. Seguí estos pasos:</p>
+                                    <ol>
+                                        <li>Navegá a <strong>Ventas</strong>.</li>
+                                        <li>Seleccioná un rango de fechas (por ejemplo, "2025-06-01 a 2025-06-25").</li>
+                                        <li>Ingresá un título o SKU (por ejemplo, "Zapatillas Nike" o "ZAP123").</li>
+                                        <li>Hacé clic en "Aplicar filtros".</li>
+                                    </ol>
+                                    <p>Por ejemplo, filtrá por "Zapatillas" en junio para ver esas ventas. Si no hay resultados, quitá filtros o verificá la sincronización en <strong>Sincronización</strong>. Asegurá que tu cuenta esté vinculada. Esta funcionalidad es útil para informes mensuales.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 3: Problemas con ventas -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="ventas3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVentas3" aria-expanded="false" aria-controls="collapseVentas3">
+                                <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Por qué no veo mis ventas recientes en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseVentas3" class="accordion-collapse collapse" data-bs-parent="#ventasAccordion">
+                            <div class="accordion-body" itemscope>
+                                <div itemprop="text">
+                                    <p>Si no ves ventas recientes, revisá estos puntos:</p>
+                                    <ul>
+                                        <li><strong>Sincronización pendiente</strong>: Verificá en <strong>Sincronización</strong> si está completa.</li>
+                                        <li><strong>Cuenta no vinculada</strong>: Revisá <strong>Cuentas</strong> y revinculá si ves "Token expirado".</li>
+                                        <li><strong>Filtros aplicados</strong>: Quitá filtros clickeando en "Restablecer filtros".</li>
+                                        <li><strong>Retraso</strong>: Intentá sincronizar tras 10 minutos.</li>
+                                    </ul>
+                                    <p>Por ejemplo, si no ves una venta de "Auriculares Sony", asegurá su sincronización. Contactá a support@mldatatrends.com si el problema persiste.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección: Promociones -->
+                <h2 class="mt-5 mb-4" id="promocionesAccordion">Promociones</h2>
+                <div class="accordion" id="promocionesAccordion">
+                    <!-- Pregunta 1: Ver promociones -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="promociones1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromociones1" aria-expanded="false" aria-controls="collapsePromociones1">
+                                <i class="fas fa-tags me-2"></i>
+                                <span>¿Cómo veo los productos en promoción en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapsePromociones1" class="accordion-collapse collapse" data-bs-parent="#promocionesAccordion">
+                            <div class="accordion-body" itemscope>
+                                <div itemprop="text">
+                                    <p>La sección <strong>Promociones</strong> lista tus productos con descuentos. Seguí estos pasos:</p>
+<ol>
+<li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends</a>.</li>
+<li>Hacé clic en <strong>Promociones</strong> en el panel.</li>
+<li>Verás productos como "Smart TV 50''" con descuentos (por ejemplo, 20% off) y precio promocional.</li>
+<li>Filtrá por cuenta si tenés varias.</li>
+</ol>
+<p>Asegurá que tu cuenta esté sincronizada en <strong>Sincronización</strong>. Si no ves promociones, verificá que tengas descuentos activos en MercadoLibre. Esta sección te ayuda a monitorear tus campañas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 2: Filtrar promociones -->
+                    <div class="accordion-item" itemscope>
+                        <h3 class="accordion-header" id="promociones2">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromociones2" aria-expanded="false" aria-controls="collapsePromociones2">
+                                <i class="fas fa-filter me-2"></i>
+                                <span>¿Cómo filtro productos en promoción por porcentaje de descuento?</span>
+                            </button>
+                        </h3>
+                        <div id="collapsePromociones2" class="accordion-collapse collapse" data-bs-parent="#promocionesAccordion">
+                            <div class="accordion-body">
+                                <div itemprop="text">
+                                    <p>Filtrar por porcentaje de descuento te enfoca en ofertas clave. Seguí estos pasos:</p>
+<ol>
+<li>Navegá a <strong>Promociones</strong>.</li>
+<li>Seleccioná un rango de descuento (por ejemplo, "Mayor a 15%").</li>
+<li>Ingresá un título (por ejemplo, "Televisor") si querés.</li>
+<li>Hacé clic en "Aplicar filtros".</li>
+</ol>
+<p>Por ejemplo, filtrá por "20% o más" para ver "Smart TV 25% off". Si no hay resultados, verificá la sincronización en <strong>Sincronización</strong>. Esta funcionalidad optimiza tus campañas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 3: Problemas con promociones -->
+                    <div class="accordion-item" itemscope>
+                        <h3 class="accordion-header" id="promociones3">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromociones3" aria-expanded="false" aria-controls="collapsePromociones3">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <span>¿Por qué no veo mis promociones en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapsePromociones3" class="accordion-collapse collapse" data-bs-parent="#promocionesAccordion">
+                            <div class="accordion-body">
+                                <div itemprop="text">
+                                    <p>Si no ves promociones, revisá estos puntos:</p>
+<ul>
+<li><strong>Sin promociones activas</strong>: Confirmá en MercadoLibre que tenés descuentos.</li>
+<li><strong>Sincronización incompleta</strong>: Verificá <strong>Sincronización</strong>.</li>
+<li><strong>Cuenta no vinculada</strong>: Revisá <strong>Cuentas</strong>.</li>
+<li><strong>Filtros aplicados</strong>: Quitá filtros clicando en "Restablecer filtros".</li>
+</ul>
+<p>Por ejemplo, si no ves un descuento en "Smart TV", asegurá que esté activo. Intentá sincronizar nuevamente. Contactá a support@mldatatrends.com si persiste.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección: Catálogo -->
+                <h2 class="mt-5 mb-4" id="catalogoAccordion">Catálogo</h2>
+                <div class="accordion" id="catalogoAccordion">
+                    <!-- Pregunta 1: Ver catálogo -->
+                    <div class="accordion-item" itemscope>
+                        <h3 class="accordion-header" id="catalogo1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCatalogo1" aria-expanded="false" aria-controls="collapseCatalogo1">
+                                <i class="fas fa-book me-2"></i>
+                                <span>¿Cómo accedo al catálogo de mis productos en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseCatalogo1" class="accordion-collapse collapse" data-bs-parent="#catalogoAccordion">
+                            <div class="accordion-body">
+                                <div itemprop="text">
+                                    <p>La sección <strong>Catálogo</strong> lista tus productos activos. Seguí estos pasos:</p>
+<ol>
+<li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends</a>.</li>
+<li>Hacé clic en <strong>Catálogo</strong>.</li>
+<li>Verás una tabla con ID (por ejemplo, "MLA123456789"), título ("Smartphone Samsung"), precio, stock, y cuenta.</li>
+<li>Pagina o ajustá los resultados.</li>
+</ol>
+<p>Asegura que tu cuenta esté sincronizada en <strong>Sincronización</strong>. Si está vacía, revisá <strong>Cuentas</strong>. Esta sección es ideal para gestionar tu inventario.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 2: Filtrar catálogo -->
+                    <div class="accordion-item" itemscope>
+                        <h3 class="accordion-header" id="catalogo2">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCatalogo2" aria-expanded="false" aria-controls="collapseCatalogo2">
+                                <i class="fas fa-filter me-2"></i>
+                                <span>¿Cómo filtro productos en el catálogo por cuenta o búsqueda?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseCatalogo2" class="accordion-collapse collapse" data-bs-parent="#catalogoAccordion">
+                            <div class="accordion-body">
+                                <div>
+                                    <p>Filtrar el catálogo te ayuda a encontrar productos. Seguí estos pasos:</p>
+<ol>
+<li>Navegá a <strong>Catálogo</strong>.</li>
+<li>Seleccioná una cuenta (por ejemplo, "TiendaEjemplo").</li>
+<li>Ingresá una palabra clave ("Zapatillas" o SKU "ZAP123").</li>
+<li>Hacé clic en "Aplicar filtros".</li>
+</ol>
+<p>Por ejemplo, filtrá por "TiendaEjemplo" y "Zapatillas". Si no hay resultados, quitá filtros o verificá <strong>Sincronización</strong>. Útil para múltiples cuentas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 3: Analizar competencia -->
+                    <div class="accordion-item" itemscope>
+                        <h3 class="accordion-header" id="catalogo3">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCatalogo3" aria-expanded="false" aria-controls="collapseCatalogo3">
+                                <i class="fas fa-chart-line me-2"></i>
+                                <span>¿Cómo analizo la competencia de un producto en el catálogo?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseCatalogo3" class="accordion-collapse collapse" data-bs-parent="#catalogoAccordion">
+                            <div class="accordion-body">
+                                <div>
+                                    <p>Analizar la competencia te da datos de otros vendedores. Seguí estos pasos:</p>
+<ol>
+<li>En <strong>Catálogo</strong>, buscá un producto (por ejemplo, "MLA987654321").</li>
+<li>Hacé clic en el producto.</li>
+<li>Seleccioná <strong>Ver competencia</strong>.</li>
+<li>Verás precios y stock de competidores.</li>
+</ol>
+<p>Por ejemplo, analizá "Smartphone Samsung" para comparar precios. Asegurá que el producto esté sincronizado en <strong>Sincronización</strong>. Si no carga, revisá <strong>Cuentas</strong>. Contactá a support@mldatatrends.com si hay errores.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección: Estadísticas -->
+                <h2 class="mt-5 mb-4" id="estadisticasAccordion">Estadísticas</h2>
+                <div class="accordion" id="estadisticasAccordion">
+                    <!-- Pregunta 1: Ver estadísticas -->
+                    <div class="accordion-item" itemscope>
+                        <h3 class="accordion-header" id="estadisticas1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEstadisticas1" aria-expanded="false" aria-controls="collapseEstadisticas1">
+                                <i class="fas fa-chart-bar me-2"></i>
+                                <span>¿Cómo accedo a las estadísticas de mi cuenta en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseEstadisticas1" class="accordion-collapse collapse" data-bs-parent="#estadisticasAccordion">
+                            <div class="accordion-body">
+                                <div>
+                                    <p>La sección <strong>Estadísticas</strong> muestra métricas de tu desempeño. Seguí estos pasos:</p>
+<ol>
+<li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends</a>.</li>
+<li>Hacé clic en <strong>Estadísticas</strong>.</li>
+<li>Verás stock total (por ejemplo, 500 unidades), ventas ($100,000 en junio), y tasa de conversión.</li>
+<li>Ajustá el rango de fechas.</li>
+</ol>
+<p>Asegura que tu cuenta esté sincronizada en <strong>Sincronización</strong>. Si no ves datos, revisá <strong>Cuentas</strong>. Esta sección te ayuda a tomar decisiones estratégicas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 2: Stock crítico -->
+                    <div class="accordion-item" itemscope>
+                        <h3 class="accordion-header" id="estadisticas2">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEstadisticas2" aria-expanded="false" aria-controls="collapseEstadisticas2">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                <span>¿Cómo identifico productos con stock crítico en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseEstadisticas2" class="accordion-collapse collapse" data-bs-parent="#estadisticasAccordion">
+                            <div class="accordion-body">
+                                <div>
+                                    <p>Identificar stock crítico evita perder ventas. Seguí estos pasos:</p>
+<ol>
+<li>Navegá a <strong>Estadísticas</strong>.</li>
+<li>Buscá <strong>Stock Crítico</strong>.</li>
+<li>Verás productos con menos de 5 unidades (por ejemplo, "Auriculares Sony" con 3).</li>
+<li>Hacé clic para reabastecer.</li>
+</ol>
+<p>Si no aparece nada, puede que no tengas stock crítico o que no esté sincronizado. Verificá <strong>Sincronización</strong>. Esta funcionalidad mantiene tus publicaciones activas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 3: Tasa de conversión -->
+                    <div class="accordion-item" itemscope>
+                        <h3 class="accordion-header" id="estadisticas3">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEstadisticas3" aria-expanded="false" aria-controls="collapseEstadisticas3">
+                                <i class="fas fa-percentage me-2"></i>
+                                <span>¿Cómo veo la tasa de conversión de mis productos en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseEstadisticas3" class="accordion-collapse collapse" data-bs-parent="#estadisticasAccordion">
+                            <div class="accordion-body">
+                                <div>
+                                    <p>La tasa de conversión mide visitas que se convierten en ventas. Seguí estos pasos:</p>
+<ol>
+<li>En <strong>Estadísticas</strong>, buscá <strong>Tasa de Conversión</strong>.</li>
+<li>Seleccioná un rango de fechas (por ejemplo, "2025-06-01 a 2025-06-25").</li>
+<li>Verás tasas por producto (por ejemplo, "Zapatillas Nike: 5%").</li>
+<li>Analizá tasas bajas para mejorar.</li>
+</ol>
+<p>Asegura que esté sincronizado en <strong>Sincronización</strong>. Si no ves tasas, revisá si hay ventas recientes. Contactá a support@mldatatrends.com si hay problemas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección: Sincronización -->
+                <h2 class="mt-5 mb-4" id="sincronizacionAccordion">Sincronización</h2>
+                <div class="accordion" id="sincronizacionAccordion">
+                    <!-- Pregunta 1: Iniciar sincronización -->
+                    <div class="accordion-item" itemscope>
+                        <h3 class="accordion-header" id="sincronizacion1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSincronizacion1" aria-expanded="false" aria-controls="collapseSincronizacion1">
+                                <i class="fas fa-sync me-2"></i>
+                                <span>¿Cómo inicio la sincronización de datos con MercadoLibre en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseSincronizacion1" class="accordion-collapse collapse" data-bs-parent="#sincronizacionAccordion">
+                            <div class="accordion-body">
+                                <div>
+                                    <p>Sincronizar datos actualiza tus publicaciones y ventas. Seguí estos pasos:</p>
+<ol>
+<li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends</a>.</li>
+<li>Navegá a <strong>Sincronización</strong>.</li>
+<li>Seleccioná la cuenta (por ejemplo, "TiendaEjemplo").</li>
+<li>Hacé clic en <strong>Iniciar sincronización</strong>.</li>
+</ol>
+<p>Esperá a que termine (minutos si tenés muchas publicaciones). Verificá el estado en <strong>Sincronización</strong>. Si no inicia, revisá <strong>Cuentas</strong>. Esta funcionalidad es esencial para datos precisos.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 2: Ver estado -->
+                    <div class="accordion-item" itemscope>
+                        <h3 class="accordion-header" id="sincronizacion2">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSincronizacion2" aria-expanded="false" aria-controls="collapseSincronizacion2">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <span>¿Cómo verifico el estado de la sincronización en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseSincronizacion2" class="accordion-collapse collapse" data-bs-parent="#sincronizacionAccordion">
+                            <div class="accordion-body">
+                                <div>
+                                    <p>Verificar el estado asegura datos actualizados. Seguí estos pasos:</p>
+<ol>
+<li>Navegá a <strong>Sincronización</strong>.</li>
+<li>Revisá la última sincronización: fecha (por ejemplo, "2025-06-25 10:30"), estado ("Completada"), y artículos sincronizados.</li>
+<li>Buscá errores como "Límite de consultas alcanzado".</li>
+</ol>
+<p>Si está en curso, esperá antes de usar otras secciones. Si hay errores, intentá sincronizar tras 10 minutos o revisá <strong>Cuentas</strong>. Contactá a support@mldatatrends.com si persiste.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 3: Problemas con sincronización -->
+                    <div class="accordion-item" itemscope>
+                        <h3 class="accordion-header" id="sincronizacion3">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSincronizacion3" aria-expanded="false" aria-controls="collapseSincronizacion3">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <span>¿Por qué falla la sincronización de datos en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseSincronizacion3" class="accordion-collapse collapse" data-bs-parent="#sincronizacionAccordion">
+                            <div class="accordion-body">
+                                <div>
+                                    <p>Si la sincronización falla, revisá estos puntos:</p>
+<ul>
+<li><strong>Token expirado</strong>: Revinculá en <strong>Cuentas</strong>.</li>
+<li><strong>Límite de consultas</strong>: Esperá 5-10 minutos y reintentá.</li>
+<li><strong>Sin datos</strong>: Asegurá que tu cuenta tenga publicaciones o ventas.</li>
+<li><strong>Errores</strong>: Revisá <strong>Sincronización</strong> para mensajes.</li>
+</ul>
+<p>Por ejemplo, si ves "Error 429", intentá sincronizar más tarde. Contactá a support@mldatatrends.com con detalles si persiste. Una sincronización exitosa es clave.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div itemscope itemtype="https://schema.org/FAQPage">
-    <!-- Sección: SKU -->
-    <h2 class="mt-5 mb-4" id="skuAccordion">SKU</h2>
-    <div class="accordion" id="skuAccordion">
-        <!-- Pregunta 1: Ver SKU -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="sku1">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSku1" aria-expanded="false" aria-controls="collapseSku1">
-                    <i class="fas fa-barcode me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo veo los SKU de mis artículos en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseSku1" class="accordion-collapse collapse" data-bs-parent="#skuAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>La sección <strong>SKU</strong> te permite visualizar y gestionar los códigos SKU internos de tus artículos en MercadoLibre, lo que facilita el control de inventario. Basado en el <code>SkuController</code>, seguí estos pasos:</p>
-                        <ol>
-                            <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
-                            <li>Navegá a <strong>SKU</strong> en el panel de control (barra lateral).</li>
-                            <li>Verás una tabla con tus artículos, mostrando el SKU interno (por ejemplo, "ZAP123"), título (por ejemplo, "Zapatillas Nike Air"), precio, y stock.</li>
-                            <li>Podés ordenar por SKU o buscar un código específico (por ejemplo, "ZAP123") en el campo de búsqueda.</li>
-                        </ol>
-                        <p>Los datos se obtienen de la base de datos local tras sincronizar tu cuenta en <strong>Sincronización</strong>. Si no ves los SKU, asegurá que hayas vinculado tu cuenta en <strong>Cuentas</strong> y sincronizado los artículos. Esta funcionalidad es ideal para vendedores que usan códigos internos para identificar productos.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "ver sku artículos" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 2: Buscar por SKU -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="sku2">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSku2" aria-expanded="false" aria-controls="collapseSku2">
-                    <i class="fas fa-search me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo busco un artículo por SKU en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseSku2" class="accordion-collapse collapse" data-bs-parent="#skuAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Buscar un artículo por SKU te permite localizar rápidamente un producto específico. El <code>SkuController</code> soporta búsquedas dinámicas en la base de datos. Seguí estos pasos:</p>
-                        <ol>
-                            <li>En el panel, hacé clic en <strong>SKU</strong>.</li>
-                            <li>Ingresá el SKU interno en el campo de búsqueda (por ejemplo, "SAM456" para un smartphone Samsung).</li>
-                            <li>Presioná Enter o hacé clic en el ícono de lupa.</li>
-                            <li>Si el SKU existe, verás el artículo con detalles como título, precio, stock, y enlace a MercadoLibre.</li>
-                        </ol>
-                        <p>Asegurá que el SKU esté sincronizado (revisá <strong>Sincronización</strong>) y que coincida exactamente con el código ingresado. Si no aparece, verificá que la cuenta vinculada en <strong>Cuentas</strong> tenga artículos con ese SKU. Este método es útil para gestionar inventarios grandes o verificar discrepancias de stock.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "buscar por sku" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 3: Actualizar SKU -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="sku3">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSku3" aria-expanded="false" aria-controls="collapseSku3">
-                    <i class="fas fa-edit me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Puedo actualizar los SKU de mis productos en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseSku3" class="accordion-collapse collapse" data-bs-parent="#skuAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>MLDataTrends permite actualizar los SKU internos de tus productos para mantener tu inventario ordenado. Aunque el <code>SkuController</code> no detalla esta función específica en el código proporcionado, podés gestionar SKU a través de la interfaz. Seguí estos pasos:</p>
-                        <ol>
-                            <li>Navegá a <strong>SKU</strong> en el panel de control.</li>
-                            <li>Buscá el artículo usando el campo de búsqueda (por ejemplo, "ZAP123").</li>
-                            <li>Hacé clic en el artículo para abrir los detalles y seleccioná la opción de edición (si está disponible).</li>
-                            <li>Ingresá el nuevo SKU (por ejemplo, cambiar "ZAP123" a "ZAP789") y guardá los cambios.</li>
-                        </ol>
-                        <p>Los cambios se sincronizarán con tu base de datos local, pero no modifican los SKU en MercadoLibre directamente. Asegurá que los nuevos SKU sean únicos para evitar duplicados. Si no ves la opción de edición, contactá a support@mldatatrends.com para confirmar si esta función está habilitada en tu plan.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "actualizar sku producto" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sección: Ventas -->
-    <h2 class="mt-5 mb-4" id="ventasAccordion">Ventas</h2>
-    <div class="accordion" id="ventasAccordion">
-        <!-- Pregunta 1: Ver ventas -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="ventas1">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVentas1" aria-expanded="false" aria-controls="collapseVentas1">
-                    <i class="fas fa-shopping-cart me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo veo mis ventas de MercadoLibre en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseVentas1" class="accordion-collapse collapse" data-bs-parent="#ventasAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>La sección <strong>Ventas</strong> te muestra un resumen detallado de tus órdenes en MercadoLibre, sincronizadas vía el <code>SalesController</code>. Esto te ayuda a monitorear tus ingresos y rendimiento. Seguí estos pasos:</p>
-                        <ol>
-                            <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
-                            <li>Hacé clic en <strong>Ventas</strong> en la barra lateral.</li>
-                            <li>Verás una tabla con tus órdenes, incluyendo ID de orden (por ejemplo, "2000001234567890"), fecha de venta (por ejemplo, "2025-06-20"), producto (por ejemplo, "Auriculares Sony"), cantidad, y monto total.</li>
-                            <li>Podés filtrar por fecha (por ejemplo, últimos 30 días) o estado (por ejemplo, "Pagado").</li>
-                        </ol>
-                        <p>Los datos provienen de la tabla <code>ordenes</code> tras sincronizar en <strong>Sincronización</strong>. Si no ves ventas, asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> y que haya órdenes recientes. Esta sección es clave para analizar tu desempeño comercial.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "ver ventas mercadolibre" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 2: Filtrar ventas -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="ventas2">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVentas2" aria-expanded="false" aria-controls="collapseVentas2">
-                    <i class="fas fa-filter me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo filtro mis ventas por fecha o producto en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseVentas2" class="accordion-collapse collapse" data-bs-parent="#ventasAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Filtrar ventas te permite analizar órdenes específicas por fecha o producto, usando el <code>SalesController</code>. Seguí estos pasos:</p>
-                        <ol>
-                            <li>Navegá a <strong>Ventas</strong> en el panel.</li>
-                            <li>En el panel de filtros, seleccioná un rango de fechas (por ejemplo, desde "2025-06-01" hasta "2025-06-25").</li>
-                            <li>Ingresá un título de producto (por ejemplo, "Zapatillas Nike") o SKU (por ejemplo, "ZAP123") en el campo de búsqueda.</li>
-                            <li>Hacé clic en <strong>Aplicar filtros</strong> para ver las órdenes que coincidan.</li>
-                        </ol>
-                        <p>Por ejemplo, podés ver todas las ventas de zapatillas en junio de 2025. Los datos se obtienen de la tabla <code>ordenes</code>. Si no hay resultados, verificá que los datos estén sincronizados en <strong>Sincronización</strong> o ajustá los filtros. Esta funcionalidad es útil para informes mensuales o seguimiento de productos estrella.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "filtrar ventas por fecha" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 3: Problemas con ventas -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="ventas3">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVentas3" aria-expanded="false" aria-controls="collapseVentas3">
-                    <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Por qué no veo mis ventas recientes en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseVentas3" class="accordion-collapse collapse" data-bs-parent="#ventasAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Si no ves tus ventas recientes en <strong>Ventas</strong>, puede haber problemas con la sincronización o configuración. El <code>SalesController</code> depende de datos de la tabla <code>ordenes</code>. Revisá estos puntos:</p>
-                        <ul>
-                            <li><strong>Sincronización pendiente</strong>: Verificá en <strong>Sincronización</strong> si el proceso está completo. Si está en curso, esperá unos minutos.</li>
-                            <li><strong>Cuenta no vinculada</strong>: Asegurá que tu cuenta de MercadoLibre esté activa en <strong>Cuentas</strong>. Si ves "Token expirado", revinculá.</li>
-                            <li><strong>Filtros aplicados</strong>: Quitá filtros de fecha o producto haciendo clic en "Restablecer filtros".</li>
-                            <li><strong>Retraso en API</strong>: La API de MercadoLibre puede demorar en reflejar ventas recientes. Intentá sincronizar nuevamente tras 10 minutos.</li>
-                        </ul>
-                        <p>Si el problema persiste, revisá las notificaciones en <strong>Sincronización</strong> para errores como "API rate limit exceeded". Contactá a support@mldatatrends.com con detalles del problema.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "no veo ventas recientes" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sección: Promociones -->
-    <h2 class="mt-5 mb-4" id="promocionesAccordion">Promociones</h2>
-    <div class="accordion" id="promocionesAccordion">
-        <!-- Pregunta 1: Ver promociones -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="promociones1">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromociones1" aria-expanded="false" aria-controls="collapsePromociones1">
-                    <i class="fas fa-tags me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo veo los productos en promoción en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapsePromociones1" class="accordion-collapse collapse" data-bs-parent="#promocionesAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>La sección <strong>Promociones</strong> te muestra los productos con descuentos activos en MercadoLibre, usando el <code>PromotionsController</code>. Esto te ayuda a monitorear tus campañas promocionales. Seguí estos pasos:</p>
-                        <ol>
-                            <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
-                            <li>Hacé clic en <strong>Promociones</strong> en el panel de control.</li>
-                            <li>Verás una lista de productos en promoción, con detalles como título (por ejemplo, "Smart TV 50''"), porcentaje de descuento (por ejemplo, "20%"), y precio promocional.</li>
-                            <li>Podés filtrar por cuenta de MercadoLibre si tenés varias vinculadas.</li>
-                        </ol>
-                        <p>Los datos se extraen de la tabla <code>articulos</code> (campo <code>en_promocion</code>) tras sincronizar en <strong>Sincronización</strong>. Si no ves promociones, verificá que tengas descuentos activos en MercadoLibre y que los datos estén sincronizados. Esta sección es útil para evaluar el impacto de tus descuentos.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "ver productos en promoción" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 2: Filtrar promociones -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="promociones2">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromociones2" aria-expanded="false" aria-controls="collapsePromociones2">
-                    <i class="fas fa-filter me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo filtro productos en promoción por porcentaje de descuento?</span>
-                </button>
-            </h3>
-            <div id="collapsePromociones2" class="accordion-collapse collapse" data-bs-parent="#promocionesAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Filtrar productos en promoción por porcentaje de descuento te permite enfocarte en las ofertas más atractivas. El <code>PromotionsController</code> usa el campo <code>descuento_porcentaje</code> de la tabla <code>articulos</code>. Seguí estos pasos:</p>
-                        <ol>
-                            <li>Navegá a <strong>Promociones</strong> en el panel.</li>
-                            <li>En el panel de filtros, seleccioná un rango de descuento (por ejemplo, "Mayor a 15%").</li>
-                            <li>Podés combinar con una búsqueda por título (por ejemplo, "Televisor").</li>
-                            <li>Hacé clic en <strong>Aplicar filtros</strong> para ver los resultados.</li>
-                        </ol>
-                        <p>Por ejemplo, podés listar productos con descuentos mayores al 20%, como "Smart TV 50'' (25% off)". Asegurá que los datos estén sincronizados en <strong>Sincronización</strong>. Si no hay resultados, revisá que tengas promociones activas en MercadoLibre. Esta funcionalidad es ideal para optimizar campañas promocionales.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "filtrar promociones descuento" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 3: Problemas con promociones -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="promociones3">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromociones3" aria-expanded="false" aria-controls="collapsePromociones3">
-                    <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Por qué no veo mis promociones en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapsePromociones3" class="accordion-collapse collapse" data-bs-parent="#promocionesAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Si no ves tus promociones en <strong>Promociones</strong>, puede haber problemas con la sincronización o configuración. El <code>PromotionsController</code> depende de datos de la tabla <code>articulos</code>. Revisá estos puntos:</p>
-                        <ul>
-                            <li><strong>Sin promociones activas</strong>: Confirmá en MercadoLibre que tenés descuentos activos en tus publicaciones.</li>
-                            <li><strong>Sincronización incompleta</strong>: Verificá en <strong>Sincronización</strong> si el proceso terminó. Si está en curso, esperá.</li>
-                            <li><strong>Cuenta no vinculada</strong>: Asegurá que tu cuenta esté activa en <strong>Cuentas</strong>. Revinculá si es necesario.</li>
-                            <li><strong>Filtros aplicados</strong>: Quitá filtros de descuento o búsqueda haciendo clic en "Restablecer filtros".</li>
-                        </ul>
-                        <p>Si el problema persiste, revisá las notificaciones en <strong>Sincronización</strong> para errores específicos. Intentá sincronizar nuevamente o contactá a support@mldatatrends.com con detalles de la promoción que no aparece.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "no veo promociones mldata" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sección: Catálogo -->
-    <h2 class="mt-5 mb-4" id="catalogoAccordion">Catálogo</h2>
-    <div class="accordion" id="catalogoAccordion">
-        <!-- Pregunta 1: Ver catálogo -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="catalogo1">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCatalogo1" aria-expanded="false" aria-controls="collapseCatalogo1">
-                    <i class="fas fa-book me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo accedo al catálogo de mis productos en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseCatalogo1" class="accordion-collapse collapse" data-bs-parent="#catalogoAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>La sección <strong>Catálogo</strong> te muestra un listado de tus productos activos en MercadoLibre, con filtros avanzados. Usa el <code>CatalogoController</code> y <code>CatalogoService::getArticulosEnCatalogo</code>. Seguí estos pasos:</p>
-                        <ol>
-                            <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
-                            <li>Hacé clic en <strong>Catálogo</strong> en la barra lateral.</li>
-                            <li>Verás una tabla con artículos, incluyendo ID (por ejemplo, "MLA123456789"), título (por ejemplo, "Smartphone Samsung"), precio, stock, tipo de publicación, y cuenta ML (por ejemplo, "TiendaEjemplo").</li>
-                            <li>Podés paginar (10 artículos por página) o ajustar el límite de resultados.</li>
-                        </ol>
-                        <p>Los datos provienen de la tabla <code>articulos</code> (campo <code>en_catalogo=1</code>) tras sincronizar en <strong>Sincronización</strong>. Si el catálogo está vacío, verificá que tu cuenta esté vinculada en <strong>Cuentas</strong> y sincronizada. Esta sección es ideal para gestionar tu inventario completo.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "ver catálogo productos" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 2: Filtrar catálogo -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="catalogo2">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCatalogo2" aria-expanded="false" aria-controls="collapseCatalogo2">
-                    <i class="fas fa-filter me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo filtro productos en el catálogo por cuenta o búsqueda?</span>
-                </button>
-            </h3>
-            <div id="collapseCatalogo2" class="accordion-collapse collapse" data-bs-parent="#catalogoAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Filtrar productos en <strong>Catálogo</strong> te permite encontrar artículos específicos por cuenta de MercadoLibre o palabra clave. El <code>CatalogoService::getArticulosEnCatalogo</code> soporta filtros dinámicos. Seguí estos pasos:</p>
-                        <ol>
-                            <li>Navegá a <strong>Catálogo</strong> en el panel.</li>
-                            <li>Seleccioná una cuenta ML en el menú desplegable (por ejemplo, "TiendaEjemplo").</li>
-                            <li>Ingresá una palabra clave en el campo de búsqueda (por ejemplo, "Zapatillas" o SKU "ZAP123").</li>
-                            <li>Hacé clic en <strong>Aplicar filtros</strong> para ver los resultados.</li>
-                        </ol>
-                        <p>Por ejemplo, podés listar solo productos de "TiendaEjemplo" que contengan "Zapatillas" en el título. Los datos se obtienen de la tabla <code>articulos</code>. Si no hay resultados, quitá los filtros o verificá la sincronización en <strong>Sincronización</strong>. Esta funcionalidad es útil para vendedores con múltiples cuentas o catálogos grandes.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "filtrar catálogo cuenta" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 3: Analizar competencia -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="catalogo3">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCatalogo3" aria-expanded="false" aria-controls="collapseCatalogo3">
-                    <i class="fas fa-chart-line me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo analizo la competencia de un producto en el catálogo?</span>
-                </button>
-            </h3>
-            <div id="collapseCatalogo3" class="accordion-collapse collapse" data-bs-parent="#catalogoAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>MLDataTrends te permite analizar la competencia de un producto específico usando la API de MercadoLibre (<code>price_to_win</code>), implementada en <code>CatalogoService::getCompetenciaArticulo</code>. Seguí estos pasos:</p>
-                        <ol>
-                            <li>En <strong>Catálogo</strong>, buscá un producto por título o ID (por ejemplo, "MLA987654321").</li>
-                            <li>Hacé clic en el producto para ver detalles.</li>
-                            <li>Seleccioná <strong>Ver competencia</strong> para cargar el análisis.</li>
-                            <li>Verás datos como precios de competidores, stock, y estrategias de otros vendedores para el mismo producto.</li>
-                        </ol>
-                        <p>Esta funcionalidad usa el endpoint <code>https://api.mercadolibre.com/items/{id}/price_to_win</code>. Asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> y que el producto esté sincronizado. Si no carga la competencia, revisá las notificaciones en <strong>Sincronización</strong> para errores de API. Es ideal para ajustar precios y mejorar tu posicionamiento.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "analizar competencia catálogo" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sección: Estadísticas -->
-    <h2 class="mt-5 mb-4" id="estadisticasAccordion">Estadísticas</h2>
-    <div class="accordion" id="estadisticasAccordion">
-        <!-- Pregunta 1: Ver estadísticas -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="estadisticas1">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEstadisticas1" aria-expanded="false" aria-controls="collapseEstadisticas1">
-                    <i class="fas fa-chart-bar me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo accedo a las estadísticas de mi cuenta en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseEstadisticas1" class="accordion-collapse collapse" data-bs-parent="#estadisticasAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>La sección <strong>Estadísticas</strong> te ofrece métricas detalladas sobre tu desempeño en MercadoLibre, usando el <code>EstadisticasController</code> y <code>EstadisticasService</code>. Seguí estos pasos:</p>
-                        <ol>
-                            <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
-                            <li>Hacé clic en <strong>Estadísticas</strong> en la barra lateral.</li>
-                            <li>Verás métricas como stock total (por ejemplo, 500 unidades), productos en promoción (por ejemplo, "TV 50'' con 20% off"), ventas por período (por ejemplo, $100,000 en junio), y tasa de conversión.</li>
-                            <li>Podés ajustar el rango de fechas (por ejemplo, últimos 30 días).</li>
-                        </ol>
-                        <p>Los datos provienen de las tablas <code>articulos</code> y <code>ordenes</code> tras sincronizar en <strong>Sincronización</strong>. Si no ves estadísticas, asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong>. Esta sección es clave para tomar decisiones estratégicas basadas en datos.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "ver estadísticas cuenta" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 2: Stock crítico -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="estadisticas2">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEstadisticas2" aria-expanded="false" aria-controls="collapseEstadisticas2">
-                    <i class="fas fa-exclamation-circle me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo identifico productos con stock crítico en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseEstadisticas2" class="accordion-collapse collapse" data-bs-parent="#estadisticasAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Identificar productos con stock crítico te ayuda a evitar perder ventas. El <code>EstadisticasService::getStockCritico</code> detecta artículos con menos de 5 unidades en fulfillment o depósito. Seguí estos pasos:</p>
-                        <ol>
-                            <li>Navegá a <strong>Estadísticas</strong> en el panel.</li>
-                            <li>Buscá la sección <strong>Stock Crítico</strong> en el dashboard.</li>
-                            <li>Verás una lista de productos con stock bajo, como "Auriculares Sony" con 3 unidades en fulfillment.</li>
-                            <li>Hacé clic en un producto para ver detalles y reabastecer si es necesario.</li>
-                        </ol>
-                        <p>Los datos se obtienen de la tabla <code>articulos</code>. Si no aparecen productos, puede que no tengas stock crítico o que los datos no estén sincronizados (revisá <strong>Sincronización</strong>). Esta funcionalidad es esencial para gestionar inventarios y mantener tus publicaciones activas.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "stock crítico productos" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 3: Tasa de conversión -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="estadisticas3">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEstadisticas3" aria-expanded="false" aria-controls="collapseEstadisticas3">
-                    <i class="fas fa-percentage me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo veo la tasa de conversión de mis productos en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseEstadisticas3" class="accordion-collapse collapse" data-bs-parent="#estadisticasAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>La tasa de conversión mide cuántas visitas se convierten en ventas, calculada por <code>EstadisticasService::getTasaConversionPorProducto</code>. Seguí estos pasos:</p>
-                        <ol>
-                            <li>En <strong>Estadísticas</strong>, buscá la sección <strong>Tasa de Conversión</strong>.</li>
-                            <li>Seleccioná un rango de fechas (por ejemplo, "2025-06-01 a 2025-06-25").</li>
-                            <li>Verás una lista de productos con su tasa de conversión (por ejemplo, "Zapatillas Nike: 5%").</li>
-                            <li>Analizá productos con tasas bajas para mejorar descripciones o precios.</li>
-                        </ol>
-                        <p>La tasa se calcula dividiendo ventas entre visitas (obtenidas vía API de MercadoLibre). Asegurá que los datos estén sincronizados en <strong>Sincronización</strong>. Si no ves tasas, verificá que tengas ventas recientes o que la API esté activa. Esta métrica es clave para optimizar tu estrategia de ventas.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "tasa conversión productos" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sección: Sincronización -->
-    <h2 class="mt-5 mb-4" id="sincronizacionAccordion">Sincronización</h2>
-    <div class="accordion" id="sincronizacionAccordion">
-        <!-- Pregunta 1: Iniciar sincronización -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="sincronizacion1">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSincronizacion1" aria-expanded="false" aria-controls="collapseSincronizacion1">
-                    <i class="fas fa-sync me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo inicio la sincronización de datos con MercadoLibre en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseSincronizacion1" class="accordion-collapse collapse" data-bs-parent="#sincronizacionAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Sincronizar datos con MercadoLibre actualiza tus publicaciones, ventas, y estadísticas en MLDataTrends, usando el <code>ConsultaMercadoLibreService</code>. Seguí estos pasos:</p>
-                        <ol>
-                            <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
-                            <li>Navegá a <strong>Sincronización</strong> en el panel.</li>
-                            <li>Seleccioná la cuenta de MercadoLibre vinculada (por ejemplo, "TiendaEjemplo").</li>
-                            <li>Hacé clic en <strong>Iniciar sincronización</strong> y esperá a que termine (puede tomar minutos si tenés muchas publicaciones).</li>
-                        </ol>
-                        <p>El proceso descarga datos de publicaciones, órdenes, y promociones a las tablas <code>articulos</code> y <code>ordenes</code>. Verificá el estado en la sección <strong>Sincronización</strong>. Si no inicia, asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> y que el token esté activo. La sincronización es esencial para todas las funcionalidades de MLDataTrends.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "iniciar sincronización mercadolibre" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 2: Ver estado -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="sincronizacion2">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSincronizacion2" aria-expanded="false" aria-controls="collapseSincronizacion2">
-                    <i class="fas fa-info-circle me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo verifico el estado de la sincronización en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseSincronizacion2" class="accordion-collapse collapse" data-bs-parent="#sincronizacionAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Verificar el estado de la sincronización te permite saber si tus datos están actualizados. El <code>ConsultaMercadoLibreService</code> registra el progreso. Seguí estos pasos:</p>
-                        <ol>
-                            <li>Navegá a <strong>Sincronización</strong> en el panel de control.</li>
-                            <li>Buscá el resumen de la última sincronización, que muestra la fecha (por ejemplo, "2025-06-25 10:30"), estado ("Completada" o "En curso"), y cantidad de artículos sincronizados.</li>
-                            <li>Si hay errores, verás mensajes como "API rate limit exceeded".</li>
-                        </ol>
-                        <p>Si la sincronización está en curso, esperá a que termine antes de usar otras secciones como <strong>Ventas</strong> o <strong>Catálogo</strong>. Si ves errores, intentá sincronizar nuevamente tras 10 minutos o revinculá tu cuenta en <strong>Cuentas</strong>. Esta funcionalidad asegura que tus datos sean precisos y actuales.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "estado sincronización mldata" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 3: Problemas con sincronización -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="sincronizacion3">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSincronizacion3" aria-expanded="false" aria-controls="collapseSincronizacion3">
-                    <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Por qué falla la sincronización de datos en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseSincronizacion3" class="accordion-collapse collapse" data-bs-parent="#sincronizacionAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Si la sincronización falla, puede haber problemas con la API de MercadoLibre o la configuración. El <code>ConsultaMercadoLibreService</code> registra errores. Revisá estos puntos:</p>
-                        <ul>
-                            <li><strong>Token expirado</strong>: Revinculá tu cuenta en <strong>Cuentas</strong> si ves "Token expirado".</li>
-                            <li><strong>Límite de API</strong>: La API de MercadoLibre tiene límites de consultas. Esperá 5-10 minutos y reintentá.</li>
-                            <li><strong>Cuenta sin datos</strong>: Asegurá que tu cuenta de MercadoLibre tenga publicaciones o ventas activas.</li>
-                            <li><strong>Errores de servidor</strong>: Revisá las notificaciones en <strong>Sincronización</strong> para mensajes específicos.</li>
-                        </ul>
-                        <p>Si el problema persiste, contactá a support@mldatatrends.com con el mensaje de error. Intentá sincronizar en horarios de menor tráfico (por ejemplo, madrugada). Una sincronización exitosa es crucial para que todas las secciones muestren datos actualizados.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "sincronización falla mldata" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div itemscope itemtype="https://schema.org/FAQPage">
-    <!-- Sección: Precios -->
-    <h2 class="mt-5 mb-4" id="preciosAccordion">Precios</h2>
-    <div class="accordion" id="preciosAccordion">
-        <!-- Pregunta 1: Ver precios -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="precios1">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrecios1" aria-expanded="false" aria-controls="collapsePrecios1">
-                    <i class="fas fa-dollar-sign me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo veo los precios de mis productos en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapsePrecios1" class="accordion-collapse collapse" data-bs-parent="#preciosAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>La sección <strong>Precios</strong> te permite visualizar los precios de tus productos en MercadoLibre, sincronizados vía la API. Basado en el <code>CatalogoService</code>, seguí estos pasos:</p>
-                        <ol>
-                            <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
-                            <li>Navegá a <strong>Catálogo</strong> o <strong>Precios</strong> en el panel de control.</li>
-                            <li>Verás una tabla con tus artículos, mostrando el ID (por ejemplo, "MLA123456789"), título (por ejemplo, "Smartphone Samsung"), precio actual (por ejemplo, $50,000), y precio promocional si aplica.</li>
-                            <li>Podés filtrar por cuenta ML o buscar por título/SKU (por ejemplo, "ZAP123").</li>
-                        </ol>
-                        <p>Los datos provienen de la tabla <code>articulos</code> tras sincronizar en <strong>Sincronización</strong>. Si los precios no aparecen, verificá que tu cuenta esté vinculada en <strong>Cuentas</strong> y sincronizada. Esta funcionalidad es clave para monitorear precios y comparar con la competencia.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "ver precios productos" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 2: Comparar precios -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="precios2">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrecios2" aria-expanded="false" aria-controls="collapsePrecios2">
-                    <i class="fas fa-balance-scale me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo comparo los precios de mis productos con los de la competencia?</span>
-                </button>
-            </h3>
-            <div id="collapsePrecios2" class="accordion-collapse collapse" data-bs-parent="#preciosAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>MLDataTrends te ayuda a comparar precios con competidores usando la API <code>price_to_win</code> del <code>CatalogoService::getCompetenciaArticulo</code>. Seguí estos pasos:</p>
-                        <ol>
-                            <li>En <strong>Catálogo</strong>, buscá un producto por título o ID (por ejemplo, "MLA987654321").</li>
-                            <li>Hacé clic en el producto y seleccioná <strong>Ver competencia</strong>.</li>
-                            <li>Verás una tabla con precios de competidores, stock disponible, y tipo de publicación (por ejemplo, "Clásica" o "Premium").</li>
-                            <li>Analizá si tu precio (por ejemplo, $45,000) es competitivo frente al promedio del mercado.</li>
-                        </ol>
-                        <p>Los datos se obtienen del endpoint <code>https://api.mercadolibre.com/items/{id}/price_to_win</code>. Asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> y sincronizada en <strong>Sincronización</strong>. Si no carga la comparación, revisá las notificaciones para errores de API. Esta herramienta es ideal para ajustar precios y ganar visibilidad.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "comparar precios competencia" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 3: Ajustar precios -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="precios3">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrecios3" aria-expanded="false" aria-controls="collapsePrecios3">
-                    <i class="fas fa-edit me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Puedo ajustar los precios de mis productos en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapsePrecios3" class="accordion-collapse collapse" data-bs-parent="#preciosAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Ajustar precios en MLDataTrends te permite optimizar tu estrategia basándote en datos de competencia. Aunque no hay un controlador específico en el código proporcionado, suponemos que la funcionalidad está disponible en el panel. Seguí estos pasos:</p>
-                        <ol>
-                            <li>Navegá a <strong>Catálogo</strong> o <strong>Precios</strong>.</li>
-                            <li>Buscá un producto por título o SKU (por ejemplo, "ZAP123").</li>
-                            <li>Hacé clic en el producto y seleccioná <strong>Editar precio</strong>.</li>
-                            <li>Ingresá el nuevo precio (por ejemplo, cambiar de $50,000 a $48,000) y guardá.</li>
-                        </ol>
-                        <p>Los cambios se sincronizan con MercadoLibre vía la API. Verificá que tu cuenta esté vinculada en <strong>Cuentas</strong> y que la sincronización esté completa. Si no ves la opción de edición, contactá a support@mldatatrends.com para confirmar si está habilitada en tu plan. Asegurá que los precios sean competitivos basándote en el análisis de <strong>Ver competencia</strong>.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "ajustar precios mldata" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sección: Sugerencias -->
-    <h2 class="mt-5 mb-4" id="sugerenciasAccordion">Sugerencias</h2>
-    <div class="accordion" id="sugerenciasAccordion">
-        <!-- Pregunta 1: Ver sugerencias -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="sugerencias1">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSugerencias1" aria-expanded="false" aria-controls="collapseSugerencias1">
-                    <i class="fas fa-lightbulb me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo veo las sugerencias para mejorar mis publicaciones en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseSugerencias1" class="accordion-collapse collapse" data-bs-parent="#sugerenciasAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>MLDataTrends ofrece sugerencias automáticas para optimizar tus publicaciones, basadas en métricas del <code>EstadisticasService</code> (como <code>getTasaConversionPorProducto</code>). Seguí estos pasos:</p>
-                        <ol>
-                            <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
-                            <li>Navegá a <strong>Sugerencias</strong> en el panel de control.</li>
-                            <li>Verás recomendaciones como ajustar precios (por ejemplo, bajar el precio de "Zapatillas Nike" de $60,000 a $55,000) o aumentar stock de productos con alta demanda.</li>
-                            <li>Hacé clic en una sugerencia para ver detalles y aplicarla.</li>
-                        </ol>
-                        <p>Las sugerencias se generan analizando tasas de conversión, stock, y datos de competencia. Asegurá que los datos estén sincronizados en <strong>Sincronización</strong>. Si no ves sugerencias, verificá que tu cuenta esté vinculada en <strong>Cuentas</strong>. Esta sección te ayuda a mejorar ventas y posicionamiento en MercadoLibre.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "ver sugerencias publicaciones" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 2: Aplicar sugerencias -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="sugerencias2">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSugerencias2" aria-expanded="false" aria-controls="collapseSugerencias2">
-                    <i class="fas fa-check-circle me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo aplico las sugerencias de MLDataTrends a mis productos?</span>
-                </button>
-            </h3>
-            <div id="collapseSugerencias2" class="accordion-collapse collapse" data-bs-parent="#sugerenciasAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Aplicar sugerencias te permite optimizar publicaciones directamente desde MLDataTrends. Basado en datos del <code>EstadisticasService</code>, seguí estos pasos:</p>
-                        <ol>
-                            <li>En <strong>Sugerencias</strong>, revisá las recomendaciones (por ejemplo, "Aumentar stock de Auriculares Sony a 10 unidades").</li>
-                            <li>Hacé clic en la sugerencia para ver detalles, como el análisis de demanda o competencia.</li>
-                            <li>Seleccioná <strong>Aplicar</strong> para ajustar el precio o stock (por ejemplo, cambiar precio de $45,000 a $42,000).</li>
-                            <li>Confirmá los cambios, que se sincronizarán con MercadoLibre.</li>
-                        </ol>
-                        <p>Las sugerencias usan métricas como tasas de conversión y stock crítico. Verificá que los datos estén actualizados en <strong>Sincronización</strong>. Si no podés aplicar cambios, revisá tu cuenta en <strong>Cuentas</strong> o contactá a support@mldatatrends.com. Esta funcionalidad es ideal para mejorar el rendimiento de tus publicaciones.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "aplicar sugerencias mldata" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 3: Problemas con sugerencias -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="sugerencias3">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSugerencias3" aria-expanded="false" aria-controls="collapseSugerencias3">
-                    <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Por qué no veo sugerencias para mis productos en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseSugerencias3" class="accordion-collapse collapse" data-bs-parent="#sugerenciasAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Si no ves sugerencias en <strong>Sugerencias</strong>, puede haber problemas con los datos o la configuración. Las sugerencias dependen del <code>EstadisticasService</code>. Revisá estos puntos:</p>
-                        <ul>
-                            <li><strong>Sincronización incompleta</strong>: Verificá en <strong>Sincronización</strong> que los datos de ventas y publicaciones estén actualizados.</li>
-                            <li><strong>Pocos datos</strong>: Si tenés pocas ventas o visitas, MLDataTrends puede no generar sugerencias. Aumentá la actividad en MercadoLibre.</li>
-                            <li><strong>Cuenta no vinculada</strong>: Asegurá que tu cuenta esté activa en <strong>Cuentas</strong>.</li>
-                            <li><strong>Filtros aplicados</strong>: Quitá filtros en <strong>Sugerencias</strong> para ver todas las recomendaciones.</li>
-                        </ul>
-                        <p>Intentá sincronizar nuevamente o contactá a support@mldatatrends.com si el problema persiste. Asegurá que tus publicaciones tengan datos suficientes (ventas, visitas) para generar sugerencias útiles.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "no veo sugerencias mldata" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sección: Configuración -->
-    <h2 class="mt-5 mb-4" id="configuracionAccordion">Configuración</h2>
-    <div class="accordion" id="configuracionAccordion">
-        <!-- Pregunta 1: Ajustar preferencias -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="configuracion1">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConfiguracion1" aria-expanded="false" aria-controls="collapseConfiguracion1">
-                    <i class="fas fa-cog me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo ajusto las preferencias de mi cuenta en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseConfiguracion1" class="accordion-collapse collapse" data-bs-parent="#configuracionAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>La sección <strong>Configuración</strong> te permite personalizar tu experiencia en MLDataTrends, como notificaciones o frecuencia de sincronización. Seguí estos pasos:</p>
-                        <ol>
-                            <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
-                            <li>Navegá a <strong>Configuración</strong> en el panel (generalmente en la barra lateral o perfil).</li>
-                            <li>Ajustá opciones como notificaciones por correo (por ejemplo, alertas de stock crítico) o frecuencia de sincronización (por ejemplo, diaria).</li>
-                            <li>Guardá los cambios para aplicarlos.</li>
-                        </ol>
-                        <p>Las preferencias se guardan localmente y no afectan MercadoLibre. Asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> para que las configuraciones sean efectivas. Si no ves la sección <strong>Configuración</strong>, contactá a support@mldatatrends.com para verificar tu plan. Esta funcionalidad te ayuda a adaptar MLDataTrends a tus necesidades.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "ajustar preferencias mldata" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 2: Gestionar notificaciones -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="configuracion2">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConfiguracion2" aria-expanded="false" aria-controls="collapseConfiguracion2">
-                    <i class="fas fa-bell me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Cómo configuro notificaciones en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseConfiguracion2" class="accordion-collapse collapse" data-bs-parent="#configuracionAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Configurar notificaciones en MLDataTrends te mantiene informado sobre eventos clave, como stock crítico o ventas. Seguí estos pasos:</p>
-                        <ol>
-                            <li>En <strong>Configuración</strong>, buscá la sección <strong>Notificaciones</strong>.</li>
-                            <li>Seleccioná los eventos que querés monitorear (por ejemplo, "Stock menor a 5 unidades" o "Nueva venta").</li>
-                            <li>Elegí el método de notificación (por ejemplo, correo a "tutienda@gmail.com" o notificaciones push).</li>
-                            <li>Guardá los cambios.</li>
-                        </ol>
-                        <p>Las notificaciones dependen de datos sincronizados vía <code>ConsultaMercadoLibreService</code>. Asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> y que la sincronización esté activa. Si no recibís notificaciones, verificá tu correo en <strong>Configuración</strong> o revisá la carpeta de spam. Contactá a support@mldatatrends.com si el problema persiste. Esta funcionalidad es útil para estar al tanto de tu negocio en tiempo real.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "configurar notificaciones mldata" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Pregunta 3: Problemas con configuración -->
-        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 class="accordion-header" id="configuracion3">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConfiguracion3" aria-expanded="false" aria-controls="collapseConfiguracion3">
-                    <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
-                    <span itemprop="name">¿Por qué no puedo cambiar la configuración en MLDataTrends?</span>
-                </button>
-            </h3>
-            <div id="collapseConfiguracion3" class="accordion-collapse collapse" data-bs-parent="#configuracionAccordion">
-                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <div itemprop="text">
-                        <p>Si no podés cambiar la configuración en <strong>Configuración</strong>, puede haber problemas con tu cuenta o permisos. Revisá estos puntos:</p>
-                        <ul>
-                            <li><strong>Cuenta no vinculada</strong>: Verificá en <strong>Cuentas</strong> que tu cuenta de MercadoLibre esté activa.</li>
-                            <li><strong>Permisos limitados</strong>: Algunos planes de MLDataTrends restringen ciertas configuraciones. Contactá a support@mldatatrends.com para confirmar.</li>
-                            <li><strong>Error de sincronización</strong>: Asegurá que los datos estén actualizados en <strong>Sincronización</strong>.</li>
-                            <li><strong>Problemas técnicos</strong>: Revisá las notificaciones en el panel para mensajes de error.</li>
-                        </ul>
-                        <p>Intentá guardar los cambios nuevamente tras verificar tu cuenta. Si el problema persiste, enviá un correo a support@mldatatrends.com con detalles del error. Esta sección es clave para personalizar tu experiencia en MLDataTrends.</p>
-                        <p><strong>Tidio trigger sugerido</strong>: "problemas configuración mldata" → Mostrar esta FAQ.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
             <div class="text-center mt-5">
                 <p><a href="{{ url('/') }}" class="btn btn-primary">Volver al home</a></p>
