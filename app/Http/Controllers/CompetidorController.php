@@ -180,20 +180,24 @@ class CompetidorController extends Controller
             'selected_item_ids' => $selectedItemIds,
         ]);
 
-        // Actualizar solo los ítems seleccionados
-        $updatedCount = 0;
-        if (!empty($selectedItemIds)) {
-            $updatedCount = \App\Models\ItemCompetidor::whereIn('competidor_id', $competidores)
-                ->whereIn('item_id', $selectedItemIds)
-                ->update(['following' => true]);
+        // Obtener los ítems de la página actual (para detectar deselecciones)
+        $currentPageItems = \App\Models\ItemCompetidor::whereIn('competidor_id', $competidores)
+            ->whereIn('item_id', array_keys($followData))
+            ->get();
 
-            \Log::info("Ítems marcados como seguidos", [
-                'updated_count' => $updatedCount,
-                'selected_item_ids' => $selectedItemIds,
-            ]);
+        $updatedCount = 0;
+        foreach ($currentPageItems as $item) {
+            $isFollowing = in_array($item->item_id, $selectedItemIds);
+            if ($item->following !== $isFollowing) {
+                $item->update(['following' => $isFollowing]);
+                $updatedCount++;
+                \Log::info("Estado de seguimiento actualizado", [
+                    'item_id' => $item->item_id,
+                    'following' => $isFollowing,
+                ]);
+            }
         }
 
-        // Los ítems no incluidos en el formulario no se modifican
         \Log::info("Método follow completado", ['updated_count' => $updatedCount]);
 
         return redirect()->route('competidores.index')->with('success', "Se actualizaron $updatedCount publicaciones como seguidas.");
