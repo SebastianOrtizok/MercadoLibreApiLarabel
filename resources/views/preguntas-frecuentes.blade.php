@@ -856,6 +856,238 @@
         </div>
     </div>
 </div>
+<div itemscope itemtype="https://schema.org/FAQPage">
+    <!-- Sección: Precios -->
+    <h2 class="mt-5 mb-4" id="preciosAccordion">Precios</h2>
+    <div class="accordion" id="preciosAccordion">
+        <!-- Pregunta 1: Ver precios -->
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 class="accordion-header" id="precios1">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrecios1" aria-expanded="false" aria-controls="collapsePrecios1">
+                    <i class="fas fa-dollar-sign me-2" aria-hidden="true"></i>
+                    <span itemprop="name">¿Cómo veo los precios de mis productos en MLDataTrends?</span>
+                </button>
+            </h3>
+            <div id="collapsePrecios1" class="accordion-collapse collapse" data-bs-parent="#preciosAccordion">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        <p>La sección <strong>Precios</strong> te permite visualizar los precios de tus productos en MercadoLibre, sincronizados vía la API. Basado en el <code>CatalogoService</code>, seguí estos pasos:</p>
+                        <ol>
+                            <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
+                            <li>Navegá a <strong>Catálogo</strong> o <strong>Precios</strong> en el panel de control.</li>
+                            <li>Verás una tabla con tus artículos, mostrando el ID (por ejemplo, "MLA123456789"), título (por ejemplo, "Smartphone Samsung"), precio actual (por ejemplo, $50,000), y precio promocional si aplica.</li>
+                            <li>Podés filtrar por cuenta ML o buscar por título/SKU (por ejemplo, "ZAP123").</li>
+                        </ol>
+                        <p>Los datos provienen de la tabla <code>articulos</code> tras sincronizar en <strong>Sincronización</strong>. Si los precios no aparecen, verificá que tu cuenta esté vinculada en <strong>Cuentas</strong> y sincronizada. Esta funcionalidad es clave para monitorear precios y comparar con la competencia.</p>
+                        <p><strong>Tidio trigger sugerido</strong>: "ver precios productos" → Mostrar esta FAQ.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pregunta 2: Comparar precios -->
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 class="accordion-header" id="precios2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrecios2" aria-expanded="false" aria-controls="collapsePrecios2">
+                    <i class="fas fa-balance-scale me-2" aria-hidden="true"></i>
+                    <span itemprop="name">¿Cómo comparo los precios de mis productos con los de la competencia?</span>
+                </button>
+            </h3>
+            <div id="collapsePrecios2" class="accordion-collapse collapse" data-bs-parent="#preciosAccordion">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        <p>MLDataTrends te ayuda a comparar precios con competidores usando la API <code>price_to_win</code> del <code>CatalogoService::getCompetenciaArticulo</code>. Seguí estos pasos:</p>
+                        <ol>
+                            <li>En <strong>Catálogo</strong>, buscá un producto por título o ID (por ejemplo, "MLA987654321").</li>
+                            <li>Hacé clic en el producto y seleccioná <strong>Ver competencia</strong>.</li>
+                            <li>Verás una tabla con precios de competidores, stock disponible, y tipo de publicación (por ejemplo, "Clásica" o "Premium").</li>
+                            <li>Analizá si tu precio (por ejemplo, $45,000) es competitivo frente al promedio del mercado.</li>
+                        </ol>
+                        <p>Los datos se obtienen del endpoint <code>https://api.mercadolibre.com/items/{id}/price_to_win</code>. Asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> y sincronizada en <strong>Sincronización</strong>. Si no carga la comparación, revisá las notificaciones para errores de API. Esta herramienta es ideal para ajustar precios y ganar visibilidad.</p>
+                        <p><strong>Tidio trigger sugerido</strong>: "comparar precios competencia" → Mostrar esta FAQ.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pregunta 3: Ajustar precios -->
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 class="accordion-header" id="precios3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrecios3" aria-expanded="false" aria-controls="collapsePrecios3">
+                    <i class="fas fa-edit me-2" aria-hidden="true"></i>
+                    <span itemprop="name">¿Puedo ajustar los precios de mis productos en MLDataTrends?</span>
+                </button>
+            </h3>
+            <div id="collapsePrecios3" class="accordion-collapse collapse" data-bs-parent="#preciosAccordion">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        <p>Ajustar precios en MLDataTrends te permite optimizar tu estrategia basándote en datos de competencia. Aunque no hay un controlador específico en el código proporcionado, suponemos que la funcionalidad está disponible en el panel. Seguí estos pasos:</p>
+                        <ol>
+                            <li>Navegá a <strong>Catálogo</strong> o <strong>Precios</strong>.</li>
+                            <li>Buscá un producto por título o SKU (por ejemplo, "ZAP123").</li>
+                            <li>Hacé clic en el producto y seleccioná <strong>Editar precio</strong>.</li>
+                            <li>Ingresá el nuevo precio (por ejemplo, cambiar de $50,000 a $48,000) y guardá.</li>
+                        </ol>
+                        <p>Los cambios se sincronizan con MercadoLibre vía la API. Verificá que tu cuenta esté vinculada en <strong>Cuentas</strong> y que la sincronización esté completa. Si no ves la opción de edición, contactá a support@mldatatrends.com para confirmar si está habilitada en tu plan. Asegurá que los precios sean competitivos basándote en el análisis de <strong>Ver competencia</strong>.</p>
+                        <p><strong>Tidio trigger sugerido</strong>: "ajustar precios mldata" → Mostrar esta FAQ.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: Sugerencias -->
+    <h2 class="mt-5 mb-4" id="sugerenciasAccordion">Sugerencias</h2>
+    <div class="accordion" id="sugerenciasAccordion">
+        <!-- Pregunta 1: Ver sugerencias -->
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 class="accordion-header" id="sugerencias1">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSugerencias1" aria-expanded="false" aria-controls="collapseSugerencias1">
+                    <i class="fas fa-lightbulb me-2" aria-hidden="true"></i>
+                    <span itemprop="name">¿Cómo veo las sugerencias para mejorar mis publicaciones en MLDataTrends?</span>
+                </button>
+            </h3>
+            <div id="collapseSugerencias1" class="accordion-collapse collapse" data-bs-parent="#sugerenciasAccordion">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        <p>MLDataTrends ofrece sugerencias automáticas para optimizar tus publicaciones, basadas en métricas del <code>EstadisticasService</code> (como <code>getTasaConversionPorProducto</code>). Seguí estos pasos:</p>
+                        <ol>
+                            <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
+                            <li>Navegá a <strong>Sugerencias</strong> en el panel de control.</li>
+                            <li>Verás recomendaciones como ajustar precios (por ejemplo, bajar el precio de "Zapatillas Nike" de $60,000 a $55,000) o aumentar stock de productos con alta demanda.</li>
+                            <li>Hacé clic en una sugerencia para ver detalles y aplicarla.</li>
+                        </ol>
+                        <p>Las sugerencias se generan analizando tasas de conversión, stock, y datos de competencia. Asegurá que los datos estén sincronizados en <strong>Sincronización</strong>. Si no ves sugerencias, verificá que tu cuenta esté vinculada en <strong>Cuentas</strong>. Esta sección te ayuda a mejorar ventas y posicionamiento en MercadoLibre.</p>
+                        <p><strong>Tidio trigger sugerido</strong>: "ver sugerencias publicaciones" → Mostrar esta FAQ.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pregunta 2: Aplicar sugerencias -->
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 class="accordion-header" id="sugerencias2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSugerencias2" aria-expanded="false" aria-controls="collapseSugerencias2">
+                    <i class="fas fa-check-circle me-2" aria-hidden="true"></i>
+                    <span itemprop="name">¿Cómo aplico las sugerencias de MLDataTrends a mis productos?</span>
+                </button>
+            </h3>
+            <div id="collapseSugerencias2" class="accordion-collapse collapse" data-bs-parent="#sugerenciasAccordion">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        <p>Aplicar sugerencias te permite optimizar publicaciones directamente desde MLDataTrends. Basado en datos del <code>EstadisticasService</code>, seguí estos pasos:</p>
+                        <ol>
+                            <li>En <strong>Sugerencias</strong>, revisá las recomendaciones (por ejemplo, "Aumentar stock de Auriculares Sony a 10 unidades").</li>
+                            <li>Hacé clic en la sugerencia para ver detalles, como el análisis de demanda o competencia.</li>
+                            <li>Seleccioná <strong>Aplicar</strong> para ajustar el precio o stock (por ejemplo, cambiar precio de $45,000 a $42,000).</li>
+                            <li>Confirmá los cambios, que se sincronizarán con MercadoLibre.</li>
+                        </ol>
+                        <p>Las sugerencias usan métricas como tasas de conversión y stock crítico. Verificá que los datos estén actualizados en <strong>Sincronización</strong>. Si no podés aplicar cambios, revisá tu cuenta en <strong>Cuentas</strong> o contactá a support@mldatatrends.com. Esta funcionalidad es ideal para mejorar el rendimiento de tus publicaciones.</p>
+                        <p><strong>Tidio trigger sugerido</strong>: "aplicar sugerencias mldata" → Mostrar esta FAQ.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pregunta 3: Problemas con sugerencias -->
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 class="accordion-header" id="sugerencias3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSugerencias3" aria-expanded="false" aria-controls="collapseSugerencias3">
+                    <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
+                    <span itemprop="name">¿Por qué no veo sugerencias para mis productos en MLDataTrends?</span>
+                </button>
+            </h3>
+            <div id="collapseSugerencias3" class="accordion-collapse collapse" data-bs-parent="#sugerenciasAccordion">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        <p>Si no ves sugerencias en <strong>Sugerencias</strong>, puede haber problemas con los datos o la configuración. Las sugerencias dependen del <code>EstadisticasService</code>. Revisá estos puntos:</p>
+                        <ul>
+                            <li><strong>Sincronización incompleta</strong>: Verificá en <strong>Sincronización</strong> que los datos de ventas y publicaciones estén actualizados.</li>
+                            <li><strong>Pocos datos</strong>: Si tenés pocas ventas o visitas, MLDataTrends puede no generar sugerencias. Aumentá la actividad en MercadoLibre.</li>
+                            <li><strong>Cuenta no vinculada</strong>: Asegurá que tu cuenta esté activa en <strong>Cuentas</strong>.</li>
+                            <li><strong>Filtros aplicados</strong>: Quitá filtros en <strong>Sugerencias</strong> para ver todas las recomendaciones.</li>
+                        </ul>
+                        <p>Intentá sincronizar nuevamente o contactá a support@mldatatrends.com si el problema persiste. Asegurá que tus publicaciones tengan datos suficientes (ventas, visitas) para generar sugerencias útiles.</p>
+                        <p><strong>Tidio trigger sugerido</strong>: "no veo sugerencias mldata" → Mostrar esta FAQ.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: Configuración -->
+    <h2 class="mt-5 mb-4" id="configuracionAccordion">Configuración</h2>
+    <div class="accordion" id="configuracionAccordion">
+        <!-- Pregunta 1: Ajustar preferencias -->
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 class="accordion-header" id="configuracion1">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConfiguracion1" aria-expanded="false" aria-controls="collapseConfiguracion1">
+                    <i class="fas fa-cog me-2" aria-hidden="true"></i>
+                    <span itemprop="name">¿Cómo ajusto las preferencias de mi cuenta en MLDataTrends?</span>
+                </button>
+            </h3>
+            <div id="collapseConfiguracion1" class="accordion-collapse collapse" data-bs-parent="#configuracionAccordion">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        <p>La sección <strong>Configuración</strong> te permite personalizar tu experiencia en MLDataTrends, como notificaciones o frecuencia de sincronización. Seguí estos pasos:</p>
+                        <ol>
+                            <li>Iniciá sesión en <a href="https://mldatatrends.com/login">MLDataTrends.com/login</a>.</li>
+                            <li>Navegá a <strong>Configuración</strong> en el panel (generalmente en la barra lateral o perfil).</li>
+                            <li>Ajustá opciones como notificaciones por correo (por ejemplo, alertas de stock crítico) o frecuencia de sincronización (por ejemplo, diaria).</li>
+                            <li>Guardá los cambios para aplicarlos.</li>
+                        </ol>
+                        <p>Las preferencias se guardan localmente y no afectan MercadoLibre. Asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> para que las configuraciones sean efectivas. Si no ves la sección <strong>Configuración</strong>, contactá a support@mldatatrends.com para verificar tu plan. Esta funcionalidad te ayuda a adaptar MLDataTrends a tus necesidades.</p>
+                        <p><strong>Tidio trigger sugerido</strong>: "ajustar preferencias mldata" → Mostrar esta FAQ.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pregunta 2: Gestionar notificaciones -->
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 class="accordion-header" id="configuracion2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConfiguracion2" aria-expanded="false" aria-controls="collapseConfiguracion2">
+                    <i class="fas fa-bell me-2" aria-hidden="true"></i>
+                    <span itemprop="name">¿Cómo configuro notificaciones en MLDataTrends?</span>
+                </button>
+            </h3>
+            <div id="collapseConfiguracion2" class="accordion-collapse collapse" data-bs-parent="#configuracionAccordion">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        <p>Configurar notificaciones en MLDataTrends te mantiene informado sobre eventos clave, como stock crítico o ventas. Seguí estos pasos:</p>
+                        <ol>
+                            <li>En <strong>Configuración</strong>, buscá la sección <strong>Notificaciones</strong>.</li>
+                            <li>Seleccioná los eventos que querés monitorear (por ejemplo, "Stock menor a 5 unidades" o "Nueva venta").</li>
+                            <li>Elegí el método de notificación (por ejemplo, correo a "tutienda@gmail.com" o notificaciones push).</li>
+                            <li>Guardá los cambios.</li>
+                        </ol>
+                        <p>Las notificaciones dependen de datos sincronizados vía <code>ConsultaMercadoLibreService</code>. Asegurá que tu cuenta esté vinculada en <strong>Cuentas</strong> y que la sincronización esté activa. Si no recibís notificaciones, verificá tu correo en <strong>Configuración</strong> o revisá la carpeta de spam. Contactá a support@mldatatrends.com si el problema persiste. Esta funcionalidad es útil para estar al tanto de tu negocio en tiempo real.</p>
+                        <p><strong>Tidio trigger sugerido</strong>: "configurar notificaciones mldata" → Mostrar esta FAQ.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pregunta 3: Problemas con configuración -->
+        <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 class="accordion-header" id="configuracion3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConfiguracion3" aria-expanded="false" aria-controls="collapseConfiguracion3">
+                    <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
+                    <span itemprop="name">¿Por qué no puedo cambiar la configuración en MLDataTrends?</span>
+                </button>
+            </h3>
+            <div id="collapseConfiguracion3" class="accordion-collapse collapse" data-bs-parent="#configuracionAccordion">
+                <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        <p>Si no podés cambiar la configuración en <strong>Configuración</strong>, puede haber problemas con tu cuenta o permisos. Revisá estos puntos:</p>
+                        <ul>
+                            <li><strong>Cuenta no vinculada</strong>: Verificá en <strong>Cuentas</strong> que tu cuenta de MercadoLibre esté activa.</li>
+                            <li><strong>Permisos limitados</strong>: Algunos planes de MLDataTrends restringen ciertas configuraciones. Contactá a support@mldatatrends.com para confirmar.</li>
+                            <li><strong>Error de sincronización</strong>: Asegurá que los datos estén actualizados en <strong>Sincronización</strong>.</li>
+                            <li><strong>Problemas técnicos</strong>: Revisá las notificaciones en el panel para mensajes de error.</li>
+                        </ul>
+                        <p>Intentá guardar los cambios nuevamente tras verificar tu cuenta. Si el problema persiste, enviá un correo a support@mldatatrends.com con detalles del error. Esta sección es clave para personalizar tu experiencia en MLDataTrends.</p>
+                        <p><strong>Tidio trigger sugerido</strong>: "problemas configuración mldata" → Mostrar esta FAQ.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
             <div class="text-center mt-5">
                 <p><a href="{{ url('/') }}" class="btn btn-primary">Volver al home</a></p>
