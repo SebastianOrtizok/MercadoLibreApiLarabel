@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Resuelve tus dudas sobre cómo usar MLDataTrends para gestionar competidores, analizar precios y optimizar ventas en MercadoLibre. ¡Consulta nuestras Preguntas Frecuentes!">
-    <meta name="keywords" content="preguntas frecuentes mldatatrends, cómo seguir competidores mercadolibre, análisis de precios mercadolibre, gestión de competidores ml, tutorial mldatatrends">
+    <meta name="description" content="Resuelve tus dudas sobre cómo usar MLDataTrends para gestionar competidores, analizar precios, sincronizar cuentas y optimizar ventas en MercadoLibre. ¡Consulta nuestras Preguntas Frecuentes!">
+    <meta name="keywords" content="preguntas frecuentes mldatatrends, vincular cuenta mercadolibre, sincronizar artículos mercadolibre, cómo seguir competidores mercadolibre, análisis de precios mercadolibre, gestión de competidores ml, tutorial mldatatrends">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url('/preguntas-frecuentes') }}">
     <title>Preguntas Frecuentes - MLDataTrends: Gestión de Ventas en MercadoLibre</title>
 
     <!-- Open Graph -->
     <meta property="og:title" content="Preguntas Frecuentes - MLDataTrends">
-    <meta property="og:description" content="Aprendé cómo seguir competidores, analizar precios y optimizar tus ventas en MercadoLibre con nuestras Preguntas Frecuentes.">
+    <meta property="og:description" content="Aprendé cómo vincular tu cuenta, sincronizar artículos, seguir competidores y optimizar tus ventas en MercadoLibre con nuestras Preguntas Frecuentes.">
     <meta property="og:url" content="{{ url('/preguntas-frecuentes') }}">
     <meta property="og:type" content="website">
     <meta property="og:image" content="{{ asset('images/faq.webp') }}">
@@ -19,7 +19,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Preguntas Frecuentes - MLDataTrends">
-    <meta name="twitter:description" content="Aprendé cómo seguir competidores, analizar precios y optimizar tus ventas en MercadoLibre con nuestras Preguntas Frecuentes.">
+    <meta name="twitter:description" content="Aprendé cómo vincular tu cuenta, sincronizar artículos, seguir competidores y optimizar tus ventas en MercadoLibre con nuestras Preguntas Frecuentes.">
     <meta name="twitter:image" content="{{ asset('images/faq.webp') }}">
 
     <!-- Bootstrap y FontAwesome -->
@@ -51,18 +51,120 @@
     <section class="faq-section py-5" role="region" aria-label="Preguntas Frecuentes">
         <div class="container">
             <h1 class="text-center mb-5">Preguntas Frecuentes sobre MLDataTrends</h1>
-            <p class="lead text-center mb-5">¿No sabés cómo empezar a usar MLDataTrends para gestionar tus ventas en MercadoLibre? Acá te explicamos todo paso a paso, desde seguir competidores hasta optimizar tu stock.</p>
+            <p class="lead text-center mb-5">¿No sabés cómo empezar a usar MLDataTrends para gestionar tus ventas en MercadoLibre? Acá te explicamos todo paso a paso, desde vincular tu cuenta hasta seguir competidores y optimizar tu stock.</p>
             <div itemscope itemtype="https://schema.org/FAQPage">
-                <div class="accordion" id="faqAccordion">
+                <!-- Sección: Cuentas -->
+                <h2 class="mb-4">Cuentas</h2>
+                <div class="accordion" id="cuentasAccordion">
+                    <!-- Pregunta 1: Vincular cuenta -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="cuentas1">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCuentas1" aria-expanded="false" aria-controls="collapseCuentas1">
+                                <i class="fas fa-link me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Cómo vinculo mi cuenta de MercadoLibre a MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseCuentas1" class="accordion-collapse collapse" data-bs-parent="#cuentasAccordion">
+                            <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                                <div itemprop="text">
+                                    <p>Para vincular tu cuenta de MercadoLibre a MLDataTrends, seguí estos pasos:</p>
+                                    <ol>
+                                        <li>Iniciá sesión en tu cuenta de MLDataTrends.</li>
+                                        <li>Dirigite a la sección <strong>Cuentas</strong> en el panel de control.</li>
+                                        <li>Hacé clic en <strong>Vincular cuenta de MercadoLibre</strong>.</li>
+                                        <li>Serás redirigido a MercadoLibre para autorizar la conexión.</li>
+                                        <li>Iniciá sesión en MercadoLibre y aceptá los permisos solicitados.</li>
+                                        <li>Una vez autorizado, volverás a MLDataTrends y tu cuenta estará vinculada.</li>
+                                    </ol>
+                                    <p>Si tenés problemas, asegurate de que tu cuenta de MercadoLibre esté activa y verificá que el navegador no bloquee las redirecciones.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 2: Información de la cuenta -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="cuentas2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCuentas2" aria-expanded="false" aria-controls="collapseCuentas2">
+                                <i class="fas fa-info-circle me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Qué información puedo ver de mi cuenta de MercadoLibre?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseCuentas2" class="accordion-collapse collapse" data-bs-parent="#cuentasAccordion">
+                            <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                                <div itemprop="text">
+                                    <p>En la sección <strong>Cuentas</strong> de MLDataTrends, podés ver:</p>
+                                    <ul>
+                                        <li>El <em>Seller ID</em> (identificador único de tu cuenta en MercadoLibre).</li>
+                                        <li>Detalles de tu perfil, como el nombre de la cuenta y el estado de vinculación.</li>
+                                        <li>Información sobre las publicaciones asociadas a tu cuenta.</li>
+                                        <li>Estado del token de acceso (si está activo o necesita actualización).</li>
+                                    </ul>
+                                    <p>Para acceder, iniciá sesión y navegá a <strong>Cuentas</strong> en el panel de control.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 3: Sincronizar artículos -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="cuentas3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCuentas3" aria-expanded="false" aria-controls="collapseCuentas3">
+                                <i class="fas fa-sync-alt me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Cómo sincronizo mis artículos de MercadoLibre en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseCuentas3" class="accordion-collapse collapse" data-bs-parent="#cuentasAccordion">
+                            <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                                <div itemprop="text">
+                                    <p>Para sincronizar tus artículos de MercadoLibre en MLDataTrends:</p>
+                                    <ol>
+                                        <li>Iniciá sesión y dirigite a la sección <strong>Sincronización</strong>.</li>
+                                        <li>Seleccioná la cuenta de MercadoLibre que querés sincronizar.</li>
+                                        <li>Hacé clic en <strong>Iniciar sincronización</strong>.</li>
+                                        <li>La herramienta descargará tus publicaciones, incluyendo título, precio, stock, estado, y más.</li>
+                                        <li>Esperá a que el proceso termine (puede tomar unos minutos, dependiendo de la cantidad de publicaciones).</li>
+                                    </ol>
+                                    <p>Una vez sincronizados, los artículos aparecerán en la sección <strong>Publicaciones</strong> o <strong>Listado completo</strong>.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 4: Problemas con sincronización -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="cuentas4">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCuentas4" aria-expanded="false" aria-controls="collapseCuentas4">
+                                <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Por qué no veo mis publicaciones después de sincronizar?</span>
+                            </button>
+                        </h3>
+                        <div id="collapseCuentas4" class="accordion-collapse collapse" data-bs-parent="#cuentasAccordion">
+                            <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                                <div itemprop="text">
+                                    <p>Si no ves tus publicaciones después de sincronizar, verificá lo siguiente:</p>
+                                    <ul>
+                                        <li><strong>Token expirado</strong>: Asegurate de que tu cuenta de MercadoLibre esté vinculada correctamente. Podés revincularla en <strong>Cuentas</strong>.</li>
+                                        <li><strong>Sin publicaciones</strong>: Confirmá que tu cuenta de MercadoLibre tenga publicaciones activas.</li>
+                                        <li><strong>Errores de sincronización</strong>: Revisá las notificaciones en la sección <strong>Sincronización</strong> para ver si hubo errores.</li>
+                                        <li><strong>Filtros aplicados</strong>: En la sección <strong>Publicaciones</strong>, asegurate de no tener filtros que oculten las publicaciones.</li>
+                                    </ul>
+                                    <p>Si el problema persiste, contactanos en <a href="{{ url('/contacto') }}">soporte</a>.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección: Competencia -->
+                <h2 class="mt-5 mb-4">Competencia</h2>
+                <div class="accordion" id="competenciaAccordion">
                     <!-- Pregunta 1 -->
                     <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-                        <h2 class="accordion-header" id="faq1">
+                        <h3 class="accordion-header" id="faq1">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
                                 <i class="fas fa-search me-2" aria-hidden="true"></i>
                                 <span itemprop="name">¿Cómo seguir publicaciones de competidores en MercadoLibre?</span>
                             </button>
-                        </h2>
-                        <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        </h3>
+                        <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#competenciaAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
                                     <p>Para seguir publicaciones de competidores en MercadoLibre con MLDataTrends, seguí estos pasos:</p>
@@ -80,13 +182,13 @@
                     </div>
                     <!-- Pregunta 2 -->
                     <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-                        <h2 class="accordion-header" id="faq2">
+                        <h3 class="accordion-header" id="faq2">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
                                 <i class="fas fa-user me-2" aria-hidden="true"></i>
                                 <span itemprop="name">¿Qué es el Seller ID y cómo lo encuentro?</span>
                             </button>
-                        </h2>
-                        <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        </h3>
+                        <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#competenciaAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
                                     <p>El <em>Seller ID</em> es un número único que identifica a un vendedor en MercadoLibre. Para encontrarlo:</p>
@@ -103,13 +205,13 @@
                     </div>
                     <!-- Pregunta 3 -->
                     <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-                        <h2 class="accordion-header" id="faq3">
+                        <h3 class="accordion-header" id="faq3">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
                                 <i class="fas fa-sync me-2" aria-hidden="true"></i>
                                 <span itemprop="name">¿Cómo actualizo los datos de las publicaciones de un competidor?</span>
                             </button>
-                        </h2>
-                        <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        </h3>
+                        <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#competenciaAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
                                     <p>Para actualizar los datos de un competidor en MLDataTrends:</p>
@@ -126,13 +228,13 @@
                     </div>
                     <!-- Pregunta 4 -->
                     <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-                        <h2 class="accordion-header" id="faq4">
+                        <h3 class="accordion-header" id="faq4">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
                                 <i class="fas fa-file-excel me-2" aria-hidden="true"></i>
                                 <span itemprop="name">¿Cómo exporto las publicaciones de competidores a Excel?</span>
                             </button>
-                        </h2>
-                        <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        </h3>
+                        <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#competenciaAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
                                     <p>Para exportar publicaciones de competidores a un archivo Excel:</p>
@@ -148,13 +250,13 @@
                     </div>
                     <!-- Pregunta 5 -->
                     <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-                        <h2 class="accordion-header" id="faq5">
+                        <h3 class="accordion-header" id="faq5">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
                                 <i class="fas fa-filter me-2" aria-hidden="true"></i>
                                 <span itemprop="name">¿Cómo filtro publicaciones en la sección de competidores?</span>
                             </button>
-                        </h2>
-                        <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        </h3>
+                        <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#competenciaAccordion">
                             <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                 <div itemprop="text">
                                     <p>Para filtrar publicaciones de competidores:</p>
@@ -172,7 +274,7 @@
                 </div>
             </div>
             <div class="text-center mt-5">
-                <p>¿No encontraste la respuesta que buscás? <a href="{{ url('/contacto') }}" class="btn btn-primary">Contactanos</a></p>
+                <p>Volver al Home<a href="{{ url('/') }}" class="btn btn-primary">Home</a></p>
             </div>
         </div>
     </section>
