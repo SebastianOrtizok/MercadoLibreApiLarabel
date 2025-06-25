@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Resuelve tus dudas sobre cómo usar MLDataTrends para gestionar competidores, analizar precios, sincronizar cuentas y optimizar ventas en MercadoLibre. ¡Consulta nuestras Preguntas Frecuentes!">
-    <meta name="keywords" content="preguntas frecuentes mldatatrends, vincular cuenta mercadolibre, sincronizar artículos mercadolibre, cómo seguir competidores mercadolibre, análisis de precios mercadolibre, gestión de competidores ml, tutorial mldatatrends">
+    <meta name="description" content="Resuelve tus dudas sobre cómo usar MLDataTrends para gestionar competidores, sincronizar cuentas, ver publicaciones y optimizar ventas en MercadoLibre. ¡Consulta nuestras Preguntas Frecuentes!">
+    <meta name="keywords" content="preguntas frecuentes mldatatrends, vincular cuenta mercadolibre, sincronizar artículos mercadolibre, ver publicaciones mercadolibre, buscar publicaciones por id, cómo seguir competidores mercadolibre, análisis de precios mercadolibre, gestión de competidores ml, tutorial mldatatrends">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url('/preguntas-frecuentes') }}">
     <title>Preguntas Frecuentes - MLDataTrends: Gestión de Ventas en MercadoLibre</title>
 
     <!-- Open Graph -->
     <meta property="og:title" content="Preguntas Frecuentes - MLDataTrends">
-    <meta property="og:description" content="Aprendé cómo vincular tu cuenta, sincronizar artículos, seguir competidores y optimizar tus ventas en MercadoLibre con nuestras Preguntas Frecuentes.">
+    <meta property="og:description" content="Aprendé cómo vincular tu cuenta, sincronizar artículos, ver publicaciones, seguir competidores y optimizar tus ventas en MercadoLibre con nuestras Preguntas Frecuentes.">
     <meta property="og:url" content="{{ url('/preguntas-frecuentes') }}">
     <meta property="og:type" content="website">
     <meta property="og:image" content="{{ asset('images/faq.webp') }}">
@@ -19,7 +19,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Preguntas Frecuentes - MLDataTrends">
-    <meta name="twitter:description" content="Aprendé cómo vincular tu cuenta, sincronizar artículos, seguir competidores y optimizar tus ventas en MercadoLibre con nuestras Preguntas Frecuentes.">
+    <meta name="twitter:description" content="Aprendé cómo vincular tu cuenta, sincronizar artículos, ver publicaciones, seguir competidores y optimizar tus ventas en MercadoLibre con nuestras Preguntas Frecuentes.">
     <meta name="twitter:image" content="{{ asset('images/faq.webp') }}">
 
     <!-- Bootstrap y FontAwesome -->
@@ -124,7 +124,7 @@
                                         <li>Esperá a que el proceso termine (puede tomar unos minutos, dependiendo de la cantidad de publicaciones).</li>
                                     </ol>
                                     <p>Una vez sincronizados, los artículos aparecerán en la sección <strong>Publicaciones</strong> o <strong>Listado completo</strong>.</p>
-                                </div>
+</li>
                             </div>
                         </div>
                     </div>
@@ -147,6 +147,102 @@
                                         <li><strong>Filtros aplicados</strong>: En la sección <strong>Publicaciones</strong>, asegurate de no tener filtros que oculten las publicaciones.</li>
                                     </ul>
                                     <p>Si el problema persiste, contactanos en <a href="{{ url('/contacto') }}">soporte</a>.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección: Publicaciones -->
+                <h2 class="mt-5 mb-4">Publicaciones</h2>
+                <div class="accordion" id="publicacionesAccordion">
+                    <!-- Pregunta 1: Ver publicaciones -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="publicaciones1">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePublicaciones1" aria-expanded="false" aria-controls="collapsePublicaciones1">
+                                <i class="fas fa-list me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Cómo veo mis publicaciones de MercadoLibre en MLDataTrends?</span>
+                            </button>
+                        </h3>
+                        <div id="collapsePublicaciones1" class="accordion-collapse collapse" data-bs-parent="#publicacionesAccordion">
+                            <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                                <div itemprop="text">
+                                    <p>Para ver tus publicaciones de MercadoLibre en MLDataTrends:</p>
+                                    <ol>
+                                        <li>Iniciá sesión en tu cuenta de MLDataTrends.</li>
+                                        <li>Dirigite a la sección <strong>Publicaciones</strong> en el panel de control.</li>
+                                        <li>La herramienta mostrará una lista de todas tus publicaciones activas, con detalles como título, precio, stock, y estado.</li>
+                                    </ol>
+                                    <p>Asegurate de haber vinculado y sincronizado tu cuenta de MercadoLibre en la sección <strong>Cuentas</strong> y <strong>Sincronización</strong>.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 2: Buscar por ID -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="publicaciones2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePublicaciones2" aria-expanded="false" aria-controls="collapsePublicaciones2">
+                                <i class="fas fa-search me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Cómo busco una publicación específica por ID?</span>
+                            </button>
+                        </h3>
+                        <div id="collapsePublicaciones2" class="accordion-collapse collapse" data-bs-parent="#publicacionesAccordion">
+                            <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                                <div itemprop="text">
+                                    <p>Para buscar una publicación específica por su ID (MLA ID):</p>
+                                    <ol>
+                                        <li>Dirigite a la sección <strong>Publicaciones</strong>.</li>
+                                        <li>Ingresá el ID de la publicación (por ejemplo, MLA123456789) en el campo de búsqueda.</li>
+                                        <li>Hacé clic en <strong>Buscar</strong>.</li>
+                                        <li>Si la publicación existe y está vinculada a tu cuenta, aparecerá en los resultados.</li>
+                                    </ol>
+                                    <p>Si no encontrás la publicación, verificá que el ID sea correcto y que la cuenta esté sincronizada.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 3: Filtrar por estado -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="publicaciones3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePublicaciones3" aria-expanded="false" aria-controls="collapsePublicaciones3">
+                                <i class="fas fa-filter me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Cómo filtro mis publicaciones por estado (activas, pausadas, etc.)?</span>
+                            </button>
+                        </h3>
+                        <div id="collapsePublicaciones3" class="accordion-collapse collapse" data-bs-parent="#publicacionesAccordion">
+                            <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                                <div itemprop="text">
+                                    <p>Para filtrar tus publicaciones por estado:</p>
+                                    <ol>
+                                        <li>En la sección <strong>Publicaciones</strong>, buscá el menú de filtros.</li>
+                                        <li>Seleccioná el estado deseado (por ejemplo, "Activas", "Pausadas" o "Todas").</li>
+                                        <li>Podés combinar el filtro con una búsqueda por título o palabra clave.</li>
+                                        <li>Hacé clic en <strong>Aplicar</strong> para ver los resultados.</li>
+                                    </ol>
+                                    <p>Esto te permite enfocarte en las publicaciones que necesitás analizar o gestionar.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pregunta 4: No veo publicaciones -->
+                    <div class="accordion-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="accordion-header" id="publicaciones4">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePublicaciones4" aria-expanded="false" aria-controls="collapsePublicaciones4">
+                                <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
+                                <span itemprop="name">¿Por qué no veo todas mis publicaciones?</span>
+                            </button>
+                        </h3>
+                        <div id="collapsePublicaciones4" class="accordion-collapse collapse" data-bs-parent="#publicacionesAccordion">
+                            <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                                <div itemprop="text">
+                                    <p>Si no ves todas tus publicaciones en la sección <strong>Publicaciones</strong>, revisá lo siguiente:</p>
+                                    <ul>
+                                        <li><strong>Cuenta no vinculada</strong>: Asegurate de que tu cuenta de MercadoLibre esté vinculada en <strong>Cuentas</strong>.</li>
+                                        <li><strong>Sincronización incompleta</strong>: Verificá en <strong>Sincronización</strong> que los artículos se hayan descargado correctamente.</li>
+                                        <li><strong>Filtros aplicados</strong>: Quitá cualquier filtro de estado o búsqueda para ver todas las publicaciones.</li>
+                                        <li><strong>Token expirado</strong>: Revinculá tu cuenta si el token de acceso caducó.</li>
+                                    </ul>
+                                    <p>Si el problema continúa, contactanos en <a href="{{ url('/contacto') }}">soporte</a>.</p>
                                 </div>
                             </div>
                         </div>
@@ -274,7 +370,7 @@
                 </div>
             </div>
             <div class="text-center mt-5">
-                <p>Volver al Home<a href="{{ url('/') }}" class="btn btn-primary">Home</a></p>
+               <a href="{{ url('/') }}" class="btn btn-primary">Home</a>
             </div>
         </div>
     </section>
