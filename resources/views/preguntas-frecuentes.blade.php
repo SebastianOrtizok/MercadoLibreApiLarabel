@@ -62,21 +62,23 @@
         <h1 class="text-center mb-5">Preguntas Frecuentes sobre MLDataTrends</h1>
         <p class="lead text-center mb-5">¿No sabés cómo empezar a usar MLDataTrends para gestionar tus ventas en MercadoLibre? Acá te explicamos paso a paso cómo vincular tu cuenta, sincronizar artículos, gestionar publicaciones, SKU, ventas, promociones, catálogo, estadísticas y sincronización, con ejemplos prácticos y soluciones a problemas comunes.</p>
 
-        <!-- Índice de secciones -->
-        <div class="faq-index mb-5">
-            <h3>Índice</h3>
-            <ul class="list-unstyled">
-                <li><a href="#cuentasAccordion">Cuentas</a></li>
-                <li><a href="#publicacionesAccordion">Publicaciones</a></li>
-                <li><a href="#listadoCompletoAccordion">Listado completo</a></li>
-                <li><a href="#skuAccordion">SKU</a></li>
-                <li><a href="#ventasAccordion">Ventas</a></li>
-                <li><a href="#promocionesAccordion">Promociones</a></li>
-                <li><a href="#catalogoAccordion">Catálogo</a></li>
-                <li><a href="#estadisticasAccordion">Estadísticas</a></li>
-                <li><a href="#sincronizacionAccordion">Sincronización</a></li>
-            </ul>
-        </div>
+<!-- Índice de secciones -->
+<div class="faq-index mb-5">
+    <h3 class="h5 mb-3">Índice</h3>
+    <div class="card shadow-sm">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><a href="#cuentasAccordion" class="text-decoration-none text-primary fw-medium">Cuentas</a></li>
+            <li class="list-group-item"><a href="#publicacionesAccordion" class="text-decoration-none text-primary fw-medium">Publicaciones</a></li>
+            <li class="list-group-item"><a href="#listadoCompletoAccordion" class="text-decoration-none text-primary fw-medium">Listado completo</a></li>
+            <li class="list-group-item"><a href="#skuAccordion" class="text-decoration-none text-primary fw-medium">SKU</a></li>
+            <li class="list-group-item"><a href="#ventasAccordion" class="text-decoration-none text-primary fw-medium">Ventas</a></li>
+            <li class="list-group-item"><a href="#promocionesAccordion" class="text-decoration-none text-primary fw-medium">Promociones</a></li>
+            <li class="list-group-item"><a href="#catalogoAccordion" class="text-decoration-none text-primary fw-medium">Catálogo</a></li>
+            <li class="list-group-item"><a href="#estadisticasAccordion" class="text-decoration-none text-primary fw-medium">Estadísticas</a></li>
+            <li class="list-group-item"><a href="#sincronizacionAccordion" class="text-decoration-none text-primary fw-medium">Sincronización</a></li>
+        </ul>
+    </div>
+</div>
 
         <div>
             <!-- Sección: Cuentas -->

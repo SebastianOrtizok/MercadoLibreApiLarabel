@@ -373,6 +373,25 @@ h1 {
     color: var(--color-lupa-active);
 }
 
+.faq-index {
+        padding: 1rem;
+    }
+    .faq-index .card {
+        border-radius: 0.5rem;
+        background-color: #f8f9fa;
+    }
+    .faq-index .list-group-item {
+        border: none;
+        padding: 0.75rem 1.25rem;
+    }
+    .faq-index .list-group-item a {
+        transition: color 0.3s ease;
+    }
+    .faq-index .list-group-item a:hover {
+        color: #0056b3 !important;
+        text-decoration: underline;
+    }
+
 /*********** acordeón *******/
 /* Acordeón personalizado */
 .custom-accordion {
