@@ -120,7 +120,41 @@
 
 @section('head')
     <link rel="canonical" href="https://www.mldatatrends.com/plans">
-    <title>Planes de Gestión de SKU y Multicuentas para MercadoLibre</title>
-    <meta name="description" content="Elige tu plan MLDataTrends para gestionar multicuentas, optimizar stock con SKU personalizado y analizar competidores en MercadoLibre. ¡Suscríbete hoy!">
+    <title>Impulsa tu Éxito en MercadoLibre con SKU Personalizado y Estrategias Competitivas</title>
+    <meta name="description" content="Descubre los planes de MLDataTrends para dominar MercadoLibre con gestión multicuentas, SKU a tu medida y análisis estratégico de competidores. ¡Potencia tu negocio hoy!">
+    <!-- Schema Markup con características del plan Mensual, sin precio -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "MLDataTrends Planes - Mensual",
+        "description": "Soluciones avanzadas para gestionar multicuentas, optimizar stock con SKU personalizado y analizar estrategias de competidores en MercadoLibre.",
+        "brand": {
+            "@type": "Brand",
+            "name": "MLDataTrends"
+        },
+        "offers": {
+            "@type": "Offer",
+            "availability": "https://schema.org/InStock",
+            "url": "https://www.mldatatrends.com/plans",
+            "itemOffered": {
+                "@type": "Service",
+                "name": "Plan Mensual",
+                "features": [
+                    "Múltiples cuentas MercadoLibre",
+                    "Descargar publicaciones",
+                    "Agregar SKU propio",
+                    "Descargar ventas",
+                    "Exportar a Excel",
+                    "Mostrar estadísticas",
+                    "Control de stock crítico",
+                    "Publicaciones en catálogo",
+                    "Ítems en promoción",
+                    "5 competidores"
+                ]
+            }
+        }
+    }
+    </script>
     <!-- No es necesario agregar meta keywords aquí; enfócate en título y descripción -->
 @endsection
