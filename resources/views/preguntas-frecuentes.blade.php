@@ -6,7 +6,7 @@
     <meta name="description" content="Resuelve tus dudas sobre cómo usar MLDataTrends para gestionar cuentas, publicaciones, SKU, ventas, promociones, catálogo, estadísticas y sincronización en MercadoLibre. ¡Consulta nuestras Preguntas Frecuentes detalladas!">
     <meta name="keywords" content="preguntas frecuentes mldatatrends, vincular cuenta mercadolibre, sincronizar artículos, ver publicaciones, listado completo, gestionar SKU, ventas mercadolibre, promociones, catálogo productos, estadísticas ventas, tutorial mldatatrends">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="{{ url('/preguntas-frecuentes') }}">
+    <link rel="canonical" href="https://mldatatrends.com/preguntas-frecuentes">
     <title>Preguntas Frecuentes - MLDataTrends: Gestión de Ventas en MercadoLibre</title>
 
     <!-- Open Graph -->
