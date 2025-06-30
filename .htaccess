@@ -1,6 +1,10 @@
 RewriteEngine On
 RewriteBase /
 
+# Redirigir www a sin www
+RewriteCond %{HTTP_HOST} ^www\.mldatatrends\.com [NC]
+RewriteRule ^(.*)$ https://mldatatrends.com/$1 [L,R=301]
+
 # Reescribir las rutas a la aplicación
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
