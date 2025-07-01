@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Política de Privacidad - mldatatrends</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="canonical" href="https://mldatatrends.com/politica-privacidad">
     <style>
         body {
             background: linear-gradient(135deg, #f0f4f8, #e0e8f0);

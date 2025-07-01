@@ -116,6 +116,7 @@
         </div>
     </div>
 </div>
+<a href="{{ url('/preguntas-frecuentes') }}">Preguntas Frecuentes</a>
 @endsection
 
 @section('head')
@@ -136,7 +137,7 @@
         "offers": {
             "@type": "Offer",
             "availability": "https://schema.org/InStock",
-            "url": "https://www.mldatatrends.com/plans",
+            "url": "https://mldatatrends.com/plans",
             "itemOffered": {
                 "@type": "Service",
                 "name": "Plan Mensual",
