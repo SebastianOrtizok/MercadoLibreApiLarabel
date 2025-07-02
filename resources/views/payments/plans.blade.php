@@ -242,6 +242,7 @@
             </div>
         </div>
         <div class="text-center mt-4">
+            <a href="{{ url('/') }}" class="btn btn-primary">Volver al Inicio</a>
             <a href="{{ url('/preguntas-frecuentes') }}">Consulta nuestras Preguntas Frecuentes</a>
         </div>
     </div>
@@ -257,6 +258,7 @@
                 <div class="col-md-4">
                     <h5>Enlaces Rápidos</h5>
                     <ul class="list-unstyled">
+                        <li><a href="{{ route('login') }}">Home</a></li>
                         <li><a href="{{ route('login') }}">Iniciar Sesión</a></li>
                         <li><a href="{{ route('register') }}">Registrarse</a></li>
                         <li><a href="{{ route('faq.index') }}">Preguntas Frecuentes</a></li>
