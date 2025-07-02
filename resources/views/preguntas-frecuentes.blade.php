@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Resuelve tus dudas sobre cómo usar MLDataTrends para gestionar cuentas, publicaciones, SKU, ventas, promociones, catálogo, estadísticas y sincronización en MercadoLibre. ¡Consulta nuestras Preguntas Frecuentes detalladas!">
-    <meta name="keywords" content="preguntas frecuentes mldatatrends, vincular cuenta mercadolibre, sincronizar artículos, ver publicaciones, listado completo, gestionar SKU, ventas mercadolibre, promociones, catálogo productos, estadísticas ventas, tutorial mldatatrends">
+    <meta name="description" content="Preguntas frecuentes sobre MLDATATRENDS. Aprende a vincular tu cuenta de Mercado Libre, sincronizar artículos, ver publicaciones activas o en catálogo, gestionar promociones, SKUs y stock en depósito y en Mercado Libre. Explorá estadísticas de ventas y controlá el stock crítico.">
+    <meta name="keywords" content="MLDATATRENDS, preguntas frecuentes, vincular cuenta Mercado Libre, sincronizar artículos, ver publicaciones, publicaciones en catálogo, gestionar SKUs, promociones, estadísticas de ventas, stock en depósito, stock en Mercado Libre, stock crítico, tutorial MLDATATRENDS">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://mldatatrends.com/preguntas-frecuentes">
     <title>Preguntas Frecuentes - MLDataTrends: Gestión de Ventas en MercadoLibre</title>
