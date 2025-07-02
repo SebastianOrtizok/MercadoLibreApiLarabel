@@ -246,28 +246,31 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-light py-4 mt-5">
+      <!-- Footer -->
+    <footer class="py-4" role="contentinfo">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
-                    <h5>MLDataTrends</h5>
-                    <p>Optimiza tus ventas en MercadoLibre con nuestras herramientas avanzadas.</p>
+                <div class="col-md-4">
+                    <h5>Propósito</h5>
+                    <p>Potenciamos a los vendedores de MercadoLibre con herramientas avanzadas para gestionar cuentas, publicaciones y más.</p>
                 </div>
-                <div class="col-md-3">
-                    <h5>Enlaces útiles</h5>
+                <div class="col-md-4">
+                    <h5>Enlaces Rápidos</h5>
                     <ul class="list-unstyled">
-                        <li><a href="/plans">Planes</a></li>
-                        <li><a href="/preguntas-frecuentes">Preguntas Frecuentes</a></li>
-                        <li><a href="/politica-privacidad">Política de Privacidad</a></li>
-                        <li><a href="/terminos-y-condiciones">Términos y Condiciones</a></li>
+                        <li><a href="{{ route('login') }}">Iniciar Sesión</a></li>
+                        <li><a href="{{ route('register') }}">Registrarse</a></li>
+                        <li><a href="{{ route('faq.index') }}">Preguntas Frecuentes</a></li>
+                        <li><a href="{{ url('/terms') }}" target="_blank">Términos y Condiciones</a></li>
+                        <li><a href="{{ url('/privacy') }}" target="_blank">Política de Privacidad</a></li>
                     </ul>
                 </div>
-                <div class="col-md-3">
-                    <h5>Contacto</h5>
-                    <p>Email: soporte@mldatatrends.com</p>
+                <div class="col-md-4">
+                    <h5>Correo</h5>
+                    <p><i class="fas fa-envelope me-2" aria-hidden="true"></i>soporte@mldatatrends.com</p>
                 </div>
             </div>
+            <hr class="bg-light">
+            <p class="text-center mb-0">© 2025 MLDataTrends. Todos los derechos reservados.</p>
         </div>
     </footer>
 </body>
