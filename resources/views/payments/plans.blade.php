@@ -241,9 +241,9 @@
                 </div>
             </div>
         </div>
-        <div class="text-center mt-4">
+        <div class="text-center mt-4 mb-4">
             <a href="{{ url('/') }}" class="btn btn-primary">Volver al Inicio</a>
-            <a href="{{ url('/preguntas-frecuentes') }}">Consulta nuestras Preguntas Frecuentes</a>
+            <a href="{{ url('/preguntas-frecuentes') }}" class="btn btn-primary">Preguntas Frecuentes</a>
         </div>
     </div>
 
