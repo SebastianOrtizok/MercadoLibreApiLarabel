@@ -759,6 +759,22 @@
                     </div>
                 </div>
             </div>
+            <!-- Comparaciones -->
+            <h2 class="mt-5 mb-4" id="comparacionesAccordion">Comparaciones</h2>
+            <div class="custom-accordion" id="comparacionesAccordion">
+                <div class="custom-accordion-item">
+                    <h3 class="custom-accordion-header" id="comparaciones1">
+                        <button class="custom-accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseComparaciones1" aria-expanded="false" aria-controls="collapseComparaciones1">
+                            <i class="fas fa-balance-scale icon" aria-hidden="true"></i> ¿Cómo se compara MLDataTrends con herramientas como Nubimetrics?
+                        </button>
+                    </h3>
+                    <div id="collapseComparaciones1" class="custom-accordion-collapse collapse" data-bs-parent="#comparacionesAccordion">
+                        <div class="custom-accordion-body">
+                            <p>MLDataTrends es una herramienta para MercadoLibre que simplifica la gestión de multicuentas, sincronización de artículos y análisis de ventas. A diferencia de plataformas como Nubimetrics o DataTrends, ofrecemos personalización de SKU local, análisis de competencia en tiempo real y soporte dedicado. <a href="{{ url('/plans') }}">Explorá nuestros planes</a> para potenciar tu estrategia.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="text-center mt-5">
@@ -1038,6 +1054,14 @@
             "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "Revisá: token expirado, límite de consultas, sin datos, o errores. Reintentá tras 10 minutos."
+            }
+            },
+             {
+                "@type": "Question",
+                "name": "¿Cómo se compara MLDataTrends con herramientas como Nubimetrics?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "MLDataTrends es una herramienta para MercadoLibre que simplifica la gestión de multicuentas, sincronización de artículos y análisis de ventas. A diferencia de plataformas como Nubimetrics o DataTrends, ofrecemos personalización de SKU local, análisis de competencia en tiempo real y soporte dedicado. Explorá nuestros planes para potenciar tu estrategia."
             }
             }
         ]
