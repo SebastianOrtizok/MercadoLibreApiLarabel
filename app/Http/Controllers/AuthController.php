@@ -10,6 +10,7 @@ use App\Models\Suscripcion;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
@@ -96,6 +97,10 @@ class AuthController extends Controller
             if (!$user->id) {
                 throw new \Exception('El ID del usuario no se generó correctamente');
             }
+
+            // Disparar el evento Registered
+            event(new Registered($user));
+            Log::info('Evento Registered disparado para: ' . $user->email);
 
             // Asignar plan de prueba de 7 días
             $suscripcion = Suscripcion::create([
