@@ -126,7 +126,8 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'trace' => $e->getTraceAsString(),
             ]);
-            return back()->withErrors(['error' => 'Ocurrió un error al registrar el usuario. Por favor, intenta de nuevo.'])->withInput();
+            // Continúa con el registro incluso si falla el envío del correo
+            return redirect()->route('dashboard')->with('success', 'Registro exitoso, pero no se pudo enviar el correo de bienvenida.');
         }
     }
 
