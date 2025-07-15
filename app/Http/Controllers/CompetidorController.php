@@ -41,44 +41,59 @@ class CompetidorController extends Controller
         return view('competidores.index', compact('competidores', 'items', 'currentPage', 'totalPages', 'limit'));
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'seller_id' => 'required|string',
-            'nickname' => 'required|string',
-            'nombre' => 'required|string',
-            'official_store_id' => 'nullable|integer',
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'seller_id' => 'required|string',
+        'nickname' => 'required|string',
+        'nombre' => 'required|string',
+        'official_store_id' => 'nullable|integer',
+    ]);
 
-        // Verificar el plan del usuario
-        $suscripcion = Suscripcion::where('usuario_id', auth()->id())->latest()->first();
-        $competidorCount = Competidor::where('user_id', auth()->id())->count();
+    // Verificar el plan del usuario, priorizando la suscripción activa más reciente y no vencida
+    $suscripcion = Suscripcion::where('usuario_id', auth()->id())
+        ->where('estado', 'activo')
+        ->where('fecha_fin', '>=', now())
+        ->latest('updated_at') // Usar updated_at para priorizar la más reciente
+        ->first();
 
-        // Definir límites por plan
-        $limits = [
-            'mensual' => 5,
-            'trimestral' => 15,
-            'anual' => 60,
-        ];
+    $competidorCount = Competidor::where('user_id', auth()->id())->count();
 
-        if ($suscripcion && array_key_exists($suscripcion->plan, $limits)) {
-            $planLimit = $limits[$suscripcion->plan];
+    // Definir límites por plan
+    $limits = [
+        'mensual' => 5,
+        'trimestral' => 15,
+        'anual' => 60,
+    ];
 
-            if ($competidorCount >= $planLimit) {
-                return redirect()->route('competidores.index')->with('error', 'Has alcanzado el límite del plan. El tope de tu plan ' . $suscripcion->plan . ' es ' . $planLimit . ' competidores.');
-            }
+    \Log::info('Verificando límite de competidores', [
+        'user_id' => auth()->id(),
+        'suscripcion_id' => $suscripcion ? $suscripcion->id : 'No encontrada',
+        'suscripcion_plan' => $suscripcion ? $suscripcion->plan : 'No encontrada',
+        'competidor_count' => $competidorCount,
+        'plan_limit' => $suscripcion && array_key_exists($suscripcion->plan, $limits) ? $limits[$suscripcion->plan] : 'Sin límite definido',
+    ]);
+
+    if ($suscripcion && array_key_exists($suscripcion->plan, $limits)) {
+        $planLimit = $limits[$suscripcion->plan];
+
+        if ($competidorCount >= $planLimit) {
+            return redirect()->route('competidores.index')->with('error', 'Has alcanzado el límite del plan. El tope de tu plan ' . $suscripcion->plan . ' es ' . $planLimit . ' competidores.');
         }
-
-        Competidor::create([
-            'user_id' => auth()->id(),
-            'seller_id' => $request->seller_id,
-            'nickname' => $request->nickname,
-            'nombre' => $request->nombre,
-            'official_store_id' => $request->official_store_id,
-        ]);
-
-        return redirect()->route('competidores.index')->with('success', 'Competidor agregado');
+    } elseif (!$suscripcion) {
+        return redirect()->route('competidores.index')->with('error', 'No se encontró una suscripción activa válida.');
     }
+
+    Competidor::create([
+        'user_id' => auth()->id(),
+        'seller_id' => $request->seller_id,
+        'nickname' => $request->nickname,
+        'nombre' => $request->nombre,
+        'official_store_id' => $request->official_store_id,
+    ]);
+
+    return redirect()->route('competidores.index')->with('success', 'Competidor agregado');
+}
 
     public function actualizar(Request $request)
     {

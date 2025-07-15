@@ -138,12 +138,14 @@ class PaymentController extends Controller
                 'estado' => 'completado',
             ]);
 
-            // Actualiza el estado del usuario en la sesión (opcional)
+// Eliminar o comentar la actualización de users.estado (no es necesario)
+            /*
             $user = auth()->user();
             if ($user && $user->id == $userId) {
                 $user->estado = 'activo'; // Ajusta según tu modelo User
                 $user->save();
             }
+            */
 
             return redirect()->route('dashboard')->with('success', '¡Pago realizado con éxito! Tu suscripción está activa.');
         } catch (\Exception $e) {
