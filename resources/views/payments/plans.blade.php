@@ -156,7 +156,7 @@
                         <h3>Mensual</h3>
                     </div>
                     <div class="card-body d-flex flex-column">
-                        <h4 class="mb-3">U$S 10</h4>
+                        <h4 class="mb-3">10000 ARS</h4>
                         <p class="mb-4">Por mes</p>
                         <ul class="list-group list-group-flush flex-grow-1">
                             <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Múltiples cuentas MercadoLibre</li>
@@ -186,7 +186,7 @@
                         <h3>Trimestral</h3>
                     </div>
                     <div class="card-body d-flex flex-column">
-                        <h4 class="mb-3">U$S 25</h4>
+                        <h4 class="mb-3">25000 ARS</h4>
                         <p class="mb-4">Cada 3 meses</p>
                         <ul class="list-group list-group-flush flex-grow-1">
                             <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Múltiples cuentas MercadoLibre</li>
@@ -216,7 +216,7 @@
                         <h3>Anual</h3>
                     </div>
                     <div class="card-body d-flex flex-column">
-                        <h4 class="mb-3">U$S 80</h4>
+                        <h4 class="mb-3">80000 ARS</h4>
                         <p class="mb-4">Por año</p>
                         <ul class="list-group list-group-flush flex-grow-1">
                             <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Múltiples cuentas MercadoLibre</li>
