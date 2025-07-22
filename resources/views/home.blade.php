@@ -261,7 +261,7 @@
             <div class="col">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
-                        <i class="fas fa-users card-icon mb-3" aria-hidden="true"></i>
+                        <i class="fas fa-users card-icon mb-3 fa-2x" aria-hidden="true"></i>
                         <h5 class="card-title">Gestión de múltiples cuentas de Mercado Libre</h5>
                         <p class="card-text">MLDataTrends permite conectar y administrar varias cuentas de Mercado Libre desde un panel centralizado. Sincroniza órdenes, publicaciones y datos en tiempo real, optimizando la gestión y maximizando la eficiencia de tus operaciones.</p>
                     </div>
@@ -271,7 +271,7 @@
             <div class="col">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
-                        <i class="fas fa-gift card-icon mb-3" aria-hidden="true"></i>
+                        <i class="fas fa-gift card-icon mb-3 fa-2x" aria-hidden="true"></i>
                         <h5 class="card-title">Prueba gratuita de MLDataTrends</h5>
                         <p class="card-text">Disfruta de 7 días de prueba gratuita con acceso completo a todas las funcionalidades, incluyendo gestión de multicuentas, análisis de competidores, estadísticas avanzadas y optimización de stock. ¡Sin necesidad de tarjeta de crédito!</p>
                     </div>
@@ -281,7 +281,7 @@
             <div class="col">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
-                        <i class="fas fa-shield-alt card-icon mb-3" aria-hidden="true"></i>
+                        <i class="fas fa-shield-alt card-icon mb-3 fa-2x" aria-hidden="true"></i>
                         <h5 class="card-title">Seguridad de tus datos</h5>
                         <p class="card-text">Tu seguridad es nuestra prioridad. Utilizamos cifrado HTTPS, almacenamiento seguro con bcrypt, validación estricta, límites de intentos, gestión segura de sesiones y protección de claves de integración para garantizar la confidencialidad de tu información.</p>
                     </div>
