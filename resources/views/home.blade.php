@@ -295,7 +295,7 @@
         <div class="container">
             <h2 class="text-center mb-5">Comienza a Gestionar tu Cuenta de Mercado Libre</h2>
             <div class="row">
-                    <div class="col-md-4 mb-4">
+                    <div class="col-md-6 mb-4">
                     <div class="pricing-card h-100 d-flex flex-column p-4 border rounded">
                         <h3>Regístrate y Navega Gratis</h3>
                         <p class="lead">Prueba Gratuita de 7 Días</p>
@@ -311,7 +311,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4 mb-4">
+                <div class="col-md-6 mb-4">
                     <div class="pricing-card h-100 d-flex flex-column p-4 border rounded">
                         <h3>Adquiere un Plan</h3>
                         <p class="lead">Acceso Completo y Soporte</p>
