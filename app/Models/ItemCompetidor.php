@@ -17,6 +17,7 @@ class ItemCompetidor extends Model
         'precio_sin_impuestos',
         'info_cuotas',
         'url',
+        'categorias', // Agregar el campo aquí
         'es_full',
         'envio_gratis',
         'cantidad_disponible',
