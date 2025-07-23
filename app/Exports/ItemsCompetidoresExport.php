@@ -34,14 +34,15 @@ class ItemsCompetidoresExport implements FromCollection, WithHeadings, WithEvent
                 'Seller ID' => $item->competidor->seller_id ?? '',
                 'Publicaciones' => $item->item_id ?? '',
                 'Título' => $item->titulo ?? '--',
-                'Precio Original' => $item->precio ?? '-',
-                'Precio con Descuento' => $item->precio_descuento ?? '-',
-                'Precio sin Impuestos' => $item->precio_sin_impuestos ?? '-',
+                'Categorías' => $item->categorias ?? 'N/A',
+                'Precio Original' => $item->precio ? number_format($item->precio, 2, ',', '.') : '-',
+                'Precio con Descuento' => $item->precio_descuento ? number_format($item->precio_descuento, 2, ',', '.') : '-',
+                'Precio sin Impuestos' => $item->precio_sin_impuestos ? number_format($item->precio_sin_impuestos, 2, ',', '.') : '-',
                 'Información de Cuotas' => $item->info_cuotas ?? '-',
                 'URL' => $item->url ?? '',
                 'Es Full' => $item->es_full ? 'Sí' : 'No',
-                'Cantidad Disponible' => $item->cantidad_disponible ?? '0',
-                'Cantidad Vendida' => $item->cantidad_vendida ?? '0',
+                'Cantidad Disponible' => $item->cantidad_disponible !== null ? $item->cantidad_disponible : 'N/A',
+                'Cantidad Vendida' => $item->cantidad_vendida !== null ? $item->cantidad_vendida : 'N/A',
                 'Envío Gratis' => $item->envio_gratis ? 'Sí' : 'No',
                 'Following' => $item->following ? '1' : '0',
                 'Última Actualización' => $item->ultima_actualizacion ? date('d/m/Y H:i', strtotime($item->ultima_actualizacion)) : 'N/A',
@@ -56,6 +57,7 @@ class ItemsCompetidoresExport implements FromCollection, WithHeadings, WithEvent
             'Seller ID',
             'Publicaciones',
             'Título',
+            'Categorías',
             'Precio Original',
             'Precio con Descuento',
             'Precio sin Impuestos',
@@ -77,7 +79,7 @@ class ItemsCompetidoresExport implements FromCollection, WithHeadings, WithEvent
 
     public function styles(Worksheet $sheet)
     {
-        // Estilo para la fila de encabezados (A2:O2)
+        // Estilo para la fila de encabezados (A2:P2)
         return [
             2 => [
                 'font' => ['bold' => true],
@@ -97,7 +99,7 @@ class ItemsCompetidoresExport implements FromCollection, WithHeadings, WithEvent
 
                 // Agregar título en A1
                 $sheet->setCellValue('A1', 'Publicaciones de la Competencia');
-                $sheet->mergeCells('A1:O1'); // Combinar celdas para el título
+                $sheet->mergeCells('A1:P1'); // Combinar celdas para el título (ajustado para 16 columnas)
                 $sheet->getStyle('A1')->applyFromArray([
                     'font' => [
                         'bold' => true,
@@ -113,7 +115,7 @@ class ItemsCompetidoresExport implements FromCollection, WithHeadings, WithEvent
                 $highestRow = $sheet->getHighestRow();
                 for ($row = 3; $row <= $highestRow; $row++) {
                     if ($row % 2 == 1) { // Filas impares
-                        $sheet->getStyle("A{$row}:O{$row}")->applyFromArray([
+                        $sheet->getStyle("A{$row}:P{$row}")->applyFromArray([
                             'fill' => [
                                 'fillType' => Fill::FILL_SOLID,
                                 'startColor' => ['argb' => 'FFF0F0F0'], // Gris muy suave
@@ -123,8 +125,8 @@ class ItemsCompetidoresExport implements FromCollection, WithHeadings, WithEvent
                 }
 
                 // Crear una tabla de Excel con filtros
-                $sheet->setAutoFilter('A2:O2'); // Filtros en la fila de encabezados
-                $tableRange = "A2:O{$highestRow}";
+                $sheet->setAutoFilter('A2:P2'); // Filtros en la fila de encabezados (ajustado para 16 columnas)
+                $tableRange = "A2:P{$highestRow}";
                 $sheet->getParent()->addNamedRange(
                     new \PhpOffice\PhpSpreadsheet\NamedRange(
                         'CompetidoresTable',
@@ -142,7 +144,7 @@ class ItemsCompetidoresExport implements FromCollection, WithHeadings, WithEvent
                 ]);
 
                 // Ajustar el ancho de las columnas automáticamente
-                foreach (range('A', 'O') as $column) {
+                foreach (range('A', 'P') as $column) {
                     $sheet->getColumnDimension($column)->setAutoSize(true);
                 }
             },
