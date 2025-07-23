@@ -12,85 +12,101 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
-    <script src="https://www.paypal.com/sdk/js?client-id=BAALYLUmqvjd-Wzz1IJHFFalfEM-MjIeCdSPEhNYTdQqKeiQF6JC4ml2XVNFFJDNFS-NvHTFQjyvkWTdN4&components=hosted-buttons&disable-funding=venmo&currency=USD"></script>
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Schema Markup -->
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
-        "@type": "Product",
-        "name": "MLDataTrends Planes",
-        "description": "Soluciones avanzadas para gestionar multicuentas, optimizar stock con SKU personalizado y analizar estrategias de competidores en MercadoLibre.",
-        "brand": {
-            "@type": "Brand",
-            "name": "MLDataTrends"
-        },
-        "offers": [
-            {
-                "@type": "Offer",
-                "availability": "https://schema.org/InStock",
-                "url": "https://mldatatrends.com/plans",
-                "itemOffered": {
-                    "@type": "Service",
-                    "name": "Plan Mensual",
-                    "features": [
-                        "Múltiples cuentas MercadoLibre",
-                        "Descargar publicaciones",
-                        "Agregar SKU propio",
-                        "Descargar ventas",
-                        "Exportar a Excel",
-                        "Mostrar estadísticas",
-                        "Control de stock crítico",
-                        "Publicaciones en catálogo",
-                        "Ítems en promoción",
-                        "5 competidores"
-                    ]
-                }
-            },
-            {
-                "@type": "Offer",
-                "availability": "https://schema.org/InStock",
-                "url": "https://mldatatrends.com/plans",
-                "itemOffered": {
-                    "@type": "Service",
-                    "name": "Plan Trimestral",
-                    "features": [
-                        "Múltiples cuentas MercadoLibre",
-                        "Descargar publicaciones",
-                        "Agregar SKU propio",
-                        "Descargar ventas",
-                        "Exportar a Excel",
-                        "Mostrar estadísticas",
-                        "Control de stock crítico",
-                        "Publicaciones en catálogo",
-                        "Ítems en promoción",
-                        "15 competidores"
-                    ]
-                }
-            },
-            {
-                "@type": "Offer",
-                "availability": "https://schema.org/InStock",
-                "url": "https://mldatatrends.com/plans",
-                "itemOffered": {
-                    "@type": "Service",
-                    "name": "Plan Anual",
-                    "features": [
-                        "Múltiples cuentas MercadoLibre",
-                        "Descargar publicaciones",
-                        "Agregar SKU propio",
-                        "Descargar ventas",
-                        "Exportar a Excel",
-                        "Mostrar estadísticas",
-                        "Control de stock crítico",
-                        "Publicaciones en catálogo",
-                        "Ítems en promoción",
-                        "60 competidores"
-                    ]
-                }
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "MLDataTrends Planes",
+    "description": "Soluciones avanzadas para vendedores de MercadoLibre, incluyendo gestión de multicuentas, optimización de stock con SKU personalizado y análisis estratégico de competidores.",
+    "brand": {
+        "@type": "Brand",
+        "name": "MLDataTrends"
+    },
+    "url": "https://mldatatrends.com/plans",
+    "offers": [
+        {
+            "@type": "Offer",
+            "availability": "https://schema.org/InStock",
+            "url": "https://mldatatrends.com/plans",
+            "priceCurrency": "ARS",
+            "price": "10000",
+            "priceValidUntil": "2026-07-22",
+            "paymentMethod": "https://schema.org/MercadoPago",
+            "itemOffered": {
+                "@type": "Service",
+                "name": "Plan Mensual",
+                "description": "Acceso mensual a herramientas avanzadas para gestionar multicuentas, publicaciones y competidores en MercadoLibre.",
+                "features": [
+                    "Múltiples cuentas MercadoLibre",
+                    "Descargar publicaciones",
+                    "Agregar SKU propio",
+                    "Descargar ventas",
+                    "Exportar a Excel",
+                    "Mostrar estadísticas",
+                    "Control de stock crítico",
+                    "Publicaciones en catálogo",
+                    "Ítems en promoción",
+                    "Seguimiento de 5 competidores"
+                ]
             }
-        ]
-    }
+        },
+        {
+            "@type": "Offer",
+            "availability": "https://schema.org/InStock",
+            "url": "https://mldatatrends.com/plans",
+            "priceCurrency": "ARS",
+            "price": "25000",
+            "priceValidUntil": "2026-07-22",
+            "paymentMethod": "https://schema.org/MercadoPago",
+            "itemOffered": {
+                "@type": "Service",
+                "name": "Plan Trimestral",
+                "description": "Acceso trimestral con herramientas avanzadas para optimizar ventas y gestionar hasta 15 competidores en MercadoLibre.",
+                "features": [
+                    "Múltiples cuentas MercadoLibre",
+                    "Descargar publicaciones",
+                    "Agregar SKU propio",
+                    "Descargar ventas",
+                    "Exportar a Excel",
+                    "Mostrar estadísticas",
+                    "Control de stock crítico",
+                    "Publicaciones en catálogo",
+                    "Ítems en promoción",
+                    "Seguimiento de 15 competidores"
+                ]
+            }
+        },
+        {
+            "@type": "Offer",
+            "availability": "https://schema.org/InStock",
+            "url": "https://mldatatrends.com/plans",
+            "priceCurrency": "ARS",
+            "price": "80000",
+            "priceValidUntil": "2026-07-22",
+            "paymentMethod": "https://schema.org/MercadoPago",
+            "itemOffered": {
+                "@type": "Service",
+                "name": "Plan Anual",
+                "description": "Acceso anual con herramientas completas para dominar MercadoLibre, incluyendo seguimiento de hasta 60 competidores.",
+                "features": [
+                    "Múltiples cuentas MercadoLibre",
+                    "Descargar publicaciones",
+                    "Agregar SKU propio",
+                    "Descargar ventas",
+                    "Exportar a Excel",
+                    "Mostrar estadísticas",
+                    "Control de stock crítico",
+                    "Publicaciones en catálogo",
+                    "Ítems en promoción",
+                    "Seguimiento de 60 competidores"
+                ]
+            }
+        }
+    ]
+}
     </script>
 </head>
 <body>
