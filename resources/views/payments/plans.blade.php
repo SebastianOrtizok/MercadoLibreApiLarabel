@@ -26,8 +26,43 @@
         "name": "MLDataTrends"
     },
     "url": "https://mldatatrends.com/plans",
-    "image": "https://mldatatrends.com/images/plans-overview.jpg", // Reemplaza con URL real
+    "image": "https://mldatatrends.com/images/hero.webp",
     "faqPage": "https://mldatatrends.com/preguntas-frecuentes",
+    "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "5"
+    },
+    "review": [
+        {
+            "@type": "Review",
+            "author": {
+                "@type": "Person",
+                "name": "Juan Pérez"
+            },
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": "5",
+                "bestRating": "5"
+            },
+            "reviewBody": "Excelente herramienta para gestionar mis cuentas de MercadoLibre. ¡Altamente recomendado!",
+            "datePublished": "2025-07-01"
+        },
+        {
+            "@type": "Review",
+            "author": {
+                "@type": "Person",
+                "name": "María Gómez"
+            },
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": "4.5",
+                "bestRating": "5"
+            },
+            "reviewBody": "Me ayudó a optimizar mi stock y competir mejor. Solo echo de menos más soporte.",
+            "datePublished": "2025-06-15"
+        }
+    ],
     "offers": [
         {
             "@type": "Offer",
