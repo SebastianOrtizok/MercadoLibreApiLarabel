@@ -26,6 +26,8 @@
         "name": "MLDataTrends"
     },
     "url": "https://mldatatrends.com/plans",
+    "image": "https://mldatatrends.com/images/hero.webp",
+    "faqPage": "https://mldatatrends.com/preguntas-frecuentes",
     "offers": [
         {
             "@type": "Offer",
