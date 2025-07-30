@@ -24,7 +24,7 @@ class CompetidorService
     {
         $items = [];
         $page = 1;
-        $maxPages = 5; // Limitado a 5 páginas para reducir solicitudes
+        $maxPages = 5;
         $maxItems = 500;
         $itemsPerPage = $officialStoreId ? 48 : 50;
 
@@ -42,7 +42,7 @@ class CompetidorService
             \Log::info("Intentando scrapeo de página {$page} con URL: {$url}");
 
             try {
-                $response = $this->client->get($url, ['timeout' => 15]); // Aumentado timeout a 15s
+                $response = $this->client->get($url, ['timeout' => 15]);
                 \Log::info("Respuesta recibida", ['status' => $response->getStatusCode(), 'url' => $url]);
                 if ($response->getStatusCode() !== 200) {
                     \Log::warning("Código de estado no esperado: {$response->getStatusCode()}");
@@ -102,7 +102,7 @@ class CompetidorService
                 });
 
                 $page++;
-                sleep(rand(5, 10)); // Retraso aleatorio entre 5 y 10 segundos
+                sleep(rand(5, 10));
             } catch (RequestException $e) {
                 \Log::error("Error al scrapeo para el vendedor {$sellerId}", [
                     'error' => $e->getMessage(),
@@ -120,10 +120,14 @@ class CompetidorService
 
     protected function extractItemIdFromLink($link)
     {
-        // Expresión regular mejorada para capturar MLA seguido de números, ignorando parámetros
-        if (preg_match('/MLA-?(\d+)(?:[?#]|$)/', $link, $matches)) {
-            return 'MLA' . $matches[1];
+        \Log::debug("Extrayendo item_id de link: {$link}");
+        // Regex mejorada para capturar MLA seguido de números, ignorando parámetros y variaciones
+        if (preg_match('/(?:^|\/)MLA-?(\d+)/i', $link, $matches)) {
+            $extractedId = 'MLA' . $matches[1];
+            \Log::debug("Item_id extraído: {$extractedId}");
+            return $extractedId;
         }
+        \Log::warning("No se pudo extraer item_id, link procesado: {$link}");
         return 'UNKNOWN';
     }
 
