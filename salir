@@ -1,0 +1,149 @@
+[33m327803c[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m Revertir error de scraping v2
+[33m53d3e31[m Revertir error de scraping
+[33mf53706d[m Update CompetidorArticulosService to handle 'Última disponible' and 'mil' in sales
+[33m72b27ce[m Se agregaron campos a ItemsCompetidoresExport
+[33m1a5274b[m Se agrego nullable a cantidad disp y vendida
+[33m6615743[m Se agrego campo y logica para scrapear categoria y cantidad vendida
+[33mc42c549[m Se modifico schema de plans v4
+[33m00573d3[m Se modifico schema de plans v3
+[33m3f74fb2[m Se modifico schema de plans v2
+[33m817baa3[m Se modifico schema de plans
+[33m5cc0b84[m Se modifica estilo
+[33medfa40e[m Se modifica estilo
+[33m6afb197[m Se elimina prueba con usuario test se modifica schema y preguntas frecuentes
+[33mf0e9cf9[m Se modifica precio
+[33ma05ebcc[m Fix PaymentController, CompeidorController
+[33mff7dd73[m Se soluciona falla email bienvendia v2
+[33mc8f23ff[m Se soluciona falla email bienvendia
+[33m689e447[m Mail config
+[33m063d0dc[m Mail de bievenida
+[33mbeeb1cd[m Se agrega sitemap
+[33mafec510[m Se modifica moneda planes
+[33m18e6464[m SEO preguntas frecuentes v2
+[33m85788c0[m SEO preguntas frecuentes
+[33m08d3c56[m Se modifica login a noindex
+[33m9768e1c[m Se modifica plans v4
+[33mef80662[m Se modifica plans v3
+[33mbd4aee0[m Se modifica plans v2
+[33ma012aa6[m Se modifica plans
+[33m422f60e[m Se mejora SEO
+[33ma1b90e6[m Se actualiza preguntas-frecuentes canonical
+[33m0203ffa[m Se actualiza sitemap y htacces
+[33mec8721e[m se actualiza link en sitemap v2
+[33m4f48f79[m se actualiza link en sitemap
+[33mad87b8b[m Se agrega schema en planes
+[33mb1d4d6a[m Se modifica estilo del indice
+[33mef22ee1[m Se modifica schema de home para indexar
+[33me75b296[m Se agrega pagina de preguntas frecuentes v13
+[33mcc71cb8[m Se agrega pagina de preguntas frecuentes v12
+[33m99acffa[m Se agrega pagina de preguntas frecuentes v11
+[33m79887c1[m Se agrega pagina de preguntas frecuentes v10
+[33mf6545df[m Se agrega pagina de preguntas frecuentes v9
+[33me16817d[m Se agrega pagina de preguntas frecuentes v8
+[33m47cfe2c[m Se agrega pagina de preguntas frecuentes v7
+[33me896b60[m Se agrega pagina de preguntas frecuentes v6
+[33mb8180e5[m Se agrega pagina de preguntas frecuentes v5
+[33mfe373ef[m Se agrega pagina de preguntas frecuentes v4
+[33m64c67ab[m Se agrega pagina de preguntas frecuentes v3
+[33m43fe358[m Se agrega pagina de preguntas frecuentes v2
+[33me7c4b01[m Se agrega pagina de preguntas frecuentes
+[33mc52f128[m Se actualiza metodo follow v3
+[33m0a0602e[m Se actualiza metodo follow v2
+[33m987a380[m Se actualiza metodo follow
+[33m1b3fa29[m Se agrega chat IA
+[33m53cad4f[m Amplio la cantidad de articulos en el scrapping v1
+[33m1f75017[m Amplio la cantidad de articulos en el scrapping
+[33m03116d8[m Se item controller v2
+[33m13b37e6[m Se item controller
+[33mf68ebad[m Se actualiza suscripcion prueba gratuita
+[33mb6d817d[m Se agrega schema de preguntas frecuentes
+[33m6acac9b[m Se modifica seccion en home
+[33mfe0054b[m Se agrega seccion de features
+[33m011ba0f[m Fix getItemsByCategory v4
+[33mb8615b2[m Fix getItemsByCategory v3
+[33m28b31dc[m Fix getItemsByCategory v2
+[33m20e4137[m Fix getItemsByCategory
+[33m5f82d71[m Fix Ver Categoria
+[33m9e764a1[m Se modifican planes v2
+[33mc925f80[m Se modifican testimonios v2
+[33mce31c8a[m Se modifican testimonios
+[33mea53057[m Se modifican estilos de testimonios
+[33me037145[m Se agregan estilos al home v10
+[33m0e07d47[m Se agregan estilos al home v98
+[33m7a58643[m Se agregan estilos al home v8
+[33m068bec3[m Se agregan estilos al home v7
+[33m2fec300[m Se agregan estilos al home v6
+[33me48e3ff[m Se agregan estilos al home v5
+[33md64e3f4[m Se agregan estilos al home v4
+[33meded23d[m Se agregan estilos al home v3
+[33m7109bb7[m Se agregan estilos al home v2
+[33m1e4bea3[m Se agregan estilos al home
+[33m37a5249[m Se agregan testimonios al home
+[33me3a61e1[m  Se corrige formulario de envio competidores articulo
+[33m450136f[m  Se corrige ruta post competidor
+[33m3b84b26[m  Se modifica ruta en el frontend
+[33madebe5d[m  Se corrige error en home y se modifica ruta post competidor
+[33m9ef7bdb[m Se mejoro seguridad de datos se actualizo info en home
+[33m0aa62bc[m Mdoficacion de h1 para seo v8
+[33md7b18d2[m Mdoficacion de h1 para seo v7
+[33m3b502fc[m Mdoficacion de h1 para seo v6
+[33med67389[m Mdoficacion de h1 para seo v5
+[33m1ad000b[m Mdoficacion de h1 para seo v4
+[33m43ac84f[m Mdoficacion de h1 para seo v3
+[33mb43357b[m Mdoficacion de h1 para seo v2
+[33mabefa33[m Mdoficacion de h1 para seo
+[33m4b4c3b4[m Se agregan filtros en CompetideorArticulosController v13
+[33m844baa2[m Se agregan filtros en CompetideorArticulosController v12
+[33m926d0eb[m Se agregan filtros en CompetideorArticulosController v11
+[33mb7c845a[m Se agregan filtros en CompetideorArticulosController v10
+[33m1d92061[m Se agregan filtros en CompetideorArticulosController v9
+[33me4e8904[m Se agregan filtros en CompetideorArticulosController v8
+[33m31eaa16[m Se agregan filtros en CompetideorArticulosController v7
+[33m42ce467[m Se agregan filtros en CompetideorArticulosController v6
+[33meaebec5[m Se agregan filtros en CompetideorArticulosController v5
+[33m8c373f9[m Se agregan filtros en CompetideorArticulosController v4
+[33m3ce1975[m Se agregan filtros en CompetideorArticulosController v3
+[33m673fb28[m Se agregan filtros en CompetideorArticulosController v2
+[33m1674eb9[m Se agregan filtros en CompetideorArticulosController
+[33mf5d5fd6[m Se modifica logica en Competidor Controller en la funcion follow
+[33mda409b7[m Se agrego google analitycs
+[33m820f708[m se trabajó en SEO terminos y condiciones y en la home
+[33ma0cd251[m se modifico sitemap y dsashboard blade par amejorar indexacion SEO
+[33m220a599[m Se actualiza vista de los planes
+[33m5610b85[m Se agrega limite a 5 15 60  competidores segun el plan en CompetidorController v4
+[33me8e5569[m Se agrega limite a 5 15 60  competidores segun el plan en CompetidorController v3
+[33m9bc4121[m Se agrega limite a 5 15 60  competidores segun el plan en CompetidorController v2
+[33mbf29758[m Se agrega limite a 5 15 60  competidores segun el plan en CompetidorController
+[33m36f74ac[m Se modifica precio mensual a 10000 y se agrega limite a 5 competidores en CompetidorController
+[33m804cd36[m Se actualo css para mejoras SEO
+[33mb55be97[m Se actualizo ruta imagen hero y modifico css
+[33m314dce1[m Se actualizo ruta imagen hero
+[33m8db9ac1[m Se optimizó imagen Hero
+[33m0be8343[m Se modifico metodo de pago para actualizar el estado sin duplicar regitro
+[33m9405c1a[m baje el plan solo por hoy a 1peso
+[33mf6fd7c8[m Añade sitemap.xml para SEO
+[33m5638307[m SEO en la home v4
+[33m5da68b0[m SEO en la home v3
+[33mf349589[m SEO en la home v2
+[33m0b48d10[m SEO en la home v1
+[33me2fc5f6[m SEO en la home
+[33md1f3635[m fix: fecha fin en CheckSubscription v9
+[33mcbf68f7[m fix: fecha fin en CheckSubscription v8
+[33mb139872[m fix: fecha fin en CheckSubscription v7
+[33m4f39fdc[m fix: fecha fin en CheckSubscription v6
+[33m228d9df[m fix: fecha fin en CheckSubscription v5
+[33m2227f3f[m fix: fecha fin en CheckSubscription v4
+[33m7cbd0d7[m fix: fecha fin en CheckSubscription v3
+[33m251235c[m fix: fecha fin en CheckSubscriptionv2
+[33me226b00[m fix: fecha fin en CheckSubscription
+[33m1767d16[m Modificacion en console.php ->hourly();
+[33m702f6cd[m Se agrega política de Privacidad v2
+[33mafcd0a6[m Se agrega política de Privacidad
+[33m08f6a60[m Exportar todos los items de los competidores a excel v2
+[33m9946661[m Exportar todos los items de los competidores a excel
+[33mf1d6164[m feat: barra navegación en competidores v5
+[33mc41364f[m feat: barra navegación en competidores v4
+[33m9b0b954[m feat: barra navegación en competidores v3
+[33m669c3d2[m feat: barra navegación en competidores v2
+[33m14ebb9f[m feat: barra navegación en competidores
+[33m4bf6fd5[m feat: mejorar scraping con manejo de redirec

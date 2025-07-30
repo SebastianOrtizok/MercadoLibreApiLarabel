@@ -244,10 +244,10 @@
             </div>
         </form>
 
-        <form action="{{ route('competidores.articulos.actualizar') }}" method="POST" id="update-form">
+        <!-- <form action="{{ route('competidores.articulos.actualizar') }}" method="POST" id="update-form">
             @csrf
             <button type="submit" class="btn btn-secondary mb-3" form="update-form">Actualizar Datos de la Publicación Seleccionada</button>
-        </form>
+        </form> -->
 
         @include('layouts.pagination', [
             'currentPage' => $currentPage,
