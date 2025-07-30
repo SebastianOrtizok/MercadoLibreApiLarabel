@@ -21,6 +21,61 @@ class CompetidorArticulosService
         ]);
     }
 
+    public function scrapeItemsList($url, $sellerId)
+    {
+        \Log::info("Intentando scrapeo de lista de artículos", ['url' => $url, 'seller_id' => $sellerId]);
+
+        try {
+            sleep(rand(5, 10)); // Retraso aleatorio para simular comportamiento humano
+            $response = $this->client->get($url, ['timeout' => 15]);
+            \Log::info("Respuesta recibida", ['status' => $response->getStatusCode(), 'url' => $url]);
+
+            if ($response->getStatusCode() !== 200) {
+                \Log::warning("Código de estado no esperado: {$response->getStatusCode()}", ['url' => $url]);
+                return [];
+            }
+
+            $html = $response->getBody()->getContents();
+            $crawler = new Crawler($html);
+            $items = [];
+
+            $crawler->filter('li.ui-search-layout__item')->each(function (Crawler $node) use (&$items) {
+                $urlNode = $node->filter('a.ui-search-link');
+                $url = $urlNode->count() ? $urlNode->attr('href') : '';
+                if ($url) {
+                    // Expresión regular mejorada para capturar item_id
+                    $item_id = preg_match('/MLA-?(\d+)(?:[?#]|$)/', $url, $matches) ? 'MLA' . $matches[1] : 'UNKNOWN';
+                    $title = $node->filter('h2.ui-search-item__title')->count() ? trim($node->filter('h2.ui-search-item__title')->text()) : 'Sin título';
+                    $price = $node->filter('.andes-money-amount__fraction')->count() ? $this->normalizePrice($node->filter('.andes-money-amount__fraction')->text()) : 0.0;
+                    $installments = $node->filter('.ui-search-installments')->count() ? trim($node->filter('.ui-search-installments')->text()) : null;
+                    $freeShipping = $node->filter('.ui-search-item__shipping--free')->count() > 0;
+
+                    $items[] = [
+                        'item_id' => $item_id,
+                        'titulo' => $title,
+                        'precio' => $price,
+                        'precio_descuento' => $price,
+                        'info_cuotas' => $installments,
+                        'url' => $url,
+                        'es_full' => false,
+                        'envio_gratis' => $freeShipping
+                    ];
+                }
+            });
+
+            \Log::info("Ítems encontrados en página", ['url' => $url, 'count' => count($items), 'items' => $items]);
+            return $items;
+        } catch (RequestException $e) {
+            \Log::error("Error al scrapear lista de artículos", [
+                'error' => $e->getMessage(),
+                'url' => $url,
+                'code' => $e->getCode(),
+                'response' => $e->hasResponse() ? substr($e->getResponse()->getBody()->getContents(), 0, 1000) : 'No response'
+            ]);
+            return [];
+        }
+    }
+
     public function scrapeItemDetails($itemId, $sellerId, $sellerName, $url, $officialStoreId = null)
     {
         \Log::info("Intentando scrapeo de detalle de artículo", ['url' => $url, 'item_id' => $itemId]);
