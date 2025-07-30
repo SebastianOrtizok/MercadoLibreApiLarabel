@@ -24,7 +24,7 @@ class CompetidorService
     {
         $items = [];
         $page = 1;
-        $maxPages = 20;
+        $maxPages = 5; // Limitado a 5 páginas para reducir solicitudes
         $maxItems = 500;
         $itemsPerPage = $officialStoreId ? 48 : 50;
 
@@ -42,7 +42,7 @@ class CompetidorService
             \Log::info("Intentando scrapeo de página {$page} con URL: {$url}");
 
             try {
-                $response = $this->client->get($url, ['timeout' => 10]);
+                $response = $this->client->get($url, ['timeout' => 15]); // Aumentado timeout a 15s
                 \Log::info("Respuesta recibida", ['status' => $response->getStatusCode(), 'url' => $url]);
                 if ($response->getStatusCode() !== 200) {
                     \Log::warning("Código de estado no esperado: {$response->getStatusCode()}");
@@ -102,7 +102,7 @@ class CompetidorService
                 });
 
                 $page++;
-                sleep(3);
+                sleep(rand(5, 10)); // Retraso aleatorio entre 5 y 10 segundos
             } catch (RequestException $e) {
                 \Log::error("Error al scrapeo para el vendedor {$sellerId}", [
                     'error' => $e->getMessage(),
@@ -120,15 +120,9 @@ class CompetidorService
 
     protected function extractItemIdFromLink($link)
     {
-        if (preg_match('/(MLA\d+)/', $link, $matches)) {
-            return $matches[1];
-        }
-        $parts = parse_url($link);
-        if (isset($parts['query'])) {
-            parse_str($parts['query'], $query);
-            if (isset($query['item_id']) && preg_match('/(MLA\d+)/', $query['item_id'], $matches)) {
-                return $matches[1];
-            }
+        // Expresión regular mejorada para capturar MLA seguido de números, ignorando parámetros
+        if (preg_match('/MLA-?(\d+)(?:[?#]|$)/', $link, $matches)) {
+            return 'MLA' . $matches[1];
         }
         return 'UNKNOWN';
     }
