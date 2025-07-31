@@ -340,36 +340,44 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-4" role="contentinfo">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>Sobre Nosotros</h5>
-                    <p>Potenciamos a los vendedores de Mercado Libre con herramientas avanzadas para crecer y competir.</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Enlaces Rápidos</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="{{ route('login') }}">Iniciar Sesión</a></li>
-                        <li><a href="{{ route('register') }}">Regístrarse</a></li>
-                        <li><a href="{{ url('/preguntas-frecuentes') }}">Preguntas Frecuentes</a></li>
-                        <li><a href="{{ url('/terminos-y-condiciones') }}" target="_blank">Términos y Condiciones</a></li>
-                        <li><a href="{{ url('/politica-privacidad') }}" target="_blank">Política de Privacidad</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Contacto</h5>
-                    <p><i class="fas fa-envelope me-2" aria-hidden="true"></i> soporte@mldatatrends.com</p>
-                </div>
+<!-- Footer -->
+<!-- Footer -->
+<footer class="py-4" role="contentinfo">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Sobre Nosotros</h5>
+                <p>Potenciamos a los vendedores de Mercado Libre con herramientas avanzadas para crecer y competir.</p>
             </div>
-            <hr class="bg-light">
-            <p class="text-center mb-0">© 2025 MLDataTrends. Todos los derechos reservados.</p>
+            <div class="col-md-4">
+                <h5>Enlaces Rápidos</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{{ route('login') }}">Iniciar Sesión</a></li>
+                    <li><a href="{{ route('register') }}">Regístrarse</a></li>
+                    <li><a href="{{ url('/preguntas-frecuentes') }}">Preguntas Frecuentes</a></li>
+                    <li><a href="{{ url('/terminos-y-condiciones') }}" target="_blank">Términos y Condiciones</a></li>
+                    <li><a href="{{ url('/politica-privacidad') }}" target="_blank">Política de Privacidad</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contacto</h5>
+                <p><i class="fas fa-envelope me-2" aria-hidden="true"></i> soporte@mldatatrends.com</p>
+                <h5 class="mt-3">Redes Sociales</h5>
+                <p>
+                    <a href="https://www.instagram.com/mldatatrends/" target="_blank" rel="noopener noreferrer" aria-label="Síguenos en Instagram">
+                        <i class="fab fa-instagram me-2" aria-hidden="true"></i> Instagram
+                    </a>
+                </p>
+            </div>
         </div>
-    </footer>
+        <hr class="bg-light">
+        <p class="text-center mb-0">© 2025 MLDataTrends. Todos los derechos reservados.</p>
+    </div>
+</footer>
 
-    <!-- Schema Markup Consolidado -->
-    <script type="application/ld+json">
-   {
+<!-- Schema Markup Consolidado -->
+<script type="application/ld+json">
+{
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "MLDataTrends",
@@ -378,7 +386,10 @@
   "publisher": {
     "@type": "Organization",
     "name": "MLDataTrends",
-    "url": "https://mldatatrends.com"
+    "url": "https://mldatatrends.com",
+    "sameAs": [
+      "https://www.instagram.com/mldatatrends/"
+    ]
   },
   "url": "https://mldatatrends.com",
   "description": "Plataforma para vendedores de Mercado Libre que ofrece gestión de multicuentas, análisis de competidores, optimización de stock, estadísticas avanzadas, promociones inteligentes, exportación a Excel, catálogo optimizado, SKUs personalizados y un panel de control intuitivo.",
@@ -416,7 +427,7 @@
       {
         "@type": "ListItem",
         "position": 3,
-        "name": "Ventas Consoladas con Filtros y Exportación",
+        "name": "Ventas Consolidadas con Filtros y Exportación",
         "description": "Filtra y consolida ventas por SKU o fecha, con exportación a Excel para análisis detallado."
       },
       {
@@ -477,9 +488,9 @@
     }
   ]
 }
-    </script>
+</script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
-    <script src="//code.tidio.co/jo26sf9xwxm54yytrbdsaeflv2b1timh.js" async></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+<script src="//code.tidio.co/jo26sf9xwxm54yytrbdsaeflv2b1timh.js" async></script>
 </body>
 </html>
