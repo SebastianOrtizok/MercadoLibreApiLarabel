@@ -6,7 +6,7 @@
 
         @php
             $user = auth()->user();
-            $subscription = \App\Models\Subscription::where('user_id', $user->id)->where('estado', 'activo')->first();
+            $subscription = \App\Models\Suscripcion::where('usuario_id', $user->id)->where('estado', 'activo')->first(); // Corregido a Suscripcion y usuario_id
             $tokens = \App\Models\MercadoLibreToken::where('user_id', $user->id)->get();
             $tokenCount = $tokens->count();
             $maxAccounts = 1; // Default para mensual o prueba_gratuita
