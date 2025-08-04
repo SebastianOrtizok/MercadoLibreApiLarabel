@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\MercadoLibreToken;
+use App\Models\Subscription;
 use Carbon\Carbon;
 
 class TokenController extends Controller
@@ -44,6 +45,34 @@ class TokenController extends Controller
             return redirect()->route('dashboard')->with('error', 'Error de configuración. Contacta al administrador.');
         }
 
+        $user = auth()->user();
+        $subscription = Subscription::where('user_id', $user->id)->where('estado', 'activo')->first();
+        $tokens = MercadoLibreToken::where('user_id', $user->id)->get();
+        $tokenCount = $tokens->count();
+        $maxAccounts = 1; // Default para mensual o prueba_gratuita
+
+        // Determinar máximo según el plan
+        if ($subscription) {
+            switch ($subscription->plan) {
+                case 'trimestral':
+                    $maxAccounts = 2;
+                    break;
+                case 'anual':
+                    $maxAccounts = 3;
+                    break;
+                case 'prueba_gratuita':
+                case 'mensual':
+                default:
+                    $maxAccounts = 1;
+            }
+        }
+
+        // Verificar si el usuario ha alcanzado el límite de cuentas
+        if ($tokenCount >= $maxAccounts) {
+            Log::warning('Límite de cuentas alcanzado para el usuario', ['user_id' => $user->id, 'token_count' => $tokenCount, 'max_accounts' => $maxAccounts]);
+            return redirect()->route('dashboard')->with('error', 'Has alcanzado el límite de cuentas permitido por tu plan. Contacta al administrador.');
+        }
+
         try {
             // Intercambiar el código por un access_token y refresh_token
             $response = Http::post('https://api.mercadolibre.com/oauth/token', [
@@ -74,10 +103,17 @@ class TokenController extends Controller
                 $mlAccountId = $userData['id'];
                 $sellerName = $userData['nickname'];
 
+                // Verificar si el ml_account_id ya está vinculado a este usuario
+                $existingToken = MercadoLibreToken::where('user_id', $user->id)->where('ml_account_id', $mlAccountId)->first();
+                if ($existingToken) {
+                    Log::warning('Intento de vincular una cuenta ya existente', ['user_id' => $user->id, 'ml_account_id' => $mlAccountId]);
+                    return redirect()->route('dashboard')->with('error', 'Esta cuenta de Mercado Libre ya está vinculada. Usa una cuenta diferente.');
+                }
+
                 // Guardar el token en la base de datos
                 MercadoLibreToken::updateOrCreate(
                     [
-                        'user_id' => auth()->id(),
+                        'user_id' => $user->id,
                         'ml_account_id' => $mlAccountId,
                     ],
                     [
@@ -89,7 +125,7 @@ class TokenController extends Controller
                 );
 
                 Log::info('Token de Mercado Libre generado exitosamente', [
-                    'user_id' => auth()->id(),
+                    'user_id' => $user->id,
                     'ml_account_id' => $mlAccountId,
                 ]);
 
