@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\MercadoLibreToken;
-use App\Models\Subscription;
+use App\Models\Suscripcion; // Corregido a Suscripcion
 use Carbon\Carbon;
 
 class TokenController extends Controller
@@ -46,7 +46,7 @@ class TokenController extends Controller
         }
 
         $user = auth()->user();
-        $subscription = Subscription::where('user_id', $user->id)->where('estado', 'activo')->first();
+        $subscription = Suscripcion::where('usuario_id', $user->id)->where('estado', 'activo')->first(); // Corregido a Suscripcion
         $tokens = MercadoLibreToken::where('user_id', $user->id)->get();
         $tokenCount = $tokens->count();
         $maxAccounts = 1; // Default para mensual o prueba_gratuita
