@@ -33,24 +33,23 @@ class CompetidorService
             ? "https://listado.mercadolibre.com.ar"
             : "https://listado.mercadolibre.com.ar";
 
-        // Ajustar URL para incluir categoría si se proporciona
-        $url = $officialStoreId
-            ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True" : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True")
-            : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True";
-        if ($categoria) {
-            $url = "{$baseUrl}/{$categoria}/" . ltrim($url, '/');
-            \Log::info("URL ajustada con categoría", ['url' => $url, 'categoria' => $categoria]);
-        }
-
         while ($page <= $maxPages && count($items) < $maxItems) {
             $offset = ($page - 1) * $itemsPerPage + 1;
-            $currentUrl = str_replace('{$offset}', $offset, $url);
 
-            \Log::info("Intentando scrapeo de página {$page} con URL: {$currentUrl}");
+            // Construir URL dinámicamente en cada iteración
+            $url = $officialStoreId
+                ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True" : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True")
+                : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True";
+            if ($categoria) {
+                $url = "{$baseUrl}/{$categoria}/" . ltrim($url, '/');
+                \Log::info("URL ajustada con categoría", ['url' => $url, 'categoria' => $categoria]);
+            }
+
+            \Log::info("Intentando scrapeo de página {$page} con URL: {$url}");
 
             try {
-                $response = $this->client->get($currentUrl, ['timeout' => 15]);
-                \Log::info("Respuesta recibida", ['status' => $response->getStatusCode(), 'url' => $currentUrl]);
+                $response = $this->client->get($url, ['timeout' => 15]);
+                \Log::info("Respuesta recibida", ['status' => $response->getStatusCode(), 'url' => $url]);
                 if ($response->getStatusCode() !== 200) {
                     \Log::warning("Código de estado no esperado: {$response->getStatusCode()}");
                     break;
@@ -92,7 +91,7 @@ class CompetidorService
 
                     $itemId = $this->extractItemIdFromLink($postLink);
 
-                    // Intentar extraer categoría desde el listado (si está disponible)
+                    // Intentar extraer categoría desde el listado (ajustar selector si necesario)
                     $categoriaItem = $node->filter('.ui-search-item__category')->count()
                         ? trim($node->filter('.ui-search-item__category')->text())
                         : null;
@@ -106,7 +105,7 @@ class CompetidorService
                         'url' => $postLink,
                         'es_full' => $isFull,
                         'envio_gratis' => $hasFreeShipping,
-                        'categorias' => $categoriaItem ?: 'Sin categoría', // Usar categoría extraída o predeterminada
+                        'categorias' => $categoriaItem ?: 'Sin categoría',
                     ];
 
                     \Log::info("Ítem scrapeado", $itemData);
@@ -119,7 +118,7 @@ class CompetidorService
             } catch (RequestException $e) {
                 \Log::error("Error al scrapeo para el vendedor {$sellerId}", [
                     'error' => $e->getMessage(),
-                    'url' => $currentUrl,
+                    'url' => $url,
                     'code' => $e->getCode(),
                     'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : 'No response'
                 ]);
