@@ -29,18 +29,17 @@ class CompetidorService
         $maxItems = 500;
         $itemsPerPage = $officialStoreId ? 48 : 50;
 
-        $baseUrl = $officialStoreId
-            ? "https://listado.mercadolibre.com.ar"
-            : "https://listado.mercadolibre.com.ar";
+        $baseUrl = "https://listado.mercadolibre.com.ar";
 
         while ($page <= $maxPages && count($items) < $maxItems) {
             $offset = ($page - 1) * $itemsPerPage + 1;
 
-            // Construir URL dinámicamente en cada iteración
+            // Construir URL con categoría si se proporciona
             $url = $officialStoreId
                 ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True" : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True")
                 : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True";
             if ($categoria) {
+                $categoria = str_replace(' ', '-', strtolower(trim($categoria))); // Normalizar categoría
                 $url = "{$baseUrl}/{$categoria}/" . ltrim($url, '/');
                 \Log::info("URL ajustada con categoría", ['url' => $url, 'categoria' => $categoria]);
             }
@@ -66,7 +65,7 @@ class CompetidorService
                     break;
                 }
 
-                $itemNodes->each(function (Crawler $node) use (&$items, $maxItems) {
+                $itemNodes->each(function (Crawler $node) use (&$items, $maxItems, $categoria) {
                     if (count($items) >= $maxItems) {
                         return false;
                     }
@@ -91,10 +90,10 @@ class CompetidorService
 
                     $itemId = $this->extractItemIdFromLink($postLink);
 
-                    // Intentar extraer categoría desde el listado (ajustar selector si necesario)
-                    $categoriaItem = $node->filter('.ui-search-item__category')->count()
-                        ? trim($node->filter('.ui-search-item__category')->text())
-                        : null;
+                    // Intentar extraer categoría desde el breadcrumb o metadatos
+                    $categoriaItem = $node->filter('.ui-search-breadcrumb a')->count()
+                        ? trim($node->filter('.ui-search-breadcrumb a')->last()->text())
+                        : ($node->filter('.ui-search-item__group__element')->count() ? trim($node->filter('.ui-search-item__group__element')->text()) : null);
 
                     $itemData = [
                         'item_id' => $itemId,
@@ -105,7 +104,7 @@ class CompetidorService
                         'url' => $postLink,
                         'es_full' => $isFull,
                         'envio_gratis' => $hasFreeShipping,
-                        'categorias' => $categoriaItem ?: 'Sin categoría',
+                        'categorias' => $categoriaItem ?: ($categoria ?: 'Sin categoría'), // Usar categoría scrapeada o la seleccionada
                     ];
 
                     \Log::info("Ítem scrapeado", $itemData);
@@ -133,7 +132,6 @@ class CompetidorService
     protected function extractItemIdFromLink($link)
     {
         \Log::debug("Extrayendo item_id de link: {$link}");
-        // Regex mejorada para capturar MLA seguido de números, ignorando parámetros y variaciones
         if (preg_match('/(?:^|\/)MLA-?(\d+)/i', $link, $matches)) {
             $extractedId = 'MLA' . $matches[1];
             \Log::debug("Item_id extraído: {$extractedId}");
