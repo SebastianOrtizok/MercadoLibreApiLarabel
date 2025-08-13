@@ -34,10 +34,10 @@ class CompetidorService
         while ($page <= $maxPages && count($items) < $maxItems) {
             $offset = ($page - 1) * $itemsPerPage + 1;
 
-            // Construir URL con categoría si se proporciona
+            // Construir URL sin _Desde_ en la primera página
             $url = $officialStoreId
                 ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True" : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True")
-                : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True";
+                : ($page === 1 ? "{$baseUrl}/_CustId_{$sellerId}_NoIndex_True" : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True");
             if ($categoria) {
                 $categoria = str_replace(' ', '-', strtolower(trim($categoria))); // Normalizar categoría
                 $url = "{$baseUrl}/{$categoria}/" . ltrim($url, '/');
@@ -104,7 +104,7 @@ class CompetidorService
                         'url' => $postLink,
                         'es_full' => $isFull,
                         'envio_gratis' => $hasFreeShipping,
-                        'categorias' => $categoriaItem ?: ($categoria ?: 'Sin categoría'), // Usar categoría scrapeada o la seleccionada
+                        'categorias' => $categoriaItem ?: ($categoria ?: 'Sin categoría'),
                     ];
 
                     \Log::info("Ítem scrapeado", $itemData);
