@@ -41,16 +41,18 @@ class CompetidorService
             if ($categoria) {
                 $categoria = str_replace(' ', '-', strtolower(trim($categoria))); // Normalizar categoría
                 $url = "{$baseUrl}/{$categoria}/" . ltrim($url, '/');
-                \Log::info("URL ajustada con categoría", ['url' => $url, 'categoria' => $categoria]);
+                \Log::info("URL ajustada con categoría para página {$page}", ['url' => $url, 'categoria' => $categoria, 'page' => $page, 'seller_id' => $sellerId]);
+            } else {
+                \Log::info("URL sin categoría para página {$page}", ['url' => $url, 'page' => $page, 'seller_id' => $sellerId]);
             }
 
-            \Log::info("Intentando scrapeo de página {$page} con URL: {$url}");
+            \Log::info("Intentando scrapeo de página {$page} con URL: {$url}", ['seller_id' => $sellerId]);
 
             try {
                 $response = $this->client->get($url, ['timeout' => 15]);
-                \Log::info("Respuesta recibida", ['status' => $response->getStatusCode(), 'url' => $url]);
+                \Log::info("Respuesta recibida para página {$page}", ['status' => $response->getStatusCode(), 'url' => $url]);
                 if ($response->getStatusCode() !== 200) {
-                    \Log::warning("Código de estado no esperado: {$response->getStatusCode()}");
+                    \Log::warning("Código de estado no esperado para página {$page}: {$response->getStatusCode()}", ['url' => $url]);
                     break;
                 }
 
@@ -58,14 +60,14 @@ class CompetidorService
                 $crawler = new Crawler($html);
 
                 $itemNodes = $crawler->filter('li.ui-search-layout__item');
-                \Log::info("Ítems encontrados en página {$page}: " . $itemNodes->count());
+                \Log::info("Ítems encontrados en página {$page}: " . $itemNodes->count(), ['url' => $url]);
 
                 if ($itemNodes->count() === 0) {
-                    \Log::info("No se encontraron más ítems en la página {$page}, contenido HTML: " . substr($html, 0, 500));
+                    \Log::info("No se encontraron más ítems en la página {$page}, contenido HTML inicial: " . substr($html, 0, 500), ['url' => $url]);
                     break;
                 }
 
-                $itemNodes->each(function (Crawler $node) use (&$items, $maxItems, $categoria) {
+                $itemNodes->each(function (Crawler $node) use (&$items, $maxItems, $categoria, $sellerId) {
                     if (count($items) >= $maxItems) {
                         return false;
                     }
@@ -107,15 +109,14 @@ class CompetidorService
                         'categorias' => $categoriaItem ?: ($categoria ?: 'Sin categoría'),
                     ];
 
-                    \Log::info("Ítem scrapeado", $itemData);
-
+                    \Log::info("Ítem scrapeado de página", array_merge($itemData, ['seller_id' => $sellerId]));
                     $items[] = $itemData;
                 });
 
                 $page++;
                 sleep(rand(5, 10));
             } catch (RequestException $e) {
-                \Log::error("Error al scrapeo para el vendedor {$sellerId}", [
+                \Log::error("Error al scrapeo para el vendedor {$sellerId} en página {$page}", [
                     'error' => $e->getMessage(),
                     'url' => $url,
                     'code' => $e->getCode(),
@@ -125,7 +126,7 @@ class CompetidorService
             }
         }
 
-        \Log::info("Scraping finalizado. Total ítems scrapeados: " . count($items));
+        \Log::info("Scraping finalizado. Total ítems scrapeados: " . count($items), ['seller_id' => $sellerId]);
         return $items;
     }
 
