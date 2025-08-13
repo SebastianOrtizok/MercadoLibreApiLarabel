@@ -58,6 +58,20 @@
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
+                        <div class="col-md-4">
+                            <label for="categoria" class="form-label fw-semibold">Categoría (opcional)</label>
+                            <select name="categoria" id="categoria" class="form-control">
+                                <option value="">Seleccionar categoría</option>
+                                <option value="electronica-audio-video">Electrónica - Audio y Video</option>
+                                <option value="deportes-y-fitness">Deportes y Fitness</option>
+                                <option value="celulares-y-telefonos">Celulares y Teléfonos</option>
+                                <option value="computacion">Computación</option>
+                                <option value="hogar-y-muebles">Hogar y Muebles</option>
+                            </select>
+                            @error('categoria')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
                         <div class="col-12 mt-3">
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="fas fa-save me-2"></i> Guardar Competidor
@@ -89,7 +103,15 @@
                             <form action="{{ route('competidores.actualizar') }}" method="POST" class="d-inline">
                                 @csrf
                                 <input type="hidden" name="competidor_id" value="{{ $competidor->id }}">
-                                <button type="submit" class="btn btn-outline-success btn-sm">
+                                <select name="categoria" class="form-control form-control-sm mb-2" style="width: auto; display: inline-block;">
+                                    <option value="">Seleccionar categoría a escrapear</option>
+                                    <option value="electronica-audio-video" {{ $competidor->categoria == 'electronica-audio-video' ? 'selected' : '' }}>Electrónica - Audio y Video</option>
+                                    <option value="deportes-y-fitness" {{ $competidor->categoria == 'deportes-y-fitness' ? 'selected' : '' }}>Deportes y Fitness</option>
+                                    <option value="celulares-y-telefonos" {{ $competidor->categoria == 'celulares-y-telefonos' ? 'selected' : '' }}>Celulares y Teléfonos</option>
+                                    <option value="computacion" {{ $competidor->categoria == 'computacion' ? 'selected' : '' }}>Computación</option>
+                                    <option value="hogar-y-muebles" {{ $competidor->categoria == 'hogar-y-muebles' ? 'selected' : '' }}>Hogar y Muebles</option>
+                                </select>
+                                <button type="submit" class="btn btn-outline-success btn-sm ms-2">
                                     <i class="fas fa-sync-alt me-2"></i> Actualizar
                                 </button>
                             </form>
@@ -97,7 +119,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <input type="hidden" name="competidor_id" value="{{ $competidor->id }}">
-                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <button type="submit" class="btn btn-outline-danger btn-sm ms-2">
                                     <i class="fas fa-trash-alt me-2"></i> Eliminar
                                 </button>
                             </form>
@@ -243,11 +265,6 @@
                 <button type="submit" class="btn btn-primary me-2" form="follow-form">Seguir Publicación Seleccionada</button>
             </div>
         </form>
-
-        <!-- <form action="{{ route('competidores.articulos.actualizar') }}" method="POST" id="update-form">
-            @csrf
-            <button type="submit" class="btn btn-secondary mb-3" form="update-form">Actualizar Datos de la Publicación Seleccionada</button>
-        </form> -->
 
         @include('layouts.pagination', [
             'currentPage' => $currentPage,
