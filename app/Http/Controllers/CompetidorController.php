@@ -6,7 +6,7 @@ use App\Services\CompetidorService;
 use Illuminate\Http\Request;
 use App\Exports\ItemsCompetidoresExport;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Models\Suscripcion; // Agregamos el modelo Suscripcion
+use App\Models\Suscripcion;
 
 class CompetidorController extends Controller
 {
@@ -50,16 +50,14 @@ class CompetidorController extends Controller
             'official_store_id' => 'nullable|integer',
         ]);
 
-        // Verificar el plan del usuario, priorizando la suscripción activa más reciente y no vencida
         $suscripcion = Suscripcion::where('usuario_id', auth()->id())
             ->where('estado', 'activo')
             ->where('fecha_fin', '>=', now())
-            ->latest('updated_at') // Usar updated_at para priorizar la más reciente
+            ->latest('updated_at')
             ->first();
 
         $competidorCount = Competidor::where('user_id', auth()->id())->count();
 
-        // Definir límites por plan
         $limits = [
             'mensual' => 5,
             'trimestral' => 15,
@@ -100,24 +98,28 @@ class CompetidorController extends Controller
         $competidor = Competidor::where('user_id', auth()->id())
             ->findOrFail($request->competidor_id);
 
+        $categoria = $request->input('categoria'); // Obtener la categoría seleccionada del formulario
+
         \Log::info("Iniciando actualización de competidor", [
             'competidor_id' => $competidor->id,
             'seller_id' => $competidor->seller_id,
             'nickname' => $competidor->nickname,
             'official_store_id' => $competidor->official_store_id,
+            'categoria_seleccionada' => $categoria,
         ]);
 
         try {
             $items = $this->competidorService->scrapeItemsBySeller(
                 $competidor->seller_id,
                 strtolower($competidor->nickname),
-                $competidor->official_store_id
+                $competidor->official_store_id,
+                $categoria // Pasar la categoría seleccionada
             );
 
             \Log::info("Ítems scrapeados para el competidor", [
                 'competidor_id' => $competidor->id,
                 'total_items' => count($items),
-                'sample_items' => array_slice($items, 0, 5), // Mostrar solo 5 para no saturar logs
+                'sample_items' => array_slice($items, 0, 5),
             ]);
 
             if (empty($items)) {
@@ -143,6 +145,7 @@ class CompetidorController extends Controller
                         'es_full' => $itemData['es_full'],
                         'envio_gratis' => $itemData['envio_gratis'],
                         'ultima_actualizacion' => now(),
+                        'categorias' => $itemData['categorias'], // Usar la categoría scrapeada o la seleccionada
                         'cantidad_disponible' => 0,
                         'cantidad_vendida' => 0,
                     ]
@@ -185,10 +188,8 @@ class CompetidorController extends Controller
         ]);
 
         try {
-            // Obtener los competidores del usuario autenticado
             $competidores = Competidor::where('user_id', auth()->id())->pluck('id');
 
-            // Obtener el array de ítems desde el formulario
             $followData = $request->input('follow', []);
             $selectedItemIds = array_keys(array_filter($followData, fn($value) => $value === 'yes'));
 
@@ -197,7 +198,6 @@ class CompetidorController extends Controller
                 'selected_item_ids' => $selectedItemIds,
             ]);
 
-            // Obtener los ítems de la página actual
             $currentPageItems = \App\Models\ItemCompetidor::whereIn('competidor_id', $competidores)
                 ->whereIn('item_id', array_keys($followData))
                 ->get();
