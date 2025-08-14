@@ -60,268 +60,13 @@
                         </div>
                         <div class="col-md-4">
                             <label for="categoria" class="form-label fw-semibold">Categoría (opcional)</label>
-<select name="categoria" id="categoria" class="form-control">
-                                <option value="">Seleccionar categoría a escrapear</option>
-                                <optgroup label="Vehículos">
-                                    <option value="accesorios-para-vehiculos">Accesorios para Vehículos</option>
-                                    <option value="repuestos-autos-camionetas">Repuestos para Autos y Camionetas</option>
-                                    <option value="motos">Motos</option>
-                                    <option value="neumaticos">Neumáticos</option>
-                                    <option value="llantas">Llantas</option>
-                                    <option value="otros-vehiculos">Otros Vehículos</option>
-                                </optgroup>
-                                <optgroup label="Inmuebles">
-                                    <option value="alquiler">Alquiler</option>
-                                    <option value="venta">Venta</option>
-                                    <option value="temporarios">Alquiler Temporario</option>
-                                    <option value="locales">Locales Comerciales</option>
-                                    <option value="departamentos">Departamentos</option>
-                                    <option value="casas">Casas</option>
-                                    <option value="terrenos">Terrenos</option>
-                                </optgroup>
-                                <optgroup label="Supermercado">
-                                    <option value="almacen">Almacén</option>
-                                    <option value="bebidas">Bebidas</option>
-                                    <option value="cuidado-personal">Cuidado Personal</option>
-                                    <option value="limpieza">Limpieza</option>
-                                    <option value="frescos">Frescos</option>
-                                    <option value="congelados">Congelados</option>
-                                </optgroup>
-                                <optgroup label="Tecnología">
-                                    <option value="celulares-y-telefonos">Celulares y Teléfonos</option>
-                                    <option value="computacion">Computación</option>
-                                    <option value="electronica-audio-video">Electrónica, Audio y Video</option>
-                                    <option value="consolas-videojuegos">Consolas y Videojuegos</option>
-                                    <option value="impresion">Impresión</option>
-                                    <option value="conectividad-redes">Conectividad y Redes</option>
-                                </optgroup>
-                                <optgroup label="Hogar y Muebles">
-                                    <option value="hogar-muebles">Hogar y Muebles</option>
-                                    <option value="cocina">Cocina</option>
-                                    <option value="decoracion">Decoración</option>
-                                    <option value="iluminacion">Iluminación</option>
-                                    <option value="textiles">Textiles</option>
-                                    <option value="bazar">Bazar</option>
-                                </optgroup>
-                                <optgroup label="Electrodomésticos y Aires Ac.">
-                                    <option value="electrodomesticos">Electrodomésticos</option>
-                                    <option value="aires-acondicionados">Aires Acondicionados</option>
-                                    <option value="cocinas">Cocinas</option>
-                                    <option value="lavado">Lavado</option>
-                                    <option value="climatizacion">Climatización</option>
-                                </optgroup>
-                                <optgroup label="Deportes y Fitness">
-                                    <option value="deportes-fitness">Deportes y Fitness</option>
-                                    <option value="bicicletas">Bicicletas</option>
-                                    <option value="fitness">Fitness</option>
-                                    <option value="futbol">Fútbol</option>
-                                    <option value="tenis">Tenis</option>
-                                    <option value="camping">Camping</option>
-                                </optgroup>
-                                <optgroup label="Belleza y Cuidado Personal">
-                                    <option value="belleza-cuidado-personal">Belleza y Cuidado Personal</option>
-                                    <option value="maquillaje">Maquillaje</option>
-                                    <option value="cuidado-del-cabello">Cuidado del Cabello</option>
-                                    <option value="cuidado-de-la-piel">Cuidado de la Piel</option>
-                                    <option value="fragancias">Fragancias</option>
-                                </optgroup>
-                                <optgroup label="Herramientas">
-                                    <option value="herramientas">Herramientas</option>
-                                    <option value="herramientas-electricas">Herramientas Eléctricas</option>
-                                    <option value="herramientas-manuales">Herramientas Manuales</option>
-                                    <option value="soldadura">Soldadura</option>
-                                    <option value="medicion">Medición</option>
-                                </optgroup>
-                                <optgroup label="Construcción">
-                                    <option value="construccion">Construcción</option>
-                                    <option value="electricidad">Electricidad</option>
-                                    <option value="pintureria">Pinturería</option>
-                                    <option value="plomería">Plomería</option>
-                                    <option value="ferreteria">Ferretería</option>
-                                </optgroup>
-                                <optgroup label="Industrias y Oficinas">
-                                    <option value="industrias-oficinas">Industrias y Oficinas</option>
-                                    <option value="equipamiento-comercial">Equipamiento Comercial</option>
-                                    <option value="gastronomia">Gastronomía</option>
-                                    <option value="oficina">Oficina</option>
-                                </optgroup>
-                                <optgroup label="Accesorios para Vehículos">
-                                    <option value="accesorios-para-vehiculos">Accesorios para Vehículos</option>
-                                    <option value="audio-para-vehiculos">Audio para Vehículos</option>
-                                    <option value="cuidado-vehiculo">Cuidado del Vehículo</option>
-                                    <option value="accesorios-interiores">Accesorios Interiores</option>
-                                    <option value="accesorios-exteriores">Accesorios Exteriores</option>
-                                </optgroup>
-                                <optgroup label="Agro">
-                                    <option value="agro">Agro</option>
-                                    <option value="maquinaria-agricola">Maquinaria Agrícola</option>
-                                    <option value="insumos-agricolas">Insumos Agrícolas</option>
-                                    <option value="ganaderia">Ganadería</option>
-                                </optgroup>
-                                <optgroup label="Animales y Mascotas">
-                                    <option value="animales-mascotas">Animales y Mascotas</option>
-                                    <option value="perros">Perros</option>
-                                    <option value="gatos">Gatos</option>
-                                    <option value="peces">Peces</option>
-                                    <option value="aves">Aves</option>
-                                    <option value="roedores">Roedores</option>
-                                </optgroup>
-                                <optgroup label="Antiguedades y Colecciones">
-                                    <option value="antiguedades-colecciones">Antigüedades y Colecciones</option>
-                                    <option value="antiguedades">Antigüedades</option>
-                                    <option value="monedas-billetes">Monedas y Billetes</option>
-                                    <option value="sellos">Sellos</option>
-                                    <option value="arte-coleccionable">Arte Coleccionable</option>
-                                </optgroup>
-                                <optgroup label="Arte, Librería y Mercería">
-                                    <option value="arte-libreria-merceria">Arte, Librería y Mercería</option>
-                                    <option value="arte">Arte</option>
-                                    <option value="libreria">Librería</option>
-                                    <option value="merceria">Mercería</option>
-                                </optgroup>
-                                <optgroup label="Autos, Motos y Otros">
-                                    <option value="autos-motos-otros">Autos, Motos y Otros</option>
-                                    <option value="autos-usados">Autos Usados</option>
-                                    <option value="motos-usadas">Motos Usadas</option>
-                                    <option value="otros-vehiculos">Otros Vehículos</option>
-                                </optgroup>
-                                <optgroup label="Bebés">
-                                    <option value="bebes">Bebés</option>
-                                    <option value="coches-bebe">Coches de Bebé</option>
-                                    <option value="cunas-corralitos">Cunas y Corralitos</option>
-                                    <option value="juguetes-bebe">Juguetes para Bebé</option>
-                                    <option value="ropa-bebe">Ropa para Bebé</option>
-                                </optgroup>
-                                <optgroup label="Cámaras y Accesorios">
-                                    <option value="camaras-accesorios">Cámaras y Accesorios</option>
-                                    <option value="camaras-digitales">Cámaras Digitales</option>
-                                    <option value="drones-accesorios">Drones y Accesorios</option>
-                                    <option value="lentes">Lentes</option>
-                                    <option value="tripodes">Trípodes</option>
-                                </optgroup>
-                                <optgroup label="Celulares y Teléfonos">
-                                    <option value="celulares-telefonos">Celulares y Teléfonos</option>
-                                    <option value="celulares">Celulares</option>
-                                    <option value="telefonos-fijos">Teléfonos Fijos</option>
-                                    <option value="repuestos-celulares">Repuestos para Celulares</option>
-                                </optgroup>
-                                <optgroup label="Coleccionables y Hobbies">
-                                    <option value="coleccionables-hobbies">Coleccionables y Hobbies</option>
-                                    <option value="hobbies">Hobbies</option>
-                                    <option value="figuras-accion">Figuras de Acción</option>
-                                    <option value="modelismo">Modelismo</option>
-                                </optgroup>
-                                <optgroup label="Consolas y Videojuegos">
-                                    <option value="consolas-videojuegos">Consolas y Videojuegos</option>
-                                    <option value="consolas">Consolas</option>
-                                    <option value="videojuegos">Videojuegos</option>
-                                    <option value="accesorios-consolas">Accesorios para Consolas</option>
-                                </optgroup>
-                                <optgroup label="Deportes y Fitness">
-                                    <option value="deportes-fitness">Deportes y Fitness</option>
-                                    <option value="bicicletas">Bicicletas</option>
-                                    <option value="fitness-gimnasia">Fitness y Gimnasia</option>
-                                    <option value="futbol">Fútbol</option>
-                                    <option value="tenis">Tenis</option>
-                                    <option value="camping">Camping</option>
-                                </optgroup>
-                                <optgroup label="Electrodomésticos y Aires Ac.">
-                                    <option value="electrodomesticos-aires-ac">Electrodomésticos y Aires Ac.</option>
-                                    <option value="aires-acondicionados">Aires Acondicionados</option>
-                                    <option value="cocinas">Cocinas</option>
-                                    <option value="lavado">Lavado</option>
-                                    <option value="climatizacion">Climatización</option>
-                                </optgroup>
-                                <optgroup label="Electrónica, Audio y Video">
-                                    <option value="electronica-audio-video">Electrónica, Audio y Video</option>
-                                    <option value="audio">Audio</option>
-                                    <option value="audifonos">Audífonos</option>
-                                    <option value="componentes-electronicos">Componentes Electrónicos</option>
-                                    <option value="drones-accesorios">Drones y Accesorios</option>
-                                    <option value="equipamiento-djs">Equipamiento para DJs</option>
-                                    <option value="home-theater">Home Theater</option>
-                                    <option value="instrumentos-musicales-electronicos">Instrumentos Musicales Electrónicos</option>
-                                    <option value="parlantes">Parlantes</option>
-                                    <option value="radios">Radios</option>
-                                    <option value="televisores">Televisores</option>
-                                    <option value="video">Video</option>
-                                </optgroup>
-                                <optgroup label="Hogar, Muebles y Jardín">
-                                    <option value="hogar-muebles-jardin">Hogar, Muebles y Jardín</option>
-                                    <option value="cocina">Cocina</option>
-                                    <option value="decoracion">Decoración</option>
-                                    <option value="iluminacion">Iluminación</option>
-                                    <option value="textiles">Textiles</option>
-                                    <option value="bazar">Bazar</option>
-                                </optgroup>
-                                <optgroup label="Industrias y Oficinas">
-                                    <option value="industrias-oficinas">Industrias y Oficinas</option>
-                                    <option value="equipamiento-comercial">Equipamiento Comercial</option>
-                                    <option value="gastronomia">Gastronomía</option>
-                                    <option value="oficina">Oficina</option>
-                                </optgroup>
-                                <optgroup label="Inmuebles">
-                                    <option value="inmuebles">Inmuebles</option>
-                                    <option value="alquiler">Alquiler</option>
-                                    <option value="venta">Venta</option>
-                                    <option value="temporarios">Alquiler Temporario</option>
-                                    <option value="locales">Locales Comerciales</option>
-                                    <option value="departamentos">Departamentos</option>
-                                    <option value="casas">Casas</option>
-                                    <option value="terrenos">Terrenos</option>
-                                </optgroup>
-                                <optgroup label="Instrumentos Musicales">
-                                    <option value="instrumentos-musicales">Instrumentos Musicales</option>
-                                    <option value="guitarras">Guitarras</option>
-                                    <option value="teclados-pianos">Teclados y Pianos</option>
-                                    <option value="baterias">Baterías</option>
-                                    <option value="viento">Instrumentos de Viento</option>
-                                    <option value="cuerdas">Instrumentos de Cuerdas</option>
-                                </optgroup>
-                                <optgroup label="Joyas y Relojes">
-                                    <option value="joyas-relojes">Joyas y Relojes</option>
-                                    <option value="relojes">Relojes</option>
-                                    <option value="joyas">Joyas</option>
-                                </optgroup>
-                                <optgroup label="Juegos y Juguetes">
-                                    <option value="juegos-juguetes">Juegos y Juguetes</option>
-                                    <option value="juguetes">Juguetes</option>
-                                    <option value="juegos-mesa">Juegos de Mesa</option>
-                                    <option value="figuras-accion">Figuras de Acción</option>
-                                </optgroup>
-                                <optgroup label="Libros, Revistas y Comics">
-                                    <option value="libros-revistas-comics">Libros, Revistas y Comics</option>
-                                    <option value="libros">Libros</option>
-                                    <option value="revistas">Revistas</option>
-                                    <option value="comics">Comics</option>
-                                </optgroup>
-                                <optgroup label="Música, Películas y Series">
-                                    <option value="musica-peliculas-series">Música, Películas y Series</option>
-                                    <option value="musica">Música</option>
-                                    <option value="peliculas">Películas</option>
-                                    <option value="series">Series</option>
-                                </optgroup>
-                                <optgroup label="Ropa y Accesorios">
-                                    <option value="ropa-accesorios">Ropa y Accesorios</option>
-                                    <option value="ropa-mujer">Ropa Mujer</option>
-                                    <option value="ropa-hombre">Ropa Hombre</option>
-                                    <option value="zapatillas">Zapatillas</option>
-                                    <option value="accesorios-moda">Accesorios de Moda</option>
-                                </optgroup>
-                                <optgroup label="Salud y Equipamiento Médico">
-                                    <option value="salud-equipamiento-medico">Salud y Equipamiento Médico</option>
-                                    <option value="cuidado-salud">Cuidado de la Salud</option>
-                                    <option value="equipamiento-medico">Equipamiento Médico</option>
-                                </optgroup>
-                                <optgroup label="Souvenirs, Cotillón y Fiestas">
-                                    <option value="souvenirs-cotillon-fiestas">Souvenirs, Cotillón y Fiestas</option>
-                                    <option value="cotillon">Cotillón</option>
-                                    <option value="souvenirs">Souvenirs</option>
-                                    <option value="fiestas">Fiestas</option>
-                                </optgroup>
-                                <optgroup label="Otras categorías">
-                                    <option value="otras-categorias">Otras Categorías</option>
-                                </optgroup>
+                            <select name="categoria" id="categoria" class="form-control">
+                                <option value="">Seleccionar categoría</option>
+                                <option value="electronica-audio-video">Electrónica - Audio y Video</option>
+                                <option value="deportes-y-fitness">Deportes y Fitness</option>
+                                <option value="celulares-y-telefonos">Celulares y Teléfonos</option>
+                                <option value="computacion">Computación</option>
+                                <option value="hogar-y-muebles">Hogar y Muebles</option>
                             </select>
                             @error('categoria')
                                 <small class="text-danger">{{ $message }}</small>
@@ -360,43 +105,11 @@
                                 <input type="hidden" name="competidor_id" value="{{ $competidor->id }}">
                                 <select name="categoria" class="form-control form-control-sm mb-2" style="width: auto; display: inline-block;">
                                     <option value="">Seleccionar categoría a escrapear</option>
-                                    <option value="vehiculos" {{ $competidor->categoria == 'vehiculos' ? 'selected' : '' }}>Vehículos</option>
-                                    <option value="inmuebles" {{ $competidor->categoria == 'inmuebles' ? 'selected' : '' }}>Inmuebles</option>
-                                    <option value="supermercado" {{ $competidor->categoria == 'supermercado' ? 'selected' : '' }}>Supermercado</option>
-                                    <option value="tecnologia" {{ $competidor->categoria == 'tecnologia' ? 'selected' : '' }}>Tecnología</option>
-                                    <option value="hogar-muebles-jardin" {{ $competidor->categoria == 'hogar-muebles-jardin' ? 'selected' : '' }}>Hogar, Muebles y Jardín</option>
-                                    <option value="electrodomesticos-aires-ac" {{ $competidor->categoria == 'electrodomesticos-aires-ac' ? 'selected' : '' }}>Electrodomésticos y Aires Ac.</option>
-                                    <option value="deportes-fitness" {{ $competidor->categoria == 'deportes-fitness' ? 'selected' : '' }}>Deportes y Fitness</option>
-                                    <option value="belleza-cuidado-personal" {{ $competidor->categoria == 'belleza-cuidado-personal' ? 'selected' : '' }}>Belleza y Cuidado Personal</option>
-                                    <option value="herramientas" {{ $competidor->categoria == 'herramientas' ? 'selected' : '' }}>Herramientas</option>
-                                    <option value="construccion" {{ $competidor->categoria == 'construccion' ? 'selected' : '' }}>Construcción</option>
-                                    <option value="industrias-oficinas" {{ $competidor->categoria == 'industrias-oficinas' ? 'selected' : '' }}>Industrias y Oficinas</option>
-                                    <option value="accesorios-para-vehiculos" {{ $competidor->categoria == 'accesorios-para-vehiculos' ? 'selected' : '' }}>Accesorios para Vehículos</option>
-                                    <option value="agro" {{ $competidor->categoria == 'agro' ? 'selected' : '' }}>Agro</option>
-                                    <option value="animales-mascotas" {{ $competidor->categoria == 'animales-mascotas' ? 'selected' : '' }}>Animales y Mascotas</option>
-                                    <option value="antiguedades-colecciones" {{ $competidor->categoria == 'antiguedades-colecciones' ? 'selected' : '' }}>Antigüedades y Colecciones</option>
-                                    <option value="arte-libreria-merceria" {{ $competidor->categoria == 'arte-libreria-merceria' ? 'selected' : '' }}>Arte, Librería y Mercería</option>
-                                    <option value="autos-motos-otros" {{ $competidor->categoria == 'autos-motos-otros' ? 'selected' : '' }}>Autos, Motos y Otros</option>
-                                    <option value="bebes" {{ $competidor->categoria == 'bebes' ? 'selected' : '' }}>Bebés</option>
-                                    <option value="camaras-accesorios" {{ $competidor->categoria == 'camaras-accesorios' ? 'selected' : '' }}>Cámaras y Accesorios</option>
-                                    <option value="celulares-telefonos" {{ $competidor->categoria == 'celulares-telefonos' ? 'selected' : '' }}>Celulares y Teléfonos</option>
-                                    <option value="coleccionables-hobbies" {{ $competidor->categoria == 'coleccionables-hobbies' ? 'selected' : '' }}>Coleccionables y Hobbies</option>
-                                    <option value="consolas-videojuegos" {{ $competidor->categoria == 'consolas-videojuegos' ? 'selected' : '' }}>Consolas y Videojuegos</option>
-                                    <option value="deportes-fitness" {{ $competidor->categoria == 'deportes-fitness' ? 'selected' : '' }}>Deportes y Fitness</option>
-                                    <option value="electrodomesticos-aires-ac" {{ $competidor->categoria == 'electrodomesticos-aires-ac' ? 'selected' : '' }}>Electrodomésticos y Aires Ac.</option>
-                                    <option value="electronica-audio-video" {{ $competidor->categoria == 'electronica-audio-video' ? 'selected' : '' }}>Electrónica, Audio y Video</option>
-                                    <option value="hogar-muebles-jardin" {{ $competidor->categoria == 'hogar-muebles-jardin' ? 'selected' : '' }}>Hogar, Muebles y Jardín</option>
-                                    <option value="industrias-oficinas" {{ $competidor->categoria == 'industrias-oficinas' ? 'selected' : '' }}>Industrias y Oficinas</option>
-                                    <option value="inmuebles" {{ $competidor->categoria == 'inmuebles' ? 'selected' : '' }}>Inmuebles</option>
-                                    <option value="instrumentos-musicales" {{ $competidor->categoria == 'instrumentos-musicales' ? 'selected' : '' }}>Instrumentos Musicales</option>
-                                    <option value="joyas-relojes" {{ $competidor->categoria == 'joyas-relojes' ? 'selected' : '' }}>Joyas y Relojes</option>
-                                    <option value="juegos-juguetes" {{ $competidor->categoria == 'juegos-juguetes' ? 'selected' : '' }}>Juegos y Juguetes</option>
-                                    <option value="libros-revistas-comics" {{ $competidor->categoria == 'libros-revistas-comics' ? 'selected' : '' }}>Libros, Revistas y Comics</option>
-                                    <option value="musica-peliculas-series">Música, Películas y Series</option>
-                                    <option value="ropa-accesorios">Ropa y Accesorios</option>
-                                    <option value="salud-equipamiento-medico">Salud y Equipamiento Médico</option>
-                                    <option value="souvenirs-cotillon-fiestas">Souvenirs, Cotillón y Fiestas</option>
-                                    <option value="otras-categorias">Otras Categorías</option>
+                                    <option value="electronica-audio-video" {{ $competidor->categoria == 'electronica-audio-video' ? 'selected' : '' }}>Electrónica - Audio y Video</option>
+                                    <option value="deportes-y-fitness" {{ $competidor->categoria == 'deportes-y-fitness' ? 'selected' : '' }}>Deportes y Fitness</option>
+                                    <option value="celulares-y-telefonos" {{ $competidor->categoria == 'celulares-y-telefonos' ? 'selected' : '' }}>Celulares y Teléfonos</option>
+                                    <option value="computacion" {{ $competidor->categoria == 'computacion' ? 'selected' : '' }}>Computación</option>
+                                    <option value="hogar-y-muebles" {{ $competidor->categoria == 'hogar-y-muebles' ? 'selected' : '' }}>Hogar y Muebles</option>
                                 </select>
                                 <button type="submit" class="btn btn-outline-success btn-sm ms-2">
                                     <i class="fas fa-sync-alt me-2"></i> Actualizar
@@ -426,7 +139,7 @@
     <h3 class="mb-4 text-primary fw-bold">Publicaciones Descargadas</h3>
 
     <!-- Formulario de filtros colapsado -->
-   <div class="mb-4 mt-5">
+    <div class="mb-4 mt-5">
         <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
             <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
         </button>
@@ -563,7 +276,7 @@
 @endsection
 
 @section('scripts')
-   <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM cargado: Preparando evento para buscar Seller ID');
             const findSellerIdButton = document.getElementById('find-seller-id');
@@ -591,7 +304,7 @@
                     fetch('{{ route("seller-id.find") }}', {
                         method: 'POST',
                         headers: {
-                            'Content-Type' => 'application/json',
+                            'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                         },
                         body: JSON.stringify({ nickname: nickname }),
