@@ -28,21 +28,20 @@ class CompetidorService
     $maxPages = 5;
     $maxItems = 500;
     $itemsPerPage = $officialStoreId ? 48 : 50;
-    $initialCheckLimit = 5;
 
     $baseUrl = "https://listado.mercadolibre.com.ar";
 
     while ($page <= $maxPages && count($items) < $maxItems) {
         $offset = ($page - 1) * $itemsPerPage;
 
+        $url = $officialStoreId
+            ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True" : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True")
+            : ($page === 1 ? "{$baseUrl}/_CustId_{$sellerId}_NoIndex_True" : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True");
         if ($categoria) {
             $categoria = str_replace(' ', '-', strtolower(trim($categoria)));
-            $url = "{$baseUrl}/{$categoria}/_CustId_{$sellerId}_NoIndex_True" . ($page > 1 ? "_Desde_{$offset}" : '');
+            $url = "{$baseUrl}/{$categoria}/" . ltrim($url, '/');
             \Log::info("URL ajustada con categoría para página {$page}", ['url' => $url, 'categoria' => $categoria]);
         } else {
-            $url = $officialStoreId
-                ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True" : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True")
-                : ($page === 1 ? "{$baseUrl}/_CustId_{$sellerId}_NoIndex_True" : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True");
             \Log::info("URL sin categoría para página {$page}", ['url' => $url]);
         }
 
@@ -116,11 +115,10 @@ class CompetidorService
 
                 $itemId = $this->extractItemIdFromLink($postLink);
 
-                // Corrección de $categoriaItem con if/elseif
                 $categoriaItem = null;
-                if ($node->filter('.ui-search-breadcrumb a')->count()) {
+                if ($node->filter('.ui-search-breadcrumb a')->count() > 0) {
                     $categoriaItem = trim($node->filter('.ui-search-breadcrumb a')->last()->text());
-                } elseif ($node->filter('.ui-search-item__group__element')->count()) {
+                } elseif ($node->filter('.ui-search-item__group__element')->count() > 0) {
                     $categoriaItem = trim($node->filter('.ui-search-item__group__element')->text());
                 } else {
                     $categoriaItem = $categoria ?: 'Sin categoría';
