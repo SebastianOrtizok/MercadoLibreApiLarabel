@@ -28,7 +28,6 @@ class CompetidorService
     $maxPages = 5;
     $maxItems = 500;
     $itemsPerPage = $officialStoreId ? 48 : 50;
-    $initialCheckLimit = 5;
 
     $baseUrl = "https://listado.mercadolibre.com.ar";
 
@@ -58,44 +57,27 @@ class CompetidorService
             $html = $response->getBody()->getContents();
             $crawler = new Crawler($html);
 
+            // Extraer cantidad de resultados
+            $resultCount = $crawler->filter('.ui-search-search-result__quantity-results')->count() > 0
+                ? (int)str_replace('.', '', trim($crawler->filter('.ui-search-search-result__quantity-results')->text()))
+                : 0;
+            \Log::info("Cantidad de resultados encontrados: {$resultCount}", ['url' => $url]);
+
+            // Umbral: si hay más de 50,000 resultados, asumimos que no hay ítems del vendedor
+            if ($resultCount > 50000) {
+                \Log::warning("Cantidad de resultados ({$resultCount}) mayor a 50,000. No se encontraron productos del vendedor en esta categoría.", ['url' => $url]);
+                break;
+            }
+
             $itemNodes = $crawler->filter('li.ui-search-layout__item');
             if ($itemNodes->count() === 0) {
                 \Log::info("No se encontraron ítems en la página {$page}. Deteniendo scraping.", ['url' => $url]);
                 break;
             }
 
-            $hasSellerItems = false;
-
-            // Verificar los primeros $initialCheckLimit ítems con más depuración
-            $itemNodes->slice(0, $initialCheckLimit)->each(function (Crawler $node) use ($sellerId, &$hasSellerItems) {
-                $itemSellerId = $node->filter('.poly-component__seller')->count()
-                    ? trim($node->filter('.poly-component__seller')->attr('data-seller-id'))
-                    : null;
-                \Log::debug("Seller ID encontrado en nodo: {$itemSellerId}", ['node_html' => $node->html()]);
-                if ($itemSellerId === $sellerId) {
-                    $hasSellerItems = true;
-                    return false;
-                }
-            });
-
-            if (!$hasSellerItems) {
-                \Log::info("No se encontraron ítems del vendedor {$sellerId} en los primeros {$initialCheckLimit} ítems. Deteniendo scraping.", ['url' => $url]);
-                break;
-            }
-
-            // Procesar todos los ítems si pasamos la verificación
-            $itemNodes->each(function (Crawler $node) use (&$items, $maxItems, $categoria, $sellerId) {
+            // Procesar todos los ítems
+            $itemNodes->each(function (Crawler $node) use (&$items, $maxItems, $categoria) {
                 if (count($items) >= $maxItems) return false;
-
-                $itemSellerId = $node->filter('.poly-component__seller')->count()
-                    ? trim($node->filter('.poly-component__seller')->attr('data-seller-id'))
-                    : null;
-                \Log::debug("Seller ID encontrado en nodo: {$itemSellerId}", ['node_html' => $node->html()]);
-
-                if ($itemSellerId !== $sellerId) {
-                    \Log::debug("Ítem descartado: seller_id {$itemSellerId} no coincide con {$sellerId}");
-                    return;
-                }
 
                 $title = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
                     ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->text()
