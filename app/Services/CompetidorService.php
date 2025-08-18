@@ -28,20 +28,21 @@ class CompetidorService
     $maxPages = 5;
     $maxItems = 500;
     $itemsPerPage = $officialStoreId ? 48 : 50;
+    $initialCheckLimit = 5; // Agregado de vuelta
 
     $baseUrl = "https://listado.mercadolibre.com.ar";
 
     while ($page <= $maxPages && count($items) < $maxItems) {
         $offset = ($page - 1) * $itemsPerPage;
 
-        $url = $officialStoreId
-            ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True" : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True")
-            : ($page === 1 ? "{$baseUrl}/_CustId_{$sellerId}_NoIndex_True" : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True");
         if ($categoria) {
             $categoria = str_replace(' ', '-', strtolower(trim($categoria)));
-            $url = "{$baseUrl}/{$categoria}/" . ltrim($url, '/');
+            $url = "{$baseUrl}/{$categoria}/_CustId_{$sellerId}_NoIndex_True" . ($page > 1 ? "_Desde_{$offset}" : '');
             \Log::info("URL ajustada con categoría para página {$page}", ['url' => $url, 'categoria' => $categoria]);
         } else {
+            $url = $officialStoreId
+                ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True" : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True")
+                : ($page === 1 ? "{$baseUrl}/_CustId_{$sellerId}_NoIndex_True" : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True");
             \Log::info("URL sin categoría para página {$page}", ['url' => $url]);
         }
 
