@@ -96,14 +96,18 @@ class CompetidorService
                     return;
                 }
 
-                $title = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->text('Sin título');
+                $title = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
+                    ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->text()
+                    : 'Sin título';
                 $originalPrice = $node->filter('s.andes-money-amount--previous .andes-money-amount__fraction')->count()
                     ? $this->normalizePrice($node->filter('s.andes-money-amount--previous .andes-money-amount__fraction')->text())
                     : null;
                 $currentPrice = $node->filter('.poly-price__current .andes-money-amount__fraction')->count()
                     ? $this->normalizePrice($node->filter('.poly-price__current .andes-money-amount__fraction')->text())
                     : ($originalPrice ?? 0.0);
-                $postLink = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->attr('href') ?? 'Sin enlace';
+                $postLink = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
+                    ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->attr('href')
+                    : 'Sin enlace';
                 $isFull = $node->filter('span.poly-component__shipped-from svg[aria-label="FULL"]')->count() > 0;
                 $hasFreeShipping = $node->filter('.poly-component__shipping:contains("Envío gratis")')->count() > 0;
                 $installments = $node->filter('.poly-price__installments')->count()
@@ -112,7 +116,15 @@ class CompetidorService
 
                 $itemId = $this->extractItemIdFromLink($postLink);
 
-                $categoriaItem = $node->filter('.ui-search-breadcrumb a')->last()->text($categoria ?? 'Sin categoría');
+                // Corrección de $categoriaItem con if/elseif
+                $categoriaItem = null;
+                if ($node->filter('.ui-search-breadcrumb a')->count()) {
+                    $categoriaItem = trim($node->filter('.ui-search-breadcrumb a')->last()->text());
+                } elseif ($node->filter('.ui-search-item__group__element')->count()) {
+                    $categoriaItem = trim($node->filter('.ui-search-item__group__element')->text());
+                } else {
+                    $categoriaItem = $categoria ?: 'Sin categoría';
+                }
 
                 $items[] = [
                     'item_id' => $itemId,
