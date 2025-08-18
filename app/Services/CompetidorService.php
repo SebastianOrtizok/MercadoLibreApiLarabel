@@ -28,7 +28,7 @@ class CompetidorService
     $maxPages = 5;
     $maxItems = 500;
     $itemsPerPage = $officialStoreId ? 48 : 50;
-    $initialCheckLimit = 5; // Agregado de vuelta
+    $initialCheckLimit = 5;
 
     $baseUrl = "https://listado.mercadolibre.com.ar";
 
@@ -66,12 +66,12 @@ class CompetidorService
 
             $hasSellerItems = false;
 
-            // Verificar los primeros $initialCheckLimit ítems
+            // Verificar los primeros $initialCheckLimit ítems con más depuración
             $itemNodes->slice(0, $initialCheckLimit)->each(function (Crawler $node) use ($sellerId, &$hasSellerItems) {
                 $itemSellerId = $node->filter('.poly-component__seller')->count()
                     ? trim($node->filter('.poly-component__seller')->attr('data-seller-id'))
                     : null;
-
+                \Log::debug("Seller ID encontrado en nodo: {$itemSellerId}", ['node_html' => $node->html()]);
                 if ($itemSellerId === $sellerId) {
                     $hasSellerItems = true;
                     return false;
@@ -90,6 +90,7 @@ class CompetidorService
                 $itemSellerId = $node->filter('.poly-component__seller')->count()
                     ? trim($node->filter('.poly-component__seller')->attr('data-seller-id'))
                     : null;
+                \Log::debug("Seller ID encontrado en nodo: {$itemSellerId}", ['node_html' => $node->html()]);
 
                 if ($itemSellerId !== $sellerId) {
                     \Log::debug("Ítem descartado: seller_id {$itemSellerId} no coincide con {$sellerId}");
