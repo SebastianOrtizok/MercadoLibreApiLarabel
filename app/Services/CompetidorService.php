@@ -32,7 +32,7 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
     $baseUrl = "https://listado.mercadolibre.com.ar";
 
     while ($page <= $maxPages && count($items) < $maxItems) {
-        $offset = ($page - 1) * $itemsPerPage; // Corregimos a empezar desde 0
+        $offset = ($page - 1) * $itemsPerPage;
         $url = $officialStoreId
             ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True?official_store_id={$officialStoreId}"
                 : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True?official_store_id={$officialStoreId}")
@@ -42,7 +42,17 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
         \Log::info("Intentando scrapeo de página {$page} con URL: {$url}");
 
         try {
-            $response = $this->client->get($url, ['timeout' => 15]);
+            $response = $this->client->get($url, [
+                'timeout' => 15,
+                'headers' => [
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                    'Accept-Language' => 'es-AR,es;q=0.9',
+                    'Referer' => 'https://www.mercadolibre.com.ar/',
+                    'Connection' => 'keep-alive',
+                    'Upgrade-Insecure-Requests' => '1',
+                ],
+            ]);
             \Log::info("Respuesta recibida", ['status' => $response->getStatusCode(), 'url' => $url]);
             if ($response->getStatusCode() !== 200) {
                 \Log::warning("Código de estado no esperado: {$response->getStatusCode()}");
@@ -52,11 +62,11 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
             $html = $response->getBody()->getContents();
             $crawler = new Crawler($html);
 
-            $itemNodes = $crawler->filter('li.ui-search-layout__item');
+            $itemNodes = $crawler->filter('div.ui-search-result__wrapper div.poly-card');
             \Log::info("Ítems encontrados en página {$page}: " . $itemNodes->count());
 
             if ($itemNodes->count() === 0) {
-                \Log::info("No se encontraron más ítems en la página {$page}, contenido HTML: " . substr($html, 0, 500));
+                \Log::info("No se encontraron más ítems en la página {$page}, contenido HTML: " . substr($html, 0, 1000));
                 break;
             }
 
@@ -68,19 +78,17 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
                 $title = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
                     ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->text()
                     : 'Sin título';
-                $originalPrice = $node->filter('s.andes-money-amount--previous .andes-money-amount__fraction')->count()
-                    ? $this->normalizePrice($node->filter('s.andes-money-amount--previous .andes-money-amount__fraction')->text())
-                    : null;
-                $currentPrice = $node->filter('.poly-price__current .andes-money-amount__fraction')->count()
-                    ? $this->normalizePrice($node->filter('.poly-price__current .andes-money-amount__fraction')->text())
-                    : ($originalPrice ?? 0.0);
+                $originalPrice = null; // No hay precio tachado en el ejemplo
+                $currentPrice = $node->filter('div.poly-component__price .andes-money-amount__fraction')->count()
+                    ? $this->normalizePrice($node->filter('div.poly-component__price .andes-money-amount__fraction')->text())
+                    : 0.0;
                 $postLink = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
                     ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->attr('href')
                     : 'Sin enlace';
                 $isFull = $node->filter('span.poly-component__shipped-from svg[aria-label="FULL"]')->count() > 0;
-                $hasFreeShipping = $node->filter('.poly-component__shipping:contains("Envío gratis")')->count() > 0;
-                $installments = $node->filter('.poly-price__installments')->count()
-                    ? trim($node->filter('.poly-price__installments')->text())
+                $hasFreeShipping = false; // Ajustar si aparece en otro lugar
+                $installments = $node->filter('span.poly-price__installments .andes-money-amount__fraction')->count()
+                    ? trim($node->filter('span.poly-price__installments .andes-money-amount__fraction')->text())
                     : null;
 
                 $itemId = $this->extractItemIdFromLink($postLink);
@@ -94,7 +102,7 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
                     'url' => $postLink,
                     'es_full' => $isFull,
                     'envio_gratis' => $hasFreeShipping,
-                    'categorias' => $categoria ?: 'Sin categoría', // Usamos categoría solo si se pasa, sino 'Sin categoría'
+                    'categorias' => $categoria ?: 'Sin categoría',
                 ];
 
                 \Log::info("Ítem scrapeado", $itemData);
@@ -103,7 +111,7 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
             });
 
             $page++;
-            sleep(rand(5, 10)); // Retraso aleatorio
+            sleep(rand(5, 10));
         } catch (RequestException $e) {
             \Log::error("Error al scrapeo para el vendedor {$sellerId}", [
                 'error' => $e->getMessage(),
