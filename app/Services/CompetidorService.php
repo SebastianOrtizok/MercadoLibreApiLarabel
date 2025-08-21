@@ -49,7 +49,7 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
 
         try {
             $response = $this->client->get($url, [
-                'timeout' => 15,
+                'timeout' => 30, // Aumentamos a 30 segundos
                 'allow_redirects' => true,
                 'headers' => [
                     'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -72,19 +72,10 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
                 : 0;
             \Log::info("Cantidad de resultados encontrados: {$resultCount}", ['url' => $url]);
 
-            // Chequear mensaje de no resultados
-            $noResultsMessage = $crawler->filter('.ui-search-results__no-results')->count() > 0
-                ? trim($crawler->filter('.ui-search-results__no-results')->text())
-                : null;
-            if ($noResultsMessage) {
-                \Log::warning("Mensaje de no resultados detectado: {$noResultsMessage}", ['url' => $url]);
-                break;
-            }
-
-            // Forzar búsqueda de ítems aunque la cantidad sea 0
+            // Forzar búsqueda de ítems
             $itemNodes = $crawler->filter('li.ui-search-layout__item');
             if ($itemNodes->count() === 0) {
-                \Log::info("No se encontraron ítems en la página {$page}. Deteniendo scraping.", ['url' => $url, 'html_sample' => substr($html, 0, 2000)]);
+                \Log::info("No se encontraron ítems en la página {$page}. Deteniendo scraping.", ['url' => $url, 'html_sample' => substr($html, 0, 3000)]);
                 break;
             }
 
@@ -127,6 +118,12 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
                 ];
                 \Log::info("Ítem scrapeado", ['item' => $items[count($items) - 1]]);
             });
+
+            // Verificar umbral después
+            if ($resultCount > 50000) {
+                \Log::warning("Cantidad de resultados ({$resultCount}) mayor a 50,000. Deteniendo scraping para evitar datos no deseados.", ['url' => $url]);
+                break;
+            }
 
             $page++;
             sleep(rand(5, 10));
