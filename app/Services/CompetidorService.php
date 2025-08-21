@@ -51,6 +51,12 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
             $response = $this->client->get($url, [
                 'timeout' => 15,
                 'allow_redirects' => true,
+                'headers' => [
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                    'Accept-Language' => 'es-AR,es;q=0.9',
+                    'Referer' => 'https://www.mercadolibre.com.ar/',
+                ],
             ]);
             if ($response->getStatusCode() !== 200) {
                 \Log::warning("Código de estado no esperado: {$response->getStatusCode()}", ['url' => $url]);
@@ -75,20 +81,10 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
                 break;
             }
 
-            if ($resultCount == 0) {
-                \Log::info("No se encontraron ítems en la página {$page}. Deteniendo scraping.", ['url' => $url, 'html_sample' => substr($html, 0, 1000)]);
-                break;
-            }
-
-            // Umbral: si hay más de 50,000 resultados, asumimos que no hay ítems del vendedor
-            if ($resultCount > 50000) {
-                \Log::warning("Cantidad de resultados ({$resultCount}) mayor a 50,000. No se encontraron productos del vendedor en esta categoría.", ['url' => $url]);
-                break;
-            }
-
+            // Intentar procesar ítems aunque la cantidad sea 0
             $itemNodes = $crawler->filter('li.ui-search-layout__item');
             if ($itemNodes->count() === 0) {
-                \Log::info("No se encontraron ítems en la página {$page}. Deteniendo scraping.", ['url' => $url]);
+                \Log::info("No se encontraron ítems en la página {$page}. Deteniendo scraping.", ['url' => $url, 'html_sample' => substr($html, 0, 1000)]);
                 break;
             }
 
@@ -116,14 +112,7 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
 
                 $itemId = $this->extractItemIdFromLink($postLink);
 
-                $categoriaItem = null;
-                if ($node->filter('.ui-search-breadcrumb a')->count() > 0) {
-                    $categoriaItem = trim($node->filter('.ui-search-breadcrumb a')->last()->text());
-                } elseif ($node->filter('.ui-search-item__group__element')->count() > 0) {
-                    $categoriaItem = trim($node->filter('.ui-search-item__group__element')->text());
-                } else {
-                    $categoriaItem = $categoria ?: 'Sin categoría';
-                }
+                $categoriaItem = $categoria ?: 'Sin categoría';
 
                 $items[] = [
                     'item_id' => $itemId,
