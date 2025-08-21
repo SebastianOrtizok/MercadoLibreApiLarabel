@@ -32,38 +32,38 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
     $baseUrl = "https://listado.mercadolibre.com.ar";
 
     while ($page <= $maxPages && count($items) < $maxItems) {
-        $offset = ($page - 1) * $itemsPerPage;
-
+        $offset = ($page - 1) * $itemsPerPage; // Corregimos a empezar desde 0
         $url = $officialStoreId
-            ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True" : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True")
-            : ($page === 1 ? "{$baseUrl}/_CustId_{$sellerId}_NoIndex_True" : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True");
-        \Log::info("URL sin categoría para página {$page}", ['url' => $url]);
+            ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True?official_store_id={$officialStoreId}"
+                : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True?official_store_id={$officialStoreId}")
+            : ($page === 1 ? "{$baseUrl}/_CustId_{$sellerId}_NoIndex_True"
+                : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True");
 
-        \Log::info("Intentando scrapeo de página {$page} con URL: {$url}", ['seller_id' => $sellerId]);
+        \Log::info("Intentando scrapeo de página {$page} con URL: {$url}");
 
         try {
-            sleep(20); // Retraso generoso
-            $response = $this->client->get($url, [
-                'timeout' => 40,
-                'headers' => [
-                    'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                    'Accept-Language' => 'es-AR,es;q=0.9',
-                    'Referer' => 'https://www.mercadolibre.com.ar/',
-                ],
-            ]);
+            $response = $this->client->get($url, ['timeout' => 15]);
+            \Log::info("Respuesta recibida", ['status' => $response->getStatusCode(), 'url' => $url]);
             if ($response->getStatusCode() !== 200) {
-                \Log::warning("Código de estado no esperado: {$response->getStatusCode()}", ['url' => $url]);
+                \Log::warning("Código de estado no esperado: {$response->getStatusCode()}");
                 break;
             }
 
             $html = $response->getBody()->getContents();
             $crawler = new Crawler($html);
 
-            // Escrapeamos todo sin comprobar cantidad ni ítems
             $itemNodes = $crawler->filter('li.ui-search-layout__item');
+            \Log::info("Ítems encontrados en página {$page}: " . $itemNodes->count());
+
+            if ($itemNodes->count() === 0) {
+                \Log::info("No se encontraron más ítems en la página {$page}, contenido HTML: " . substr($html, 0, 500));
+                break;
+            }
+
             $itemNodes->each(function (Crawler $node) use (&$items, $maxItems, $categoria) {
-                if (count($items) >= $maxItems) return false;
+                if (count($items) >= $maxItems) {
+                    return false;
+                }
 
                 $title = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
                     ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->text()
@@ -85,9 +85,7 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
 
                 $itemId = $this->extractItemIdFromLink($postLink);
 
-                $categoriaItem = $categoria ?: 'Sin categoría';
-
-                $items[] = [
+                $itemData = [
                     'item_id' => $itemId,
                     'titulo' => $title,
                     'precio' => $originalPrice ?? $currentPrice,
@@ -96,41 +94,45 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
                     'url' => $postLink,
                     'es_full' => $isFull,
                     'envio_gratis' => $hasFreeShipping,
-                    'categorias' => $categoriaItem,
+                    'categorias' => $categoria ?: 'Sin categoría', // Usamos categoría solo si se pasa, sino 'Sin categoría'
                 ];
-                \Log::info("Ítem scrapeado", ['item' => $items[count($items) - 1]]);
+
+                \Log::info("Ítem scrapeado", $itemData);
+
+                $items[] = $itemData;
             });
 
             $page++;
-            sleep(rand(15, 25));
+            sleep(rand(5, 10)); // Retraso aleatorio
         } catch (RequestException $e) {
-            \Log::error("Error al scrapeo para el vendedor {$sellerId}", ['error' => $e->getMessage(), 'url' => $url]);
+            \Log::error("Error al scrapeo para el vendedor {$sellerId}", [
+                'error' => $e->getMessage(),
+                'url' => $url,
+                'code' => $e->getCode(),
+                'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : 'No response'
+            ]);
             break;
         }
     }
 
-    \Log::info("Scraping finalizado. Total ítems scrapeados: " . count($items), ['seller_id' => $sellerId]);
+    \Log::info("Scraping finalizado. Total ítems scrapeados: " . count($items));
     return $items;
 }
 
-    protected function extractItemIdFromLink($link)
-    {
-        \Log::debug("Extrayendo item_id de link: {$link}");
-        if (preg_match('/(?:^|\/)MLA-?(\d+)/i', $link, $matches)) {
-            $extractedId = 'MLA' . $matches[1];
-            \Log::debug("Item_id extraído: {$extractedId}");
-            return $extractedId;
-        }
-        \Log::warning("No se pudo extraer item_id, link procesado: {$link}");
-        return 'UNKNOWN';
+protected function extractItemIdFromLink($link)
+{
+    if (preg_match('/MLA-?(\d+)/', $link, $matches)) {
+        return 'MLA' . $matches[1];
     }
+    return 'UNKNOWN';
+}
 
-    protected function normalizePrice($priceText)
-    {
-        $priceText = trim($priceText);
-        $priceText = str_replace('.', '', $priceText);
-        $priceText = str_replace(',', '.', $priceText);
-        $price = (float) $priceText;
-        return $price;
-    }
+protected function normalizePrice($priceText)
+{
+    $priceText = trim($priceText);
+    $priceText = str_replace('.', '', $priceText);
+    $priceText = str_replace(',', '.', $priceText);
+    $price = (float) $priceText;
+    return $price;
+}
 }
