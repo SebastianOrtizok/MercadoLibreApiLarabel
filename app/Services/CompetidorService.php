@@ -25,7 +25,7 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
 {
     $items = [];
     $page = 1;
-    $maxPages = 3; // Reducimos para evitar sospechas
+    $maxPages = 5;
     $maxItems = 500;
     $itemsPerPage = $officialStoreId ? 48 : 50;
 
@@ -42,11 +42,11 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
         \Log::info("Intentando scrapeo de página {$page} con URL: {$url}", ['seller_id' => $sellerId]);
 
         try {
-            sleep(15); // Retraso mayor de 15 segundos
+            sleep(20); // Retraso generoso
             $response = $this->client->get($url, [
-                'timeout' => 30,
+                'timeout' => 40,
                 'headers' => [
-                    'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+                    'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                     'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
                     'Accept-Language' => 'es-AR,es;q=0.9',
                     'Referer' => 'https://www.mercadolibre.com.ar/',
@@ -60,17 +60,8 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
             $html = $response->getBody()->getContents();
             $crawler = new Crawler($html);
 
-            $resultCount = $crawler->filter('.ui-search-search-result__quantity-results')->count() > 0
-                ? (int)str_replace('.', '', trim($crawler->filter('.ui-search-search-result__quantity-results')->text()))
-                : 0;
-            \Log::info("Cantidad de resultados encontrados: {$resultCount}", ['url' => $url]);
-
+            // Escrapeamos todo sin comprobar cantidad ni ítems
             $itemNodes = $crawler->filter('li.ui-search-layout__item');
-            if ($itemNodes->count() === 0) {
-                \Log::info("No se encontraron ítems en la página {$page}. Deteniendo scraping.", ['url' => $url, 'html_sample' => substr($html, 0, 5000)]);
-                break;
-            }
-
             $itemNodes->each(function (Crawler $node) use (&$items, $maxItems, $categoria) {
                 if (count($items) >= $maxItems) return false;
 
@@ -110,13 +101,8 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
                 \Log::info("Ítem scrapeado", ['item' => $items[count($items) - 1]]);
             });
 
-            if ($resultCount > 50000) {
-                \Log::warning("Cantidad de resultados ({$resultCount}) mayor a 50,000. Deteniendo scraping.", ['url' => $url]);
-                break;
-            }
-
             $page++;
-            sleep(rand(10, 20));
+            sleep(rand(15, 25));
         } catch (RequestException $e) {
             \Log::error("Error al scrapeo para el vendedor {$sellerId}", ['error' => $e->getMessage(), 'url' => $url]);
             break;
