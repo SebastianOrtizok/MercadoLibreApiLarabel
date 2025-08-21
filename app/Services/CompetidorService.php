@@ -66,7 +66,7 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
             $html = $response->getBody()->getContents();
             $crawler = new Crawler($html);
 
-            // Extraer cantidad de resultados
+            // Intentar extraer cantidad de resultados
             $resultCount = $crawler->filter('.ui-search-search-result__quantity-results')->count() > 0
                 ? (int)str_replace('.', '', trim($crawler->filter('.ui-search-search-result__quantity-results')->text()))
                 : 0;
@@ -81,10 +81,10 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
                 break;
             }
 
-            // Intentar procesar ítems aunque la cantidad sea 0
+            // Forzar búsqueda de ítems aunque la cantidad sea 0
             $itemNodes = $crawler->filter('li.ui-search-layout__item');
             if ($itemNodes->count() === 0) {
-                \Log::info("No se encontraron ítems en la página {$page}. Deteniendo scraping.", ['url' => $url, 'html_sample' => substr($html, 0, 1000)]);
+                \Log::info("No se encontraron ítems en la página {$page}. Deteniendo scraping.", ['url' => $url, 'html_sample' => substr($html, 0, 2000)]);
                 break;
             }
 
