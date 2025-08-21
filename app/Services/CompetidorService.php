@@ -21,7 +21,7 @@ class CompetidorService
         ]);
     }
 
- public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = null, $categoria = null)
+public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = null, $categoria = null)
 {
     $items = [];
     $page = 1;
@@ -48,7 +48,10 @@ class CompetidorService
         \Log::info("Intentando scrapeo de página {$page} con URL: {$url}", ['seller_id' => $sellerId]);
 
         try {
-            $response = $this->client->get($url, ['timeout' => 15]);
+            $response = $this->client->get($url, [
+                'timeout' => 15,
+                'allow_redirects' => true, // Habilitar redirecciones
+            ]);
             if ($response->getStatusCode() !== 200) {
                 \Log::warning("Código de estado no esperado: {$response->getStatusCode()}", ['url' => $url]);
                 break;
@@ -63,6 +66,15 @@ class CompetidorService
                 : 0;
             \Log::info("Cantidad de resultados encontrados: {$resultCount}", ['url' => $url]);
 
+            // Verificar si hay un mensaje de "No se encontraron resultados"
+            $noResultsMessage = $crawler->filter('.ui-search-results__no-results')->count() > 0
+                ? trim($crawler->filter('.ui-search-results__no-results')->text())
+                : null;
+            if ($noResultsMessage) {
+                \Log::warning("Mensaje de no resultados detectado: {$noResultsMessage}", ['url' => $url]);
+                break;
+            }
+
             // Umbral: si hay más de 50,000 resultados, asumimos que no hay ítems del vendedor
             if ($resultCount > 50000) {
                 \Log::warning("Cantidad de resultados ({$resultCount}) mayor a 50,000. No se encontraron productos del vendedor en esta categoría.", ['url' => $url]);
@@ -71,7 +83,7 @@ class CompetidorService
 
             $itemNodes = $crawler->filter('li.ui-search-layout__item');
             if ($itemNodes->count() === 0) {
-                \Log::info("No se encontraron ítems en la página {$page}. Deteniendo scraping.", ['url' => $url]);
+                \Log::info("No se encontraron ítems en la página {$page}. Deteniendo scraping.", ['url' => $url, 'html_sample' => substr($html, 0, 200)]);
                 break;
             }
 
@@ -99,14 +111,7 @@ class CompetidorService
 
                 $itemId = $this->extractItemIdFromLink($postLink);
 
-                $categoriaItem = null;
-                if ($node->filter('.ui-search-breadcrumb a')->count() > 0) {
-                    $categoriaItem = trim($node->filter('.ui-search-breadcrumb a')->last()->text());
-                } elseif ($node->filter('.ui-search-item__group__element')->count() > 0) {
-                    $categoriaItem = trim($node->filter('.ui-search-item__group__element')->text());
-                } else {
-                    $categoriaItem = $categoria ?: 'Sin categoría';
-                }
+                $categoriaItem = $categoria ?: 'Sin categoría';
 
                 $items[] = [
                     'item_id' => $itemId,
