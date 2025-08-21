@@ -21,7 +21,7 @@ class CompetidorService
         ]);
     }
 
- public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = null, $categoria = null)
+public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = null, $categoria = null)
 {
     $items = [];
     $page = 1;
@@ -48,7 +48,10 @@ class CompetidorService
         \Log::info("Intentando scrapeo de página {$page} con URL: {$url}", ['seller_id' => $sellerId]);
 
         try {
-            $response = $this->client->get($url, ['timeout' => 15]);
+            $response = $this->client->get($url, [
+                'timeout' => 15,
+                'allow_redirects' => true,
+            ]);
             if ($response->getStatusCode() !== 200) {
                 \Log::warning("Código de estado no esperado: {$response->getStatusCode()}", ['url' => $url]);
                 break;
@@ -62,6 +65,20 @@ class CompetidorService
                 ? (int)str_replace('.', '', trim($crawler->filter('.ui-search-search-result__quantity-results')->text()))
                 : 0;
             \Log::info("Cantidad de resultados encontrados: {$resultCount}", ['url' => $url]);
+
+            // Chequear mensaje de no resultados
+            $noResultsMessage = $crawler->filter('.ui-search-results__no-results')->count() > 0
+                ? trim($crawler->filter('.ui-search-results__no-results')->text())
+                : null;
+            if ($noResultsMessage) {
+                \Log::warning("Mensaje de no resultados detectado: {$noResultsMessage}", ['url' => $url]);
+                break;
+            }
+
+            if ($resultCount == 0) {
+                \Log::info("No se encontraron ítems en la página {$page}. Deteniendo scraping.", ['url' => $url, 'html_sample' => substr($html, 0, 1000)]);
+                break;
+            }
 
             // Umbral: si hay más de 50,000 resultados, asumimos que no hay ítems del vendedor
             if ($resultCount > 50000) {
