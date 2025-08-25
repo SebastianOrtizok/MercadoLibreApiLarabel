@@ -45,7 +45,7 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
             $response = $this->client->get($url, [
                 'timeout' => 15,
                 'headers' => [
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
                     'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
                     'Accept-Language' => 'es-AR,es;q=0.9',
                     'Referer' => 'https://www.mercadolibre.com.ar/',
@@ -62,7 +62,7 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
             $html = $response->getBody()->getContents();
             $crawler = new Crawler($html);
 
-            $itemNodes = $crawler->filter('div.ui-search-result__wrapper div.poly-card');
+            $itemNodes = $crawler->filter('li.ui-search-layout__item');
             \Log::info("Ítems encontrados en página {$page}: " . $itemNodes->count());
 
             if ($itemNodes->count() === 0) {
@@ -75,20 +75,28 @@ public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = n
                     return false;
                 }
 
-                $title = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
-                    ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->text()
+                $title = $node->filter('h2.ui-search-item__title')->count()
+                    ? $node->filter('h2.ui-search-item__title')->text()
                     : 'Sin título';
-                $originalPrice = null; // No hay precio tachado en el ejemplo
-                $currentPrice = $node->filter('div.poly-component__price .andes-money-amount__fraction')->count()
-                    ? $this->normalizePrice($node->filter('div.poly-component__price .andes-money-amount__fraction')->text())
+
+                $originalPriceNode = $node->filter('s.ui-search-price__original-value .andes-money-amount__fraction');
+                $originalPrice = $originalPriceNode->count() ? $this->normalizePrice($originalPriceNode->text()) : null;
+
+                $currentPriceNode = $node->filter('div.ui-search-price__second-line .andes-money-amount__fraction');
+                $currentPrice = $currentPriceNode->count()
+                    ? $this->normalizePrice($currentPriceNode->text())
                     : 0.0;
-                $postLink = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
-                    ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->attr('href')
+
+                $postLink = $node->filter('a.ui-search-link')->count()
+                    ? $node->filter('a.ui-search-link')->attr('href')
                     : 'Sin enlace';
-                $isFull = $node->filter('span.poly-component__shipped-from svg[aria-label="FULL"]')->count() > 0;
-                $hasFreeShipping = false; // Ajustar si aparece en otro lugar
-                $installments = $node->filter('span.poly-price__installments .andes-money-amount__fraction')->count()
-                    ? trim($node->filter('span.poly-price__installments .andes-money-amount__fraction')->text())
+
+                $isFull = $node->filter('img.ui-search-icon--full')->count() > 0 || $node->filter('p.ui-search-item__fulfillment')->count() > 0;
+
+                $hasFreeShipping = $node->filter('p.ui-search-item__shipping.ui-search-item__shipping--free')->count() > 0;
+
+                $installments = $node->filter('div.ui-search-installments span.andes-money-amount__fraction')->count()
+                    ? trim($node->filter('div.ui-search-installments span.andes-money-amount__fraction')->text())
                     : null;
 
                 $itemId = $this->extractItemIdFromLink($postLink);
