@@ -27,7 +27,7 @@ use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CompetidorController;
 use App\Http\Controllers\PaymentController;
-// use App\Http\Controllers\CompetidorArticulosController;
+use App\Http\Controllers\CompetidorArticulosController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\SellerIdFinderController;
 
@@ -100,7 +100,7 @@ Route::middleware(['auth', \App\Http\Middleware\CheckSubscription::class])->grou
     Route::post('/seller-id/find', [SellerIdFinderController::class, 'findSellerId'])->name('seller-id.find');
     Route::get('/competidores', [CompetidorController::class, 'index'])->name('competidores.index');
     Route::post('/competidores', [CompetidorController::class, 'store'])->name('competidores.store');
-    // Route::get('/competidores/articulos', [CompetidorArticulosController::class, 'filtrarCompetidores'])->name('competidores.articulos.index');
+    Route::get('/competidores/articulos', [CompetidorArticulosController::class, 'filtrarCompetidores'])->name('competidores.articulos.index');
     Route::post('/competidores/follow', [CompetidorController::class, 'follow'])->name('competidores.follow');
     Route::post('/competidores/actualizar', [CompetidorController::class, 'actualizar'])->name('competidores.actualizar');
     Route::delete('/competidores', [CompetidorController::class, 'destroy'])->name('competidores.destroy');

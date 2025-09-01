@@ -431,7 +431,7 @@
             <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
         </button>
         <div class="collapse" id="filtrosCollapse">
-            <form method="GET" action="{{ route('competidores.index') }}" class="mt-3">
+            <form method="GET" action="{{ route('competidores.articulos.index') }}" class="mt-3">
                 <div class="filtros-container p-3 bg-light rounded shadow-sm">
                     <div class="row">
                         <div class="col-md-3 mb-2">
