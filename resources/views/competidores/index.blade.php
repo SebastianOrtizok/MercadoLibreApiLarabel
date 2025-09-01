@@ -294,7 +294,7 @@
 @endsection
 
 @section('scripts')
-   <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM cargado: Preparando evento para buscar Seller ID');
             const findSellerIdButton = document.getElementById('find-seller-id');
@@ -322,13 +322,13 @@
                     fetch('{{ route("seller-id.find") }}', {
                         method: 'POST',
                         headers: {
-                            'Content-Type' => 'application/json',
+                            'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                         },
                         body: JSON.stringify({ nickname: nickname }),
                     })
                     .then(response => {
-                        console.log('Respuesta recibida:', response);
+                        console.log('Respuesta recibida:', response.status);
                         return response.json();
                     })
                     .then(data => {
@@ -351,7 +351,7 @@
                     });
                 });
             } else {
-                console.error('Botón "find-seller-id" no encontrado en el DOM');
+                console.error('Botón "find-seller-id" no encontrado en el DOM. Revisá el HTML.');
             }
         });
     </script>
