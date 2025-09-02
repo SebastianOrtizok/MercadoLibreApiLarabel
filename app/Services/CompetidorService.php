@@ -115,14 +115,25 @@ class CompetidorService
 
                 $itemId = $this->extractItemIdFromLink($postLink);
 
-                $categoriaItem = null;
-                if ($node->filter('.ui-search-breadcrumb a')->count() > 0) {
-                    $categoriaItem = trim($node->filter('.ui-search-breadcrumb a')->last()->text());
-                } elseif ($node->filter('.ui-search-item__group__element')->count() > 0) {
-                    $categoriaItem = trim($node->filter('.ui-search-item__group__element')->text());
-                } else {
-                    $categoriaItem = $categoria ?: 'Sin categoría';
-                }
+              $categoriaItem = null;
+
+            // Primero intento con el breadcrumb existente
+            if ($node->filter('.ui-search-breadcrumb a')->count() > 0) {
+                $categoriaItem = trim($node->filter('.ui-search-breadcrumb a')->last()->text());
+
+            // Luego intento con la clase de grupo de ítem existente
+            } elseif ($node->filter('.ui-search-item__group__element')->count() > 0) {
+                $categoriaItem = trim($node->filter('.ui-search-item__group__element')->text());
+
+            // Finalmente, intento con el header extendido que encontraste
+            } elseif ($node->filter('div.seo-ui-extended-menu__header h3.seo-ui-extended-menu__header__title')->count() > 0) {
+                $categoriaItem = trim($node->filter('div.seo-ui-extended-menu__header h3.seo-ui-extended-menu__header__title')->text());
+
+            // Si nada funciona, pongo un valor por defecto
+            } else {
+                $categoriaItem = $categoria ?: 'Sin categoría';
+            }
+
 
                 $items[] = [
                     'item_id' => $itemId,
@@ -152,7 +163,7 @@ class CompetidorService
 
     protected function extractItemIdFromLink($link)
     {
-        if (preg_match('/(MLA\d+)/', $link, $matches)) {
+        if (preg_match('/\/(MLA-\d+)-/', $link, $matches)) {
             return $matches[1];
         }
         $parts = parse_url($link);
