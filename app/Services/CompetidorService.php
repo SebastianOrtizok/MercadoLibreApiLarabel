@@ -20,28 +20,33 @@ class CompetidorService
         ]);
     }
 
-    public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = null)
-    {
-        $items = [];
-        $page = 1;
-        $maxPages = 20;
-        $maxItems = 500;
-        $itemsPerPage = $officialStoreId ? 48 : 50;
+    public function scrapeItemsBySeller($sellerId, $sellerName, $officialStoreId = null, $categoria = null)
+{
+    $items = [];
+    $page = 1;
+    $maxPages = 5;
+    $maxItems = 500;
+    $itemsPerPage = $officialStoreId ? 48 : 50;
 
-        $baseUrl = $officialStoreId
-            ? "https://listado.mercadolibre.com.ar"
-            : "https://listado.mercadolibre.com.ar";
+    $baseUrl = "https://listado.mercadolibre.com.ar";
 
-        while ($page <= $maxPages && count($items) < $maxItems) {
-            $offset = ($page - 1) * $itemsPerPage + 1;
+    while ($page <= $maxPages && count($items) < $maxItems) {
+        $offset = ($page - 1) * $itemsPerPage;
+
+        if ($categoria) {
+            $categoria = str_replace(' ', '-', strtolower(trim($categoria)));
+            $url = "{$baseUrl}/{$categoria}/_CustId_{$sellerId}_NoIndex_True" . ($page > 1 ? "_Desde_{$offset}" : '');
+            \Log::info("URL ajustada con categoría para página {$page}", ['url' => $url, 'categoria' => $categoria]);
+        } else {
             $url = $officialStoreId
-                ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True?official_store_id={$officialStoreId}"
-                    : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True?official_store_id={$officialStoreId}")
-                : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True";
+                ? ($page === 1 ? "{$baseUrl}/_Tienda_{$sellerName}_NoIndex_True" : "{$baseUrl}/_Desde_{$offset}_Tienda_{$sellerName}_NoIndex_True")
+                : ($page === 1 ? "{$baseUrl}/_CustId_{$sellerId}_NoIndex_True" : "{$baseUrl}/_CustId_{$sellerId}_Desde_{$offset}_NoIndex_True");
+            \Log::info("URL sin categoría para página {$page}", ['url' => $url]);
+        }
 
-            \Log::info("Intentando scrapeo de página {$page} con URL: {$url}");
+        \Log::info("Intentando scrapeo de página {$page} con URL: {$url}", ['seller_id' => $sellerId]);
 
-            try {
+       try {
                 // Levanto lista de proxies desde el .env
                 $proxyList = explode(',', env('SCRAPER_PROXIES', ''));
                 $proxy = null;
@@ -51,7 +56,7 @@ class CompetidorService
                     \Log::info("Usando proxy: {$proxy}");
                 }
 
-                $options = ['timeout' => 10];
+                $options = ['timeout' => 30];
                 if ($proxy) {
                     $options['proxy'] = $proxy;
                 }
@@ -65,74 +70,85 @@ class CompetidorService
                 ]);
 
 
-                $html = $response->getBody()->getContents();
-                $crawler = new Crawler($html);
+            $html = $response->getBody()->getContents();
+            $crawler = new Crawler($html);
 
-                $itemNodes = $crawler->filter('li.ui-search-layout__item');
-                \Log::info("Ítems encontrados en página {$page}: " . $itemNodes->count());
+            // Extraer cantidad de resultados
+            $resultCount = $crawler->filter('.ui-search-search-result__quantity-results')->count() > 0
+                ? (int)str_replace('.', '', trim($crawler->filter('.ui-search-search-result__quantity-results')->text()))
+                : 0;
+            \Log::info("Cantidad de resultados encontrados: {$resultCount}", ['url' => $url]);
 
-                if ($itemNodes->count() === 0) {
-                    \Log::info("No se encontraron más ítems en la página {$page}, contenido HTML: " . substr($html, 0, 500));
-                    break;
-                }
-
-                $itemNodes->each(function (Crawler $node) use (&$items, $maxItems) {
-                    if (count($items) >= $maxItems) {
-                        return false;
-                    }
-
-                    $title = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
-                        ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->text()
-                        : 'Sin título';
-                    $originalPrice = $node->filter('s.andes-money-amount--previous .andes-money-amount__fraction')->count()
-                        ? $this->normalizePrice($node->filter('s.andes-money-amount--previous .andes-money-amount__fraction')->text())
-                        : null;
-                    $currentPrice = $node->filter('.poly-price__current .andes-money-amount__fraction')->count()
-                        ? $this->normalizePrice($node->filter('.poly-price__current .andes-money-amount__fraction')->text())
-                        : ($originalPrice ?? 0.0);
-                    $postLink = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
-                        ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->attr('href')
-                        : 'Sin enlace';
-                    $isFull = $node->filter('span.poly-component__shipped-from svg[aria-label="FULL"]')->count() > 0;
-                    $hasFreeShipping = $node->filter('.poly-component__shipping:contains("Envío gratis")')->count() > 0;
-                    $installments = $node->filter('.poly-price__installments')->count()
-                        ? trim($node->filter('.poly-price__installments')->text())
-                        : null;
-
-                    $itemId = $this->extractItemIdFromLink($postLink);
-
-                    $itemData = [
-                        'item_id' => $itemId,
-                        'titulo' => $title,
-                        'precio' => $originalPrice ?? $currentPrice,
-                        'precio_descuento' => $currentPrice,
-                        'info_cuotas' => $installments,
-                        'url' => $postLink,
-                        'es_full' => $isFull,
-                        'envio_gratis' => $hasFreeShipping,
-                    ];
-
-                    \Log::info("Ítem scrapeado", $itemData);
-
-                    $items[] = $itemData;
-                });
-
-                $page++;
-                sleep(3);
-            } catch (RequestException $e) {
-                \Log::error("Error al scrapeo para el vendedor {$sellerId}", [
-                    'error' => $e->getMessage(),
-                    'url' => $url,
-                    'code' => $e->getCode(),
-                    'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : 'No response'
-                ]);
+            // Umbral: si hay más de 50,000 resultados, asumimos que no hay ítems del vendedor
+            if ($resultCount > 50000) {
+                \Log::warning("Cantidad de resultados ({$resultCount}) mayor a 50,000. No se encontraron productos del vendedor en esta categoría.", ['url' => $url]);
                 break;
             }
-        }
 
-        \Log::info("Scraping finalizado. Total ítems scrapeados: " . count($items));
-        return $items;
+            $itemNodes = $crawler->filter('li.ui-search-layout__item');
+            if ($itemNodes->count() === 0) {
+                \Log::info("No se encontraron ítems en la página {$page}. Deteniendo scraping.", ['url' => $url]);
+                break;
+            }
+
+            // Procesar todos los ítems
+            $itemNodes->each(function (Crawler $node) use (&$items, $maxItems, $categoria) {
+                if (count($items) >= $maxItems) return false;
+
+                $title = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
+                    ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->text()
+                    : 'Sin título';
+                $originalPrice = $node->filter('s.andes-money-amount--previous .andes-money-amount__fraction')->count()
+                    ? $this->normalizePrice($node->filter('s.andes-money-amount--previous .andes-money-amount__fraction')->text())
+                    : null;
+                $currentPrice = $node->filter('.poly-price__current .andes-money-amount__fraction')->count()
+                    ? $this->normalizePrice($node->filter('.poly-price__current .andes-money-amount__fraction')->text())
+                    : ($originalPrice ?? 0.0);
+                $postLink = $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->count()
+                    ? $node->filter('h3.poly-component__title-wrapper a.poly-component__title')->attr('href')
+                    : 'Sin enlace';
+                $isFull = $node->filter('span.poly-component__shipped-from svg[aria-label="FULL"]')->count() > 0;
+                $hasFreeShipping = $node->filter('.poly-component__shipping:contains("Envío gratis")')->count() > 0;
+                $installments = $node->filter('.poly-price__installments')->count()
+                    ? trim($node->filter('.poly-price__installments')->text())
+                    : null;
+
+                $itemId = $this->extractItemIdFromLink($postLink);
+
+                $categoriaItem = null;
+                if ($node->filter('.ui-search-breadcrumb a')->count() > 0) {
+                    $categoriaItem = trim($node->filter('.ui-search-breadcrumb a')->last()->text());
+                } elseif ($node->filter('.ui-search-item__group__element')->count() > 0) {
+                    $categoriaItem = trim($node->filter('.ui-search-item__group__element')->text());
+                } else {
+                    $categoriaItem = $categoria ?: 'Sin categoría';
+                }
+
+                $items[] = [
+                    'item_id' => $itemId,
+                    'titulo' => $title,
+                    'precio' => $originalPrice ?? $currentPrice,
+                    'precio_descuento' => $currentPrice,
+                    'info_cuotas' => $installments,
+                    'url' => $postLink,
+                    'es_full' => $isFull,
+                    'envio_gratis' => $hasFreeShipping,
+                    'categorias' => $categoriaItem,
+                ];
+                \Log::info("Ítem scrapeado", ['item' => $items[count($items) - 1]]);
+            });
+
+            $page++;
+            sleep(rand(5, 10));
+        } catch (RequestException $e) {
+            \Log::error("Error al scrapeo para el vendedor {$sellerId}", ['error' => $e->getMessage(), 'url' => $url]);
+            break;
+        }
     }
+
+    \Log::info("Scraping finalizado. Total ítems scrapeados: " . count($items), ['seller_id' => $sellerId]);
+    return $items;
+}
 
     protected function extractItemIdFromLink($link)
     {
