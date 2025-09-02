@@ -42,12 +42,28 @@ class CompetidorService
             \Log::info("Intentando scrapeo de página {$page} con URL: {$url}");
 
             try {
-                $response = $this->client->get($url, ['timeout' => 10]);
-                \Log::info("Respuesta recibida", ['status' => $response->getStatusCode(), 'url' => $url]);
-                if ($response->getStatusCode() !== 200) {
-                    \Log::warning("Código de estado no esperado: {$response->getStatusCode()}");
-                    break;
+                // Levanto lista de proxies desde el .env
+                $proxyList = explode(',', env('SCRAPER_PROXIES', ''));
+                $proxy = null;
+
+                if (!empty($proxyList) && count($proxyList) > 0 && !empty($proxyList[0])) {
+                    $proxy = $proxyList[array_rand($proxyList)];
+                    \Log::info("Usando proxy: {$proxy}");
                 }
+
+                $options = ['timeout' => 10];
+                if ($proxy) {
+                    $options['proxy'] = $proxy;
+                }
+
+                $response = $this->client->get($url, $options);
+
+                \Log::info("Respuesta recibida", [
+                    'status' => $response->getStatusCode(),
+                    'url'    => $url,
+                    'proxy'  => $proxy
+                ]);
+
 
                 $html = $response->getBody()->getContents();
                 $crawler = new Crawler($html);
