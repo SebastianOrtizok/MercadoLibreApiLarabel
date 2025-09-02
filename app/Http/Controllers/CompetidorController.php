@@ -95,23 +95,13 @@ public function store(Request $request)
     return redirect()->route('competidores.index')->with('success', 'Competidor agregado');
 }
 
-    public function actualizar(Request $request)
+  public function actualizar(Request $request)
 {
     $competidor = Competidor::where('user_id', auth()->id())
         ->findOrFail($request->competidor_id);
 
-    // Tomar la categoría seleccionada en el front o la guardada en la base
-    $categoria = $request->input('categoria', $competidor->categoria);
-
-    // Guardar la categoría seleccionada en la base
-    if ($categoria && $categoria !== $competidor->categoria) {
-        $competidor->categoria = $categoria;
-        $competidor->save();
-        \Log::info("Categoría actualizada para el competidor", [
-            'competidor_id' => $competidor->id,
-            'categoria' => $categoria
-        ]);
-    }
+    // Tomar la categoría seleccionada en el front o null si no viene
+    $categoria = $request->input('categoria', null);
 
     \Log::info("Iniciando actualización de competidor", [
         'competidor_id' => $competidor->id,
@@ -122,7 +112,7 @@ public function store(Request $request)
     ]);
 
     try {
-        // Pasar la categoría al servicio
+        // Pasar la categoría al servicio para generar la URL correctamente
         $items = $this->competidorService->scrapeItemsBySeller(
             $competidor->seller_id,
             strtolower($competidor->nickname),
@@ -160,7 +150,7 @@ public function store(Request $request)
                     'ultima_actualizacion' => now(),
                     'cantidad_disponible' => 0,
                     'cantidad_vendida' => 0,
-                    'categorias' => $categoria // <<< opcional guardar categoría
+                    'categorias' => $categoria // <<< guardar categoría en items_competidores
                 ]
             );
 
@@ -182,6 +172,7 @@ public function store(Request $request)
         return redirect()->route('competidores.index')->with('error', 'Error al actualizar: ' . $e->getMessage());
     }
 }
+
 
 
     public function destroy(Request $request)
