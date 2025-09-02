@@ -96,75 +96,93 @@ public function store(Request $request)
 }
 
     public function actualizar(Request $request)
-    {
-        $competidor = Competidor::where('user_id', auth()->id())
-            ->findOrFail($request->competidor_id);
+{
+    $competidor = Competidor::where('user_id', auth()->id())
+        ->findOrFail($request->competidor_id);
 
-        \Log::info("Iniciando actualización de competidor", [
+    // Tomar la categoría seleccionada en el front o la guardada en la base
+    $categoria = $request->input('categoria', $competidor->categoria);
+
+    // Guardar la categoría seleccionada en la base
+    if ($categoria && $categoria !== $competidor->categoria) {
+        $competidor->categoria = $categoria;
+        $competidor->save();
+        \Log::info("Categoría actualizada para el competidor", [
             'competidor_id' => $competidor->id,
-            'seller_id' => $competidor->seller_id,
-            'nickname' => $competidor->nickname,
-            'official_store_id' => $competidor->official_store_id,
+            'categoria' => $categoria
+        ]);
+    }
+
+    \Log::info("Iniciando actualización de competidor", [
+        'competidor_id' => $competidor->id,
+        'seller_id' => $competidor->seller_id,
+        'nickname' => $competidor->nickname,
+        'official_store_id' => $competidor->official_store_id,
+        'categoria' => $categoria
+    ]);
+
+    try {
+        // Pasar la categoría al servicio
+        $items = $this->competidorService->scrapeItemsBySeller(
+            $competidor->seller_id,
+            strtolower($competidor->nickname),
+            $competidor->official_store_id,
+            $categoria // <<< categoría incluida
+        );
+
+        \Log::info("Ítems scrapeados para el competidor", [
+            'competidor_id' => $competidor->id,
+            'total_items' => count($items),
+            'sample_items' => array_slice($items, 0, 500),
         ]);
 
-        try {
-            $items = $this->competidorService->scrapeItemsBySeller(
-                $competidor->seller_id,
-                strtolower($competidor->nickname),
-                $competidor->official_store_id
-            );
-
-            \Log::info("Ítems scrapeados para el competidor", [
+        if (empty($items)) {
+            \Log::warning("No se encontraron ítems para actualizar", [
                 'competidor_id' => $competidor->id,
-                'total_items' => count($items),
-                'sample_items' => array_slice($items, 0, 500),
             ]);
+            return redirect()->route('competidores.index')->with('error', 'No se encontraron ítems para actualizar.');
+        }
 
-            if (empty($items)) {
-                \Log::warning("No se encontraron ítems para actualizar", [
-                    'competidor_id' => $competidor->id,
-                ]);
-                return redirect()->route('competidores.index')->with('error', 'No se encontraron ítems para actualizar.');
-            }
-
-            foreach ($items as $itemData) {
-                $updatedItem = \App\Models\ItemCompetidor::updateOrCreate(
-                    [
-                        'competidor_id' => $competidor->id,
-                        'item_id' => $itemData['item_id'],
-                    ],
-                    [
-                        'titulo' => $itemData['titulo'],
-                        'precio' => number_format($itemData['precio'], 2, '.', ''),
-                        'precio_descuento' => number_format($itemData['precio_descuento'], 2, '.', ''),
-                        'info_cuotas' => $itemData['info_cuotas'],
-                        'url' => $itemData['url'],
-                        'es_full' => $itemData['es_full'],
-                        'envio_gratis' => $itemData['envio_gratis'],
-                        'ultima_actualizacion' => now(),
-                        'cantidad_disponible' => 0,
-                        'cantidad_vendida' => 0,
-                    ]
-                );
-
-                \Log::info("Ítem actualizado o creado", [
+        foreach ($items as $itemData) {
+            $updatedItem = \App\Models\ItemCompetidor::updateOrCreate(
+                [
                     'competidor_id' => $competidor->id,
                     'item_id' => $itemData['item_id'],
-                    'updated_item' => $updatedItem->toArray(),
-                ]);
-            }
+                ],
+                [
+                    'titulo' => $itemData['titulo'],
+                    'precio' => number_format($itemData['precio'], 2, '.', ''),
+                    'precio_descuento' => number_format($itemData['precio_descuento'], 2, '.', ''),
+                    'info_cuotas' => $itemData['info_cuotas'],
+                    'url' => $itemData['url'],
+                    'es_full' => $itemData['es_full'],
+                    'envio_gratis' => $itemData['envio_gratis'],
+                    'ultima_actualizacion' => now(),
+                    'cantidad_disponible' => 0,
+                    'cantidad_vendida' => 0,
+                    'categorias' => $categoria // <<< opcional guardar categoría
+                ]
+            );
 
-            return redirect()->route('competidores.index')->with('success', 'Competidor actualizado con ' . count($items) . ' ítems');
-        } catch (\Exception $e) {
-            \Log::error('Error al actualizar competidor', [
-                'error' => $e->getMessage(),
-                'user_id' => auth()->id(),
-                'competidor_id' => $request->competidor_id,
-                'trace' => $e->getTraceAsString(),
+            \Log::info("Ítem actualizado o creado", [
+                'competidor_id' => $competidor->id,
+                'item_id' => $itemData['item_id'],
+                'updated_item' => $updatedItem->toArray(),
             ]);
-            return redirect()->route('competidores.index')->with('error', 'Error al actualizar: ' . $e->getMessage());
         }
+
+        return redirect()->route('competidores.index')->with('success', 'Competidor actualizado con ' . count($items) . ' ítems');
+    } catch (\Exception $e) {
+        \Log::error('Error al actualizar competidor', [
+            'error' => $e->getMessage(),
+            'user_id' => auth()->id(),
+            'competidor_id' => $request->competidor_id,
+            'trace' => $e->getTraceAsString(),
+        ]);
+        return redirect()->route('competidores.index')->with('error', 'Error al actualizar: ' . $e->getMessage());
     }
+}
+
 
     public function destroy(Request $request)
     {
