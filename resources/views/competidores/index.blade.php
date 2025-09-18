@@ -366,19 +366,17 @@
             });
 
             // Botones de visibilidad para Publicaciones
-            $('#publicacionesTable th i.fas.fa-eye.toggle-visibility').each(function () {
-                console.log('Botón fa-eye encontrado en publicacionesTable:', $(this).parent().text());
-                $(this).on('click', function (event) {
-                    event.stopPropagation(); // Evita que el clic se propague al <th> y active el sorting
-                    console.log('Clic en fa-eye para publicacionesTable');
-                    var th = $(this).closest('th');
-                    var columnName = th.data('column-name');
-                    var column = publicacionesTable.column(th);
-                    console.log('Ocultando columna:', columnName);
-                    column.visible(false);
-                    publicacionesTable.columns.adjust().draw(false);
-                    addRestoreButton(th, columnName, publicacionesTable, $('#restore-columns-publicaciones'));
-                });
+$('#publicacionesTable').on('click', 'th i.fas.fa-eye.toggle-visibility', function (event) {
+    event.stopPropagation();
+    console.log('Clic en fa-eye para publicacionesTable');
+    var th = $(this).closest('th');
+    var columnName = th.data('column-name');
+    var column = publicacionesTable.column(th);
+    console.log('Ocultando columna:', columnName);
+    column.visible(false);
+    publicacionesTable.columns.adjust().draw(false);
+    addRestoreButton(th, columnName, publicacionesTable, $('#restore-columns-publicaciones'));
+});
             });
 
             // Función para agregar botones de restauración
