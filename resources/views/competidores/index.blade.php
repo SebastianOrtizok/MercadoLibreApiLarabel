@@ -288,11 +288,6 @@
             </div>
         </form>
 
-        @include('layouts.pagination', [
-            'currentPage' => $currentPage,
-            'totalPages' => $totalPages,
-            'limit' => $limit
-        ])
     </div>
 </div>
 
