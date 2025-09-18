@@ -296,163 +296,160 @@
     </div>
 </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdn.datatables.net/colreorder/1.5.4/js/dataTables.colReorder.min.js"></script>
-    <script>
-        jQuery(document).ready(function ($) {
-            // Debugging: Verificar si jQuery y DataTables están cargados
-            console.log('jQuery version:', $.fn.jquery);
-            console.log('DataTables version:', $.fn.DataTable.version);
+   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/colreorder/1.5.4/js/dataTables.colReorder.min.js"></script>
+<script>
+jQuery(document).ready(function ($) {
+    console.log('jQuery version:', $.fn.jquery);
+    console.log('DataTables version:', $.fn.DataTable.version);
 
-            // Inicializar DataTable para Competidores
-            if ($.fn.DataTable.isDataTable('#competidoresTable')) {
-                $('#competidoresTable').DataTable().clear().destroy();
-            }
-            var competidoresTable = $('#competidoresTable').DataTable({
-                paging: false,
-                searching: false,
-                info: true,
-                colReorder: true,
-                autoWidth: false,
-                responsive: true,
-                scrollX: true,
-                stateSave: false,
-                processing: true,
-                width: '95%',
-                columnDefs: [
-                    { targets: '_all', className: 'shrink-text dt-center' },
-                    { targets: [0], width: '20%' } // Nombre
-                ]
+    // Inicializar DataTable para Competidores
+    if ($.fn.DataTable.isDataTable('#competidoresTable')) {
+        $('#competidoresTable').DataTable().clear().destroy();
+    }
+    var competidoresTable = $('#competidoresTable').DataTable({
+        paging: false,
+        searching: false,
+        info: true,
+        colReorder: true,
+        autoWidth: false,
+        responsive: true,
+        scrollX: true,
+        stateSave: false,
+        processing: true,
+        width: '95%',
+        columnDefs: [
+            { targets: '_all', className: 'shrink-text dt-center' },
+            { targets: [0], width: '20%' }
+        ],
+        initComplete: function () {
+            console.log('competidoresTable inicializado');
+            $('#competidoresTable').on('click', 'th i.fas.fa-eye.toggle-visibility', function (event) {
+                event.stopPropagation();
+                console.log('Clic en fa-eye para competidoresTable');
+                var th = $(this).closest('th');
+                var columnName = th.data('column-name');
+                var column = competidoresTable.column(th);
+                console.log('Ocultando columna:', columnName);
+                column.visible(false);
+                competidoresTable.columns.adjust().draw(false);
+                addRestoreButton(th, columnName, competidoresTable, $('#restore-columns-competidores'));
             });
+        }
+    });
 
-            // Botones de visibilidad para Competidores
-            $('#competidoresTable th i.fas.fa-eye.toggle-visibility').each(function () {
-                console.log('Botón fa-eye encontrado en competidoresTable:', $(this).parent().text());
-                $(this).on('click', function (event) {
-                    event.stopPropagation(); // Evita que el clic se propague al <th> y active el sorting
-                    console.log('Clic en fa-eye para competidoresTable');
-                    var th = $(this).closest('th');
-                    var columnName = th.data('column-name');
-                    var column = competidoresTable.column(th);
-                    console.log('Ocultando columna:', columnName);
-                    column.visible(false);
-                    competidoresTable.columns.adjust().draw(false);
-                    addRestoreButton(th, columnName, competidoresTable, $('#restore-columns-competidores'));
-                });
+    // Inicializar DataTable para Publicaciones
+    if ($.fn.DataTable.isDataTable('#publicacionesTable')) {
+        $('#publicacionesTable').DataTable().clear().destroy();
+    }
+    var publicacionesTable = $('#publicacionesTable').DataTable({
+        paging: false,
+        searching: false,
+        info: true,
+        colReorder: true,
+        autoWidth: false,
+        responsive: true,
+        scrollX: true,
+        stateSave: false,
+        processing: true,
+        width: '95%',
+        columnDefs: [
+            { targets: '_all', className: 'shrink-text dt-center' },
+            { targets: [3], width: '20%' },
+            { targets: [11], width: '15%' }
+        ],
+        initComplete: function () {
+            console.log('publicacionesTable inicializado');
+            $('#publicacionesTable').on('click', 'th i.fas.fa-eye.toggle-visibility', function (event) {
+                event.stopPropagation();
+                console.log('Clic en fa-eye para publicacionesTable');
+                var th = $(this).closest('th');
+                var columnName = th.data('column-name');
+                var column = publicacionesTable.column(th);
+                console.log('Ocultando columna:', columnName);
+                column.visible(false);
+                publicacionesTable.columns.adjust().draw(false);
+                addRestoreButton(th, columnName, publicacionesTable, $('#restore-columns-publicaciones'));
             });
+        }
+    });
 
-            // Inicializar DataTable para Publicaciones
-            if ($.fn.DataTable.isDataTable('#publicacionesTable')) {
-                $('#publicacionesTable').DataTable().clear().destroy();
-            }
-            var publicacionesTable = $('#publicacionesTable').DataTable({
-                paging: false,
-                searching: false,
-                info: true,
-                colReorder: true,
-                autoWidth: false,
-                responsive: true,
-                scrollX: true,
-                stateSave: false,
-                processing: true,
-                width: '95%',
-                columnDefs: [
-                    { targets: '_all', className: 'shrink-text dt-center' },
-                    { targets: [3], width: '20%' }, // Título
-                    { targets: [11], width: '15%' } // URL
-                ]
-            });
-
-            // Botones de visibilidad para Publicaciones
-$('#publicacionesTable').on('click', 'th i.fas.fa-eye.toggle-visibility', function (event) {
-    event.stopPropagation();
-    console.log('Clic en fa-eye para publicacionesTable');
-    var th = $(this).closest('th');
-    var columnName = th.data('column-name');
-    var column = publicacionesTable.column(th);
-    console.log('Ocultando columna:', columnName);
-    column.visible(false);
-    publicacionesTable.columns.adjust().draw(false);
-    addRestoreButton(th, columnName, publicacionesTable, $('#restore-columns-publicaciones'));
-});
-            });
-
-            // Función para agregar botones de restauración
-            function addRestoreButton(th, columnName, table, container) {
-                console.log('Agregando botón de restauración para:', columnName);
-                var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
-                button.on('click', function () {
-                    console.log('Restaurando columna:', columnName);
-                    table.column(th).visible(true);
-                    table.columns.adjust().draw(false);
-                    $(this).remove();
-                });
-                container.append(button);
-            }
-
-            // Script para el menú de filtros
-            const toggleBtn = document.querySelector('[data-bs-target="#filtrosCollapse"]');
-            const toggleText = toggleBtn ? toggleBtn.querySelector('#toggleText') : null;
-            const collapseElement = document.getElementById('filtrosCollapse');
-
-            if (toggleBtn && toggleText && collapseElement) {
-                toggleText.textContent = collapseElement.classList.contains('show') ? 'Ocultar Filtros' : 'Mostrar Filtros';
-                collapseElement.addEventListener('shown.bs.collapse', function () {
-                    toggleText.textContent = 'Ocultar Filtros';
-                });
-                collapseElement.addEventListener('hidden.bs.collapse', function () {
-                    toggleText.textContent = 'Mostrar Filtros';
-                });
-            }
-
-                   // Script para buscar Seller ID
-            const findSellerIdButton = document.getElementById('find-seller-id');
-            if (findSellerIdButton) {
-                findSellerIdButton.addEventListener('click', function() {
-                    console.log('Clic en Buscar Seller ID');
-                    const nicknameInput = document.getElementById('nickname');
-                    const sellerIdInput = document.getElementById('seller_id');
-                    const errorDiv = document.getElementById('seller-id-error');
-                    const nickname = nicknameInput.value.trim();
-
-                    if (!nickname) {
-                        errorDiv.style.display = 'block';
-                        errorDiv.textContent = 'Por favor, ingresá un nickname válido.';
-                        return;
-                    }
-
-                    errorDiv.style.display = 'none';
-                    errorDiv.textContent = '';
-
-                    fetch('{{ route("seller-id.find") }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        },
-                        body: JSON.stringify({ nickname: nickname }),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            sellerIdInput.value = data.seller_id;
-                            console.log('Seller ID encontrado:', data.seller_id);
-                        } else {
-                            errorDiv.style.display = 'block';
-                            errorDiv.textContent = data.message || 'Error al buscar el Seller ID.';
-                            sellerIdInput.value = '';
-                        }
-                    })
-                    .catch(error => {
-                        errorDiv.style.display = 'block';
-                        errorDiv.textContent = 'Error al buscar el Seller ID. Por favor, intenta de nuevo.';
-                        sellerIdInput.value = '';
-                        console.error('Error en fetch:', error);
-                    });
-                });
-            }
+    // Función para agregar botones de restauración
+    function addRestoreButton(th, columnName, table, container) {
+        console.log('Agregando botón de restauración para:', columnName);
+        var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
+        button.on('click', function () {
+            console.log('Restaurando columna:', columnName);
+            table.column(th).visible(true);
+            table.columns.adjust().draw(false);
+            $(this).remove();
         });
-    </script>
+        container.append(button);
+    }
+
+    // Script para el menú de filtros
+    const toggleBtn = document.querySelector('[data-bs-target="#filtrosCollapse"]');
+    const toggleText = toggleBtn ? toggleBtn.querySelector('#toggleText') : null;
+    const collapseElement = document.getElementById('filtrosCollapse');
+
+    if (toggleBtn && toggleText && collapseElement) {
+        toggleText.textContent = collapseElement.classList.contains('show') ? 'Ocultar Filtros' : 'Mostrar Filtros';
+        collapseElement.addEventListener('shown.bs.collapse', function () {
+            toggleText.textContent = 'Ocultar Filtros';
+        });
+        collapseElement.addEventListener('hidden.bs.collapse', function () {
+            toggleText.textContent = 'Mostrar Filtros';
+        });
+    }
+
+    // Script para buscar Seller ID
+    const findSellerIdButton = document.getElementById('find-seller-id');
+    if (findSellerIdButton) {
+        findSellerIdButton.addEventListener('click', function () {
+            console.log('Clic en Buscar Seller ID');
+            const nicknameInput = document.getElementById('nickname');
+            const sellerIdInput = document.getElementById('seller_id');
+            const errorDiv = document.getElementById('seller-id-error');
+            const nickname = nicknameInput.value.trim();
+
+            if (!nickname) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Por favor, ingresá un nickname válido.';
+                return;
+            }
+
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+
+            fetch('{{ route("seller-id.find") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+                body: JSON.stringify({ nickname: nickname }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    sellerIdInput.value = data.seller_id;
+                    console.log('Seller ID encontrado:', data.seller_id);
+                } else {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = data.message || 'Error al buscar el Seller ID.';
+                    sellerIdInput.value = '';
+                }
+            })
+            .catch(error => {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Error al buscar el Seller ID. Por favor, intenta de nuevo.';
+                sellerIdInput.value = '';
+                console.error('Error en fetch:', error);
+            });
+        });
+    }
+});
+</script>
 @endsection
