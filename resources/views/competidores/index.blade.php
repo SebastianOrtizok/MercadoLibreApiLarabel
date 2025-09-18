@@ -330,6 +330,7 @@ jQuery(document).ready(function ($) {
     $('#competidoresTable th i.fas.fa-eye.toggle-visibility').each(function () {
         console.log('Botón fa-eye encontrado en competidoresTable:', $(this).parent().text());
         $(this).on('click', function (event) {
+            event.preventDefault();
             event.stopPropagation();
             console.log('Clic en fa-eye para competidoresTable');
             var th = $(this).closest('th');
@@ -366,6 +367,7 @@ jQuery(document).ready(function ($) {
             console.log('publicacionesTable inicializado');
             console.log('Buscando íconos de ojo en publicacionesTable:', $('#publicacionesTable th i.fas.fa-eye.toggle-visibility').length);
             $('#publicacionesTable').on('click', 'th i.fas.fa-eye.toggle-visibility', function (event) {
+                event.preventDefault();
                 event.stopPropagation();
                 console.log('Clic en fa-eye para publicacionesTable');
                 var th = $(this).closest('th');
