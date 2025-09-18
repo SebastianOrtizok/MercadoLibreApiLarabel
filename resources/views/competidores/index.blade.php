@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="container-fluid mt-5">
+<div class="container mt-5">
     <h2 class="mb-4 text-primary fw-bold">Gestión de Competidores</h2>
 
     @if (session('success'))
