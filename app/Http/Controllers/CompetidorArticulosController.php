@@ -65,6 +65,12 @@ public function filtrarCompetidores(Request $request)
                 Log::info('Filtro título aplicado', ['titulo' => $request->input('titulo')]);
             }
 
+            // Add category filter
+            if ($request->has('categorias') && !empty($request->input('categorias'))) {
+                $query->where('categorias', 'like', '%' . $request->input('categorias') . '%');
+                Log::info('Filtro categorías aplicado', ['categorias' => $request->input('categorias')]);
+            }
+
             if ($request->has('es_full') && $request->input('es_full') !== null) {
                 $query->where('es_full', filter_var($request->input('es_full'), FILTER_VALIDATE_BOOLEAN));
                 Log::info('Filtro es_full aplicado', ['es_full' => $request->input('es_full')]);
@@ -99,7 +105,6 @@ public function filtrarCompetidores(Request $request)
         return redirect()->back()->with('error', 'Error al procesar los filtros: ' . $e->getMessage());
     }
 }
-
 
     public function actualizar(Request $request)
     {
