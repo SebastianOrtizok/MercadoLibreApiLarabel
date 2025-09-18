@@ -18,7 +18,6 @@
         </div>
     @endif
 
-    <!-- Formulario para agregar competidor -->
     <div class="mb-4">
         <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse" aria-expanded="false" aria-controls="formCollapse">
             <i class="fas fa-plus me-2"></i> Agregar Nuevo Competidor
@@ -70,17 +69,14 @@
         </div>
     </div>
 
-    <!-- Tabla de Competidores -->
-    <h3 class="mb-4 text-primary fw-bold">Lista de Competidores</h3>
-    <div id="restore-columns-competidores" class="mt-3 d-flex flex-wrap gap-2"></div>
-    <div class="table-responsive">
-        <table id="competidoresTable" class="table table-hover modern-table shadow-sm">
+    <div class="table-responsive mb-5">
+        <table class="table table-hover modern-table shadow-sm">
             <thead class="table-dark">
                 <tr>
-                    <th data-column-name="Nombre"><span>Nombre</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Seller ID"><span>Seller ID</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Nickname"><span>Nickname</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Acción"><span>Acción</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Seller ID</th>
+                    <th scope="col">Nickname</th>
+                    <th scope="col">Acción</th>
                 </tr>
             </thead>
             <tbody>
@@ -158,10 +154,10 @@
         </table>
     </div>
 
-    <!-- Tabla de Publicaciones Descargadas -->
     <h3 class="mb-4 text-primary fw-bold">Publicaciones Descargadas</h3>
-    <div id="restore-columns-publicaciones" class="mt-3 d-flex flex-wrap gap-2"></div>
-    <div class="mb-4 mt-5">
+
+    <!-- Formulario de filtros colapsado -->
+   <div class="mb-4 mt-5">
         <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
             <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
         </button>
@@ -203,7 +199,7 @@
                                 <option value="">Sin orden</option>
                                 <option value="precio" {{ request('order_by') == 'precio' ? 'selected' : '' }}>Precio Original</option>
                                 <option value="precio_descuento" {{ request('order_by') == 'precio_descuento' ? 'selected' : '' }}>Precio con Descuento</option>
-                                <option value="ultima_actualizacion" {{ request('order_by') == 'ultima_actualizacion' ? 'selected' : '' }}>Última Actualización</option>
+                                <option value="ultima_actualizacion" {{ request('ultima_actualizacion') == 'ultima_actualizacion' ? 'selected' : '' }}>Última Actualización</option>
                             </select>
                         </div>
                         <div class="col-md-2 mb-2">
@@ -232,24 +228,24 @@
         </div>
         <form method="POST" action="{{ route('competidores.follow') }}" id="follow-form">
             @csrf
-            <table id="publicacionesTable" class="table table-hover modern-table shadow-sm">
+            <table class="table table-hover modern-table shadow-sm">
                 <thead class="table-primary">
                     <tr>
-                        <th data-column-name="Seguir"><span>Seguir</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Competidor"><span>Competidor</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Publicación"><span>Publicación</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Título"><span>Título</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Categorías"><span>Categorías</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Precio Original"><span>Precio Original</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Precio con Descuento"><span>Precio con Descuento</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Información de Cuotas"><span>Info. Cuotas</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Precio sin Impuestos"><span>Precio sin Imp.</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Cantidad Disponible"><span>Cant. Disponible</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Cantidad Vendida"><span>Cant. Vendida</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="URL"><span>URL</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Es Full"><span>Es Full</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Envío Gratis"><span>Envío Gratis</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Última Actualización"><span>Última Actualización</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th>Seguir</th>
+                        <th>Competidor</th>
+                        <th>Publicación</th>
+                        <th>Título</th>
+                        <th>Categorías</th>
+                        <th>Precio Original</th>
+                        <th>Precio con Descuento</th>
+                        <th>Información de Cuotas</th>
+                        <th>Precio sin Impuestos</th>
+                        <th>Cantidad Disponible</th>
+                        <th>Cantidad Vendida</th>
+                        <th>URL</th>
+                        <th>Es Full</th>
+                        <th>Envío Gratis</th>
+                        <th>Última Actualización</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -296,17 +292,12 @@
     </div>
 </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdn.datatables.net/colreorder/1.5.4/js/dataTables.colReorder.min.js"></script>
+@section('scripts')
     <script>
         jQuery(document).ready(function ($) {
-            // Debugging: Verificar si jQuery y DataTables están cargados
             console.log('jQuery version:', $.fn.jquery);
             console.log('DataTables version:', $.fn.DataTable.version);
 
-            // Inicializar DataTable para Competidores
             if ($.fn.DataTable.isDataTable('#competidoresTable')) {
                 $('#competidoresTable').DataTable().clear().destroy();
             }
@@ -327,10 +318,10 @@
                 ]
             });
 
-            // Botones de visibilidad para Competidores
             $('#competidoresTable th i.fas.fa-eye.toggle-visibility').each(function () {
                 console.log('Botón fa-eye encontrado en competidoresTable:', $(this).parent().text());
-                $(this).on('click', function () {
+                $(this).on('click', function (event) {
+                    event.stopPropagation(); // Evita que el clic se propague al <th> y active el sorting
                     console.log('Clic en fa-eye para competidoresTable');
                     var th = $(this).closest('th');
                     var columnName = th.data('column-name');
@@ -342,7 +333,6 @@
                 });
             });
 
-            // Inicializar DataTable para Publicaciones
             if ($.fn.DataTable.isDataTable('#publicacionesTable')) {
                 $('#publicacionesTable').DataTable().clear().destroy();
             }
@@ -364,10 +354,10 @@
                 ]
             });
 
-            // Botones de visibilidad para Publicaciones
             $('#publicacionesTable th i.fas.fa-eye.toggle-visibility').each(function () {
                 console.log('Botón fa-eye encontrado en publicacionesTable:', $(this).parent().text());
-                $(this).on('click', function () {
+                $(this).on('click', function (event) {
+                    event.stopPropagation(); // Evita que el clic se propague al <th> y active el sorting
                     console.log('Clic en fa-eye para publicacionesTable');
                     var th = $(this).closest('th');
                     var columnName = th.data('column-name');
