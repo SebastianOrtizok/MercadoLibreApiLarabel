@@ -297,13 +297,95 @@
 </div>
 
 @section('scripts')
-  <script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        jQuery(document).ready(function () {
+            // Inicializar DataTable para Competidores
+            if ($.fn.DataTable.isDataTable('#competidoresTable')) {
+                $('#competidoresTable').DataTable().clear().destroy();
+            }
+            var competidoresTable = $('#competidoresTable').DataTable({
+                paging: false,
+                searching: false,
+                info: true,
+                colReorder: true,
+                autoWidth: false,
+                responsive: true,
+                scrollX: true,
+                stateSave: false,
+                processing: true,
+                width: '95%',
+                columnDefs: [
+                    { targets: '_all', className: 'shrink-text dt-center' },
+                    { targets: [0], width: '20%' } // Nombre
+                ]
+            });
+
+            // Botones de visibilidad para Competidores
+            var restoreCompetidoresContainer = $('#restore-columns-competidores');
+            $('#competidoresTable th i.fas.fa-eye.toggle-visibility').click(function () {
+                var th = $(this).closest('th');
+                var columnName = th.data('column-name');
+                var column = competidoresTable.column(th);
+                column.visible(false);
+                competidoresTable.columns.adjust().draw(false);
+                addRestoreButton(th, columnName, competidoresTable, restoreCompetidoresContainer);
+            });
+
+            // Inicializar DataTable para Publicaciones
+            if ($.fn.DataTable.isDataTable('#publicacionesTable')) {
+                $('#publicacionesTable').DataTable().clear().destroy();
+            }
+            var publicacionesTable = $('#publicacionesTable').DataTable({
+                paging: false,
+                searching: false,
+                info: true,
+                colReorder: true,
+                autoWidth: false,
+                responsive: true,
+                scrollX: true,
+                stateSave: false,
+                processing: true,
+                width: '95%',
+                columnDefs: [
+                    { targets: '_all', className: 'shrink-text dt-center' },
+                    { targets: [3], width: '20%' }, // Título
+                    { targets: [11], width: '15%' } // URL
+                ]
+            });
+
+            // Botones de visibilidad para Publicaciones
+            var restorePublicacionesContainer = $('#restore-columns-publicaciones');
+            $('#publicacionesTable th i.fas.fa-eye.toggle-visibility').click(function () {
+                var th = $(this).closest('th');
+                var columnName = th.data('column-name');
+                var column = publicacionesTable.column(th);
+                column.visible(false);
+                publicacionesTable.columns.adjust().draw(false);
+                addRestoreButton(th, columnName, publicacionesTable, restorePublicacionesContainer);
+            });
+
+            // Función para agregar botones de restauración
+            function addRestoreButton(th, columnName, table, container) {
+                var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
+                button.on('click', function () {
+                    table.column(th).visible(true);
+                    table.columns.adjust().draw(false);
+                    $(this).remove();
+                });
+                container.append(button);
+            }
+
+            // Script para el menú de filtros
             const toggleBtn = document.querySelector('[data-bs-target="#filtrosCollapse"]');
             const toggleText = toggleBtn ? toggleBtn.querySelector('#toggleText') : null;
             const collapseElement = document.getElementById('filtrosCollapse');
 
             if (toggleBtn && toggleText && collapseElement) {
                 toggleText.textContent = collapseElement.classList.contains('show') ? 'Ocultar Filtros' : 'Mostrar Filtros';
+
                 collapseElement.addEventListener('shown.bs.collapse', function () {
                     toggleText.textContent = 'Ocultar Filtros';
                 });
@@ -312,10 +394,10 @@
                 });
             }
 
+            // Script para buscar Seller ID
             const findSellerIdButton = document.getElementById('find-seller-id');
             if (findSellerIdButton) {
                 findSellerIdButton.addEventListener('click', function() {
-                    console.log('Clic en Buscar Seller ID');
                     const nicknameInput = document.getElementById('nickname');
                     const sellerIdInput = document.getElementById('seller_id');
                     const errorDiv = document.getElementById('seller-id-error');
@@ -342,7 +424,6 @@
                     .then(data => {
                         if (data.success) {
                             sellerIdInput.value = data.seller_id;
-                            console.log('Seller ID encontrado:', data.seller_id);
                         } else {
                             errorDiv.style.display = 'block';
                             errorDiv.textContent = data.message || 'Error al buscar el Seller ID.';
@@ -353,7 +434,6 @@
                         errorDiv.style.display = 'block';
                         errorDiv.textContent = 'Error al buscar el Seller ID. Por favor, intenta de nuevo.';
                         sellerIdInput.value = '';
-                        console.error('Error en fetch:', error);
                     });
                 });
             }
