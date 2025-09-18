@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="container mt-5">
+<div class="container-fluid mt-5">
     <h2 class="mb-4 text-primary fw-bold">Gestión de Competidores</h2>
 
     @if (session('success'))
@@ -18,6 +18,7 @@
         </div>
     @endif
 
+    <!-- Formulario para agregar competidor -->
     <div class="mb-4">
         <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse" aria-expanded="false" aria-controls="formCollapse">
             <i class="fas fa-plus me-2"></i> Agregar Nuevo Competidor
@@ -69,14 +70,17 @@
         </div>
     </div>
 
-    <div class="table-responsive mb-5">
+    <!-- Tabla de Competidores -->
+    <h3 class="mb-4 text-primary fw-bold">Lista de Competidores</h3>
+    <div id="restore-columns-competidores" class="mt-3 d-flex flex-wrap gap-2"></div>
+    <div class="table-responsive">
         <table id="competidoresTable" class="table table-hover modern-table shadow-sm">
             <thead class="table-dark">
                 <tr>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Seller ID</th>
-                    <th scope="col">Nickname</th>
-                    <th scope="col">Acción</th>
+                    <th data-column-name="Nombre"><span>Nombre</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Seller ID"><span>Seller ID</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Nickname"><span>Nickname</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th data-column-name="Acción"><span>Acción</span><i class="fas fa-eye toggle-visibility"></i></th>
                 </tr>
             </thead>
             <tbody>
@@ -96,7 +100,37 @@
                                     <option value="supermercado" {{ $competidor->categoria == 'supermercado' ? 'selected' : '' }}>Supermercado</option>
                                     <option value="tecnologia" {{ $competidor->categoria == 'tecnologia' ? 'selected' : '' }}>Tecnología</option>
                                     <option value="hogar-muebles-jardin" {{ $competidor->categoria == 'hogar-muebles-jardin' ? 'selected' : '' }}>Hogar, Muebles y Jardín</option>
-                                    <!-- Reducido por brevedad, agregar otras categorías si es necesario -->
+                                    <option value="electrodomesticos-aires-ac" {{ $competidor->categoria == 'electrodomesticos-aires-ac' ? 'selected' : '' }}>Electrodomésticos y Aires Ac.</option>
+                                    <option value="deportes-fitness" {{ $competidor->categoria == 'deportes-fitness' ? 'selected' : '' }}>Deportes y Fitness</option>
+                                    <option value="belleza-cuidado-personal" {{ $competidor->categoria == 'belleza-cuidado-personal' ? 'selected' : '' }}>Belleza y Cuidado Personal</option>
+                                    <option value="herramientas" {{ $competidor->categoria == 'herramientas' ? 'selected' : '' }}>Herramientas</option>
+                                    <option value="construccion" {{ $competidor->categoria == 'construccion' ? 'selected' : '' }}>Construcción</option>
+                                    <option value="industrias-oficinas" {{ $competidor->categoria == 'industrias-oficinas' ? 'selected' : '' }}>Industrias y Oficinas</option>
+                                    <option value="accesorios-para-vehiculos" {{ $competidor->categoria == 'accesorios-para-vehiculos' ? 'selected' : '' }}>Accesorios para Vehículos</option>
+                                    <option value="agro" {{ $competidor->categoria == 'agro' ? 'selected' : '' }}>Agro</option>
+                                    <option value="animales-mascotas" {{ $competidor->categoria == 'animales-mascotas' ? 'selected' : '' }}>Animales y Mascotas</option>
+                                    <option value="antiguedades-colecciones" {{ $competidor->categoria == 'antiguedades-colecciones' ? 'selected' : '' }}>Antigüedades y Colecciones</option>
+                                    <option value="arte-libreria-merceria" {{ $competidor->categoria == 'arte-libreria-merceria' ? 'selected' : '' }}>Arte, Librería y Mercería</option>
+                                    <option value="autos-motos-otros" {{ $competidor->categoria == 'autos-motos-otros' ? 'selected' : '' }}>Autos, Motos y Otros</option>
+                                    <option value="bebes" {{ $competidor->categoria == 'bebes' ? 'selected' : '' }}>Bebés</option>
+                                    <option value="camaras-accesorios" {{ $competidor->categoria == 'camaras-accesorios' ? 'selected' : '' }}>Cámaras y Accesorios</option>
+                                    <option value="celulares-telefonos" {{ $competidor->categoria == 'celulares-telefonos' ? 'selected' : '' }}>Celulares y Teléfonos</option>
+                                    <option value="coleccionables-hobbies" {{ $competidor->categoria == 'coleccionables-hobbies' ? 'selected' : '' }}>Coleccionables y Hobbies</option>
+                                    <option value="consolas-videojuegos" {{ $competidor->categoria == 'consolas-videojuegos' ? 'selected' : '' }}>Consolas y Videojuegos</option>
+                                    <option value="deportes-fitness" {{ $competidor->categoria == 'deportes-fitness' ? 'selected' : '' }}>Deportes y Fitness</option>
+                                    <option value="electrodomesticos-aires-ac" {{ $competidor->categoria == 'electrodomesticos-aires-ac' ? 'selected' : '' }}>Electrodomésticos y Aires Ac.</option>
+                                    <option value="electronica-audio-video" {{ $competidor->categoria == 'electronica-audio-video' ? 'selected' : '' }}>Electrónica, Audio y Video</option>
+                                    <option value="hogar-muebles-jardin" {{ $competidor->categoria == 'hogar-muebles-jardin' ? 'selected' : '' }}>Hogar, Muebles y Jardín</option>
+                                    <option value="industrias-oficinas" {{ $competidor->categoria == 'industrias-oficinas' ? 'selected' : '' }}>Industrias y Oficinas</option>
+                                    <option value="inmuebles" {{ $competidor->categoria == 'inmuebles' ? 'selected' : '' }}>Inmuebles</option>
+                                    <option value="instrumentos-musicales" {{ $competidor->categoria == 'instrumentos-musicales' ? 'selected' : '' }}>Instrumentos Musicales</option>
+                                    <option value="joyas-relojes" {{ $competidor->categoria == 'joyas-relojes' ? 'selected' : '' }}>Joyas y Relojes</option>
+                                    <option value="juegos-juguetes" {{ $competidor->categoria == 'juegos-juguetes' ? 'selected' : '' }}>Juegos y Juguetes</option>
+                                    <option value="libros-revistas-comics" {{ $competidor->categoria == 'libros-revistas-comics' ? 'selected' : '' }}>Libros, Revistas y Comics</option>
+                                    <option value="musica-peliculas-series">Música, Películas y Series</option>
+                                    <option value="ropa-accesorios">Ropa y Accesorios</option>
+                                    <option value="salud-equipamiento-medico">Salud y Equipamiento Médico</option>
+                                    <option value="souvenirs-cotillon-fiestas">Souvenirs, Cotillón y Fiestas</option>
                                     <option value="otras-categorias">Otras Categorías</option>
                                 </select>
                                 <button type="submit" class="btn btn-outline-success btn-sm ms-2">
@@ -124,8 +158,9 @@
         </table>
     </div>
 
+    <!-- Tabla de Publicaciones Descargadas -->
     <h3 class="mb-4 text-primary fw-bold">Publicaciones Descargadas</h3>
-
+    <div id="restore-columns-publicaciones" class="mt-3 d-flex flex-wrap gap-2"></div>
     <div class="mb-4 mt-5">
         <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
             <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
@@ -168,7 +203,7 @@
                                 <option value="">Sin orden</option>
                                 <option value="precio" {{ request('order_by') == 'precio' ? 'selected' : '' }}>Precio Original</option>
                                 <option value="precio_descuento" {{ request('order_by') == 'precio_descuento' ? 'selected' : '' }}>Precio con Descuento</option>
-                                <option value="ultima_actualizacion" {{ request('ultima_actualizacion') == 'ultima_actualizacion' ? 'selected' : '' }}>Última Actualización</option>
+                                <option value="ultima_actualizacion" {{ request('order_by') == 'ultima_actualizacion' ? 'selected' : '' }}>Última Actualización</option>
                             </select>
                         </div>
                         <div class="col-md-2 mb-2">
@@ -200,21 +235,21 @@
             <table id="publicacionesTable" class="table table-hover modern-table shadow-sm">
                 <thead class="table-primary">
                     <tr>
-                        <th>Seguir</th>
-                        <th>Competidor</th>
-                        <th>Publicación</th>
-                        <th>Título</th>
-                        <th>Categorías</th>
-                        <th>Precio Original</th>
-                        <th>Precio con Descuento</th>
-                        <th>Información de Cuotas</th>
-                        <th>Precio sin Impuestos</th>
-                        <th>Cantidad Disponible</th>
-                        <th>Cantidad Vendida</th>
-                        <th>URL</th>
-                        <th>Es Full</th>
-                        <th>Envío Gratis</th>
-                        <th>Última Actualización</th>
+                        <th data-column-name="Seguir"><span>Seguir</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="Competidor"><span>Competidor</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="Publicación"><span>Publicación</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="Título"><span>Título</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="Categorías"><span>Categorías</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="Precio Original"><span>Precio Original</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="Precio con Descuento"><span>Precio con Descuento</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="Información de Cuotas"><span>Info. Cuotas</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="Precio sin Impuestos"><span>Precio sin Imp.</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="Cantidad Disponible"><span>Cant. Disponible</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="Cantidad Vendida"><span>Cant. Vendida</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="URL"><span>URL</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="Es Full"><span>Es Full</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="Envío Gratis"><span>Envío Gratis</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th data-column-name="Última Actualización"><span>Última Actualización</span><i class="fas fa-eye toggle-visibility"></i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -260,29 +295,130 @@
         ])
     </div>
 </div>
-@endsection
 
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.11/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
-
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/colreorder/1.5.4/js/dataTables.colReorder.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM cargado: Preparando evento para buscar Seller ID');
+        jQuery(document).ready(function ($) {
+            // Debugging: Verificar si jQuery y DataTables están cargados
+            console.log('jQuery version:', $.fn.jquery);
+            console.log('DataTables version:', $.fn.DataTable.version);
+
+            // Inicializar DataTable para Competidores
+            if ($.fn.DataTable.isDataTable('#competidoresTable')) {
+                $('#competidoresTable').DataTable().clear().destroy();
+            }
+            var competidoresTable = $('#competidoresTable').DataTable({
+                paging: false,
+                searching: false,
+                info: true,
+                colReorder: true,
+                autoWidth: false,
+                responsive: true,
+                scrollX: true,
+                stateSave: false,
+                processing: true,
+                width: '95%',
+                columnDefs: [
+                    { targets: '_all', className: 'shrink-text dt-center' },
+                    { targets: [0], width: '20%' } // Nombre
+                ]
+            });
+
+            // Botones de visibilidad para Competidores
+            $('#competidoresTable th i.fas.fa-eye.toggle-visibility').each(function () {
+                console.log('Botón fa-eye encontrado en competidoresTable:', $(this).parent().text());
+                $(this).on('click', function () {
+                    console.log('Clic en fa-eye para competidoresTable');
+                    var th = $(this).closest('th');
+                    var columnName = th.data('column-name');
+                    var column = competidoresTable.column(th);
+                    console.log('Ocultando columna:', columnName);
+                    column.visible(false);
+                    competidoresTable.columns.adjust().draw(false);
+                    addRestoreButton(th, columnName, competidoresTable, $('#restore-columns-competidores'));
+                });
+            });
+
+            // Inicializar DataTable para Publicaciones
+            if ($.fn.DataTable.isDataTable('#publicacionesTable')) {
+                $('#publicacionesTable').DataTable().clear().destroy();
+            }
+            var publicacionesTable = $('#publicacionesTable').DataTable({
+                paging: false,
+                searching: false,
+                info: true,
+                colReorder: true,
+                autoWidth: false,
+                responsive: true,
+                scrollX: true,
+                stateSave: false,
+                processing: true,
+                width: '95%',
+                columnDefs: [
+                    { targets: '_all', className: 'shrink-text dt-center' },
+                    { targets: [3], width: '20%' }, // Título
+                    { targets: [11], width: '15%' } // URL
+                ]
+            });
+
+            // Botones de visibilidad para Publicaciones
+            $('#publicacionesTable th i.fas.fa-eye.toggle-visibility').each(function () {
+                console.log('Botón fa-eye encontrado en publicacionesTable:', $(this).parent().text());
+                $(this).on('click', function () {
+                    console.log('Clic en fa-eye para publicacionesTable');
+                    var th = $(this).closest('th');
+                    var columnName = th.data('column-name');
+                    var column = publicacionesTable.column(th);
+                    console.log('Ocultando columna:', columnName);
+                    column.visible(false);
+                    publicacionesTable.columns.adjust().draw(false);
+                    addRestoreButton(th, columnName, publicacionesTable, $('#restore-columns-publicaciones'));
+                });
+            });
+
+            // Función para agregar botones de restauración
+            function addRestoreButton(th, columnName, table, container) {
+                console.log('Agregando botón de restauración para:', columnName);
+                var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
+                button.on('click', function () {
+                    console.log('Restaurando columna:', columnName);
+                    table.column(th).visible(true);
+                    table.columns.adjust().draw(false);
+                    $(this).remove();
+                });
+                container.append(button);
+            }
+
+            // Script para el menú de filtros
+            const toggleBtn = document.querySelector('[data-bs-target="#filtrosCollapse"]');
+            const toggleText = toggleBtn ? toggleBtn.querySelector('#toggleText') : null;
+            const collapseElement = document.getElementById('filtrosCollapse');
+
+            if (toggleBtn && toggleText && collapseElement) {
+                toggleText.textContent = collapseElement.classList.contains('show') ? 'Ocultar Filtros' : 'Mostrar Filtros';
+                collapseElement.addEventListener('shown.bs.collapse', function () {
+                    toggleText.textContent = 'Ocultar Filtros';
+                });
+                collapseElement.addEventListener('hidden.bs.collapse', function () {
+                    toggleText.textContent = 'Mostrar Filtros';
+                });
+            }
+
+            // Script para buscar Seller ID
             const findSellerIdButton = document.getElementById('find-seller-id');
             if (findSellerIdButton) {
-                console.log('Botón "find-seller-id" encontrado');
                 findSellerIdButton.addEventListener('click', function() {
-                    console.log('Botón "Buscar Seller ID" clicado');
+                    console.log('Clic en Buscar Seller ID');
                     const nicknameInput = document.getElementById('nickname');
                     const sellerIdInput = document.getElementById('seller_id');
                     const errorDiv = document.getElementById('seller-id-error');
                     const nickname = nicknameInput.value.trim();
 
-                    console.log('Nickname ingresado:', nickname);
                     if (!nickname) {
-                        console.log('Error: Nickname vacío');
                         errorDiv.style.display = 'block';
                         errorDiv.textContent = 'Por favor, ingresá un nickname válido.';
                         return;
@@ -291,7 +427,6 @@
                     errorDiv.style.display = 'none';
                     errorDiv.textContent = '';
 
-                    console.log('Enviando solicitud AJAX a:', '{{ route("seller-id.find") }}');
                     fetch('{{ route("seller-id.find") }}', {
                         method: 'POST',
                         headers: {
@@ -300,76 +435,25 @@
                         },
                         body: JSON.stringify({ nickname: nickname }),
                     })
-                    .then(response => {
-                        console.log('Respuesta recibida:', response.status);
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(data => {
-                        console.log('Datos recibidos:', data);
                         if (data.success) {
                             sellerIdInput.value = data.seller_id;
-                            console.log('Seller ID establecido:', data.seller_id);
+                            console.log('Seller ID encontrado:', data.seller_id);
                         } else {
                             errorDiv.style.display = 'block';
                             errorDiv.textContent = data.message || 'Error al buscar el Seller ID.';
                             sellerIdInput.value = '';
-                            console.log('Error devuelto por el servidor:', data.message);
                         }
                     })
                     .catch(error => {
-                        console.error('Error en la solicitud AJAX:', error);
                         errorDiv.style.display = 'block';
                         errorDiv.textContent = 'Error al buscar el Seller ID. Por favor, intenta de nuevo.';
                         sellerIdInput.value = '';
+                        console.error('Error en fetch:', error);
                     });
                 });
-            } else {
-                console.error('Botón "find-seller-id" no encontrado en el DOM. Revisá el HTML.');
             }
-
-            // Inicialización de DataTables
-            if ($.fn.DataTable.isDataTable('#competidoresTable')) {
-                $('#competidoresTable').DataTable().destroy();
-            }
-            $('#competidoresTable').DataTable({
-                responsive: true,
-                scrollX: true,
-                autoWidth: false,
-                paging: false,
-                searching: false,
-                info: false,
-                columnDefs: [
-                    { targets: '_all', className: 'text-center' }
-                ]
-            });
-
-            if ($.fn.DataTable.isDataTable('#publicacionesTable')) {
-                $('#publicacionesTable').DataTable().destroy();
-            }
-            $('#publicacionesTable').DataTable({
-                responsive: true,
-                scrollX: true,
-                autoWidth: false,
-                paging: false,
-                searching: false,
-                info: false,
-                columnDefs: [
-                    { targets: '_all', className: 'text-center' },
-                    { targets: [11], width: '150px' } // Ajuste para la columna URL
-                ]
-            });
         });
-
-        // Toggle del texto en el botón de filtros
-        const toggleBtn = document.querySelector('[data-bs-target="#filtrosCollapse"]');
-        if (toggleBtn) {
-            const toggleText = toggleBtn.querySelector('#toggleText');
-            const collapse = document.getElementById('filtrosCollapse');
-            if (toggleText && collapse) {
-                toggleText.textContent = collapse.classList.contains('show') ? 'Ocultar Filtros' : 'Mostrar Filtros';
-                collapse.addEventListener('shown.bs.collapse', () => toggleText.textContent = 'Ocultar Filtros');
-                collapse.addEventListener('hidden.bs.collapse', () => toggleText.textContent = 'Mostrar Filtros');
-            }
-        }
     </script>
 @endsection
