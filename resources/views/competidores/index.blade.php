@@ -323,21 +323,23 @@ jQuery(document).ready(function ($) {
         columnDefs: [
             { targets: '_all', className: 'shrink-text dt-center' },
             { targets: [0], width: '20%' }
-        ],
-        initComplete: function () {
-            console.log('competidoresTable inicializado');
-            $('#competidoresTable').on('click', 'th i.fas.fa-eye.toggle-visibility', function (event) {
-                event.stopPropagation();
-                console.log('Clic en fa-eye para competidoresTable');
-                var th = $(this).closest('th');
-                var columnName = th.data('column-name');
-                var column = competidoresTable.column(th);
-                console.log('Ocultando columna:', columnName);
-                column.visible(false);
-                competidoresTable.columns.adjust().draw(false);
-                addRestoreButton(th, columnName, competidoresTable, $('#restore-columns-competidores'));
-            });
-        }
+        ]
+    });
+
+    // Botones de visibilidad para Competidores
+    $('#competidoresTable th i.fas.fa-eye.toggle-visibility').each(function () {
+        console.log('Botón fa-eye encontrado en competidoresTable:', $(this).parent().text());
+        $(this).on('click', function (event) {
+            event.stopPropagation();
+            console.log('Clic en fa-eye para competidoresTable');
+            var th = $(this).closest('th');
+            var columnName = th.data('column-name');
+            var column = competidoresTable.column(th);
+            console.log('Ocultando columna:', columnName);
+            column.visible(false);
+            competidoresTable.columns.adjust().draw(false);
+            addRestoreButton(th, columnName, competidoresTable, $('#restore-columns-competidores'));
+        });
     });
 
     // Inicializar DataTable para Publicaciones
@@ -362,6 +364,7 @@ jQuery(document).ready(function ($) {
         ],
         initComplete: function () {
             console.log('publicacionesTable inicializado');
+            console.log('Buscando íconos de ojo en publicacionesTable:', $('#publicacionesTable th i.fas.fa-eye.toggle-visibility').length);
             $('#publicacionesTable').on('click', 'th i.fas.fa-eye.toggle-visibility', function (event) {
                 event.stopPropagation();
                 console.log('Clic en fa-eye para publicacionesTable');
