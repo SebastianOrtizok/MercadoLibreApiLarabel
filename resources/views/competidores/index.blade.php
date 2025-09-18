@@ -18,7 +18,6 @@
         </div>
     @endif
 
-    <!-- Formulario para agregar competidor -->
     <div class="mb-4">
         <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse" aria-expanded="false" aria-controls="formCollapse">
             <i class="fas fa-plus me-2"></i> Agregar Nuevo Competidor
@@ -70,17 +69,14 @@
         </div>
     </div>
 
-    <!-- Tabla de Competidores -->
-    <h3 class="mb-4 text-primary fw-bold">Lista de Competidores</h3>
-    <div id="restore-columns-competidores" class="mt-3 d-flex flex-wrap gap-2"></div>
-    <div class="table-responsive">
-        <table id="competidoresTable" class="table table-hover modern-table shadow-sm">
+    <div class="table-responsive mb-5">
+        <table class="table table-hover modern-table shadow-sm">
             <thead class="table-dark">
                 <tr>
-                    <th data-column-name="Nombre"><span>Nombre</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Seller ID"><span>Seller ID</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Nickname"><span>Nickname</span><i class="fas fa-eye toggle-visibility"></i></th>
-                    <th data-column-name="Acción"><span>Acción</span><i class="fas fa-eye toggle-visibility"></i></th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Seller ID</th>
+                    <th scope="col">Nickname</th>
+                    <th scope="col">Acción</th>
                 </tr>
             </thead>
             <tbody>
@@ -158,10 +154,10 @@
         </table>
     </div>
 
-    <!-- Tabla de Publicaciones Descargadas -->
     <h3 class="mb-4 text-primary fw-bold">Publicaciones Descargadas</h3>
-    <div id="restore-columns-publicaciones" class="mt-3 d-flex flex-wrap gap-2"></div>
-    <div class="mb-4 mt-5">
+
+    <!-- Formulario de filtros colapsado -->
+   <div class="mb-4 mt-5">
         <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
             <i class="fas fa-filter"></i> <span id="toggleText">Mostrar Filtros</span>
         </button>
@@ -203,7 +199,7 @@
                                 <option value="">Sin orden</option>
                                 <option value="precio" {{ request('order_by') == 'precio' ? 'selected' : '' }}>Precio Original</option>
                                 <option value="precio_descuento" {{ request('order_by') == 'precio_descuento' ? 'selected' : '' }}>Precio con Descuento</option>
-                                <option value="ultima_actualizacion" {{ request('order_by') == 'ultima_actualizacion' ? 'selected' : '' }}>Última Actualización</option>
+                                <option value="ultima_actualizacion" {{ request('ultima_actualizacion') == 'ultima_actualizacion' ? 'selected' : '' }}>Última Actualización</option>
                             </select>
                         </div>
                         <div class="col-md-2 mb-2">
@@ -232,24 +228,24 @@
         </div>
         <form method="POST" action="{{ route('competidores.follow') }}" id="follow-form">
             @csrf
-            <table id="publicacionesTable" class="table table-hover modern-table shadow-sm">
+            <table class="table table-hover modern-table shadow-sm">
                 <thead class="table-primary">
                     <tr>
-                        <th data-column-name="Seguir"><span>Seguir</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Competidor"><span>Competidor</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Publicación"><span>Publicación</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Título"><span>Título</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Categorías"><span>Categorías</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Precio Original"><span>Precio Original</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Precio con Descuento"><span>Precio con Descuento</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Información de Cuotas"><span>Info. Cuotas</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Precio sin Impuestos"><span>Precio sin Imp.</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Cantidad Disponible"><span>Cant. Disponible</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Cantidad Vendida"><span>Cant. Vendida</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="URL"><span>URL</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Es Full"><span>Es Full</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Envío Gratis"><span>Envío Gratis</span><i class="fas fa-eye toggle-visibility"></i></th>
-                        <th data-column-name="Última Actualización"><span>Última Actualización</span><i class="fas fa-eye toggle-visibility"></i></th>
+                        <th>Seguir</th>
+                        <th>Competidor</th>
+                        <th>Publicación</th>
+                        <th>Título</th>
+                        <th>Categorías</th>
+                        <th>Precio Original</th>
+                        <th>Precio con Descuento</th>
+                        <th>Información de Cuotas</th>
+                        <th>Precio sin Impuestos</th>
+                        <th>Cantidad Disponible</th>
+                        <th>Cantidad Vendida</th>
+                        <th>URL</th>
+                        <th>Es Full</th>
+                        <th>Envío Gratis</th>
+                        <th>Última Actualización</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -295,115 +291,26 @@
         ])
     </div>
 </div>
+@endsection
 
 @section('scripts')
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
     <script>
-        jQuery(document).ready(function () {
-            // Inicializar DataTable para Competidores
-            if ($.fn.DataTable.isDataTable('#competidoresTable')) {
-                $('#competidoresTable').DataTable().clear().destroy();
-            }
-            var competidoresTable = $('#competidoresTable').DataTable({
-                paging: false,
-                searching: false,
-                info: true,
-                colReorder: true,
-                autoWidth: false,
-                responsive: true,
-                scrollX: true,
-                stateSave: false,
-                processing: true,
-                width: '95%',
-                columnDefs: [
-                    { targets: '_all', className: 'shrink-text dt-center' },
-                    { targets: [0], width: '20%' } // Nombre
-                ]
-            });
-
-            // Botones de visibilidad para Competidores
-            var restoreCompetidoresContainer = $('#restore-columns-competidores');
-            $('#competidoresTable th i.fas.fa-eye.toggle-visibility').click(function () {
-                var th = $(this).closest('th');
-                var columnName = th.data('column-name');
-                var column = competidoresTable.column(th);
-                column.visible(false);
-                competidoresTable.columns.adjust().draw(false);
-                addRestoreButton(th, columnName, competidoresTable, restoreCompetidoresContainer);
-            });
-
-            // Inicializar DataTable para Publicaciones
-            if ($.fn.DataTable.isDataTable('#publicacionesTable')) {
-                $('#publicacionesTable').DataTable().clear().destroy();
-            }
-            var publicacionesTable = $('#publicacionesTable').DataTable({
-                paging: false,
-                searching: false,
-                info: true,
-                colReorder: true,
-                autoWidth: false,
-                responsive: true,
-                scrollX: true,
-                stateSave: false,
-                processing: true,
-                width: '95%',
-                columnDefs: [
-                    { targets: '_all', className: 'shrink-text dt-center' },
-                    { targets: [3], width: '20%' }, // Título
-                    { targets: [11], width: '15%' } // URL
-                ]
-            });
-
-            // Botones de visibilidad para Publicaciones
-            var restorePublicacionesContainer = $('#restore-columns-publicaciones');
-            $('#publicacionesTable th i.fas.fa-eye.toggle-visibility').click(function () {
-                var th = $(this).closest('th');
-                var columnName = th.data('column-name');
-                var column = publicacionesTable.column(th);
-                column.visible(false);
-                publicacionesTable.columns.adjust().draw(false);
-                addRestoreButton(th, columnName, publicacionesTable, restorePublicacionesContainer);
-            });
-
-            // Función para agregar botones de restauración
-            function addRestoreButton(th, columnName, table, container) {
-                var button = $(`<button class="btn btn-outline-secondary btn-sm">${columnName} <i class="fas fa-eye"></i></button>`);
-                button.on('click', function () {
-                    table.column(th).visible(true);
-                    table.columns.adjust().draw(false);
-                    $(this).remove();
-                });
-                container.append(button);
-            }
-
-            // Script para el menú de filtros
-            const toggleBtn = document.querySelector('[data-bs-target="#filtrosCollapse"]');
-            const toggleText = toggleBtn ? toggleBtn.querySelector('#toggleText') : null;
-            const collapseElement = document.getElementById('filtrosCollapse');
-
-            if (toggleBtn && toggleText && collapseElement) {
-                toggleText.textContent = collapseElement.classList.contains('show') ? 'Ocultar Filtros' : 'Mostrar Filtros';
-
-                collapseElement.addEventListener('shown.bs.collapse', function () {
-                    toggleText.textContent = 'Ocultar Filtros';
-                });
-                collapseElement.addEventListener('hidden.bs.collapse', function () {
-                    toggleText.textContent = 'Mostrar Filtros';
-                });
-            }
-
-            // Script para buscar Seller ID
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM cargado: Preparando evento para buscar Seller ID');
             const findSellerIdButton = document.getElementById('find-seller-id');
             if (findSellerIdButton) {
+                console.log('Botón "find-seller-id" encontrado');
                 findSellerIdButton.addEventListener('click', function() {
+                    console.log('Botón "Buscar Seller ID" clicado');
                     const nicknameInput = document.getElementById('nickname');
                     const sellerIdInput = document.getElementById('seller_id');
                     const errorDiv = document.getElementById('seller-id-error');
                     const nickname = nicknameInput.value.trim();
 
+                    console.log('Nickname ingresado:', nickname);
                     if (!nickname) {
+                        console.log('Error: Nickname vacío');
                         errorDiv.style.display = 'block';
                         errorDiv.textContent = 'Por favor, ingresá un nickname válido.';
                         return;
@@ -412,6 +319,7 @@
                     errorDiv.style.display = 'none';
                     errorDiv.textContent = '';
 
+                    console.log('Enviando solicitud AJAX a:', '{{ route("seller-id.find") }}');
                     fetch('{{ route("seller-id.find") }}', {
                         method: 'POST',
                         headers: {
@@ -420,22 +328,31 @@
                         },
                         body: JSON.stringify({ nickname: nickname }),
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        console.log('Respuesta recibida:', response.status);
+                        return response.json();
+                    })
                     .then(data => {
+                        console.log('Datos recibidos:', data);
                         if (data.success) {
                             sellerIdInput.value = data.seller_id;
+                            console.log('Seller ID establecido:', data.seller_id);
                         } else {
                             errorDiv.style.display = 'block';
                             errorDiv.textContent = data.message || 'Error al buscar el Seller ID.';
                             sellerIdInput.value = '';
+                            console.log('Error devuelto por el servidor:', data.message);
                         }
                     })
                     .catch(error => {
+                        console.error('Error en la solicitud AJAX:', error);
                         errorDiv.style.display = 'block';
                         errorDiv.textContent = 'Error al buscar el Seller ID. Por favor, intenta de nuevo.';
                         sellerIdInput.value = '';
                     });
                 });
+            } else {
+                console.error('Botón "find-seller-id" no encontrado en el DOM. Revisá el HTML.');
             }
         });
     </script>
