@@ -10,15 +10,24 @@ class CompetidorService
 {
     protected $client;
     protected $proxies;
+    protected $userAgents = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+    ];
 
     public function __construct()
     {
         $this->client = new Client([
             'headers' => [
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                'User-Agent' => $this->userAgents[array_rand($this->userAgents)], // Rotación de User-Agent
                 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
                 'Accept-Language' => 'es-AR,es;q=0.9',
                 'Referer' => 'https://www.mercadolibre.com.ar/',
+                'Accept-Encoding' => 'gzip, deflate, br',
+                'Connection' => 'keep-alive',
             ],
             'cookies' => true,
         ]);
@@ -28,7 +37,7 @@ class CompetidorService
     protected function isProxyAlive($proxy)
     {
         try {
-            $testClient = new Client(['timeout' => 5]);
+            $testClient = new Client(['timeout' => 10]); // Aumentado a 10s para proxies lentos
             $response = $testClient->get('http://icanhazip.com', ['proxy' => $proxy]);
             \Log::info("Proxy $proxy está vivo", ['status' => $response->getStatusCode()]);
             return true;
@@ -97,9 +106,7 @@ class CompetidorService
                         'proxy' => $proxy
                     ]);
 
-                    if ($response->getStatusCode() == 200) {
-                        $success = true;
-                    } else {
+                    if ($response->getStatusCode() !== 200) {
                         \Log::warning("Respuesta no exitosa", ['status' => $response->getStatusCode(), 'proxy' => $proxy]);
                         $usedProxies[] = $proxy;
                         $attempt++;
@@ -107,6 +114,17 @@ class CompetidorService
                     }
 
                     $html = $response->getBody()->getContents();
+
+                    // Manejo de CAPTCHAs
+                    if (strpos(strtolower($html), 'captcha') !== false || $response->getStatusCode() == 403) {
+                        \Log::warning("CAPTCHA detectado o acceso denegado", ['url' => $url, 'proxy' => $proxy]);
+                        $usedProxies[] = $proxy;
+                        $attempt++;
+                        continue;
+                    }
+
+                    $success = true;
+
                     $crawler = new Crawler($html);
 
                     // Extraer cantidad de resultados
@@ -175,7 +193,7 @@ class CompetidorService
                     });
 
                     $page++;
-                    sleep(rand(5, 10));
+                    sleep(rand(10, 20)); // Pausa más larga para simular humano
                 } catch (ConnectException $e) {
                     \Log::error("Error de conexión con proxy $proxy", ['error' => $e->getMessage(), 'url' => $url]);
                     $usedProxies[] = $proxy;
